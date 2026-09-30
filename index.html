@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Saba Feilizadeh</title>
+<meta name="description" content="Saba Feilizadeh, computer science at UC Berkeley. Health tech, applied machine learning, and software built around real people.">
+<meta property="og:title" content="Saba Feilizadeh">
+<meta property="og:description" content="Computer science at UC Berkeley. Health tech, applied machine learning, and embedded systems.">
+<meta property="og:image" content="assets/img/profile.jpg">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='44' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>SF</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<div class="det" id="det" aria-hidden="true"><i></i><i></i><i></i><i></i><span id="detLabel"></span></div>
+<canvas id="rain" aria-hidden="true"></canvas>
+
+<div class="wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="#top">SF</a>
+    <ul>
+      <li><a href="#work">Work</a></li>
+      <li class="hide-sm"><a href="#leadership">Leadership</a></li>
+      <li class="hide-sm"><a href="#skills">Skills</a></li>
+      <li><a href="resume/">Resume</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <header class="hero" id="hero"></header>
+</div>
+
+<main class="wrap">
+  <section id="work" aria-labelledby="work-h">
+    <div class="shead"><h2 id="work-h">Selected work</h2><p>Hardware, machine learning, and the software that ties them to the people using them.</p></div>
+    <div id="work-body"></div>
+  </section>
+
+  <section id="leadership" aria-labelledby="lead-h">
+    <div class="shead"><h2 id="lead-h">Leadership and teaching</h2><p>Most of what I've learned about building for people, I learned by explaining things to them first.</p></div>
+    <div class="lead" id="lead-body"></div>
+  </section>
+
+  <section id="skills" aria-labelledby="skills-h">
+    <div class="shead"><h2 id="skills-h">Skills and education</h2><p>The toolkit, and where it came from.</p></div>
+    <div class="split" id="skills-body"></div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-h">
+    <h2 id="contact-h">Let's build something useful.</h2>
+    <div id="contact-links"></div>
+  </section>
+
+  <footer>
+    <span id="footnote"></span>
+    <span>Press <kbd>/</kbd> to open the terminal</span>
+  </footer>
+</main>
+
+<div class="term" id="term" role="dialog" aria-label="Terminal">
+  <div class="top"><span>saba@berkeley ~</span><button type="button" id="termClose" aria-label="Close terminal">close</button></div>
+  <div class="out" id="out"></div>
+  <form class="line" id="termForm" autocomplete="off"><b>$</b><input id="termIn" aria-label="Command" spellcheck="false"></form>
+</div>
+
+<script src="assets/js/content.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>
