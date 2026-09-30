@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Resume | Saba Feilizadeh</title>
+<meta name="description" content="Resume of Saba Feilizadeh, computer science at UC Berkeley.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='44' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>SF</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="../">SF</a>
+    <ul>
+      <li><a href="../#work">Work</a></li>
+      <li><a href="../#contact">Contact</a></li>
+    </ul>
+  </nav>
+  <header class="rhead">
+    <h1>Resume</h1>
+    <div class="actions">
+      <a class="btn primary" id="dl" download>Download PDF</a>
+      <a class="btn" href="../">Back to site</a>
+    </div>
+  </header>
+  <main class="paper" id="paper" aria-live="polite">
+    <p class="note">Loading resume...</p>
+  </main>
+</div>
+
+<script src="../assets/js/content.js"></script>
+<!-- pdf.js draws the PDF as crisp images, so it looks the same on every phone and browser -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script>
+(function(){
+  var P = window.SITE.person;
+  var url = '../' + P.resumePdf;
+  var paper = document.getElementById('paper');
+  var dl = document.getElementById('dl');
+  dl.href = url;
+  dl.setAttribute('download', P.firstName + '_' + P.lastName + '_Resume.pdf');
+
+  function fallback(){
+    paper.innerHTML = '<p class="note">Your browser couldn\'t display the preview. <a href="' + url + '">Open the PDF directly</a>.</p>';
+  }
+  if(!window.pdfjsLib){ fallback(); return; }
+  pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+  var doc = null, timer = null;
+  function render(){
+    if(!doc) return;
+    var width = paper.clientWidth, ratio = window.devicePixelRatio || 1, jobs = [];
+    paper.innerHTML = '';
+    for(var n = 1; n <= doc.numPages; n++){
+      (function(n){
+        var canvas = document.createElement('canvas');
+        canvas.setAttribute('role', 'img');
+        canvas.setAttribute('aria-label', 'Resume page ' + n);
+        paper.appendChild(canvas);
+        jobs.push(doc.getPage(n).then(function(page){
+          var base = page.getViewport({scale:1});
+          var vp = page.getViewport({scale:(width / base.width) * ratio});
+          canvas.width = vp.width; canvas.height = vp.height;
+          return page.render({canvasContext:canvas.getContext('2d'), viewport:vp}).promise;
+        }));
+      })(n);
+    }
+    // Clickable version for screen readers and people who want links
+    var a = document.createElement('p');
+    a.className = 'note';
+    a.style.padding = '8px 0 0';
+    a.innerHTML = 'Links inside the resume work in the <a href="' + url + '">PDF version</a>.';
+    paper.appendChild(a);
+    return Promise.all(jobs);
+  }
+  pdfjsLib.getDocument(url).promise.then(function(d){ doc = d; return render(); }).catch(fallback);
+  window.addEventListener('resize', function(){ clearTimeout(timer); timer = setTimeout(render, 200); });
+})();
+</script>
+</body>
+</html>
