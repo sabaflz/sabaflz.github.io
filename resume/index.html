@@ -9,17 +9,22 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../assets/css/main.css?v=3">
+<link rel="stylesheet" href="../assets/css/main.css?v=4">
 </head>
 <body>
-<div class="wrap">
-  <nav class="nav" aria-label="Main">
+<header class="topbar" id="topbar">
+  <nav class="nav wrap" aria-label="Main">
     <a class="mark" href="../">SF</a>
     <ul>
       <li><a href="../#work">Work</a></li>
+      <li><a href="../#leadership">Leadership</a></li>
+      <li><a href="../#skills">Skills</a></li>
+      <li><a href="./" aria-current="page">Resume</a></li>
       <li><a href="../#contact">Contact</a></li>
     </ul>
   </nav>
+</header>
+<div class="wrap">
   <header class="rhead">
     <h1>Resume</h1>
     <div class="actions">
@@ -32,7 +37,7 @@
   </main>
 </div>
 
-<script src="../assets/js/content.js?v=3"></script>
+<script src="../assets/js/content.js?v=4"></script>
 <!-- pdf.js draws the PDF as crisp images, so it looks the same on every phone and browser -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script>
@@ -77,6 +82,8 @@
     paper.appendChild(a);
     return Promise.all(jobs);
   }
+  var bar = document.getElementById('topbar');
+  window.addEventListener('scroll', function(){ bar.classList.toggle('scrolled', window.scrollY > 8); }, {passive:true});
   pdfjsLib.getDocument(url).promise.then(function(d){ doc = d; return render(); }).catch(fallback);
   window.addEventListener('resize', function(){ clearTimeout(timer); timer = setTimeout(render, 200); });
 })();
