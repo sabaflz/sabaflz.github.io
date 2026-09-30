@@ -143,6 +143,22 @@
     });
   }
 
+  /* ---------- sticky nav: border once you scroll, underline the current section ---------- */
+  var bar = $('topbar');
+  window.addEventListener('scroll', function(){ bar.classList.toggle('scrolled', window.scrollY > 8); }, {passive:true});
+  var navLinks = {};
+  document.querySelectorAll('.nav ul a[href^="#"]').forEach(function(a){ navLinks[a.getAttribute('href').slice(1)] = a; });
+  if('IntersectionObserver' in window){
+    var spy = new IntersectionObserver(function(entries){
+      entries.forEach(function(e){
+        if(!e.isIntersecting) return;
+        Object.keys(navLinks).forEach(function(k){ navLinks[k].removeAttribute('aria-current'); });
+        if(navLinks[e.target.id]) navLinks[e.target.id].setAttribute('aria-current', 'true');
+      });
+    }, {rootMargin:'-40% 0px -55% 0px'});
+    ['hero','work','leadership','skills','contact'].forEach(function(id){ var el = $(id); if(el) spy.observe(el); });
+  }
+
   /* ---------- terminal (press /) ---------- */
   var term = $('term'), out = $('out'), inp = $('termIn');
   function print(h){ var d = document.createElement('div'); d.innerHTML = h; out.appendChild(d); out.scrollTop = out.scrollHeight; }

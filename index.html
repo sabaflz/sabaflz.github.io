@@ -12,24 +12,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/main.css?v=3">
+<link rel="stylesheet" href="assets/css/main.css?v=4">
 </head>
 <body>
 <div class="det" id="det" aria-hidden="true"><i></i><i></i><i></i><i></i><span id="detLabel"></span></div>
 <canvas id="rain" aria-hidden="true"></canvas>
-
-<div class="wrap">
-  <nav class="nav" aria-label="Main">
-    <a class="mark" href="#top">SF</a>
+<header class="topbar" id="topbar">
+  <nav class="nav wrap" aria-label="Main">
+    <a class="mark" href="#" aria-label="Back to top">SF</a>
     <ul>
       <li><a href="#work">Work</a></li>
-      <li class="hide-sm"><a href="#leadership">Leadership</a></li>
-      <li class="hide-sm"><a href="#skills">Skills</a></li>
+      <li><a href="#leadership">Leadership</a></li>
+      <li><a href="#skills">Skills</a></li>
       <li><a href="resume/">Resume</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
   </nav>
-  <header class="hero" id="hero"></header>
+</header>
+
+<div class="wrap">
+  <div class="hero" id="hero"></div>
 </div>
 
 <main class="wrap">
@@ -65,7 +67,7 @@
   <form class="line" id="termForm" autocomplete="off"><b>$</b><input id="termIn" aria-label="Command" spellcheck="false"></form>
 </div>
 
-<script src="assets/js/content.js?v=3"></script>
-<script src="assets/js/main.js?v=3"></script>
+<script src="assets/js/content.js?v=4"></script>
+<script src="assets/js/main.js?v=4"></script>
 </body>
 </html>

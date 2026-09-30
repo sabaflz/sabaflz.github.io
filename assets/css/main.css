@@ -20,7 +20,7 @@
   --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A;
 }
 *,*::before,*::after{box-sizing:inherit}
-html{scroll-padding-top:env(safe-area-inset-top,0px); scroll-behavior:smooth}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px); scroll-behavior:smooth}
 body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.6 var(--body); -webkit-font-smoothing:antialiased; position:relative; overflow-x:hidden}
 a{color:inherit; text-decoration-color:var(--saffron); text-decoration-thickness:2px; text-underline-offset:3px}
 a:hover{color:var(--saffron-ink)}
@@ -28,12 +28,19 @@ a:hover{color:var(--saffron-ink)}
 img,svg,canvas{max-width:100%}
 .wrap{max-width:1100px; margin:0 auto; padding:0 clamp(20px,5vw,48px)}
 
-/* nav */
-.nav{display:flex; justify-content:space-between; align-items:center; padding:24px 0}
+/* nav: the bar stays pinned to the top while you scroll */
+.topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:10; background:var(--bg); border-bottom:1.5px solid transparent; transition:border-color .2s, box-shadow .2s}
+@supports (backdrop-filter:blur(10px)) or (-webkit-backdrop-filter:blur(10px)){
+  .topbar{background:color-mix(in srgb, var(--bg) 82%, transparent); -webkit-backdrop-filter:saturate(1.4) blur(12px); backdrop-filter:saturate(1.4) blur(12px)}
+}
+.topbar.scrolled{border-bottom-color:var(--line); box-shadow:0 6px 24px rgba(10,12,30,.06)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:16px; padding-top:16px; padding-bottom:16px}
 .nav .mark{font:800 20px/1 var(--display); text-decoration:none; letter-spacing:-.02em}
-.nav ul{list-style:none; display:flex; gap:22px; margin:0; padding:0; font-weight:500; font-size:15px}
-.nav ul a{text-decoration:none}
-.nav ul a:hover{text-decoration:underline}
+.nav ul{list-style:none; display:flex; gap:22px; margin:0; padding:0; font-weight:500; font-size:15px; overflow-x:auto; scrollbar-width:none}
+.nav ul::-webkit-scrollbar{display:none}
+.nav ul a{text-decoration:none; white-space:nowrap; padding:4px 0; border-bottom:2px solid transparent}
+.nav ul a:hover{color:var(--ink); border-bottom-color:var(--line)}
+.nav ul a[aria-current]{border-bottom-color:var(--saffron)}
 
 /* buttons */
 .btn{display:inline-flex; align-items:center; gap:8px; font:600 15px/1 var(--body); padding:13px 18px; border-radius:999px; text-decoration:none; border:2px solid var(--ink); background:transparent; color:var(--ink); cursor:pointer}
@@ -41,7 +48,7 @@ img,svg,canvas{max-width:100%}
 .btn:hover{background:var(--saffron); border-color:var(--saffron); color:var(--on-saffron)}
 
 /* hero */
-.hero{min-height:72vh; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:clamp(32px,6vw,80px); align-items:center; padding:32px 0 72px}
+.hero{min-height:68vh; display:grid; grid-template-columns:minmax(0,1fr) auto; gap:clamp(32px,6vw,80px); align-items:center; padding:32px 0 72px}
 .hero > div{min-width:0}
 .hero h1{font:700 clamp(2.8rem,7vw,5.5rem)/1.04 var(--display); letter-spacing:-.018em; margin:0}
 .hero .lede{font:500 clamp(1.25rem,2.4vw,1.7rem)/1.35 var(--display); max-width:24ch; margin:32px 0 0; letter-spacing:-.01em}
@@ -158,9 +165,10 @@ kbd{font:500 13px var(--mono); border:1.5px solid var(--line); border-bottom-wid
   .shead{flex-direction:column; gap:6px}
   .shead p{text-align:left}
   .nav ul{gap:14px; font-size:14px}
+  .nav{padding-top:12px; padding-bottom:12px}
 }
 @media (max-width:520px){
-  .nav ul li.hide-sm{display:none}
+  .nav ul{gap:12px; font-size:13.5px}
   dl.skills{grid-template-columns:1fr; gap:4px}
   dl.skills dd{margin-bottom:12px}
 }
