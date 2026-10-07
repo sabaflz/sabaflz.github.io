@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CS 61A Midterm 2 Practice</title>
+<meta name="description" content="A CBTF-style practice environment for CS 61A Midterm 2: type real Python, run it, and get graded all-or-nothing against hidden tests.">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<div id="boot">
+  <div class="boot-card">
+    <div class="spinner"></div>
+    <h1>Loading Python</h1>
+    <p id="boot-msg">Downloading the Python runtime. First load takes a moment, then it is cached.</p>
+  </div>
+</div>
+
+<header id="topbar">
+  <div class="brand">
+    <span class="logo">61A</span>
+    <div>
+      <div class="brand-title">Midterm 2 Practice</div>
+      <div class="brand-sub">real Python, graded all or nothing</div>
+    </div>
+  </div>
+  <div class="top-right">
+    <div class="progress" id="progress" title="Problems passed">0 / 0 passed</div>
+    <div class="timer" id="timer">
+      <span class="timer-face" id="timer-face">50:00</span>
+      <button class="t-btn" id="timer-toggle">Start</button>
+      <button class="t-btn ghost" id="timer-reset" title="Reset to 50:00">Reset</button>
+    </div>
+  </div>
+</header>
+
+<div id="layout">
+  <aside id="sidebar">
+    <input id="search" type="text" placeholder="Filter problems..." autocomplete="off">
+    <div id="problem-list"></div>
+  </aside>
+
+  <main id="main">
+    <section id="empty-state">
+      <h2>Pick a problem to begin</h2>
+      <p>Everything on your professor's practice list is here, grouped by topic. Your code and attempt counts are saved in this browser. The timer is optional.</p>
+    </section>
+
+    <section id="problem-view" hidden>
+      <div class="p-head">
+        <div>
+          <span class="p-cat" id="p-cat"></span>
+          <h2 id="p-title"></h2>
+          <a id="p-source" class="p-source" target="_blank" rel="noopener"></a>
+        </div>
+        <div class="p-status" id="p-status"></div>
+      </div>
+
+      <p id="p-desc" class="p-desc"></p>
+
+      <div class="editor-wrap">
+        <textarea id="code"></textarea>
+      </div>
+
+      <div class="actions">
+        <button id="btn-run" class="btn">Run</button>
+        <button id="btn-submit" class="btn primary">Submit for grade</button>
+        <span class="subs" id="subs"></span>
+        <span class="spacer"></span>
+        <button id="btn-reset" class="btn ghost" title="Restore the original starter code">Reset code</button>
+        <button id="btn-reveal" class="btn ghost" title="Unlocks after 3 submissions">Reveal solution</button>
+      </div>
+
+      <div id="result"></div>
+
+      <div id="solution" hidden>
+        <div class="sol-head">
+          <h3>Reference solution</h3>
+          <div class="sol-links">
+            <a id="sol-exam" target="_blank" rel="noopener">Official exam PDF</a>
+            <a id="sol-pdf" target="_blank" rel="noopener">Official solution PDF</a>
+          </div>
+        </div>
+        <pre><code id="sol-code"></code></pre>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/python/python.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script src="problems.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
