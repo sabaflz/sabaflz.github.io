@@ -191,6 +191,11 @@ window.CS70 = {
         { q: "A uniqueness proof needs which two parts?", choices: ["Base case and step", "Existence and 'two solutions are equal'", "Forward and converse", "Contrapositive and contradiction"], answer: 1, why: "Show something works, then show any two somethings coincide." },
         { q: "Which technique best fits 'prove √2 is irrational'?", choices: ["Direct", "Contradiction", "Cases", "Induction"], answer: 1, why: "You're showing integers a,b with √2=a/b don't exist, the signature of a contradiction proof." },
         { q: "What should the first line of a contrapositive proof say?", type: "sa", accept: ["assume not q", "assume ¬q", "we prove the contrapositive", "proceed by contraposition"], answer: "We prove the contrapositive: assume ¬Q.", why: "Naming the technique is expected and rewarded." }
+      ],
+      videos: [
+        { t: "Methods of proof: direct, contradiction, contraposition", by: "Dr. Trefor Bazett", note: "All three side by side — the 'pick the technique fast' skill", url: "https://www.youtube.com/watch?v=0wsTtLyWTOk" },
+        { t: "Proof by Contraposition", by: "Dr. Trefor Bazett", note: "When and how to flip to the contrapositive", url: "https://www.youtube.com/watch?v=vMwejR0bqwo" },
+        { t: "Proof by Contradiction", by: "Dr. Trefor Bazett", note: "The assume-the-opposite structure", url: "https://www.youtube.com/watch?v=b-kFWP9a2tw" }
       ]
     },
     {
@@ -221,6 +226,10 @@ window.CS70 = {
         { q: "In Lagrange interpolation, when can you skip computing Δᵢ entirely?", choices: ["When xᵢ = 0", "When yᵢ = 0", "When the degree is even", "Never"], answer: 1, why: "yᵢΔᵢ vanishes if yᵢ=0, so that basis polynomial never contributes." },
         { q: "Over GF(13), x²⁶ reduces to:", type: "sa", accept: ["x^2", "x2", "x²"], answer: "x²", why: "x¹³≡x drops the exponent by 12 each time: 26 → 14 → 2." },
         { q: "Why must the field be a prime (not composite) for Properties 1 and 2?", choices: ["So addition works", "So every nonzero element has an inverse (it's a field)", "To make it finite", "So FLT fails"], answer: 1, why: "Mod a composite there are zero divisors and missing inverses; both properties break (mod 8, x³=0 has 4 roots)." }
+      ],
+      videos: [
+        { t: "Simple intro to Shamir's Secret Sharing and Lagrange interpolation", by: "YouTube", note: "Lagrange interpolation over a finite field, the core skill here", url: "https://www.youtube.com/watch?v=kkMps3X_tEE" },
+        { t: "Protecting Your Secrets With Polynomials", by: "YouTube", note: "Clearest 'secret at P(0), degree k−1' intuition", url: "https://www.youtube.com/watch?v=_EHMd8gpApo" }
       ]
     },
     {
@@ -252,6 +261,11 @@ window.CS70 = {
         { q: "A 3-of-5 secret sharing scheme uses a polynomial of degree:", type: "sa", accept: ["2", "k-1", "k−1"], answer: "2", why: "Degree = k−1 = 2, so exactly 3 points pin it down." },
         { q: "In Berlekamp-Welch, Q(x) = P(x)E(x) has degree:", choices: ["k", "n−1", "n+k−1", "n+2k"], answer: 2, why: "deg P = n−1, deg E = k, product degree n+k−1." },
         { q: "Why do k−1 shares reveal zero information about the secret?", choices: ["They're encrypted", "For every candidate secret there's a unique consistent polynomial, so all q are equally likely", "The polynomial is random", "k−1 is always too few points to compute anything"], answer: 1, why: "k−1 points plus any choice of (0, b) give a valid degree k−1 polynomial, so the secret could equally be any value." }
+      ],
+      videos: [
+        { t: "Protecting Your Secrets With Polynomials (Shamir's)", by: "YouTube", note: "The k-of-n scheme, secret at P(0)", url: "https://www.youtube.com/watch?v=_EHMd8gpApo" },
+        { t: "Reed-Solomon Encoding, Intuitive / Simplified", by: "YouTube", note: "The error-correcting half: n+k vs n+2k and why", url: "https://www.youtube.com/watch?v=3HRIeWYbIuI" },
+        { t: "What are Reed-Solomon Codes? How computers recover lost data", by: "YouTube", note: "Longer, good if the ECC idea still feels fuzzy", url: "https://www.youtube.com/watch?v=1pQJkt7-R4Q" }
       ]
     },
     {
@@ -284,6 +298,9 @@ window.CS70 = {
         { q: "Euler's formula for a connected planar graph is:", type: "sa", accept: ["v+f=e+2", "v + f = e + 2", "v-e+f=2", "v−e+f=2"], answer: "v + f = e + 2", why: "Vertices plus faces equal edges plus two." },
         { q: "Shortest path in a 5-cube from 10010 to 01000 is:", type: "sa", accept: ["3", "three"], answer: "3", why: "Count differing bit positions: 1, 2, and 4 differ." },
         { q: "Is K₅ planar?", choices: ["Yes", "No"], answer: 1, why: "v=5, e=10, but 3v−6 = 9 < 10, so it fails the planar bound." }
+      ],
+      videos: [
+        { t: "Discrete Math full course (jump to Graph Theory section)", by: "Dr. Trefor Bazett", note: "Euler's formula, planarity, handshake — consistent notation", url: "https://youtube.com/playlist?list=PLHXZ9OQGMqxersk8fUxiUMSIx0DBqsKZS" }
       ]
     },
     {
@@ -303,6 +320,9 @@ window.CS70 = {
       quiz: [
         { q: "For graph induction proofs, the cleanest thing to induct on is usually:", choices: ["Number of vertices (weak)", "Number of edges", "Degree of one vertex", "The diameter"], answer: 1, why: "Removing one edge changes exactly two degrees by one, avoiding the disconnection issue vertex removal causes." },
         { q: "When you add one edge back into a graph, the total degree sum changes by:", type: "sa", accept: ["2", "+2", "two"], answer: "2", why: "The edge's two endpoints each gain one degree." }
+      ],
+      videos: [
+        { t: "Discrete Math full course (induction section)", by: "Dr. Trefor Bazett", note: "The induction technique transfers directly; apply the 'remove one edge' pattern", url: "https://youtube.com/playlist?list=PLHXZ9OQGMqxersk8fUxiUMSIx0DBqsKZS" }
       ]
     },
     {
@@ -329,6 +349,10 @@ window.CS70 = {
         { q: "Propose-reject with jobs proposing produces a matching that is:", choices: ["Job-pessimal", "Job-optimal, candidate-pessimal", "Always unique", "Random"], answer: 1, why: "The proposing side does best possible; the receiving side does worst possible, across all stable matchings." },
         { q: "If both proposer-orderings yield the same matching, the number of stable matchings is:", type: "sa", accept: ["1", "one", "exactly one"], answer: "1", why: "The job-optimal and job-pessimal matchings coincide, leaving only one." },
         { q: "Can a pair of mutual least-favorites appear in a stable matching?", choices: ["Yes", "No"], answer: 0, why: "Stability only forbids rogue pairs. If no one can do better, even mutual-least-favorites can be stable." }
+      ],
+      videos: [
+        { t: "Propose and Reject (Gale-Shapley) for Stable Matching", by: "YouTube", note: "Walks the algorithm step by step, exactly what the mock tested", url: "https://www.youtube.com/watch?v=Iw-Iq4vXDAM" },
+        { t: "Gale-Shapley Algorithm for Stable Matching", by: "YouTube", note: "A second pass to cement proposer-optimality", url: "https://www.youtube.com/watch?v=pc5WSJkFk24" }
       ]
     }
   ],
