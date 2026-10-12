@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CS 70 Midterm Guide</title>
+<meta name="description" content="Full reference and interactive self-test for the CS 70 Fall 2026 midterm: every discrete topic, worked examples, synthesis questions, and a cheat sheet.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='68' font-size='40' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>70</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+<header id="topbar">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="../../" aria-label="Back to site">SF</a>
+    <div class="crumbs"><a href="../">Study Guides</a> <span>/</span> <b>CS 70 Midterm</b></div>
+    <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+  </nav>
+</header>
+
+<div id="exam-strip">
+  <span class="es-count" id="cd">·</span>
+  <span class="es-meta">Midterm · Thursday Oct 15, 7–9pm · room by last name (Feilizadeh → Dwinelle 155)</span>
+</div>
+
+<div id="layout">
+  <aside id="sidebar" aria-label="Topics">
+    <div class="side-head">Your progress</div>
+    <div class="prog-ring" id="progSummary">
+      <span class="pv" id="passedCount">0</span><span class="pk">topics quizzed clean</span>
+    </div>
+    <nav id="topicNav" aria-label="Topic list"></nav>
+    <div class="side-sec">
+      <a href="#synthesis" class="side-link" data-view="synthesis">Synthesis questions</a>
+      <a href="#cheatsheet" class="side-link" data-view="cheatsheet">Cheat sheet</a>
+      <a href="#plan" class="side-link" data-view="plan">Study plan</a>
+    </div>
+    <div class="side-foot">
+      <a id="notesLink" href="#" target="_blank" rel="noopener">Official notes ↗</a>
+    </div>
+  </aside>
+
+  <main id="main">
+    <div id="content"><!-- rendered by app.js --></div>
+  </main>
+</div>
+
+<button id="menuBtn" aria-label="Open topics">Topics</button>
+
+<script src="content.js?v=1"></script>
+<script src="app.js?v=1"></script>
+</body>
+</html>
