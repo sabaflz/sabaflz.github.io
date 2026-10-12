@@ -1,0 +1,638 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASAMST 128AC Midterm Guide</title>
+<meta name="description" content="Full study guide for the ASAMST 128AC (Muslims in America) midterm: Diouf Chapters 1 and 2, Bazian's lectures, GhaneaBassiri on race and citizenship, the Malcolm X documentary and Letter from Mecca, a glossary for matching, a full practice exam with answers, and model short-answer responses.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='68' font-size='34' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>AC</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --ok:#1C7C54; --ok-soft:#E3F3EA; --warn:#B4531A; --warn-soft:#FBEADF;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#54C78C; --ok-soft:#163026; --warn:#E89156; --warn-soft:#2E2016; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#54C78C; --ok-soft:#163026; --warn:#E89156; --warn-soft:#2E2016; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.62 var(--body); -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron); outline-offset:3px; border-radius:3px}
+
+#topbar{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1.5px solid var(--line)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:14px; max-width:1180px; margin:0 auto; padding:14px clamp(16px,4vw,34px)}
+.nav .mark{font:800 20px/1 var(--display); text-decoration:none; letter-spacing:-.02em}
+.crumbs{font:500 14px var(--body); color:var(--muted); display:flex; gap:8px; align-items:center; min-width:0}
+.crumbs a{text-decoration:none} .crumbs a:hover{color:var(--saffron-ink)} .crumbs b{color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.crumbs span{color:var(--line)}
+.t-btn{font:500 13px/1 var(--mono); background:var(--surface); color:var(--ink); border:1.5px solid var(--line); border-radius:999px; padding:8px 13px; cursor:pointer; white-space:nowrap}
+.t-btn:hover{border-color:var(--saffron)}
+
+#exam-strip{background:var(--ink); color:#fff; font:500 13.5px/1.4 var(--body); text-align:center; padding:9px 16px}
+:root[data-theme="dark"] #exam-strip, @media (prefers-color-scheme:dark){#exam-strip{background:#000}}
+#exam-strip b{color:var(--saffron)}
+
+#layout{display:flex; gap:28px; max-width:1180px; margin:0 auto; padding:0 clamp(16px,4vw,34px); align-items:flex-start}
+#sidebar{position:sticky; top:72px; width:232px; flex:none; padding:26px 0 40px; max-height:calc(100vh - 80px); overflow:auto}
+.side-head{font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 10px}
+.prog-wrap{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:14px; margin-bottom:18px}
+.prog-bar{height:8px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin:8px 0 6px}
+.prog-fill{height:100%; width:0%; background:var(--saffron); transition:width .3s}
+.prog-label{font:500 12.5px var(--mono); color:var(--muted)}
+#toc{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+#toc a{display:block; text-decoration:none; font-size:14px; color:var(--muted); padding:7px 11px; border-radius:9px; border-left:2.5px solid transparent}
+#toc a:hover{color:var(--ink); background:var(--surface-2)}
+#toc a.active{color:var(--ink); background:var(--saffron-soft); border-left-color:var(--saffron); font-weight:600}
+
+#main{flex:1; min-width:0; padding:26px 0 90px}
+header.page{padding:12px 0 8px}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--saffron-ink); margin:0 0 10px}
+h1{font:600 clamp(1.9rem,5vw,2.7rem)/1.04 var(--display); margin:0 0 12px; letter-spacing:-.01em; text-wrap:balance}
+.lede{color:var(--muted); max-width:66ch; margin:0 0 6px}
+
+section.block{scroll-margin-top:118px; padding:30px 0 6px; border-top:1.5px solid var(--line); margin-top:30px}
+section.block:first-of-type{border-top:none; margin-top:14px}
+h2{font:600 clamp(1.4rem,3.4vw,1.9rem)/1.1 var(--display); margin:0 0 6px; letter-spacing:-.01em}
+h2 .num{font:500 14px var(--mono); color:var(--saffron-ink); display:block; margin-bottom:4px; letter-spacing:.05em}
+h3{font:600 18.5px/1.25 var(--display); margin:24px 0 8px}
+h4{font:600 15px/1.3 var(--body); margin:16px 0 4px; color:var(--ink)}
+p{margin:10px 0} .muted{color:var(--muted)}
+ul,ol{margin:10px 0; padding-left:22px} li{margin:6px 0}
+strong{font-weight:600}
+em{font-style:italic}
+code,.k{font:500 14.5px var(--mono); background:var(--surface-2); padding:1px 6px; border-radius:6px; color:var(--saffron-ink)}
+.lead-term{font-weight:600; color:var(--ink)}
+.cite{font:500 12.5px var(--mono); color:var(--muted); white-space:nowrap}
+
+.card{background:var(--surface); border:1.5px solid var(--line); border-radius:16px; padding:20px 22px; margin:16px 0}
+.card.tint{background:var(--saffron-soft); border-color:transparent}
+.card.dark{background:var(--ink); color:#EDEEF6; border-color:transparent}
+.card.dark .cite, .card.dark .muted{color:#AEB3CC}
+.card.dark strong{color:var(--saffron)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.mini{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:16px 18px}
+.mini h4{margin-top:0}
+
+.pill{display:inline-block; font:500 11.5px/1 var(--mono); padding:5px 9px; border-radius:999px; border:1.5px solid var(--line); color:var(--muted); margin:0 6px 6px 0}
+.pill.ch1{color:#1F6FB2; border-color:#1F6FB2}
+.pill.ch2{color:#2C7A4B; border-color:#2C7A4B}
+.pill.lec{color:#A05A1C; border-color:#A05A1C}
+.pill.mx{color:#8A4FB0; border-color:#8A4FB0}
+:root[data-theme="dark"] .pill.ch1{color:#6DB8EC;border-color:#3A6E95}
+:root[data-theme="dark"] .pill.ch2{color:#6FD39A;border-color:#366B4D}
+:root[data-theme="dark"] .pill.lec{color:#E39B5C;border-color:#8A5E33}
+:root[data-theme="dark"] .pill.mx{color:#C79AE6;border-color:#6A4F84}
+
+details.q{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; margin:12px 0; overflow:hidden}
+details.q[open]{border-color:var(--saffron)}
+details.q>summary{list-style:none; cursor:pointer; padding:15px 18px; font-weight:500; display:flex; gap:12px; align-items:flex-start; user-select:none}
+details.q>summary::-webkit-details-marker{display:none}
+details.q>summary::before{content:"?"; flex:none; width:24px; height:24px; border-radius:50%; background:var(--surface-2); color:var(--muted); font:700 13px/24px var(--mono); text-align:center; margin-top:1px}
+details.q[open]>summary::before{content:"\2713"; background:var(--saffron); color:var(--on-saffron)}
+.qnum{font:600 13px var(--mono); color:var(--saffron-ink); flex:none; margin-top:2px}
+.ans{padding:2px 18px 18px 54px; color:var(--ink); border-top:1px dashed var(--line); margin-top:2px}
+.ans p:first-child{margin-top:12px}
+.correct{display:inline-block; font:600 13px var(--mono); color:var(--ok); background:var(--ok-soft); border-radius:7px; padding:3px 9px; margin-bottom:4px}
+
+.model{background:var(--surface-2); border-left:4px solid var(--saffron); border-radius:0 10px 10px 0; padding:12px 16px; margin:10px 0; font-size:15.5px; line-height:1.55}
+.model .wc{float:right; font:500 11.5px var(--mono); color:var(--muted)}
+table.match{width:100%; border-collapse:collapse; margin:10px 0; font-size:14.5px}
+.match td{padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+.match td:first-child{font:600 13px var(--mono); color:var(--saffron-ink); white-space:nowrap; width:1%}
+.rev-all{font:500 13px var(--mono); background:var(--surface); border:1.5px solid var(--line); border-radius:999px; padding:8px 14px; cursor:pointer; margin:4px 0 2px}
+.rev-all:hover{border-color:var(--saffron)}
+
+.review-row{display:flex; align-items:center; gap:10px; margin:18px 0 2px; padding-top:14px; border-top:1px dashed var(--line)}
+.review-row label{font:500 14px var(--body); color:var(--muted); display:flex; align-items:center; gap:9px; cursor:pointer}
+.review-row input{width:18px; height:18px; accent-color:var(--saffron)}
+.flag{display:inline-block; font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--warn); background:var(--warn-soft); border-radius:6px; padding:3px 8px; margin-left:6px}
+
+footer{max-width:1180px; margin:0 auto; padding:30px clamp(16px,4vw,34px) 70px; color:var(--muted); font-size:14px; border-top:1.5px solid var(--line)}
+#menuBtn{display:none}
+@media(max-width:860px){
+  #sidebar{display:none}
+  #menuBtn{display:block; position:fixed; right:16px; bottom:16px; z-index:30; background:var(--saffron); color:var(--on-saffron); border:none; border-radius:999px; padding:13px 18px; font:600 14px var(--body); box-shadow:0 6px 20px rgba(0,0,0,.18); cursor:pointer}
+  #sidebar.open{display:block; position:fixed; inset:60px 10px 10px auto; width:min(80vw,300px); background:var(--bg); border:1.5px solid var(--line); border-radius:16px; padding:18px; z-index:29; box-shadow:0 10px 40px rgba(0,0,0,.25); max-height:80vh}
+}
+</style>
+</head>
+<body>
+<header id="topbar">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="../../" aria-label="Back to site">SF</a>
+    <div class="crumbs"><a href="../">Study Guides</a> <span>/</span> <b>ASAMST 128AC Midterm</b></div>
+    <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+  </nav>
+</header>
+
+<div id="exam-strip">
+  <b>Midterm &middot; Wednesday, Oct 14</b> &nbsp;&middot;&nbsp; In class &nbsp;&middot;&nbsp; DSP testing: Social Sciences Building #554 &nbsp;&middot;&nbsp; MCQ + matching + true/false + short answer
+</div>
+
+<div id="layout">
+  <aside id="sidebar" aria-label="Contents">
+    <div class="prog-wrap">
+      <div class="side-head">Your review progress</div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+      <div class="prog-label"><span id="progNow">0</span> / <span id="progTot">0</span> sections reviewed</div>
+    </div>
+    <div class="side-head">Jump to</div>
+    <nav><ul id="toc"></ul></nav>
+  </aside>
+
+  <main id="main">
+    <header class="page">
+      <p class="eyebrow">ASAMST 128AC &middot; Muslims in America &middot; Fall 2026</p>
+      <h1>Midterm Study Guide</h1>
+      <p class="lede">Everything I need in one place: Diouf Chapters 1 and 2, Hatem Bazian's lectures, GhaneaBassiri on race and citizenship, and the Malcolm X documentary plus his Letter from Mecca. There is a glossary built for the matching sections, a full practice exam with answers, and model short-answer responses. Lecturer: Hatem Bazian &middot; GSI: Abed Togas.</p>
+      <p class="muted" style="font-size:14.5px">Check off each section as you review it; the bar on the left remembers your progress in this browser.</p>
+    </header>
+
+    <!-- ===================== FORMAT ===================== -->
+    <section class="block" id="format" data-rev>
+      <h2><span class="num">00 &middot; Start here</span>What the exam is</h2>
+      <p>Based on the 10/8 section slides and the Fall 2020 sample exam, the midterm is a <strong>mix of multiple choice, matching, true/false, and short answer</strong> (one short paragraph each, roughly 250 words max), with a couple of extra-credit prompts. The sample was scored out of 79.</p>
+      <div class="card tint">
+        <strong>It covers four bodies of material:</strong>
+        <p style="margin:8px 0 0"><span class="pill ch1">Diouf Ch 1</span> African Muslims, Christian Europeans, and the transatlantic slave trade. <span class="pill ch2">Diouf Ch 2</span> Upholding the Five Pillars under slavery. <span class="pill lec">Lecture + GhaneaBassiri</span> race, religion, citizenship, and Muslim immigration. <span class="pill mx">Malcolm X</span> the "Make It Plain" documentary and his Letter from Mecca.</p>
+      </div>
+      <h4>How to use this guide</h4>
+      <ul>
+        <li><strong>Matching and MCQ</strong> reward memorized names and terms. Drill the <a href="#glossary">glossary</a> and the <a href="#practice">practice exam</a>.</li>
+        <li><strong>Short answer and the reflection-style prompt</strong> reward a clear argument with named evidence. Use the <a href="#argument">argument engine</a> and the <a href="#models">model answers</a>.</li>
+        <li>The colored tags above mark which body of material each fact comes from, so you can see the whole map at a glance.</li>
+      </ul>
+      <p class="muted" style="font-size:14px">One honest flag: a few lecture-specific items (exact migration-wave dates, the six reasons for migration, the vertical/horizontal barrier lists) are reconstructed from the sample exam and standard course framing. They are marked with <span class="flag">confirm w/ notes</span> so you can check them against your own lecture notes.</p>
+    </section>
+
+    <!-- ===================== ARGUMENT ENGINE ===================== -->
+    <section class="block" id="argument" data-rev>
+      <h2><span class="num">01 &middot; For the written answers</span>The argument engine</h2>
+      <p>The reflection-style prompt will give you a quote (likely from Malcolm X's Letter from Mecca, or an Abdul El-Sayed / Muslim-belonging quote like the sample) and ask how you would argue for Muslim belonging in the United States, using Bazian's lecture, the section slides, and Diouf. One thesis carries almost any version of it:</p>
+      <div class="card dark">
+        <strong>Core thesis.</strong> Muslim belonging in America is not something Muslims have to prove; it is <em>constitutive</em>. Muslims helped make American religious, racial, and political life from the very beginning, and they built and defended that belonging under systems designed to deny it: first slavery, then racial exclusion, then surveillance. So the demand to "prove" belonging gets the history backwards.
+      </div>
+      <p>This works because it lets you reach into all four bodies of material in one move: Diouf for the enslaved founding presence, GhaneaBassiri for immigration and citizenship, and Malcolm X for belonging reclaimed. Three themes the slides told you the prompt will touch:</p>
+      <ul>
+        <li><strong>Islam is not "foreign" to America</strong> (the long history of African Muslims).</li>
+        <li><strong>Muslim belonging under coercion</strong> (slavery, forced conversion, exclusion).</li>
+        <li><strong>Religion as identity and community</strong> (from the pillars to the Nation of Islam).</li>
+      </ul>
+      <p>Paragraph shape to repeat: <strong>claim &rarr; named evidence &rarr; analysis &rarr; link back to the thesis.</strong> Full worked versions are in <a href="#models">section 07</a>.</p>
+    </section>
+
+    <!-- ===================== DIOUF CH 1 ===================== -->
+    <section class="block" id="ch1" data-rev>
+      <h2><span class="num">02 &middot; Diouf, Chapter 1</span>African Muslims &amp; the slave trade</h2>
+      <p class="muted">Big idea: enslaved African Muslims did not arrive as blank slates. They brought a developed religious world, which puts Africa at the <em>center</em> of the story of American slavery and makes Islam a founding American presence, not a recent import.</p>
+
+      <h3>Islam in West Africa</h3>
+      <ul>
+        <li>Islam was established in West Africa from the <strong>8th to 11th centuries</strong>, spread <strong>mostly peacefully</strong> by native traders, clerics, and rulers, <em>not</em> by military conquest. Africans considered it an African religion.</li>
+        <li><strong>Sufi brotherhoods</strong>, above all the <span class="k">Qadiriyya</span> (founded by Abdul-Qadir Gilani), linked members across ethnicity, geography, and class. Real community infrastructure.</li>
+        <li>West African Muslims belonged to a <strong>global Islamic world</strong> with ties to North Africa, Egypt, and the Middle East. Mansa Musa's 1324 pilgrimage to Mecca is the famous example of that reach.</li>
+      </ul>
+
+      <h3>Literacy</h3>
+      <ul>
+        <li>Qur'anic education encouraged <strong>literacy in Arabic and <span class="k">ajami</span></strong> (African languages written in Arabic script), plus Qur'an memorization. Schooling reached <strong>women and peasants</strong>, not only elites.</li>
+        <li>Why it mattered in the Americas: <strong>religious continuity, community formation, communication, the pursuit of freedom, and resistance.</strong> (This is the sample exam's short-answer #9.)</li>
+      </ul>
+
+      <h3>Slavery: African vs. American systems</h3>
+      <div class="grid2">
+        <div class="mini"><h4>African contexts</h4><ul style="margin-bottom:0">
+          <li>Multiple forms of slavery; varied by region, period, religion</li>
+          <li>Captives mostly from <strong>warfare</strong></li>
+          <li>Religion (not race) shaped status; Muslims could be enslaved <em>or</em> slaveholders</li>
+          <li><strong>Manumission possible</strong>; status could change; Islamic law barred enslaving freeborn Muslims and encouraged freeing slaves</li>
+        </ul></div>
+        <div class="mini"><h4>American contexts</h4><ul style="margin-bottom:0">
+          <li><strong>Racialized</strong> slavery: race/color linked to status</li>
+          <li>Captives bought/kidnapped for a plantation economy</li>
+          <li><strong>Hereditary</strong> (a child inherited the mother's status), making Blackness itself associated with permanent enslavement</li>
+          <li>Manumission far more restricted; Christian conversion was the <em>justification</em> for enslavement, not an exit</li>
+        </ul></div>
+      </div>
+      <p class="muted" style="font-size:14px">This is sample short-answer #1: "Name THREE points of difference." Any three of the rows above will do.</p>
+
+      <h3>How Muslims ended up enslaved anyway</h3>
+      <ul>
+        <li>Wars, jihads, and the Atlantic trade overrode the protections. Muslims were sometimes sold by other Muslims by declaring them "lax" or <span class="k">kafir</span>.</li>
+        <li><strong>Complicated rebellion:</strong> Islamic movements could oppose enslaving Muslims while still enslaving non-Muslims; religious wars produced <em>both</em> liberation and new captives (e.g., the Oyo conflict of 1817, where enslaved people were promised freedom for joining the jihad; Muslim forces later founded the Ilorin Emirate while prisoners were shipped to the Americas). Diouf presents rebellion, warfare, slavery, and Islam as <strong>interconnected, not separate.</strong></li>
+        <li>Spanish authorities repeatedly tried to <strong>restrict</strong> African Muslim arrivals, fearing they would incite other enslaved people to rebellion. The <strong>first African slave revolt</strong> in the Americas was led by Muslim <strong>Wolof in Hispaniola, 1522</strong>.</li>
+        <li>Scale: about <strong>12.5 million</strong> Africans were deported overall; exact Muslim numbers are unknowable, which Diouf states plainly.</li>
+      </ul>
+    </section>
+
+    <!-- ===================== DIOUF CH 2 ===================== -->
+    <section class="block" id="ch2" data-rev>
+      <h2><span class="num">03 &middot; Diouf, Chapter 2</span>Upholding the Five Pillars</h2>
+      <p class="muted">Big idea: Diouf organizes the chapter around the Five Pillars to show Muslim identity <em>persisting</em> under conditions built to suppress it. That persistence is itself community-building and resistance.</p>
+      <ul>
+        <li><strong>Backdrop: forced Christianization.</strong> <span class="k">Catholics</span> mandated baptism (French Code Noir, 1685) and achieved conversions, even superficial ones, through harsh punishment; Catholicism became the state religion of the Spanish colonies. <span class="k">Protestants</span> were at first <em>reluctant</em> to convert enslaved people, fearing a Christian could not be kept enslaved, then reversed after the Great Awakening.</li>
+        <li><strong>1. Shahada (profession of faith).</strong> Held three ways: affirming it (Ayuba Suleyman Diallo's "Allah. Muhammad."), refusing to convert, and <strong>pseudoconversion</strong> (professing Christianity while staying Muslim). Omar ibn Said filled Arabic manuscripts with praise of God; Bilali Mohamed died reciting the shahada; Muhammad Kaba wrote a 50-page Arabic treatise on prayer years after baptism.</li>
+        <li><strong>2. Salat (prayer).</strong> In secret (Diallo in the woods), in public (Yarrow Mamout in Maryland's streets), and in groups (Friday prayer in Brazil in makeshift mosques, driven into hiding after the 1835 revolt). Many adapted to three or two prayers a day. The 100-bead <span class="k">tasbih</span> (vs. the usual 33) ties to Sufi dhikr and points to trained practitioners.</li>
+        <li><strong>3. Zakah (alms).</strong> Kept alive through the <span class="k">saraka</span> rice cakes that Muslim <strong>women</strong> in the Georgia Sea Islands made from rice and sugar saved out of their rations. The word comes from Arabic <span class="k">sadaqah</span>; it is the one pillar practice the record ties specifically to women, and food/ritual/generosity became ways to pass Islam to children.</li>
+        <li><strong>4. Sawm (fasting).</strong> They fasted through Ramadan even though their conditions would have excused them, so it was a <strong>choice</strong>.</li>
+        <li><strong>5. Hajj (pilgrimage).</strong> Nearly impossible, but connections to the wider Muslim world remained; the ring shout may echo the <span class="k">tawaf</span> (from Arabic <em>sha'wt</em>, one circuit of the Kaaba). An 1831 letter circulating in Jamaica hints at Islamic networks reaching across the Atlantic.</li>
+        <li><strong>Pseudo-conversion was a method of resistance</strong>, not surrender (sample T/F #10 = True).</li>
+      </ul>
+    </section>
+
+    <!-- ===================== LECTURE + GHANEABASSIRI ===================== -->
+    <section class="block" id="lecture" data-rev>
+      <h2><span class="num">04 &middot; Bazian lecture + GhaneaBassiri</span>Race, religion &amp; citizenship</h2>
+      <p class="muted">Big idea: at the turn of the 20th century, race and religion became intertwined in deciding who could enter the US and who counted as "American." Muslim immigrants navigated that by emphasizing ethnicity or "whiteness" to gain citizenship, and the belonging that began with enslaved Muslims continues through immigration and Black Muslim movements.</p>
+
+      <h3>Core concepts (prime matching targets)</h3>
+      <ul>
+        <li><span class="lead-term">Sacred Economy</span>: the commonly held idea that <strong>Christianity and commerce go hand in hand</strong>; used to justify slavery and colonial expansion. <span class="cite">GhaneaBassiri</span></li>
+        <li><span class="lead-term">Progress</span>: along with race and religion, the concept that let Protestants <strong>define America as white and Protestant</strong>, maintaining cultural and sociopolitical hegemony.</li>
+        <li><span class="lead-term">Religion (as a category)</span>: was <strong>overshadowed at the turn of the 20th century by race and ethnicity</strong> as Muslim immigrants shaped a sense of national belonging in order to achieve citizenship.</li>
+        <li><span class="lead-term">De-negrofication</span>: the process of separating African Muslims from the general enslaved Black population, recasting them as "Moorish," "Arab," or noble/exotic, to justify exceptional treatment. Many African Muslims <strong>complied with it</strong>, hoping for better treatment or passage back to Africa (sample T/F #8 = True). <strong>Two examples:</strong> <em>Abdul Rahman Ibrahima</em> ("the Prince," framed as a Moor, his story publicized, freed by the President's order and sent to Liberia) and <em>Ayuba Suleyman Diallo / Job Ben Solomon</em> (elevated as a noble, learned Muslim, taken to England, celebrated, portrait painted, returned to Africa). <span class="flag">confirm w/ notes</span></li>
+        <li><span class="lead-term">Process of Rendition</span>: where the US <strong>covertly sends people to be interrogated and tortured abroad</strong>, in countries with weaker human-rights rules. Shows the state treating Muslims as security threats.</li>
+        <li><span class="lead-term">"Passing"</span>: reveals that race, religion, and immigration were linked: who got to be considered "white" or "American" was a moving line Muslim immigrants had to negotiate.</li>
+      </ul>
+
+      <h3>Exclusion legislation (and the through-line to today)</h3>
+      <ul>
+        <li><span class="lead-term">Chinese Exclusion Act (1882)</span>: exclusionary legislation that <strong>set a precedent for the 2017 Muslim Ban</strong>.</li>
+        <li><span class="lead-term">Asiatic Barred Zone (1917 Immigration Act)</span>: coupled with <strong>literacy tests</strong>, it limited immigration of Muslims (among others) from Asia.</li>
+        <li>National-origins quotas (1924) further restricted entry; the <strong>1965 Hart-Celler Act</strong> abolished those quotas and reopened immigration.</li>
+      </ul>
+
+      <h3>Muslim migration waves <span class="flag">confirm w/ notes</span></h3>
+      <p>Sample short-answer #4 asks for THREE waves with approximate dates and what drove each. Standard course framing:</p>
+      <ol>
+        <li><strong>First wave, ~1875&ndash;1924.</strong> From the <span class="lead-term">Levant</span> (Greater Syria: today's Lebanon, Syria, Palestine, Jordan), Ottoman subjects, mostly unskilled laborers and peddlers, drawn by <strong>economic opportunity</strong>. Curtailed by the 1917 Asiatic Barred Zone and the 1924 national-origins quotas.</li>
+        <li><strong>Second wave, ~post-WWII to 1965.</strong> Students, professionals, and elites, driven by <strong>decolonization, political upheaval, and the pull of US education</strong>.</li>
+        <li><strong>Third wave, post-1965 (Hart-Celler) through the 1990s.</strong> Professionals and <strong>STEM experts</strong>, students, and family reunification from South Asia, the Middle East, and the broader Muslim world. Intermarriage and professional migration built lasting communities. Refugees form a related but separate stream.</li>
+      </ol>
+      <p class="muted" style="font-size:14px"><strong>Levant</strong> = birthplace of the majority of the first wave (1875&ndash;1912). <strong>Intermarriage</strong> + the need for STEM experts = what built Muslim communities from the 1960s&ndash;1990s. Both are sample matching answers.</p>
+
+      <h3>Six reasons Muslims migrate (name three) <span class="flag">confirm w/ notes</span></h3>
+      <p>Economic opportunity / labor demand; education (students); escaping political persecution or instability; religious freedom; family reunification; refuge from war or colonial violence.</p>
+
+      <h3>Immigrant vs. refugee experience (name three differences)</h3>
+      <ul>
+        <li><strong>Choice vs. force:</strong> immigrants generally choose to move for opportunity; refugees are <em>forced out</em> by war, persecution, or disaster.</li>
+        <li><strong>Legal category:</strong> "refugee" is a <strong>highly politicized category contingent on US foreign-policy objectives</strong> (sample matching answer), so who counts as a refugee shifts with politics; immigrants move through a different, more planned legal track.</li>
+        <li><strong>Resources and preparation:</strong> immigrants often arrive with savings, skills, or family ties and plans; refugees often arrive with little, after trauma and loss, dependent on resettlement.</li>
+        <li><strong>Relationship to "home":</strong> immigrants may return or move freely; refugees often cannot safely return.</li>
+      </ul>
+
+      <h3>Vertical vs. horizontal barriers to the spread of Islam <span class="flag">confirm w/ notes</span></h3>
+      <p>Sample short-answer #3 asks for THREE of each. Framing: <strong>vertical = passing Islam <em>down</em> through generations; horizontal = spreading it <em>across</em> a population in the same generation.</strong></p>
+      <div class="grid2">
+        <div class="mini"><h4>Vertical (generational) barriers</h4><ul style="margin-bottom:0">
+          <li>Children inherited enslaved status and were Christianized</li>
+          <li>Families separated by sale, breaking transmission</li>
+          <li>Loss of Arabic literacy; no mosques or Qur'anic schools to teach the next generation</li>
+        </ul></div>
+        <div class="mini"><h4>Horizontal (same-generation) barriers</h4><ul style="margin-bottom:0">
+          <li>Dispersal across distant plantations</li>
+          <li>Ethnic and linguistic diversity among the enslaved</li>
+          <li>Forced conversion, surveillance, and bans on gathering</li>
+        </ul></div>
+      </div>
+    </section>
+
+    <!-- ===================== MALCOLM X ===================== -->
+    <section class="block" id="malcolmx" data-rev>
+      <h2><span class="num">05 &middot; "Make It Plain" + Letter from Mecca</span>Malcolm X</h2>
+      <p class="muted">The exam tests themes from the documentary and the letter. You will not need to have read the letter closely; you need the arc of his life and what Islam meant at each stage.</p>
+
+      <h3>The arc, stage by stage</h3>
+      <ul>
+        <li><strong>Upbringing.</strong> Father <strong>Earl Little</strong> followed <strong>Marcus Garvey</strong> (UNIA, Black nationalism, "Back to Africa"). The family faced KKK / white-supremacist violence; the father's death and the family's separation by state authorities shaped Malcolm's distrust of American institutions.</li>
+        <li><strong>Prison &amp; transformation.</strong> After criminal activity, Malcolm educates himself intensively (history, religion, philosophy, literature), sharpens his skills in prison debates, and encounters the teachings of <strong>Elijah Muhammad</strong>. Leaves prison transformed.</li>
+        <li><strong>Nation of Islam.</strong> Emphasizes Black racial pride, Black self-sufficiency, separation from white society, and rejection of white supremacy. Malcolm becomes its most powerful speaker and builds Black-owned institutions (mosques, businesses, restaurants, newspapers).</li>
+        <li><strong>On white supremacy.</strong> He rejects integration alone as a fix, argues Black people should control their own communities, and frames racism as a <strong>structural system</strong>, not just individual prejudice. Key discussion hook: if racial separation is <em>produced</em> by white supremacy, Black separation can be a form of <strong>resistance</strong> rather than another racism, and he distinguishes <strong>resistance</strong> from <strong>liberation</strong>.</li>
+        <li><strong>Elijah Muhammad: mentor then conflict.</strong> Begins as mentor/father figure; Malcolm becomes disillusioned, questions NOI leadership and its response to violence ("accused them of converting the Nation of Islam into a criminal organization"). <strong>Leaves the Nation of Islam in 1964.</strong></li>
+        <li><strong>Changing politics.</strong> Early Malcolm: NOI, Black separatism, religious transformation, strong opposition to integration. Later Malcolm: leaves NOI, starts new organizations, becomes more politically active, connects Black liberation to <strong>African and Latin American liberation</strong>, and urges Black Americans to see themselves as part of a <strong>global majority</strong> rather than a US minority.</li>
+      </ul>
+
+      <h3>Islam in his life (six framings)</h3>
+      <ul>
+        <li><strong>Pathway to transformation</strong> (discipline, education, self-reform in prison).</li>
+        <li><strong>Racial pride</strong> (Black identity through dignity, self-determination, resistance to white supremacy).</li>
+        <li><strong>Community-building</strong> (NOI institutions: economic and communal independence).</li>
+        <li><strong>Alternative to an American identity imposed by slavery</strong>, becoming "Malcolm X," then <strong>el-Hajj Malik el-Shabazz</strong> after Mecca, rejects the surname inherited through slavery and reclaims a connection to a lost African past.</li>
+        <li><strong>Political education</strong> (conversion grows into a structural critique of racial power; organize rather than depend on white institutions).</li>
+        <li><strong>Evolves internationally</strong> after leaving the NOI, connecting Black American struggles to global liberation.</li>
+      </ul>
+
+      <h3>Letter from Mecca (April 1964)</h3>
+      <div class="card">
+        <ul style="margin:0">
+          <li>He performs the <strong>hajj</strong>: seven circuits of the Ka'ba (tawaf), drinks from Zamzam, runs between Safa and Marwah, prays at Mina and Arafat. The pillar enslaved Muslims could only re-create, now performed.</li>
+          <li>He witnesses <strong>brotherhood among people of all colors</strong> ("from blue-eyed blonds to black-skinned Africans") and calls Islam <strong>"the one religion that erases from its society the race problem."</strong></li>
+          <li>His central turn: from the <strong>Oneness of God</strong> to the <strong>Oneness of Man</strong>. He publicly revises his views and predicts that the <strong>younger white generation in colleges and universities</strong> may turn toward truth.</li>
+          <li>Signs it <strong>El-Hajj Malik El-Shabazz</strong>.</li>
+        </ul>
+      </div>
+
+      <h3>"Chickens coming home to roost"</h3>
+      <p>Malcolm's framing (made about the JFK assassination) that the violence the US commits abroad returns to be felt at home. Connects US violence overseas with violence experienced inside the country. Good for a question linking foreign and domestic violence.</p>
+
+      <h3>Hatem Bazian's lecture reflections</h3>
+      <ul>
+        <li>A Malcolm X speech happened in a <strong>UC Berkeley hall</strong>, "history happening where we are."</li>
+        <li>The <strong>FBI and CIA</strong> kept thousands of files on Black leaders (MLK, Malcolm X), treating them as national-security threats. The state policed Black Muslim belonging <em>because</em> it was powerful.</li>
+        <li>Footage of <strong>Muhammad Ali</strong> shows how much his public stance shifted over his life (and his draft refusal made Black Muslim identity highly visible).</li>
+      </ul>
+    </section>
+
+    <!-- ===================== GLOSSARY ===================== -->
+    <section class="block" id="glossary" data-rev>
+      <h2><span class="num">06 &middot; For the matching sections</span>People &amp; terms glossary</h2>
+      <p class="muted">The matching sections pull from here. Cover the right column and quiz yourself both directions.</p>
+
+      <h3>People &amp; the Abdul Rahman Ibrahima story</h3>
+      <table class="match">
+        <tr><td>Abdul Rahman Ibrahima</td><td>"The Prince." A Fulani Muslim enslaved in Mississippi for ~40 years; recast as a "Moor" (de-negrofication); freed by order of the President and sent to Liberia. Returned a Muslim.</td></tr>
+        <tr><td>Thomas Foster</td><td>The slave owner who <strong>conditionally freed Abdulrahman, but not his children</strong>.</td></tr>
+        <tr><td>Andrew Marschalk</td><td>The <strong>publisher</strong> who made Abdulrahman's story popular and advocated for his freedom.</td></tr>
+        <tr><td>Henry Clay</td><td>The <strong>Secretary of State</strong> who received correspondence about Abdulrahman (from the US consul to Morocco) and forwarded it to the president.</td></tr>
+        <tr><td>Isabella</td><td>The <strong>only family member to accompany Abdulrahman back to Africa</strong> (his wife).</td></tr>
+        <tr><td>Ayuba Suleyman Diallo / Job Ben Solomon</td><td>Senegalese Muslim enslaved in Maryland (1731); famously wrote out the Qur'an from memory; elevated and freed, taken to England, returned to Africa. A case of de-negrofication.</td></tr>
+        <tr><td>Omar ibn Said (Umar ibn Sa'id)</td><td>Senegalese scholar enslaved in the Carolinas; left Arabic manuscripts; <strong>much debate remains about the authenticity of his conversion to Christianity</strong>.</td></tr>
+        <tr><td>Bilali Mohamed</td><td>Of the Georgia Sea Islands; devout his whole life; said to have died reciting the shahada. His daughters made the saraka cakes.</td></tr>
+        <tr><td>Marabouts</td><td>Traveling scholars / clerics / teachers, with high representation among the Muslim enslaved population in America.</td></tr>
+        <tr><td>Catholics</td><td>Achieved conversions, even superficial ones, through harsh punishment; eventually the state religion of the Spanish colonies.</td></tr>
+        <tr><td>Protestants</td><td>Initially <strong>reluctant to convert</strong> enslaved people because they did not want to emancipate them.</td></tr>
+      </table>
+
+      <h3>Lecture &amp; GhaneaBassiri terms</h3>
+      <table class="match">
+        <tr><td>Sacred Economy</td><td>Christianity and commerce go hand in hand; used to justify slavery.</td></tr>
+        <tr><td>Progress</td><td>With race and religion, let Protestants define America as white and Protestant.</td></tr>
+        <tr><td>Religion</td><td>Overshadowed at the turn of the 20th century by race and ethnicity as immigrants sought citizenship.</td></tr>
+        <tr><td>Chinese Exclusion Act</td><td>1882 exclusionary law; precedent for the 2017 Muslim Ban.</td></tr>
+        <tr><td>Asiatic Barred Zone</td><td>1917; with literacy tests, barred immigration of Muslims (among others) from Asia.</td></tr>
+        <tr><td>Process of Rendition</td><td>Covertly sending people abroad to be interrogated and tortured where human-rights rules are weaker.</td></tr>
+        <tr><td>Levant</td><td>Birthplace of the majority of the first wave of Muslim immigration (1875&ndash;1912).</td></tr>
+        <tr><td>Intermarriage</td><td>With the need for STEM experts, helped build Muslim communities from the 1960s&ndash;1990s.</td></tr>
+        <tr><td>Refugee</td><td>A highly politicized category contingent on US foreign-policy objectives.</td></tr>
+        <tr><td>Hajj</td><td>The pilgrimage to Mecca; one of the Five Pillars.</td></tr>
+        <tr><td>De-negrofication</td><td>Separating/recasting African Muslims as non-Black ("Moorish"/"Arab") for exceptional treatment.</td></tr>
+      </table>
+
+      <h3>Quick term bank</h3>
+      <p><span class="k">shahada</span> profession of faith &middot; <span class="k">salat</span> prayer &middot; <span class="k">zakah</span> alms &middot; <span class="k">sawm</span> fasting &middot; <span class="k">hajj</span> pilgrimage &middot; <span class="k">ajami</span> African languages in Arabic script &middot; <span class="k">tasbih</span> prayer beads &middot; <span class="k">saraka / sadaqah</span> charity rice cakes &middot; <span class="k">tawaf</span> circling the Ka'ba &middot; <span class="k">Qadiriyya</span> Sufi order &middot; <span class="k">kafir</span> non-believer &middot; <span class="k">Nation of Islam</span> &middot; <span class="k">Elijah Muhammad</span> &middot; <span class="k">Marcus Garvey</span> &middot; <span class="k">el-Hajj Malik el-Shabazz</span></p>
+    </section>
+
+    <!-- ===================== PRACTICE EXAM ===================== -->
+    <section class="block" id="practice" data-rev>
+      <h2><span class="num">07 &middot; Practice exam (with answers)</span>Test yourself</h2>
+      <p>These are the actual questions from the Fall 2020 sample, with worked answers. Try each before you open it.</p>
+      <button class="rev-all" type="button" data-scope="practice">Reveal all answers in this section</button>
+
+      <h3>Multiple choice</h3>
+      <details class="q"><summary><span class="qnum">MC1</span><span>Which was NOT a major mode of conversion in the expansion of Islam in Sub-Saharan Africa? (A) Military force (B) Marriage (C) Trade and commerce (D) Sufism</span></summary>
+        <div class="ans"><span class="correct">A &middot; Military force</span><p>Islam spread into Sub-Saharan Africa mostly peacefully, through trade, marriage, and Sufi networks, not conquest.</p></div></details>
+      <details class="q"><summary><span class="qnum">MC2</span><span>What year marked the beginning of the systematic transportation of slaves to the New World? (A) 1526 (B) 1492 (C) 1510 (D) 1519</span></summary>
+        <div class="ans"><span class="correct">Likely A &middot; 1526</span><p>Diouf dates the first deportations to <strong>1501</strong>, with large-scale, systematic transport developing across the 1510s&ndash;1520s. Among these options the intended answer is almost certainly <strong>A (1526)</strong>, but this is the one MCQ worth checking against your lecture notes. <span class="flag">confirm w/ notes</span></p></div></details>
+      <details class="q"><summary><span class="qnum">MC3</span><span>This branch of Islam believes the Prophet's succession should be based on bloodline: (A) Nation of Islam (B) Shi'a (C) ISIS (D) Sunni</span></summary>
+        <div class="ans"><span class="correct">B &middot; Shi'a</span><p>Shi'a Islam holds that leadership should pass through the Prophet's bloodline (through Ali and his descendants). Sunni Islam does not.</p></div></details>
+      <details class="q"><summary><span class="qnum">MC4</span><span>It was hard for Muslim slaves to uphold dietary restrictions on plantations because: (A) slaveowners served pork, cheaper than other meats (B) no access to wine before dinner (C) slaveowners served shrimp (D) couldn't eat a meal with each prayer</span></summary>
+        <div class="ans"><span class="correct">A &middot; Pork</span><p>Pork is forbidden in Islam, and slaveowners regularly served it because it was cheap. (Wine is also forbidden, not required; shrimp is generally permitted, so B and C are wrong.)</p></div></details>
+      <details class="q"><summary><span class="qnum">MC5</span><span>Which was NOT a role the Prophet Muhammad served for the community? (A) Commander in Chief (B) Head of State (C) Incarnation of God (D) Adjudicator</span></summary>
+        <div class="ans"><span class="correct">C &middot; Incarnation of God</span><p>Islam is strictly monotheistic; Muhammad is a prophet, never divine. He was a political, military, and judicial leader.</p></div></details>
+
+      <h3>True / False</h3>
+      <details class="q"><summary><span class="qnum">TF1</span><span>African and Arab traders in West Africa were the primary beneficiaries of the trans-Atlantic slave trade.</span></summary>
+        <div class="ans"><span class="correct">False</span><p>Europeans and Americans were the primary beneficiaries. Africans participated, but the wealth and plantation economy accrued to the colonial powers.</p></div></details>
+      <details class="q"><summary><span class="qnum">TF2</span><span>Western and Central Africans were stripped of their clothes, the first of countless violations imposed as they boarded slave ships.</span></summary>
+        <div class="ans"><span class="correct">True</span></div></details>
+      <details class="q"><summary><span class="qnum">TF3</span><span>Slavery in West Africa under Islam did not permit slaves to buy their freedom.</span></summary>
+        <div class="ans"><span class="correct">False</span><p>Islamic law provided several routes to freedom: ransom, self-redemption, exchange, manumission.</p></div></details>
+      <details class="q"><summary><span class="qnum">TF4</span><span>Spain continuing to pass anti-Muslim migration legislation shows previous exclusionary measures had not succeeded in stopping the arrival of Muslim slaves.</span></summary>
+        <div class="ans"><span class="correct">True</span><p>Repeated legislation is evidence the earlier bans weren't working, Muslims kept arriving.</p></div></details>
+      <details class="q"><summary><span class="qnum">TF5</span><span>In West Africa, the spread of literacy and Islam went hand in hand.</span></summary>
+        <div class="ans"><span class="correct">True</span></div></details>
+      <details class="q"><summary><span class="qnum">TF6</span><span>Schools in West Africa were not open to girls and non-Muslims; they were exclusively for boys studying the religious sciences.</span></summary>
+        <div class="ans"><span class="correct">False</span><p>Girls (~20%) and non-Muslims attended Qur'anic schools; literacy reached women and peasants.</p></div></details>
+      <details class="q"><summary><span class="qnum">TF7</span><span>Muslim slaves were accused of cooperating with Native Americans because, unlike Native Americans, many had experience using horses in warfare.</span></summary>
+        <div class="ans"><span class="correct">True</span><p>Colonists feared Muslim military/cavalry experience and a Muslim&ndash;Native alliance.</p></div></details>
+      <details class="q"><summary><span class="qnum">TF8</span><span>Many African Muslims complied with de-negrofication in hopes of better treatment or possibly passage back to Africa.</span></summary>
+        <div class="ans"><span class="correct">True</span><p>See Abdul Rahman Ibrahima and Ayuba Diallo, being recast as "Moorish"/noble opened doors.</p></div></details>
+      <details class="q"><summary><span class="qnum">TF9</span><span>France was keen on sending all its African Muslim slaves to Europe first to baptize them before sending them to its American colonies.</span></summary>
+        <div class="ans"><span class="correct">False</span></div></details>
+      <details class="q"><summary><span class="qnum">TF10</span><span>Pseudo-conversion was a method of resistance among enslaved communities in the New World.</span></summary>
+        <div class="ans"><span class="correct">True</span></div></details>
+
+      <h3>Matching A: Diouf &amp; the slave trade</h3>
+      <p class="muted" style="font-size:14px">Word bank: 1 Marabouts &middot; 2 Protestants &middot; 3 Catholics &middot; 4 Henry Clay &middot; 5 Andrew Marschalk &middot; 6 Umar Ibn Sa'id &middot; 7 Isabella &middot; 8 Refugee &middot; 9 Thomas Foster &middot; 10 Hajj &middot; 11 Job Ben Solomon</p>
+      <details class="q"><summary><span class="qnum">MA</span><span>Reveal all 11 answers</span></summary>
+        <div class="ans">
+          <table class="match">
+            <tr><td>7 Isabella</td><td>the only family member to accompany Abdulrahman back to Africa</td></tr>
+            <tr><td>6 Umar Ibn Sa'id</td><td>much debate remains as to the authenticity of his conversion to Christianity</td></tr>
+            <tr><td>10 Hajj</td><td>the pilgrimage to Mecca; one of the five pillars</td></tr>
+            <tr><td>1 Marabouts</td><td>traveling scholars, high representation among the Muslim enslaved in America</td></tr>
+            <tr><td>2 Protestants</td><td>initially reluctant to convert slaves (didn't want to emancipate them)</td></tr>
+            <tr><td>3 Catholics</td><td>conversions through harsh punishment; state religion of the Spanish colonies</td></tr>
+            <tr><td>5 Andrew Marschalk</td><td>the publisher who popularized Abdulrahman's story and advocated for his freedom</td></tr>
+            <tr><td>4 Henry Clay</td><td>Secretary of State who forwarded correspondence about Abdulrahman to the president</td></tr>
+            <tr><td>8 Refugee</td><td>a highly politicized category contingent on US foreign-policy objectives</td></tr>
+            <tr><td>9 Thomas Foster</td><td>the slave owner who conditionally freed Abdulrahman, but not his children</td></tr>
+            <tr><td>11 Job Ben Solomon</td><td>Ayuba Suleyman Diallo, famously reproduced the Qur'an from memory (the "first Quran written in English" prompt points here) <span class="flag">confirm w/ notes</span></td></tr>
+          </table>
+        </div></details>
+
+      <h3>Matching B: lecture &amp; GhaneaBassiri</h3>
+      <p class="muted" style="font-size:14px">Word bank: 1 Asiatic Barred Zone &middot; 2 Sacred Economy &middot; 3 Religion &middot; 4 Chinese Exclusion Act &middot; 5 Progress &middot; 6 Process of Rendition &middot; 7 Levant &middot; 8 Intermarriage</p>
+      <details class="q"><summary><span class="qnum">MB</span><span>Reveal all 8 answers</span></summary>
+        <div class="ans">
+          <table class="match">
+            <tr><td>2 Sacred Economy</td><td>Christianity and commerce go hand in hand; used to justify slavery</td></tr>
+            <tr><td>8 Intermarriage</td><td>with the need for STEM experts, built Muslim communities from the 1960s&ndash;1990s</td></tr>
+            <tr><td>7 Levant</td><td>birthplace of the majority of the first wave (1875&ndash;1912)</td></tr>
+            <tr><td>5 Progress</td><td>let Protestants define America as white and Protestant</td></tr>
+            <tr><td>6 Process of Rendition</td><td>covertly sending people abroad to be interrogated and tortured</td></tr>
+            <tr><td>4 Chinese Exclusion Act</td><td>1882 law; precedent for the 2017 Muslim Ban</td></tr>
+            <tr><td>3 Religion</td><td>overshadowed by race/ethnicity as immigrants sought citizenship</td></tr>
+            <tr><td>1 Asiatic Barred Zone</td><td>with literacy tests, barred Muslim (and other) immigration from Asia</td></tr>
+          </table>
+        </div></details>
+    </section>
+
+    <!-- ===================== MODEL ANSWERS ===================== -->
+    <section class="block" id="models" data-rev>
+      <h2><span class="num">08 &middot; Short answer &amp; reflection</span>Model answers</h2>
+      <p class="muted">Patterns, not scripts, the wording is yours on the day. Each is kept to one tight paragraph.</p>
+      <button class="rev-all" type="button" data-scope="models">Reveal all model answers</button>
+
+      <details class="q"><summary><span class="qnum">SA1</span><span>THREE differences between the European and Islamic systems of slavery.</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~90 words</span>In the Islamic/African system, enslavement was tied to religion and circumstance rather than race, captives came mainly from warfare, and freedom was reachable through manumission, ransom, or self-redemption, so status could change. The European/American system was racialized: slavery was linked to Blackness, made hereditary so a child inherited the mother's status, and offered few routes out, with Christian conversion used to justify bondage rather than end it. A third contrast is permanence: African slavery could be temporary or mobile, while American slavery hardened into a permanent, inheritable caste.</div></div></details>
+
+      <details class="q"><summary><span class="qnum">SA2</span><span>Define "de-negrofication" and give TWO examples.</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~85 words</span>De-negrofication is the process of separating African Muslims from the general enslaved Black population by recasting them as "Moorish," "Arab," or noble, so they could be treated as exceptions to racial slavery; many Muslims complied, hoping for better treatment or passage home. Abdul Rahman Ibrahima was publicized as a "Moorish prince," freed by the President's order, and sent to Liberia. Ayuba Suleyman Diallo (Job Ben Solomon) was elevated as a learned, noble Muslim, taken to England, celebrated, and returned to Africa.</div></div></details>
+
+      <details class="q"><summary><span class="qnum">SA3</span><span>THREE vertical and THREE horizontal barriers to the spread of Islam in the US.</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~80 words</span>Vertical barriers blocked passing Islam down through generations: children inherited enslaved status and were Christianized, families were separated by sale, and Arabic literacy and institutions (mosques, Qur'anic schools) were lost. Horizontal barriers blocked spreading it across a generation: enslaved people were dispersed across distant plantations, they came from many ethnic and linguistic groups, and forced conversion, surveillance, and bans on gathering prevented communal practice. <span class="flag">confirm w/ notes</span></div></div></details>
+
+      <details class="q"><summary><span class="qnum">SA4</span><span>Identify THREE Muslim migration waves (approx. dates), and what drove each.</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~95 words</span>First wave (~1875&ndash;1924): mostly unskilled laborers and peddlers from the Levant (Greater Syria), drawn by economic opportunity and ended by the 1917 Asiatic Barred Zone and 1924 quotas. Second wave (post-WWII to 1965): students, professionals, and elites, driven by decolonization, political upheaval, and US education. Third wave (post-1965 Hart-Celler through the 1990s): professionals and STEM experts, students, and family reunification from South Asia and the Middle East, with intermarriage building lasting communities. <span class="flag">confirm w/ notes</span></div></div></details>
+
+      <details class="q"><summary><span class="qnum">SA5</span><span>THREE of the six reasons Muslims migrate to the US.</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~45 words</span>Economic opportunity and labor demand; education (coming as students); and escaping political persecution or instability. (Others: religious freedom, family reunification, and refuge from war or colonial violence.) <span class="flag">confirm w/ notes</span></div></div></details>
+
+      <details class="q"><summary><span class="qnum">SA6</span><span>THREE differences between the Muslim immigrant and refugee experiences.</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~80 words</span>First, choice versus force: immigrants generally choose to move for opportunity, while refugees are forced out by war or persecution. Second, legal category: "refugee" is a politicized status contingent on US foreign-policy objectives, so who qualifies shifts with politics, whereas immigrants move through a more planned track. Third, resources and return: immigrants often arrive with savings, skills, and the option to return, while refugees often arrive with little, after trauma, and cannot safely go back.</div></div></details>
+
+      <details class="q"><summary><span class="qnum">SA7</span><span>Why did Abdulrahman's former master make his freedom conditional on departure from the US?</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~70 words</span>A freed Black Muslim who stayed would be a living contradiction of slavery's logic and could unsettle the racial order, so requiring Abdulrahman to leave the country removed that threat. It also fit the colonization agenda of sending freed Black people to Africa (Liberia). Freeing him but not his children kept the master's property and the hereditary system intact while letting him appear benevolent.</div></div></details>
+
+      <details class="q"><summary><span class="qnum">SA9</span><span>What role did literacy play for enslaved Muslims? List THREE ways they preserved it.</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~85 words</span>Literacy let Islam survive as more than memory: it preserved religious knowledge, connected scattered believers, and fed resistance, which is also why it frightened enslavers. They preserved it by writing in Arabic (Omar ibn Said's manuscripts; Muhammad Kaba's treatise on prayer), by reproducing the Qur'an from memory (Ayuba Diallo), and by using writing to communicate across distances (the Arabic letter circulating in 1831 Jamaica), keeping a textual, transmissible faith alive.</div></div></details>
+
+      <details class="q"><summary><span class="qnum">SA10</span><span>FOUR findings relating to gender, ethnicity, linguistic, and immigration patterns.</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~90 words</span>Gender: the saraka charity cakes are the one pillar practice tied specifically to women, yet women are otherwise largely absent from the record. Ethnicity: the enslaved came from many groups (Wolof, Fulani, Mandingo), and Islam offered transethnic solidarity across them. Linguistic: literacy spanned Arabic and ajami (African languages in Arabic script). Immigration: later Muslim arrival was shaped by race and policy, the Levantine first wave, exclusion laws, and post-1965 professional migration, so who could belong was defined by race as much as faith.</div></div></details>
+
+      <h3>Extra credit</h3>
+      <details class="q"><summary><span class="qnum">EC1</span><span>An example where gender/sexism/heteropatriarchy is erased in the historical framing of Islam in America.</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~70 words</span>The record centers men, scholars, imams, and writers like Omar ibn Said or Bilali, while women appear almost only through the saraka cakes, even though women sustained religious transmission in the household. Framing the story around male literacy and leadership erases the domestic, women-carried labor that actually passed Islam to the next generation, treating heteropatriarchal authority as the whole of "Muslim history."</div></div></details>
+      <details class="q"><summary><span class="qnum">EC2</span><span>Why study the trans-Atlantic African slave trade when studying the histories of Muslims in America?</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~70 words</span>Because it relocates the origin of Islam in America from recent immigration to the founding violence of the nation. Enslaved African Muslims were among the earliest Muslims here, which proves Islam is not foreign to America and shows belonging being built and defended under coercion. Ignoring the slave trade lets the false story of Islam as a recent, foreign arrival stand.</div></div></details>
+
+      <h3>Reflection-style prompt (full model, ~380 words)</h3>
+      <p class="muted" style="font-size:14px">Mock prompt in the GSI's style: a Malcolm X / Muslim-belonging quote, then "according to what we have covered in class, how would you argue for Muslim belonging in the United States? Use Bazian's lecture, the section slides, and Diouf." Your real quote will differ, adapt, don't recite.</p>
+      <details class="q"><summary><span class="qnum">REF</span><span>Reveal the full model reflection</span></summary>
+        <div class="ans"><div class="model">
+          The claim that Muslims must prove they belong in America gets the history backwards. Belonging is not a door Muslims are asking to be let through; it is something they have been building here for five centuries, usually under conditions designed to deny it. Read against the course, the demand to "belong" describes a history that is already American.
+          <br><br>
+          Diouf's first chapter makes this concrete. African Muslims were among the earliest people forced into the Americas, and they did not arrive empty. They came literate in Arabic and ajami, formed by Qur'anic schooling that reached women and peasants, and connected through Sufi orders like the Qadiriyya that linked believers across ethnicity. That reframes slavery itself: Africa sits at the center of the American story, and Islam is a founding presence, not a recent import. The Wolof-led revolt in Hispaniola in 1522, the first African slave revolt in the Americas, shows Muslims shaping the hemisphere from the start.
+          <br><br>
+          Her second chapter shows that belonging surviving deliberate erasure. Under systems built to suppress it, Muslims kept the pillars, affirming the shahada, praying in secret and in the open, fasting through a Ramadan the Qur'an would have excused, and turning charity into the saraka cakes that women passed to their children. Some refused baptism; others professed Christianity while remaining Muslim. Belonging here is persistence, not comfort.
+          <br><br>
+          Bazian's lecture and GhaneaBassiri carry it forward. At the turn of the twentieth century, race and religion together decided who could enter and who counted as American, and Muslim immigrants had to navigate exclusion laws like the Asiatic Barred Zone and emphasize ethnicity to gain citizenship. The Nation of Islam later rebuilt a collective identity for people whose names and histories slavery had stripped, and Malcolm X internationalized that struggle, finding at Mecca the raceless brotherhood American life had denied him.
+          <br><br>
+          Taken together, these histories answer the demand that Muslims prove they belong. Belonging is not late legal permission; it is constitutive. Muslims have helped make American religious, racial, and political life since 1501, usually under conditions meant to deny them, which is exactly why the insistence that they are outsiders rings so false.
+        </div></div></details>
+    </section>
+
+    <!-- ===================== STUDY PLAN ===================== -->
+    <section class="block" id="plan" data-rev>
+      <h2><span class="num">09 &middot; The last 48 hours</span>Study plan</h2>
+      <ol>
+        <li><strong>Today:</strong> read sections 02&ndash;05 once, slowly. Then do the <a href="#practice">practice exam</a> cold and see what you miss.</li>
+        <li><strong>Tonight:</strong> drill the <a href="#glossary">glossary</a> both directions until the matching sets are automatic. These are free points.</li>
+        <li><strong>Tomorrow:</strong> write one short answer and the reflection paragraph by hand, timed, then compare to the <a href="#models">models</a>. Confirm the <span class="flag">confirm w/ notes</span> items against your lecture notes.</li>
+        <li><strong>Exam morning:</strong> re-skim section 01 (the argument engine) and the Malcolm X arc. Walk in with the core thesis in your head.</li>
+      </ol>
+      <div class="card tint">
+        <strong>If you memorize nothing else:</strong> belonging is constitutive, not granted &middot; Islam is not foreign to America &middot; Diouf 1 = history they brought + the 1522 revolt &middot; Diouf 2 = five pillars under coercion &middot; GhaneaBassiri = race + religion decide citizenship (Sacred Economy, Asiatic Barred Zone, Chinese Exclusion Act, de-negrofication) &middot; Malcolm X = reclaiming belonging, Oneness of God &rarr; Oneness of Man.
+      </div>
+      <p class="muted" style="font-size:14px">Sources I built this from: Diouf, <em>Servants of Allah</em> (Ch 1&ndash;2); the ASAMST 128AC section slides (GSI Abed Togas); Hatem Bazian's lectures; GhaneaBassiri, <em>A History of Islam in America</em>; the Malcolm X "Make It Plain" documentary; Malcolm X, "Letter from Mecca" (1964); and the Fall 2020 sample midterm.</p>
+    </section>
+  </main>
+</div>
+
+<button id="menuBtn" type="button" aria-label="Open contents">Contents</button>
+
+<footer>
+  Built by Saba Feilizadeh for her own ASAMST 128AC midterm. Review progress saves in your own browser. Not affiliated with the course staff; verify anything marked "confirm w/ notes" against your lecture notes.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  // ---------- theme ----------
+  var root=document.documentElement, TK="sf_theme";
+  try{var t=localStorage.getItem(TK); if(t) root.setAttribute("data-theme",t);}catch(e){}
+  var tb=document.getElementById("themeBtn");
+  if(tb) tb.onclick=function(){
+    var cur=root.getAttribute("data-theme");
+    var dark=cur?cur==="dark":window.matchMedia("(prefers-color-scheme:dark)").matches;
+    var next=dark?"light":"dark"; root.setAttribute("data-theme",next);
+    try{localStorage.setItem(TK,next);}catch(e){}
+  };
+
+  // ---------- build TOC ----------
+  var secs=[].slice.call(document.querySelectorAll("section.block"));
+  var toc=document.getElementById("toc");
+  var labels={format:"What the exam is",argument:"Argument engine",ch1:"Diouf Ch 1",ch2:"Diouf Ch 2",lecture:"Lecture + GhaneaBassiri",malcolmx:"Malcolm X",glossary:"Glossary (matching)",practice:"Practice exam",models:"Model answers",plan:"Study plan"};
+  secs.forEach(function(s){
+    var a=document.createElement("a"); a.href="#"+s.id; a.textContent=labels[s.id]||s.id;
+    a.dataset.id=s.id; toc.appendChild(a);
+  });
+  var tocLinks=[].slice.call(toc.querySelectorAll("a"));
+
+  // ---------- progress (mark reviewed) ----------
+  var PK="sf_asamst_rev";
+  var state={}; try{state=JSON.parse(localStorage.getItem(PK)||"{}");}catch(e){state={};}
+  var revSecs=secs.filter(function(s){return s.hasAttribute("data-rev");});
+  var totEl=document.getElementById("progTot"), nowEl=document.getElementById("progNow"), fill=document.getElementById("progFill");
+  totEl.textContent=revSecs.length;
+  function paint(){
+    var n=revSecs.filter(function(s){return state[s.id];}).length;
+    nowEl.textContent=n; fill.style.width=(revSecs.length?Math.round(n/revSecs.length*100):0)+"%";
+  }
+  revSecs.forEach(function(s){
+    var row=document.createElement("div"); row.className="review-row";
+    var id="rev_"+s.id;
+    row.innerHTML='<label for="'+id+'"><input type="checkbox" id="'+id+'"> Mark this section reviewed</label>';
+    s.appendChild(row);
+    var cb=row.querySelector("input");
+    cb.checked=!!state[s.id];
+    cb.addEventListener("change",function(){
+      state[s.id]=cb.checked; try{localStorage.setItem(PK,JSON.stringify(state));}catch(e){}
+      paint();
+    });
+  });
+  paint();
+
+  // ---------- scrollspy ----------
+  var byId={}; tocLinks.forEach(function(a){byId[a.dataset.id]=a;});
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){
+        if(en.isIntersecting){
+          tocLinks.forEach(function(a){a.classList.remove("active");});
+          var a=byId[en.target.id]; if(a) a.classList.add("active");
+        }
+      });
+    },{rootMargin:"-120px 0px -70% 0px",threshold:0});
+    secs.forEach(function(s){io.observe(s);});
+  }
+
+  // ---------- reveal all ----------
+  [].slice.call(document.querySelectorAll(".rev-all")).forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var sec=document.getElementById(btn.dataset.scope);
+      if(!sec) return;
+      var ds=[].slice.call(sec.querySelectorAll("details.q"));
+      var anyClosed=ds.some(function(d){return !d.open;});
+      ds.forEach(function(d){d.open=anyClosed;});
+      btn.textContent=anyClosed?"Hide all answers in this section":("Reveal all "+(btn.dataset.scope==="models"?"model answers":"answers in this section"));
+    });
+  });
+
+  // ---------- mobile contents ----------
+  var mb=document.getElementById("menuBtn"), sb=document.getElementById("sidebar");
+  if(mb) mb.onclick=function(){ sb.classList.toggle("open"); };
+  toc.addEventListener("click",function(){ if(sb.classList.contains("open")) sb.classList.remove("open"); });
+})();
+</script>
+</body>
+</html>
