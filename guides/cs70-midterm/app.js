@@ -103,6 +103,18 @@
           '<p class="wq">' + esc(w.q) + '</p><p class="wa">' + w.a + "</p></div>";
       });
     }
+    // videos
+    if (t.videos && t.videos.length) {
+      h += '<h2 class="sec">Watch</h2><div class="vid-list">';
+      t.videos.forEach(function (v) {
+        h += '<a class="vid" href="' + esc(v.url) + '" target="_blank" rel="noopener">' +
+          '<span class="vplay" aria-hidden="true">▶</span>' +
+          '<span class="vmeta"><span class="vt">' + esc(v.t) + '</span>' +
+          '<span class="vsub">' + esc(v.by) + ' · ' + esc(v.note) + '</span></span>' +
+          '<span class="vgo">↗</span></a>';
+      });
+      h += "</div>";
+    }
     // quiz
     if (t.quiz && t.quiz.length) {
       h += '<h2 class="sec">Self-test</h2><div id="quizMount"></div>';
