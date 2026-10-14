@@ -22,6 +22,45 @@
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]; }); }
   function norm(s) { return String(s).toLowerCase().replace(/\s+/g, "").replace(/[*·]/g, ""); }
 
+  // ---- voiceover: turn note HTML (full of math symbols) into speakable English ----
+  function speakify(html) {
+    var s = String(html).replace(/<[^>]+>/g, " ");
+    var subs = [
+      [/∀/g, " for all "], [/∃/g, " there exists "], [/⟺|⇔/g, " if and only if "],
+      [/⟹|⇒|=>/g, " implies "], [/≡/g, " is equivalent to "], [/≠/g, " not equal to "],
+      [/≤/g, " at most "], [/≥/g, " at least "], [/∧/g, " and "], [/∨/g, " or "],
+      [/¬/g, " not "], [/∈/g, " in "], [/∏/g, " the product of "], [/Σ/g, " the sum of "],
+      [/√/g, " square root of "], [/≈/g, " approximately "], [/⁻¹/g, " inverse "],
+      [/Δ/g, " delta "], [/·|×/g, " times "], [/≢/g, " is not equivalent to "],
+      [/²/g, " squared "], [/³/g, " cubed "], [/ⁿ/g, " to the n "], [/ᵉ/g, " to the e "],
+      [/ᵢ/g, " i "], [/ⱼ/g, " j "], [/ₖ/g, " k "], [/GF\(/g, " the field G F of "],
+      [/K₅/g, " K five "], [/K₃,₃/g, " K three three "], [/\bKₙ\b/g, " K n "]
+    ];
+    subs.forEach(function (m) { s = s.replace(m[0], m[1]); });
+    s = s.replace(/&amp;/g, " and ").replace(/&lt;/g, " less than ").replace(/&gt;/g, " greater than ").replace(/&quot;/g, '"');
+    return s.replace(/\s+/g, " ").trim();
+  }
+
+  var speech = {
+    on: false, btn: null,
+    supported: function () { return ("speechSynthesis" in window) && ("SpeechSynthesisUtterance" in window); },
+    setLabel: function () { if (this.btn) this.btn.textContent = this.on ? "■ Stop" : "▶ Listen"; },
+    stop: function () { try { window.speechSynthesis.cancel(); } catch (e) {} this.on = false; this.setLabel(); },
+    toggle: function (text, btn) {
+      if (this.on && this.btn === btn) { this.stop(); return; }
+      this.stop();
+      this.btn = btn;
+      if (!this.supported()) { btn.textContent = "Audio N/A"; btn.disabled = true; return; }
+      var u = new SpeechSynthesisUtterance(text);
+      u.rate = 1; u.lang = "en-US";
+      var self = this;
+      u.onend = function () { self.on = false; self.setLabel(); };
+      u.onerror = function () { self.on = false; self.setLabel(); };
+      this.on = true; this.setLabel();
+      try { window.speechSynthesis.speak(u); } catch (e) { this.on = false; this.setLabel(); }
+    }
+  };
+
   // ---- countdown ----
   (function () {
     try {
@@ -79,9 +118,18 @@
       ? "You passed this on a quiz. Reference only, no need to re-attempt it Thursday."
       : "Read the notes, drill the worked examples, then take the self-test at the bottom.") + "</p>";
 
+    // guided lesson launcher
+    if (t.learn && t.learn.length) {
+      var ldone = store.getJSON("learnDone", {})[t.id];
+      h += '<button class="learn-launch" id="learnLaunch"><span class="ll-ic">◉</span>' +
+        '<span class="ll-txt"><b>Guided lesson' + (ldone ? ' ✓' : '') + '</b>' +
+        '<small>Learn it one step at a time, with a quick check at each stage before you move on</small></span>' +
+        '<span class="ll-go">Start →</span></button>';
+    }
+
     // notes
     if (t.note && t.note.length) {
-      h += '<h2 class="sec">Notes</h2><div class="note-cols">';
+      h += '<h2 class="sec">Notes <button class="listen-btn" id="listenNotes">▶ Listen</button></h2><div class="note-cols">';
       t.note.forEach(function (s) {
         h += '<div class="note-block"><h3>' + esc(s.h) + "</h3><p>" + s.body + "</p></div>";
       });
@@ -123,7 +171,117 @@
       ' · built from the notes, policies, and official mock midterm · progress saves in this browser</footer>';
     content.innerHTML = h;
     if (t.quiz && t.quiz.length) mountQuiz(t);
+    var ln = document.getElementById("listenNotes");
+    if (ln) ln.onclick = function () {
+      speech.toggle(t.note.map(function (s) { return speakify(s.h + ". " + s.body); }).join(" . "), ln);
+    };
+    var ll = document.getElementById("learnLaunch");
+    if (ll) ll.onclick = function () { startLearn(t); };
     content.scrollIntoView ? window.scrollTo(0, 0) : null;
+  }
+
+  // ---- Guided lesson: teach a step, check it, require correct to advance ----
+  function startLearn(t) {
+    speech.stop();
+    var steps = t.learn, i = 0;
+
+    function render() {
+      var step = steps[i];
+      var html = '<div class="learn-head">' +
+        '<button class="qn-btn" id="learnBack">← Back to ' + esc(t.name) + '</button>' +
+        '<span class="learn-prog">Step ' + (i + 1) + " of " + steps.length + "</span></div>";
+      html += '<div class="learn-card"><div class="learn-teach">' + step.teach +
+        ' <button class="listen-btn sm" id="learnListen">▶ Listen</button></div>';
+      if (step.check) html += '<div class="learn-check" id="learnCheck"></div>';
+      else html += '<div class="quiz-nav"><span></span>' +
+        (i < steps.length - 1 ? '<button class="qn-btn primary" id="learnNext">Continue →</button>'
+          : '<button class="qn-btn primary" id="learnDone">Finish lesson</button>') + "</div>";
+      html += "</div>";
+      content.innerHTML = html;
+      wireCommon();
+      if (step.check) renderCheck(step.check);
+      window.scrollTo(0, 0);
+    }
+
+    function wireCommon() {
+      document.getElementById("learnBack").onclick = function () { speech.stop(); renderTopic(t); };
+      var nx = document.getElementById("learnNext"); if (nx) nx.onclick = function () { speech.stop(); i++; render(); };
+      var dn = document.getElementById("learnDone"); if (dn) dn.onclick = finish;
+      var ls = document.getElementById("learnListen");
+      if (ls) ls.onclick = function () { speech.toggle(speakify(steps[i].teach), ls); };
+    }
+
+    function renderCheck(c) {
+      var mount = document.getElementById("learnCheck");
+      var html = '<p class="qprompt">' + esc(c.q) + "</p>";
+      if (c.type === "sa") {
+        html += '<div class="sa-row"><input class="sa-input" id="lsa" placeholder="type your answer">' +
+          '<button class="sa-check" id="lsaBtn">Check</button></div>';
+      } else {
+        html += '<div class="choices">';
+        c.choices.forEach(function (ch, ci) {
+          html += '<button class="choice" data-ci="' + ci + '"><span class="ck">' +
+            String.fromCharCode(65 + ci) + '</span><span>' + esc(ch) + "</span></button>";
+        });
+        html += "</div>";
+      }
+      html += '<div class="feedback" id="lfb"></div><div class="quiz-nav"><span></span><span id="lcont"></span></div>';
+      mount.innerHTML = html;
+
+      function pass() {
+        var fb = document.getElementById("lfb");
+        fb.className = "feedback show ok";
+        fb.innerHTML = '<span class="verdict">Correct.</span>' + esc(c.why || "");
+        document.getElementById("lcont").innerHTML = (i < steps.length - 1)
+          ? '<button class="qn-btn primary" id="lnext2">Continue →</button>'
+          : '<button class="qn-btn primary" id="ldone2">Finish lesson</button>';
+        var n2 = document.getElementById("lnext2"); if (n2) n2.onclick = function () { speech.stop(); i++; render(); };
+        var d2 = document.getElementById("ldone2"); if (d2) d2.onclick = finish;
+      }
+      function fail() {
+        var fb = document.getElementById("lfb");
+        fb.className = "feedback show no";
+        fb.innerHTML = '<span class="verdict">Not quite.</span>Give it another look, then try again.';
+      }
+      if (c.type === "sa") {
+        var inp = document.getElementById("lsa"), b = document.getElementById("lsaBtn");
+        function sub() {
+          var g = inp.value.trim(); if (!g) return;
+          var ok = (c.accept || []).some(function (x) { return norm(x) === norm(g); });
+          if (ok) { inp.disabled = true; b.disabled = true; pass(); } else fail();
+        }
+        b.onclick = sub; inp.onkeydown = function (e) { if (e.key === "Enter") sub(); };
+      } else {
+        mount.querySelectorAll(".choice").forEach(function (bn) {
+          bn.onclick = function () {
+            var ci = +bn.dataset.ci;
+            if (ci === c.answer) {
+              mount.querySelectorAll(".choice").forEach(function (x) {
+                x.disabled = true; if (+x.dataset.ci === c.answer) x.classList.add("correct");
+              });
+              pass();
+            } else { bn.classList.add("wrong"); fail(); }
+          };
+        });
+      }
+    }
+
+    function finish() {
+      speech.stop();
+      var ld = store.getJSON("learnDone", {}); ld[t.id] = true; store.setJSON("learnDone", ld);
+      content.innerHTML = '<div class="learn-card learn-finish"><div class="big">✓</div>' +
+        '<h2 style="margin:0 0 6px">Lesson complete</h2>' +
+        '<p class="topic-sub" style="margin:0 0 18px">You worked through ' + esc(t.name) +
+        ' step by step. Now lock it in with the self-test.</p>' +
+        '<div class="quiz-nav" style="justify-content:center;gap:10px">' +
+        '<button class="qn-btn" id="lagain">Review lesson again</button>' +
+        '<button class="qn-btn primary" id="toTopic">Back to topic &amp; self-test</button></div></div>';
+      document.getElementById("lagain").onclick = function () { i = 0; render(); };
+      document.getElementById("toTopic").onclick = function () { renderTopic(t); };
+      updateSummary();
+    }
+
+    render();
   }
 
   // ---- quiz engine ----
@@ -312,6 +470,7 @@
   function route() {
     var hash = (location.hash || "").replace("#", "");
     closeMenu();
+    speech.stop();
     if (hash === "synthesis") { setActive(""); return renderSynthesis(); }
     if (hash === "cheatsheet") { setActive(""); return renderCheat(); }
     if (hash === "plan" || !hash) { setActive(""); return renderPlan(); }

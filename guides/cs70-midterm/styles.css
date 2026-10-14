@@ -166,6 +166,37 @@ h2.sec::after{content:""; flex:1; height:1.5px; background:var(--line)}
 .note-cols > *{break-inside:avoid}
 @media (max-width:720px){ .note-cols{columns:1} }
 
+/* voiceover listen buttons */
+.listen-btn{font:500 11px/1 var(--mono); background:var(--saffron-soft); color:var(--saffron-ink);
+  border:1.5px solid transparent; border-radius:999px; padding:6px 11px; cursor:pointer; flex:0 0 auto}
+.listen-btn:hover{border-color:var(--saffron)}
+.listen-btn[disabled]{opacity:.6; cursor:default}
+.listen-btn.sm{padding:5px 10px; margin-left:4px; vertical-align:middle}
+h2.sec .listen-btn{margin-left:2px}
+
+/* guided lesson launcher */
+.learn-launch{display:flex; align-items:center; gap:14px; width:100%; text-align:left; cursor:pointer;
+  background:linear-gradient(120deg,var(--saffron-soft),var(--surface)); border:1.5px solid var(--line);
+  border-radius:14px; padding:15px 18px; margin:0 0 22px; color:var(--ink)}
+.learn-launch:hover{border-color:var(--saffron)}
+.learn-launch .ll-ic{font-size:21px; color:var(--saffron-ink); flex:0 0 auto}
+.learn-launch .ll-txt{flex:1; min-width:0}
+.learn-launch b{display:block; font:600 16px var(--body)}
+.learn-launch small{display:block; color:var(--muted); font-size:13px; line-height:1.4}
+.learn-launch .ll-go{font:600 14px var(--body); color:var(--saffron-ink); flex:0 0 auto}
+
+/* guided lesson flow */
+.learn-head{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; flex-wrap:wrap}
+.learn-prog{font:600 12px/1 var(--mono); color:var(--muted)}
+.learn-card{background:var(--surface); border:1.5px solid var(--line); border-radius:16px; padding:22px 24px}
+.learn-teach{font-size:16px; line-height:1.65}
+.learn-teach h3{font:600 18px var(--display); margin:0 0 8px}
+.learn-teach p{margin:0 0 10px}
+.learn-teach p:last-child{margin-bottom:0}
+.learn-check{margin-top:20px; padding-top:18px; border-top:1.5px solid var(--line)}
+.learn-finish{text-align:center}
+.learn-finish .big{font:700 46px/1 var(--display); color:var(--good); margin-bottom:4px}
+
 .vid-list{display:flex; flex-direction:column; gap:8px}
 .vid{display:flex; align-items:center; gap:13px; text-decoration:none; color:var(--ink);
   background:var(--surface); border:1.5px solid var(--line); border-radius:11px; padding:12px 15px}

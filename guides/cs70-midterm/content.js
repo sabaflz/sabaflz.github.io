@@ -196,6 +196,17 @@ window.CS70 = {
         { t: "Methods of proof: direct, contradiction, contraposition", by: "Dr. Trefor Bazett", note: "All three side by side — the 'pick the technique fast' skill", url: "https://www.youtube.com/watch?v=0wsTtLyWTOk" },
         { t: "Proof by Contraposition", by: "Dr. Trefor Bazett", note: "When and how to flip to the contrapositive", url: "https://www.youtube.com/watch?v=vMwejR0bqwo" },
         { t: "Proof by Contradiction", by: "Dr. Trefor Bazett", note: "The assume-the-opposite structure", url: "https://www.youtube.com/watch?v=b-kFWP9a2tw" }
+      ],
+      learn: [
+        { teach: "<h3>Four tools, one decision</h3><p>Every proof here uses one of four techniques, and the real skill is choosing fast. <b>Direct:</b> when assuming P hands you something to expand. <b>Contrapositive:</b> when ¬Q is more concrete to start from than P. <b>Contradiction:</b> when you're proving something doesn't exist or is unique. <b>Cases:</b> when you know one of several situations must hold.</p>",
+          check: { q: "To prove 'a+b ≤ 15 ⟹ a ≤ 11 or b ≤ 4', which technique is cleanest?", choices: ["Direct", "Contrapositive", "Induction", "Cases"], answer: 1, why: "¬Q is 'a>11 and b>4', two concrete inequalities you add to contradict a+b≤15." } },
+        { teach: "<h3>Contradiction</h3><p>Assume the opposite of what you want, then derive something impossible (R ∧ ¬R). Since the assumption forces nonsense, it must be false. Reach for it when the claim says something <i>can't</i> happen: no largest prime, √2 is not a fraction.</p>",
+          check: { q: "Which technique best fits 'prove √2 is irrational'?", choices: ["Direct", "Contradiction", "Cases"], answer: 1, why: "You're showing integers a,b with √2=a/b don't exist, the signature of a contradiction proof." } },
+        { teach: "<h3>Uniqueness = existence + collision</h3><p>To prove a <b>unique</b> object exists, do two things: show one works (existence), then assume two solutions e₁ and e₂ and force e₁ = e₂.</p>",
+          check: { q: "A uniqueness proof needs which two parts?", choices: ["Base case and step", "Existence, and 'any two solutions are equal'", "Forward and converse"], answer: 1, why: "Show something works, then show any two somethings coincide." } },
+        { teach: "<h3>Iff proofs</h3><p>An 'if and only if' needs <b>both directions</b> proved separately. For the harder direction, <b>factoring</b> is often the unlock, like rewriting ab+7b−2a−14 as (a+7)(b−2).</p>",
+          check: { q: "To prove an iff statement, how many directions must you prove?", type: "sa", accept: ["2", "two", "both"], answer: "2", why: "Forward (⟹) and backward (⟸), each on its own." } },
+        { teach: "<h3>One free habit</h3><p>Open every proof by naming the technique: 'We proceed by contraposition.' Graders reward it and it keeps your own structure honest. You're ready, take the self-test next.</p>" }
       ]
     },
     {
@@ -230,6 +241,18 @@ window.CS70 = {
       videos: [
         { t: "Simple intro to Shamir's Secret Sharing and Lagrange interpolation", by: "YouTube", note: "Lagrange interpolation over a finite field, the core skill here", url: "https://www.youtube.com/watch?v=kkMps3X_tEE" },
         { t: "Protecting Your Secrets With Polynomials", by: "YouTube", note: "Clearest 'secret at P(0), degree k−1' intuition", url: "https://www.youtube.com/watch?v=_EHMd8gpApo" }
+      ],
+      learn: [
+        { teach: "<h3>Everything lives in GF(p)</h3><p>All arithmetic is modulo a prime p. There are no fractions: 'divide by 5' means 'multiply by 5⁻¹ mod p'. And always reduce every final coefficient into {0,…,p−1}.</p>",
+          check: { q: "Over GF(11), 'divide by 6' means multiply by:", choices: ["6", "6⁻¹ mod 11 = 2", "−6", "1/6"], answer: 1, why: "6·2 = 12 ≡ 1 (mod 11), so 6⁻¹ = 2. Division is multiplication by the inverse." } },
+        { teach: "<h3>Property 1 — roots</h3><p>A nonzero degree-d polynomial has <b>at most d roots</b>. And degrees of a product add: deg(fg) = deg f + deg g.</p>",
+          check: { q: "deg f = 4, deg g = 3 over GF(11). Max distinct roots of f·g?", type: "sa", accept: ["7", "seven"], answer: "7", why: "deg(fg) = 4+3 = 7, so at most 7 roots." } },
+        { teach: "<h3>Property 2 — points determine polynomials</h3><p>d+1 points with distinct x-values pin down a <b>unique</b> degree-≤d polynomial. This is the backbone of interpolation, secret sharing, and error correction.</p>",
+          check: { q: "How many points uniquely determine a degree-≤3 polynomial?", type: "sa", accept: ["4", "four"], answer: "4", why: "d+1 = 4." } },
+        { teach: "<h3>Lagrange interpolation</h3><p>Build one basis polynomial per point: Δᵢ(x) = ∏(x−xⱼ)/∏(xᵢ−xⱼ), which is 1 at xᵢ and 0 at the others. Then p(x) = Σ yᵢΔᵢ(x). Shortcut: if a point has yᵢ = 0, skip its Δ entirely.</p>",
+          check: { q: "When can you skip computing a basis polynomial Δᵢ?", choices: ["When xᵢ = 0", "When yᵢ = 0", "When the degree is even"], answer: 1, why: "yᵢΔᵢ vanishes if yᵢ=0, so it contributes nothing." } },
+        { teach: "<h3>Shrinking big exponents with FLT</h3><p>Over GF(p), xᵖ ≡ x. So any xᵖ drops the exponent by p−1. Repeat while the exponent is ≥ p.</p>",
+          check: { q: "Over GF(13), x²⁶ reduces to:", type: "sa", accept: ["x^2", "x2", "x²"], answer: "x²", why: "x¹³≡x drops the exponent by 12: 26 → 14 → 2." } }
       ]
     },
     {
@@ -266,6 +289,18 @@ window.CS70 = {
         { t: "Protecting Your Secrets With Polynomials (Shamir's)", by: "YouTube", note: "The k-of-n scheme, secret at P(0)", url: "https://www.youtube.com/watch?v=_EHMd8gpApo" },
         { t: "Reed-Solomon Encoding, Intuitive / Simplified", by: "YouTube", note: "The error-correcting half: n+k vs n+2k and why", url: "https://www.youtube.com/watch?v=3HRIeWYbIuI" },
         { t: "What are Reed-Solomon Codes? How computers recover lost data", by: "YouTube", note: "Longer, good if the ECC idea still feels fuzzy", url: "https://www.youtube.com/watch?v=1pQJkt7-R4Q" }
+      ],
+      learn: [
+        { teach: "<h3>Two error models, two costs</h3><p><b>Erasures</b> (you know which packets dropped): send <b>n+k</b>, recover from any n. <b>General errors</b> (you don't know which are corrupted): send <b>n+2k</b>, because you must both locate and fix each error.</p>",
+          check: { q: "To correct k general errors in an n-symbol message, send:", type: "sa", accept: ["n+2k", "n + 2k"], answer: "n + 2k", why: "General errors need double redundancy, since locating them costs as much as fixing them." } },
+        { teach: "<h3>Run the formula backwards</h3><p>Exam questions often give you the packets sent and the error count, then ask for the message length. Just solve the equation.</p>",
+          check: { q: "Guarding 1 general error, 5 points were sent. Original message length?", type: "sa", accept: ["3", "three"], answer: "3", why: "n+2k = 5 with k=1, so n = 3." } },
+        { teach: "<h3>Secret sharing basics</h3><p>The secret sits at <b>P(0)</b>. For a k-of-n scheme, the polynomial has degree <b>k−1</b>, so exactly k shares pin it down. The field prime q must exceed both n and the secret. Remember: <b>k sets the degree, n sets how many shares</b>.</p>",
+          check: { q: "A 3-of-5 secret sharing scheme uses a polynomial of degree:", type: "sa", accept: ["2", "k-1", "k−1"], answer: "2", why: "Degree = k−1 = 2, so 3 points determine it." } },
+        { teach: "<h3>Why k−1 shares leak nothing</h3><p>With only k−1 points, for <i>every</i> possible secret value there's exactly one consistent degree-(k−1) polynomial. So all q secrets stay equally likely, provably zero information, not just 'hard'.</p>",
+          check: { q: "Why do k−1 shares reveal nothing about the secret?", choices: ["They're encrypted", "Every candidate secret has a consistent polynomial, so all are equally likely", "The polynomial is random"], answer: 1, why: "k−1 points plus any choice of (0,b) give a valid polynomial, so the secret could be anything." } },
+        { teach: "<h3>Berlekamp-Welch degrees</h3><p>The error-locator E(x) has degree k. Q(x) = P(x)E(x) has degree n+k−1. You solve n+2k linear equations in n+2k unknowns, then recover P = Q/E. The roots of E tell you where the errors were.</p>",
+          check: { q: "In Berlekamp-Welch, Q(x) = P(x)E(x) has degree:", choices: ["k", "n−1", "n+k−1", "n+2k"], answer: 2, why: "deg P = n−1, deg E = k, so the product is n+k−1." } }
       ]
     },
     {
@@ -301,6 +336,20 @@ window.CS70 = {
       ],
       videos: [
         { t: "Discrete Math full course (jump to Graph Theory section)", by: "Dr. Trefor Bazett", note: "Euler's formula, planarity, handshake — consistent notation", url: "https://youtube.com/playlist?list=PLHXZ9OQGMqxersk8fUxiUMSIx0DBqsKZS" }
+      ],
+      learn: [
+        { teach: "<h3>The handshake lemma</h3><p>Σ deg(v) = 2|E|. Every edge adds 1 to two vertices' degrees, so the total degree is always twice the edge count. One consequence: the number of odd-degree vertices is always even.</p>",
+          check: { q: "Every vertex has degree 3 and there are 8 vertices. How many edges?", type: "sa", accept: ["12", "twelve"], answer: "12", why: "Σdeg = 3·8 = 24 = 2|E|, so |E| = 12." } },
+        { teach: "<h3>Complete graphs and trees</h3><p>Kₙ has n(n−1)/2 edges (every pair connected). A tree on n vertices is connected and acyclic with exactly n−1 edges.</p>",
+          check: { q: "A tree on 50 vertices has how many edges?", type: "sa", accept: ["49"], answer: "49", why: "Always n−1 edges." } },
+        { teach: "<h3>Euler's formula</h3><p>For a connected planar graph, v + f = e + 2 (vertices, faces, edges). Rearrange to find any one from the other two.</p>",
+          check: { q: "A 12-sided die has 12 faces and 20 vertices. How many edges?", type: "sa", accept: ["30", "thirty"], answer: "30", why: "20 + 12 = e + 2, so e = 30." } },
+        { teach: "<h3>Planarity bounds</h3><p>A planar graph satisfies e ≤ 3v−6 (and e ≤ 2v−4 if triangle-free). The two non-planar graphs to know are K₅ and K₃,₃. Failing a bound proves non-planar; passing it does not prove planar.</p>",
+          check: { q: "Is K₅ planar?", choices: ["Yes", "No"], answer: 1, why: "v=5, e=10, but 3v−6 = 9 < 10, so it fails the bound." } },
+        { teach: "<h3>Hypercubes</h3><p>The n-dimensional hypercube has 2ⁿ vertices, each of degree n, with n·2ⁿ⁻¹ edges and diameter n. The shortest path between two vertices equals the number of bit positions where their labels differ.</p>",
+          check: { q: "Shortest path in a 5-cube from 10010 to 01000?", type: "sa", accept: ["3", "three"], answer: "3", why: "Bits differ in positions 1, 2, and 4 → 3 flips." } },
+        { teach: "<h3>Eulerian tours</h3><p>A graph has an Eulerian tour (uses every edge once, returns to start) iff it is connected and every vertex has even degree. You're set, try the self-test.</p>",
+          check: { q: "Does a graph need all-even degrees for an Eulerian tour?", choices: ["Yes, plus connected", "No, any connected graph works"], answer: 0, why: "Even degrees let the pen enter and leave each vertex in pairs." } }
       ]
     },
     {
@@ -323,6 +372,14 @@ window.CS70 = {
       ],
       videos: [
         { t: "Discrete Math full course (induction section)", by: "Dr. Trefor Bazett", note: "The induction technique transfers directly; apply the 'remove one edge' pattern", url: "https://youtube.com/playlist?list=PLHXZ9OQGMqxersk8fUxiUMSIx0DBqsKZS" }
+      ],
+      learn: [
+        { teach: "<h3>Induct on edges, not vertices</h3><p>For graph induction, removing one <b>edge</b> changes exactly two degrees by one each, clean and controlled. Removing a vertex can delete many edges at once and even disconnect the graph, which forces strong induction and extra cases.</p>",
+          check: { q: "For a clean graph-induction proof, what do you usually remove in the step?", choices: ["A whole vertex", "A single edge", "A connected component"], answer: 1, why: "One edge touches exactly two vertices, keeping the bookkeeping simple." } },
+        { teach: "<h3>The skeleton</h3><p><b>Base:</b> |E| = 0, the claim holds trivially (e.g. all degrees 0, sum = 0 = 2·0). <b>Hypothesis:</b> assume it holds for all graphs with k edges.</p>" },
+        { teach: "<h3>The step</h3><p>Take a graph with k+1 edges. Remove one edge {u,v}; the rest has k edges, so the hypothesis applies. Add the edge back: deg(u) and deg(v) each rise by 1, so the degree sum rises by exactly 2.</p>",
+          check: { q: "Adding one edge back raises the total degree sum by:", type: "sa", accept: ["2", "+2", "two"], answer: "2", why: "Each of the edge's two endpoints gains one degree." } },
+        { teach: "<h3>Putting it together</h3><p>So the sum goes from 2k to 2k+2 = 2(k+1) = 2|E|, exactly what the handshake lemma claims. That single 'remove an edge, add it back' move is the whole pattern. Now take the self-test.</p>" }
       ]
     },
     {
@@ -353,6 +410,17 @@ window.CS70 = {
       videos: [
         { t: "Propose and Reject (Gale-Shapley) for Stable Matching", by: "YouTube", note: "Walks the algorithm step by step, exactly what the mock tested", url: "https://www.youtube.com/watch?v=Iw-Iq4vXDAM" },
         { t: "Gale-Shapley Algorithm for Stable Matching", by: "YouTube", note: "A second pass to cement proposer-optimality", url: "https://www.youtube.com/watch?v=pc5WSJkFk24" }
+      ],
+      learn: [
+        { teach: "<h3>What 'stable' means</h3><p>A <b>rogue pair</b> is a job J and candidate C who aren't matched together, but each prefers the other over their current partner. A matching is <b>stable</b> when no rogue pair exists.</p>",
+          check: { q: "A matching is stable when:", choices: ["Everyone gets their top choice", "No rogue pair exists", "It was made by proposing"], answer: 1, why: "Stability is exactly the absence of a mutually-preferring unmatched pair." } },
+        { teach: "<h3>Propose-reject (Gale-Shapley)</h3><p>Proposers propose down their lists; receivers hold their best offer so far and reject the rest. It always terminates and always produces a stable matching.</p>" },
+        { teach: "<h3>Who does best?</h3><p>The <b>proposing</b> side gets its best possible stable partner (proposer-optimal); the receiving side gets its worst (receiver-pessimal).</p>",
+          check: { q: "When jobs propose, the resulting matching is:", choices: ["Job-pessimal", "Job-optimal, candidate-pessimal", "Random"], answer: 1, why: "The proposing side does best possible across all stable matchings; the receiving side does worst." } },
+        { teach: "<h3>Counting stable matchings</h3><p>If job-proposing and candidate-proposing produce the <i>same</i> matching, then the job-optimal and job-pessimal matchings coincide, so there is exactly one stable matching.</p>",
+          check: { q: "Both proposer-orderings give the same matching. How many stable matchings exist?", type: "sa", accept: ["1", "one"], answer: "1", why: "Job-optimal and job-pessimal coincide, leaving only one." } },
+        { teach: "<h3>The classic trap</h3><p>'Least favorite' or 'not top choice' pairings can still be perfectly stable, as long as no rogue pair can form. Stability is about rogue pairs, never about absolute ranking. You're ready, take the self-test.</p>",
+          check: { q: "Can two mutual least-favorites be matched in a stable matching?", choices: ["Yes", "No"], answer: 0, why: "If neither can do better given everyone's preferences, it's stable." } }
       ]
     }
   ],
