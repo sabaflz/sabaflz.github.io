@@ -16,6 +16,15 @@
   var topicNav = document.getElementById("topicNav");
   var sidebar = document.getElementById("sidebar");
 
+  // Which course note each topic comes from (Fall 2026 numbering, eecs70.org)
+  var NOTE_SOURCE = {
+    "direct-proofs": "Notes 0–1", "prop-logic": "Note 2", "proof-tech": "Notes 2–3",
+    "induction": "Note 4", "modular": "Note 5", "crt": "Note 6", "rsa": "Note 7",
+    "polynomials": "Note 8", "secret-sharing": "Notes 8–9", "graphs": "Note 10",
+    "graph-induction": "Note 10", "stable-matching": "Note 11"
+  };
+  function noteShort(id) { var s = NOTE_SOURCE[id]; return s ? s.replace(/Notes?\s/, "N") : ""; }
+
   // progress: { topicId: {best: n, total: m} }
   var progress = store.getJSON("progress", {});
 
@@ -85,9 +94,10 @@
       a.href = "#" + t.id;
       a.dataset.id = t.id;
       var dotCls = "dot" + (t.passed ? " passed" : (topicDone(t) ? " done" : ""));
+      var sn = noteShort(t.id);
       a.innerHTML = '<span class="' + dotCls + '"></span>' +
         '<span class="tlabel">' + esc(t.name) + '</span>' +
-        (t.passed ? '<span class="tbadge">PASSED</span>' : (t.allOrNothing ? '<span class="tbadge">ALL/NOTHING</span>' : ''));
+        (sn ? '<span class="tbadge note">' + esc(sn) + '</span>' : '');
       topicNav.appendChild(a);
     });
     updateSummary();
@@ -108,7 +118,9 @@
   // ---- render a topic ----
   function renderTopic(t) {
     var h = "";
+    var src = NOTE_SOURCE[t.id];
     h += '<div class="topic-head"><h1>' + esc(t.name) + "</h1>";
+    if (src) h += '<a class="pill note" href="' + esc(D.meta.notesUrl) + '" target="_blank" rel="noopener">📖 ' + esc(src) + "</a>";
     if (t.passed) h += '<span class="pill passed">already passed</span>';
     else {
       h += '<span class="pill' + (t.allOrNothing ? ' aon' : '') + '">' + esc(t.threshold) + "</span>";
@@ -129,7 +141,8 @@
 
     // notes
     if (t.note && t.note.length) {
-      h += '<h2 class="sec">Notes <button class="listen-btn" id="listenNotes">▶ Listen</button></h2><div class="note-cols">';
+      h += '<h2 class="sec">Notes ' + (src ? '<span class="sec-src">from ' + esc(src) + '</span> ' : '') +
+        '<button class="listen-btn" id="listenNotes">▶ Listen</button></h2><div class="note-cols">';
       t.note.forEach(function (s) {
         h += '<div class="note-block"><h3>' + esc(s.h) + "</h3><p>" + s.body + "</p></div>";
       });
@@ -405,6 +418,7 @@
     var h = '<div class="topic-head"><h1>Synthesis questions</h1>' +
       '<span class="pill aon">2 on the midterm · Pass/No Pass</span></div>';
     h += '<p class="topic-sub">These combine topics. On the mock both were CRT / secret-sharing flavored. Do them first while fresh, and always show the reasoning chain.</p>';
+    h += '<p class="sec-src" style="margin:0 0 8px">Draws on: CRT (Note 6) and Secret Sharing &amp; ECCs (Notes 8–9)</p>';
     D.synthesis.forEach(function (s) {
       h += '<div class="worked"><span class="wtag">' + esc(s.tag) + '</span>' +
         '<p class="wq">' + esc(s.q) + '</p><p class="wa">' + s.a + "</p></div>";

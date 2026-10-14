@@ -95,6 +95,13 @@ b,strong{font-weight:600}
   border:1.5px solid var(--line); background:var(--surface); color:var(--muted); white-space:nowrap}
 .pill.aon{background:var(--saffron-soft); color:var(--saffron-ink); border-color:transparent}
 .pill.passed{background:var(--good-soft); color:var(--good); border-color:transparent}
+.pill.note{text-decoration:none; background:var(--surface-2); color:var(--muted)}
+.pill.note:hover{border-color:var(--saffron); color:var(--ink)}
+.sec-src{font:500 12px/1 var(--mono); color:var(--muted); text-transform:none; letter-spacing:0}
+h2.sec .sec-src{flex:0 0 auto}
+.tbadge.note{font:500 10px/1 var(--mono); color:var(--muted); letter-spacing:.02em;
+  background:var(--surface-2); border-radius:5px; padding:3px 6px; flex:0 0 auto}
+.tnav.active .tbadge.note{background:var(--surface)}
 .topic-sub{color:var(--muted); margin:2px 0 20px; font-size:14.5px}
 
 h2.sec{font:600 13px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase;
