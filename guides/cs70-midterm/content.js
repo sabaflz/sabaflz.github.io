@@ -190,7 +190,7 @@ window.CS70 = {
         { q: "To prove 'a+b ≤ 15 ⟹ a ≤ 11 or b ≤ 4', the cleanest technique is:", choices: ["Direct proof", "Contrapositive", "Induction", "Cases on parity"], answer: 1, why: "¬Q is 'a>11 and b>4', two concrete inequalities you add to contradict the hypothesis." },
         { q: "A uniqueness proof needs which two parts?", choices: ["Base case and step", "Existence and 'two solutions are equal'", "Forward and converse", "Contrapositive and contradiction"], answer: 1, why: "Show something works, then show any two somethings coincide." },
         { q: "Which technique best fits 'prove √2 is irrational'?", choices: ["Direct", "Contradiction", "Cases", "Induction"], answer: 1, why: "You're showing integers a,b with √2=a/b don't exist, the signature of a contradiction proof." },
-        { q: "What should the first line of a contrapositive proof say?", type: "sa", accept: ["assume not q", "assume ¬q", "we prove the contrapositive", "proceed by contraposition"], answer: "We prove the contrapositive: assume ¬Q.", why: "Naming the technique is expected and rewarded." }
+        { q: "What's the ideal first line of a contrapositive proof?", choices: ["\"Assume P, then expand the definition.\"", "\"We prove the contrapositive: assume ¬Q.\"", "\"Suppose for contradiction that the claim is false.\"", "\"By induction on n.\""], answer: 1, why: "Name the technique and state the new assumption (¬Q). Graders reward it and it keeps your structure honest." }
       ],
       videos: [
         { t: "Methods of proof: direct, contradiction, contraposition", by: "Dr. Trefor Bazett", note: "All three side by side — the 'pick the technique fast' skill", url: "https://www.youtube.com/watch?v=0wsTtLyWTOk" },
