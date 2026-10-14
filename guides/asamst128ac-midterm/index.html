@@ -131,6 +131,28 @@ footer{max-width:1180px; margin:0 auto; padding:30px clamp(16px,4vw,34px) 70px; 
   #menuBtn{display:block; position:fixed; right:16px; bottom:16px; z-index:30; background:var(--saffron); color:var(--on-saffron); border:none; border-radius:999px; padding:13px 18px; font:600 14px var(--body); box-shadow:0 6px 20px rgba(0,0,0,.18); cursor:pointer}
   #sidebar.open{display:block; position:fixed; inset:60px 10px 10px auto; width:min(80vw,300px); background:var(--bg); border:1.5px solid var(--line); border-radius:16px; padding:18px; z-index:29; box-shadow:0 10px 40px rgba(0,0,0,.25); max-height:80vh}
 }
+
+/* ---------- read aloud (text to speech) ---------- */
+.nav-actions{display:flex; gap:8px; align-items:center}
+.sec-listen{margin-left:12px; vertical-align:middle; font:600 11px/1 var(--mono); letter-spacing:.02em;
+  background:var(--surface-2); color:var(--saffron-ink); border:1.5px solid var(--line);
+  border-radius:999px; padding:6px 11px; cursor:pointer; white-space:nowrap}
+.sec-listen:hover{border-color:var(--saffron)}
+.tts-active{background:var(--saffron-soft); border-radius:8px; box-shadow:0 0 0 7px var(--saffron-soft); scroll-margin-top:96px}
+#tts-bar{position:fixed; left:50%; transform:translateX(-50%); bottom:16px; z-index:40; display:none;
+  align-items:center; gap:8px; background:var(--surface); border:1.5px solid var(--line);
+  border-radius:999px; padding:7px 9px 7px 16px; box-shadow:0 12px 36px rgba(0,0,0,.24); max-width:calc(100vw - 20px)}
+#tts-bar.on{display:flex}
+#tts-bar .lbl{font:600 13px var(--body); color:var(--ink); max-width:34vw; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap}
+#tts-bar button{border:none; background:var(--surface-2); color:var(--ink); min-width:38px; height:38px;
+  border-radius:999px; cursor:pointer; font-size:15px; line-height:1; display:grid; place-items:center; padding:0}
+#tts-bar button:hover{background:var(--saffron-soft)}
+#tts-bar .rate{font:600 12px var(--mono); padding:0 13px}
+#tts-bar .stop{background:var(--ink); color:var(--surface)}
+#tts-bar .stop:hover{background:var(--saffron); color:var(--on-saffron)}
+body.tts-on #menuBtn{bottom:74px}
+@media (max-width:620px){ #tts-bar .lbl{display:none} .sec-listen{margin-left:8px} }
 </style>
 </head>
 <body>
@@ -138,7 +160,10 @@ footer{max-width:1180px; margin:0 auto; padding:30px clamp(16px,4vw,34px) 70px; 
   <nav class="nav" aria-label="Main">
     <a class="mark" href="../../" aria-label="Back to site">SF</a>
     <div class="crumbs"><a href="../">Study Guides</a> <span>/</span> <b>ASAMST 128AC Midterm</b></div>
-    <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+    <div class="nav-actions">
+      <button type="button" id="ttsTop" class="t-btn" aria-label="Read the guide aloud" aria-pressed="false">&#9654; Listen</button>
+      <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+    </div>
   </nav>
 </header>
 
@@ -550,6 +575,15 @@ footer{max-width:1180px; margin:0 auto; padding:30px clamp(16px,4vw,34px) 70px; 
 
 <button id="menuBtn" type="button" aria-label="Open contents">Contents</button>
 
+<div id="tts-bar" role="region" aria-label="Read aloud player">
+  <span class="lbl" id="ttsLbl">Reading</span>
+  <button type="button" id="ttsPrev" aria-label="Previous section" title="Previous section">&#9198;</button>
+  <button type="button" id="ttsPause" aria-label="Pause" title="Pause or resume">&#9208;</button>
+  <button type="button" id="ttsNext" aria-label="Next section" title="Next section">&#9197;</button>
+  <button type="button" id="ttsRate" class="rate" aria-label="Playback speed" title="Playback speed">1&times;</button>
+  <button type="button" id="ttsStop" class="stop" aria-label="Stop reading" title="Stop">&times;</button>
+</div>
+
 <footer>
   Built by Saba Feilizadeh for her own ASAMST 128AC midterm. Review progress saves in your own browser. Not affiliated with the course staff; verify anything marked "confirm w/ notes" against your lecture notes.
 </footer>
@@ -632,6 +666,143 @@ footer{max-width:1180px; margin:0 auto; padding:30px clamp(16px,4vw,34px) 70px; 
   var mb=document.getElementById("menuBtn"), sb=document.getElementById("sidebar");
   if(mb) mb.onclick=function(){ sb.classList.toggle("open"); };
   toc.addEventListener("click",function(){ if(sb.classList.contains("open")) sb.classList.remove("open"); });
+
+  // ---------- read aloud (text to speech) ----------
+  (function(){
+    var synth = window.speechSynthesis;
+    var ttsTop = document.getElementById("ttsTop");
+    var bar = document.getElementById("tts-bar");
+    var supported = !!synth && typeof window.SpeechSynthesisUtterance !== "undefined";
+    if(!supported){ if(ttsTop) ttsTop.style.display="none"; return; }
+
+    var barLbl = document.getElementById("ttsLbl");
+    var pauseBtn = document.getElementById("ttsPause");
+    var prevBtn = document.getElementById("ttsPrev");
+    var nextBtn = document.getElementById("ttsNext");
+    var rateBtn = document.getElementById("ttsRate");
+    var stopBtn = document.getElementById("ttsStop");
+
+    var CHUNK_SEL = "h2,h3,h4,p,li,summary,td,th,.model,blockquote";
+    var STRIP_SEL = ".num, button, .review-row, .sec-listen";
+
+    function chunkText(el){
+      var c = el.cloneNode(true);
+      [].slice.call(c.querySelectorAll(CHUNK_SEL)).forEach(function(n){ n.parentNode && n.parentNode.removeChild(n); });
+      [].slice.call(c.querySelectorAll(STRIP_SEL)).forEach(function(n){ n.parentNode && n.parentNode.removeChild(n); });
+      return c.textContent.replace(/[\u00B7\u2022]/g, ", ").replace(/[\u2013\u2014]/g, ", ").replace(/\s+/g, " ").trim();
+    }
+    function splitLong(t){
+      if(t.length <= 220) return [t];
+      var sentences = [], cur = "", i;
+      for(i=0;i<t.length;i++){ cur += t.charAt(i);
+        if(/[.!?]/.test(t.charAt(i)) && (t.charAt(i+1)===" " || i===t.length-1)){ sentences.push(cur); cur=""; } }
+      if(cur) sentences.push(cur);
+      var out = [], buf = "";
+      sentences.forEach(function(p){ p = p.trim(); if(!p) return;
+        if(buf && (buf+" "+p).length > 220){ out.push(buf.trim()); buf = p; }
+        else buf = buf ? buf+" "+p : p; });
+      if(buf.trim()) out.push(buf.trim());
+      return out;
+    }
+
+    // build the ordered queue of what to read
+    var queue = [];
+    secs.forEach(function(s){
+      [].slice.call(s.querySelectorAll(CHUNK_SEL)).forEach(function(el){
+        if(el.closest(".review-row")) return;
+        var t = chunkText(el); if(!t) return;
+        splitLong(t).forEach(function(part){ queue.push({ el: el, sec: s.id, text: part }); });
+      });
+    });
+
+    // a Listen button on every section heading
+    secs.forEach(function(s){
+      var h = s.querySelector("h2"); if(!h) return;
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "sec-listen"; b.innerHTML = "&#9654; Listen";
+      b.setAttribute("aria-label", "Listen to this section");
+      b.addEventListener("click", function(){ start(sectionStart(s.id)); });
+      h.appendChild(b);
+    });
+
+    var order = secs.map(function(s){ return s.id; });
+    var RK = "sf_tts_rate", rates = [0.8, 1, 1.2, 1.5], rate = 1;
+    try{ var sr = parseFloat(localStorage.getItem(RK)); if(sr && rates.indexOf(sr)!==-1) rate = sr; }catch(e){}
+    rateBtn.textContent = (rate % 1 === 0 ? rate : rate) + "×";
+
+    var voice = null;
+    function pickVoice(){
+      var vs = synth.getVoices() || []; if(!vs.length) return;
+      voice = vs.filter(function(v){ return v.lang === "en-US"; })[0]
+           || vs.filter(function(v){ return /^en/i.test(v.lang); })[0] || vs[0];
+    }
+    pickVoice();
+    if(typeof synth.onvoiceschanged !== "undefined") synth.onvoiceschanged = pickVoice;
+
+    var idx = -1, playing = false, paused = false, gen = 0;
+
+    function clearHi(){ var p = document.querySelector(".tts-active"); if(p) p.classList.remove("tts-active"); }
+    function sectionStart(id){ for(var i=0;i<queue.length;i++){ if(queue[i].sec===id) return i; } return 0; }
+    function curSec(){ return (idx>=0 && idx<queue.length) ? queue[idx].sec : order[0]; }
+    function inViewSec(){ var best = order[0]; secs.forEach(function(s){ if(s.getBoundingClientRect().top <= 150) best = s.id; }); return best; }
+    function setPauseIcon(){ pauseBtn.innerHTML = paused ? "&#9654;" : "&#9208;"; pauseBtn.setAttribute("aria-label", paused ? "Resume" : "Pause"); }
+    function setTop(active){ ttsTop.innerHTML = active ? "&#9632; Stop" : "&#9654; Listen"; ttsTop.setAttribute("aria-pressed", active ? "true" : "false"); }
+
+    function speak(myGen){
+      if(myGen !== gen || !playing) return;
+      if(idx >= queue.length){ stopAll(); return; }
+      var item = queue[idx];
+      clearHi();
+      var det = item.el.closest("details"); if(det && !det.open) det.open = true;
+      item.el.classList.add("tts-active");
+      var r = item.el.getBoundingClientRect();
+      if(r.top < 96 || r.bottom > window.innerHeight - 96) item.el.scrollIntoView({ block: "center", behavior: "smooth" });
+      barLbl.textContent = "Reading: " + (labels[item.sec] || item.sec);
+      var u = new SpeechSynthesisUtterance(item.text);
+      if(voice) u.voice = voice;
+      u.rate = rate; u.pitch = 1;
+      u.onend = function(){ if(myGen !== gen || !playing || paused) return; idx++; speak(myGen); };
+      u.onerror = function(){ if(myGen !== gen || !playing) return; idx++; speak(myGen); };
+      synth.speak(u);
+    }
+
+    function start(from){
+      gen++; var myGen = gen;
+      try{ synth.cancel(); }catch(e){}
+      idx = from; playing = true; paused = false;
+      bar.classList.add("on"); document.body.classList.add("tts-on");
+      setPauseIcon(); setTop(true);
+      setTimeout(function(){ speak(myGen); }, 70);
+    }
+    function stopAll(){
+      gen++; playing = false; paused = false;
+      try{ synth.cancel(); }catch(e){}
+      clearHi(); bar.classList.remove("on"); document.body.classList.remove("tts-on"); setTop(false);
+    }
+    function togglePause(){
+      if(!playing) return;
+      if(paused){ synth.resume(); paused = false; } else { synth.pause(); paused = true; }
+      setPauseIcon();
+    }
+    function jump(dir){
+      var ci = order.indexOf(curSec());
+      var ni = Math.max(0, Math.min(order.length - 1, ci + dir));
+      start(sectionStart(order[ni]));
+    }
+
+    ttsTop.addEventListener("click", function(){ if(playing) stopAll(); else start(sectionStart(inViewSec())); });
+    stopBtn.addEventListener("click", stopAll);
+    pauseBtn.addEventListener("click", togglePause);
+    prevBtn.addEventListener("click", function(){ jump(-1); });
+    nextBtn.addEventListener("click", function(){ jump(1); });
+    rateBtn.addEventListener("click", function(){
+      rate = rates[(rates.indexOf(rate) + 1) % rates.length];
+      rateBtn.textContent = rate + "×";
+      try{ localStorage.setItem(RK, rate); }catch(e){}
+      if(playing) start(idx);
+    });
+    window.addEventListener("beforeunload", function(){ try{ synth.cancel(); }catch(e){} });
+  })();
 })();
 </script>
 <script src="../../assets/js/tts.js?v=1"></script>
