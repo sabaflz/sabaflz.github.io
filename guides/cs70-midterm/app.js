@@ -585,16 +585,16 @@
 
   function renderPlan() {
     var h = '<div class="topic-head"><h1>Study plan &amp; exam strategy</h1></div>';
-    h += '<p class="topic-sub">You have passed 6 of 12 discrete topics, so the midterm is 6 topics plus 2 synthesis questions. Strong position. Front-load the easy locks, give the all-or-nothing topics the cleanest prep.</p>';
+    h += '<p class="topic-sub">You have passed 7 of 12 discrete topics, so the midterm is just 5 topics plus 2 synthesis questions. With 5 topics (~75 min) and 2 synthesis (~40 min) that’s ~115 min of 120 — it now fits, barely. Front-load the easy locks, give the all-or-nothing topics the cleanest prep.</p>';
     h += '<h2 class="sec">Exam-time strategy</h2><ol>' +
       '<li><b>First 2 min:</b> cross off your 6 passed topics on their checklist, circle your 6 targets.</li>' +
       '<li><b>Synthesis first (~40 min):</b> separate weight, both secret-sharing/CRT flavored, do them while fresh.</li>' +
-      '<li><b>Topics confidence-first (~75 min):</b> Graphs → Graph Induction → Proof Techniques → Polynomials → Secret Sharing → Stable Matching.</li>' +
+      '<li><b>Topics confidence-first (~75 min):</b> Graph Induction → Proof Techniques → Polynomials → Secret Sharing → Stable Matching.</li>' +
       '<li><b>Pass/No Pass means finish what you start.</b> One complete correct topic beats three half-done ones.</li>' +
       '<li><b>Last 5 min:</b> every T/F bubble filled, every answer inside its box.</li></ol>';
     h += '<h2 class="sec">4-day plan</h2><div class="plan-grid">';
     var days = [
-      ["Sunday · today", "Easy locks + start cheat sheet", ["Read the Graphs and Graph Induction topics, take their self-tests.", "Begin your handwritten cheat sheet."]],
+      ["Now", "Easy lock + start cheat sheet", ["Graph Induction is your fastest lock — do its guided lesson and self-test first.", "Begin your handwritten cheat sheet."]],
       ["Monday", "All-or-nothing topics", ["Proof Techniques (2/2) and Polynomials (3/3).", "Do the Lagrange-over-GF(11) example by hand."]],
       ["Tuesday", "Heaviest day", ["Secret Sharing & ECCs plus both synthesis questions.", "Work Rogue Delegates slowly."]],
       ["Wednesday", "New topic + timed run", ["Learn Stable Matching.", "Take a past midterm under exam conditions, finalize cheat sheet."]],
