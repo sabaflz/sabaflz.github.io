@@ -488,3 +488,15 @@ window.CS70.resourceLinks = [
   { label: "Resources page", url: "https://www.eecs70.org/resources/" },
   { label: "Discussions", url: "https://www.eecs70.org/discussions/" }
 ];
+
+/* Round-robin practice queue. Each round covers all six target topics once,
+   in priority order, so stopping early still touches every topic.
+   mockPage = page in the Fall 2026 mock midterm; hw/disc = official PDFs. */
+window.CS70.queue = [
+  { id: "graphs",          name: "Graphs",                 mockPage: 17, hw: "hw05", disc: "dis04" },
+  { id: "graph-induction", name: "Graph Induction",        mockPage: 18, hw: "hw05", disc: "dis04" },
+  { id: "proof-tech",      name: "Proof Techniques",       mockPage: 5,  hw: "hw01", disc: "dis00" },
+  { id: "polynomials",     name: "Polynomials",            mockPage: 12, hw: "hw04", disc: "dis03" },
+  { id: "secret-sharing",  name: "Secret Sharing & ECCs",  mockPage: 14, hw: "hw04", disc: "dis03" },
+  { id: "stable-matching", name: "Stable Matching",        mockPage: 19, hw: "hw06", disc: "dis05" }
+];
