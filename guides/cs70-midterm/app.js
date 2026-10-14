@@ -83,6 +83,7 @@
 
   // ---- sidebar nav ----
   function topicDone(t) {
+    if (store.getJSON("manualPass", {})[t.id]) return true;
     var p = progress[t.id];
     return p && p.total > 0 && p.best === p.total;
   }
@@ -124,6 +125,9 @@
     if (t.passed) h += '<span class="pill passed">already passed</span>';
     else {
       h += '<span class="pill' + (t.allOrNothing ? ' aon' : '') + '">' + esc(t.threshold) + "</span>";
+      var mp = store.getJSON("manualPass", {})[t.id];
+      h += '<button class="mark-btn' + (mp ? " on" : "") + '" id="markPass">' +
+        (mp ? "✓ Marked passed" : "Mark passed") + "</button>";
     }
     h += "</div>";
     h += '<p class="topic-sub">' + (t.passed
@@ -190,6 +194,14 @@
     };
     var ll = document.getElementById("learnLaunch");
     if (ll) ll.onclick = function () { startLearn(t); };
+    var mpb = document.getElementById("markPass");
+    if (mpb) mpb.onclick = function () {
+      var m = store.getJSON("manualPass", {});
+      m[t.id] = !m[t.id];
+      store.setJSON("manualPass", m);
+      updateSummary();
+      renderTopic(t);
+    };
     content.scrollIntoView ? window.scrollTo(0, 0) : null;
   }
 
