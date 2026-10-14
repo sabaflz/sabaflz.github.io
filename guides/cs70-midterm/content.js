@@ -31,7 +31,7 @@ window.CS70 = {
   },
 
   // Saffron's current state, drives the "what to attempt" view
-  passedTopics: ["direct-proofs", "prop-logic", "induction", "modular", "crt", "rsa"],
+  passedTopics: ["direct-proofs", "prop-logic", "induction", "modular", "crt", "rsa", "graphs"],
 
   topics: [
     /* ---------------- PASSED TOPICS (reference only) ---------------- */
@@ -304,7 +304,7 @@ window.CS70 = {
       ]
     },
     {
-      id: "graphs", name: "Graphs",
+      id: "graphs", name: "Graphs", passed: true,
       threshold: "4 of 5 — your easiest lock", allOrNothing: false,
       note: [
         { h: "Handshake", body: "Σ deg(v) = 2|E|. The workhorse: it ties degrees to edge count, and forces the number of odd-degree vertices to be even." },
@@ -493,7 +493,6 @@ window.CS70.resourceLinks = [
    in priority order, so stopping early still touches every topic.
    mockPage = page in the Fall 2026 mock midterm; hw/disc = official PDFs. */
 window.CS70.queue = [
-  { id: "graphs",          name: "Graphs",                 mockPage: 17, hw: "hw05", disc: "dis04" },
   { id: "graph-induction", name: "Graph Induction",        mockPage: 18, hw: "hw05", disc: "dis04" },
   { id: "proof-tech",      name: "Proof Techniques",       mockPage: 5,  hw: "hw01", disc: "dis00" },
   { id: "polynomials",     name: "Polynomials",            mockPage: 12, hw: "hw04", disc: "dis03" },
