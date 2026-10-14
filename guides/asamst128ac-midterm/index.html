@@ -156,6 +156,31 @@ footer{max-width:1180px; margin:0 auto; padding:30px clamp(16px,4vw,34px) 70px; 
 #tts-bar .stop:hover{background:var(--saffron); color:var(--on-saffron)}
 body.tts-on #menuBtn{bottom:74px}
 @media (max-width:620px){ #tts-bar .lbl{display:none} .sec-listen{margin-left:8px} }
+
+/* ---------- cheat sheet ---------- */
+.cheat-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0 4px}
+@media(max-width:720px){.cheat-grid{grid-template-columns:1fr}}
+.cheat-card{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px}
+.cheat-card h4{margin:0 0 9px; font:700 12px/1 var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--saffron-ink)}
+.cheat-card ul{margin:0; padding-left:18px}
+.cheat-card li{margin:0 0 7px; font-size:13.5px; line-height:1.45}
+.cheat-card li:last-child{margin-bottom:0}
+.cheat-print{font:600 12px/1 var(--mono); background:var(--saffron); color:var(--on-saffron); border:none;
+  border-radius:999px; padding:7px 13px; cursor:pointer; margin-left:8px; vertical-align:middle}
+.cheat-print:hover{filter:brightness(1.06)}
+@media print{
+  :root{--bg:#fff; --surface:#fff; --surface-2:#f3f3f3; --ink:#000; --muted:#333; --line:#b9b9b9;
+    --saffron-soft:#FBF0D6; --saffron-ink:#7E5600; --saffron:#B9810A}
+  body *{visibility:hidden}
+  #cheatsheet, #cheatsheet *{visibility:visible}
+  #cheatsheet{position:absolute; left:0; top:0; width:100%; margin:0}
+  #cheatsheet .review-row, #cheatsheet .sec-listen, #cheatsheet .cheat-print{display:none !important}
+  #cheatsheet h2 .num{color:#7E5600}
+  .cheat-grid{gap:8px}
+  .cheat-card{break-inside:avoid; border:1px solid #b9b9b9}
+  #tts-bar, #menuBtn{display:none !important}
+  @page{margin:12mm}
+}
 </style>
 </head>
 <body>
@@ -208,6 +233,99 @@ body.tts-on #menuBtn{bottom:74px}
         <li>The colored tags above mark which body of material each fact comes from, so you can see the whole map at a glance.</li>
       </ul>
       <p class="muted" style="font-size:14px">One honest flag: a few lecture-specific items (exact migration-wave dates, the six reasons for migration, the vertical/horizontal barrier lists) are reconstructed from the sample exam and standard course framing. They are marked with <span class="flag">confirm w/ notes</span> so you can check them against your own lecture notes.</p>
+    </section>
+
+    <!-- ===================== CHEAT SHEET ===================== -->
+    <section class="block" id="cheatsheet" data-rev>
+      <h2><span class="num">Cheat sheet</span>Everything on one screen</h2>
+      <p class="muted" style="font-size:14px">The whole guide compressed to what you can skim in the last ten minutes, or print and glance at before you walk in. <button type="button" class="cheat-print" onclick="window.print()">&#9113; Print just this</button></p>
+
+      <div class="cheat-grid">
+        <div class="cheat-card">
+          <h4>Dates to anchor</h4>
+          <ul>
+            <li><span class="k">1501</span> first enslaved Africans deported to the Americas (Diouf).</li>
+            <li><span class="k">1526</span> earliest enslaved Africans on land that became the US. <span class="flag">confirm w/ notes</span></li>
+            <li><span class="k">1685</span> French Code Noir mandates baptism of the enslaved.</li>
+            <li><span class="k">1882</span> Chinese Exclusion Act, the precedent later echoed by the 2017 Muslim Ban.</li>
+            <li><span class="k">1917</span> Asiatic Barred Zone plus literacy tests limit Muslim and Asian immigration.</li>
+            <li><span class="k">1924</span> national-origins quotas sharply slow arrivals.</li>
+            <li><span class="k">1965</span> Hart-Celler Act ends the quotas and opens the professional wave.</li>
+            <li><span class="k">1964</span> Malcolm X makes Hajj and writes the Letter from Mecca; <span class="k">1965</span> he is assassinated.</li>
+          </ul>
+        </div>
+
+        <div class="cheat-card">
+          <h4>Five Pillars under slavery (Diouf Ch 2)</h4>
+          <ul>
+            <li><strong>Shahada</strong>, faith: many professed it to the end, even while forced to perform Christianity.</li>
+            <li><strong>Salat</strong>, prayer: kept in secret and in the open, facing east, despite punishment.</li>
+            <li><strong>Zakat</strong>, charity: survived as the <em>saraka</em> cakes, made by women and given to children.</li>
+            <li><strong>Sawm</strong>, fasting: observed Ramadan though the Qur'an would have excused the enslaved.</li>
+            <li><strong>Hajj</strong>, pilgrimage: impossible to perform, but Mecca was never out of mind.</li>
+          </ul>
+        </div>
+
+        <div class="cheat-card">
+          <h4>People (matching bait)</h4>
+          <ul>
+            <li><strong>Omar ibn Said</strong>, enslaved scholar in the Carolinas; wrote an Arabic autobiography.</li>
+            <li><strong>Bilali Muhammad</strong>, Sapelo Island, Georgia; wrote the Bilali Document on prayer and law.</li>
+            <li><strong>Ayuba Suleyman Diallo / Job Ben Solomon</strong>, freed, taken to England, reproduced the Qur'an from memory. <span class="flag">confirm w/ notes</span></li>
+            <li><strong>Abdul Rahman Ibrahima</strong>, "the Prince," recast as a Moor, freed by the President, sent to Liberia.</li>
+            <li><strong>Malcolm X / el-Hajj Malik el-Shabazz</strong>, Nation of Islam, then Sunni after Mecca.</li>
+          </ul>
+        </div>
+
+        <div class="cheat-card">
+          <h4>Terms (Bazian + GhaneaBassiri)</h4>
+          <ul>
+            <li><strong>Sacred Economy</strong>, Christianity and commerce paired to justify slavery and expansion.</li>
+            <li><strong>Progress</strong>, with race and religion, defined America as white and Protestant.</li>
+            <li><strong>Religion as a category</strong>, overshadowed by race and ethnicity around 1900 as Muslims sought citizenship.</li>
+            <li><strong>De-negrofication</strong>, recasting African Muslims as "Moorish" or noble, apart from the enslaved Black population (sample T/F 8 = True).</li>
+            <li><strong>Process of Rendition</strong>, covertly sending people abroad to be tortured; frames Muslims as threats.</li>
+            <li><strong>Passing</strong>, race, religion, and immigration as one moving line of who counts as American.</li>
+          </ul>
+        </div>
+
+        <div class="cheat-card">
+          <h4>Diouf Ch 1 contrast (African vs American slavery)</h4>
+          <ul>
+            <li><strong>African / Islamic</strong>, tied to religion and circumstance, from warfare, with exits through manumission, ransom, and self-redemption; often temporary.</li>
+            <li><strong>European / American</strong>, racialized to Blackness, hereditary through the mother, almost no exit, with Christianity used to justify it.</li>
+          </ul>
+        </div>
+
+        <div class="cheat-card">
+          <h4>Malcolm X arc</h4>
+          <ul>
+            <li>Nation of Islam under Elijah Muhammad, then a break and the 1964 Hajj.</li>
+            <li>Letter from Mecca: Muslims of every race in brotherhood moves him toward racism as a <strong>structural system</strong>, not just white individuals.</li>
+            <li>Takes <strong>el-Hajj Malik el-Shabazz</strong>, rejecting the surname inherited through slavery.</li>
+            <li>Separates <strong>resistance</strong> from <strong>liberation</strong>; Black separation can be resistance to white supremacy.</li>
+          </ul>
+        </div>
+
+        <div class="cheat-card">
+          <h4>Migration waves <span class="flag">confirm w/ notes</span></h4>
+          <ul>
+            <li><strong>First, roughly 1880 to 1914</strong>, Levantine laborers from Greater Syria and Lebanon.</li>
+            <li><strong>Interwar</strong>, slowed sharply by the 1924 national-origins quotas.</li>
+            <li><strong>Post-WWII</strong>, students and professionals.</li>
+            <li><strong>Post-1965</strong>, large skilled and professional migration from South Asia and the Middle East.</li>
+          </ul>
+        </div>
+
+        <div class="cheat-card">
+          <h4>The written answer, in one move</h4>
+          <ul>
+            <li><strong>Thesis:</strong> belonging is constitutive, not something to prove; Muslims helped make America from the start, under systems built to deny them.</li>
+            <li><strong>Shape each paragraph:</strong> claim, then named evidence, then analysis, then a link back to the thesis.</li>
+            <li><strong>Reach all four bodies:</strong> Diouf for the enslaved founding presence, GhaneaBassiri for citizenship, Malcolm X for belonging reclaimed.</li>
+          </ul>
+        </div>
+      </div>
     </section>
 
     <!-- ===================== ARGUMENT ENGINE ===================== -->
@@ -608,7 +726,7 @@ body.tts-on #menuBtn{bottom:74px}
   // ---------- build TOC ----------
   var secs=[].slice.call(document.querySelectorAll("section.block"));
   var toc=document.getElementById("toc");
-  var labels={format:"What the exam is",argument:"Argument engine",ch1:"Diouf Ch 1",ch2:"Diouf Ch 2",lecture:"Lecture + GhaneaBassiri",malcolmx:"Malcolm X",glossary:"Glossary (matching)",practice:"Practice exam",models:"Model answers",plan:"Study plan"};
+  var labels={format:"What the exam is",cheatsheet:"Cheat sheet",argument:"Argument engine",ch1:"Diouf Ch 1",ch2:"Diouf Ch 2",lecture:"Lecture + GhaneaBassiri",malcolmx:"Malcolm X",glossary:"Glossary (matching)",practice:"Practice exam",models:"Model answers",plan:"Study plan"};
   secs.forEach(function(s){
     var a=document.createElement("a"); a.href="#"+s.id; a.textContent=labels[s.id]||s.id;
     a.dataset.id=s.id; toc.appendChild(a);
