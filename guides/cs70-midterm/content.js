@@ -437,3 +437,54 @@ window.CS70 = {
       lesson: "Count error tolerance layer by layer (n+2k each time), then multiply. Show the chain: Pass/No Pass grading needs the justification, not just the number." }
   ]
 };
+
+/* Original practice problems (written for this guide, in exam style). Try, then reveal. */
+window.CS70.practice = {
+  "proof-tech": [
+    { q: "Prove: for every integer n, if n² is even then n is even.", sol: "Contrapositive: if n is odd then n² is odd. Let n = 2k+1. Then n² = 4k²+4k+1 = 2(2k²+2k)+1, which is odd. ∎" },
+    { q: "Prove there is no smallest positive rational number.", sol: "Contradiction. Suppose r > 0 is the smallest positive rational. Then r/2 is also rational, positive, and smaller than r. That contradicts r being smallest. ∎" },
+    { q: "Prove: for integers a, b, if ab is odd then a and b are both odd.", sol: "Contrapositive: if a or b is even, then ab is even. WLOG a = 2k, so ab = 2(kb), even. ∎" }
+  ],
+  "polynomials": [
+    { q: "Over GF(7), find the unique degree-≤1 polynomial through (1,3) and (2,5).", sol: "Slope = (5−3)/(2−1) = 2. So p(x) = 2x + 1. Check: p(1)=3, p(2)=5. ✓" },
+    { q: "Over GF(5), how many degree-≤3 polynomials pass through (0,1) and (2,4)?", sol: "q^(d+1−r) = 5^(4−2) = 25." },
+    { q: "Reduce x¹⁷ + 3x⁸ to degree < 7 over GF(7).", sol: "x⁷ ≡ x drops each exponent by 6: 17 → 11 → 5, and 8 → 2. Answer: x⁵ + 3x²." }
+  ],
+  "secret-sharing": [
+    { q: "Design a 4-of-9 secret sharing scheme: what polynomial degree, what prime field, how many points per person?", sol: "Degree k−1 = 3; prime q > 9 (e.g. 11); each person gets 1 point P(i); any 4 reconstruct P and read P(0)." },
+    { q: "To survive 3 erasures on a 5-symbol message, how many packets do you send?", sol: "n + k = 5 + 3 = 8." },
+    { q: "Berlekamp-Welch on a length-4 message correcting 2 errors: how many packets, and what is the degree of Q = P·E?", sol: "n + 2k = 4 + 4 = 8 packets. deg P = 3, deg E = 2, so deg Q = 5." }
+  ],
+  "graphs": [
+    { q: "Does K₆ have an Eulerian tour?", sol: "Each vertex has degree 5 (odd). An Eulerian tour needs every degree even, so no." },
+    { q: "A connected planar graph has 10 vertices and 15 edges. How many faces?", sol: "v + f = e + 2 → 10 + f = 17 → f = 7." },
+    { q: "In a 4-dimensional hypercube: how many edges, and the shortest path from 1100 to 0011?", sol: "Edges = 4·2³ = 32. All 4 bits differ, so shortest path = 4." }
+  ],
+  "graph-induction": [
+    { q: "Prove by induction on edges that every graph has an even number of odd-degree vertices.", sol: "Base |E|=0: all degrees 0, so zero odd-degree vertices (even). Step: adding one edge flips the parity of its two endpoints' degrees. Flipping two vertices changes the count of odd-degree vertices by −2, 0, or +2 — always an even change — so the count stays even. ∎" },
+    { q: "Prove by induction that a tree on n vertices has n−1 edges.", sol: "Base n=1: 0 edges. Step: a tree on n+1 vertices has a leaf; remove it and its single edge, leaving a tree on n vertices with n−1 edges by the hypothesis. Add the leaf back: n edges = (n+1)−1. ∎" }
+  ],
+  "stable-matching": [
+    { q: "Jobs A,B both prefer 1 > 2. Candidates 1,2 both prefer A > B. Run job-proposing propose-reject — what's the result?", sol: "A and B both propose to 1; candidate 1 keeps A, rejects B. B proposes to 2, accepted. Result: (A,1), (B,2), which is stable." },
+    { q: "In that result, is there a rogue pair? Why or why not?", sol: "No. A has its top choice. B is with 2; B would prefer 1, but 1 has A and prefers A to B, so (B,1) is not a rogue pair. No mutually-preferring unmatched pair exists." },
+    { q: "True or False: if propose-reject gives the same matching whether jobs or candidates propose, there is exactly one stable matching.", sol: "True. Job-proposing is job-optimal and candidate-proposing is job-pessimal; if they coincide, only one stable matching exists." }
+  ]
+};
+
+/* Official public practice sources (linked, not copied). Her exam is Midterm 1. */
+window.CS70.exams = [
+  { sem: "Fall 2026 · mock midterm", exam: "https://www.eecs70.org/resources/mt1/mock_midterm_fa26.pdf", sol: "https://www.eecs70.org/resources/mt1/mock_midterm_fa26_sol.pdf" },
+  { sem: "Fall 2025 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_fa25.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_fa25_sol.pdf" },
+  { sem: "Summer 2025 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_su25.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_su25_sol.pdf" },
+  { sem: "Spring 2025 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_sp25.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_sp25_sol.pdf" },
+  { sem: "Fall 2024 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_fa24.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_fa24_sol.pdf" },
+  { sem: "Spring 2024 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_sp24.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_sp24_sol.pdf" },
+  { sem: "Fall 2023 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_fa23.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_fa23_sol.pdf" },
+  { sem: "Spring 2023 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_sp23.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_sp23_sol.pdf" }
+];
+window.CS70.resourceLinks = [
+  { label: "All past exams archive", url: "https://www.eecs70.org/resources/previous-exams" },
+  { label: "Course notes & homework", url: "https://www.eecs70.org/" },
+  { label: "Resources page", url: "https://www.eecs70.org/resources/" },
+  { label: "Discussions", url: "https://www.eecs70.org/discussions/" }
+];
