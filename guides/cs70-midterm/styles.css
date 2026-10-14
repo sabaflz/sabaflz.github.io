@@ -178,6 +178,26 @@ h2.sec::after{content:""; flex:1; height:1.5px; background:var(--line)}
 .note-cols > *{break-inside:avoid}
 @media (max-width:720px){ .note-cols{columns:1} }
 
+/* practice problems */
+.prac{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; margin:10px 0}
+.prac-q{font-weight:500; margin:0 0 10px}
+.prac-btn{font:600 12px/1 var(--mono); background:var(--surface-2); color:var(--ink);
+  border:1.5px solid var(--line); border-radius:999px; padding:7px 13px; cursor:pointer}
+.prac-btn:hover{border-color:var(--saffron)}
+.prac-sol{margin-top:10px; padding-top:10px; border-top:1.5px dashed var(--line);
+  color:var(--ink); font-size:14.5px; line-height:1.55}
+
+/* past exams list */
+.exam-list{display:flex; flex-direction:column; gap:7px}
+.exam-row{display:flex; align-items:center; justify-content:space-between; gap:12px;
+  background:var(--surface); border:1.5px solid var(--line); border-radius:10px; padding:11px 15px; flex-wrap:wrap}
+.exam-sem{font-weight:500; font-size:14.5px}
+.exam-links{display:flex; gap:14px; flex:0 0 auto}
+.exam-links a{font:600 13px var(--body); color:var(--saffron-ink); text-decoration:none; white-space:nowrap}
+.exam-links a:hover{text-decoration:underline}
+
+.sec-listen{margin-left:4px}
+
 /* voiceover listen buttons */
 .listen-btn{font:500 11px/1 var(--mono); background:var(--saffron-soft); color:var(--saffron-ink);
   border:1.5px solid transparent; border-radius:999px; padding:6px 11px; cursor:pointer; flex:0 0 auto}

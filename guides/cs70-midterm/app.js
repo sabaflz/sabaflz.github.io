@@ -145,8 +145,8 @@
 
     // notes
     if (t.note && t.note.length) {
-      h += '<h2 class="sec">Notes ' + (src ? '<span class="sec-src">from ' + esc(src) + '</span> ' : '') +
-        '<button class="listen-btn" id="listenNotes">▶ Listen</button></h2><div class="note-cols">';
+      h += '<h2 class="sec">Notes ' + (src ? '<span class="sec-src">from ' + esc(src) + '</span>' : '') +
+        '</h2><div class="note-cols">';
       t.note.forEach(function (s) {
         h += '<div class="note-block"><h3>' + esc(s.h) + "</h3><p>" + s.body + "</p></div>";
       });
@@ -166,6 +166,17 @@
       t.worked.forEach(function (w) {
         h += '<div class="worked"><span class="wtag">' + esc(w.tag) + '</span>' +
           '<p class="wq">' + esc(w.q) + '</p><p class="wa">' + w.a + "</p></div>";
+      });
+    }
+    // practice problems (original, this guide's own)
+    var prac = (window.CS70.practice || {})[t.id];
+    if (prac && prac.length) {
+      h += '<h2 class="sec">Practice problems</h2>';
+      h += '<p class="sub" style="margin:-6px 0 10px">Original problems in exam style. Try each on paper, then reveal the solution.</p>';
+      prac.forEach(function (pr, pi) {
+        h += '<div class="prac"><p class="prac-q">' + esc(pr.q) + '</p>' +
+          '<button class="prac-btn" type="button" data-pi="' + pi + '">Show solution</button>' +
+          '<div class="prac-sol" hidden>' + esc(pr.sol) + '</div></div>';
       });
     }
     // videos
@@ -188,10 +199,14 @@
       ' · built from the notes, policies, and official mock midterm · progress saves in this browser</footer>';
     content.innerHTML = h;
     if (t.quiz && t.quiz.length) mountQuiz(t);
-    var ln = document.getElementById("listenNotes");
-    if (ln) ln.onclick = function () {
-      speech.toggle(t.note.map(function (s) { return speakify(s.h + ". " + s.body); }).join(" . "), ln);
-    };
+    content.querySelectorAll(".prac-btn").forEach(function (bn) {
+      bn.onclick = function () {
+        var sol = bn.nextElementSibling, show = sol.hidden;
+        sol.hidden = !show;
+        bn.textContent = show ? "Hide solution" : "Show solution";
+      };
+    });
+    addSectionAudio();
     var ll = document.getElementById("learnLaunch");
     if (ll) ll.onclick = function () { startLearn(t); };
     var mpb = document.getElementById("markPass");
@@ -203,6 +218,52 @@
       renderTopic(t);
     };
     content.scrollIntoView ? window.scrollTo(0, 0) : null;
+  }
+
+  // ---- per-section audio: add a Listen button to every section heading ----
+  function addSectionAudio() {
+    content.querySelectorAll("h2.sec").forEach(function (hh) {
+      if (/self-test/i.test(hh.textContent)) return;        // quiz isn't read aloud
+      if (hh.querySelector(".listen-btn")) return;
+      var btn = document.createElement("button");
+      btn.className = "listen-btn sec-listen";
+      btn.type = "button";
+      btn.textContent = "▶ Listen";
+      hh.appendChild(btn);
+      btn.onclick = function () {
+        var parts = [], node = hh.nextElementSibling;
+        while (node && !(node.tagName === "H2" && node.classList.contains("sec"))) {
+          var clone = node.cloneNode(true);
+          clone.querySelectorAll(".prac-sol[hidden],.listen-btn,button").forEach(function (x) { x.remove(); });
+          parts.push(clone.textContent);
+          node = node.nextElementSibling;
+        }
+        var head = hh.textContent.replace(/▶ Listen|■ Stop/g, "");
+        speech.toggle(speakify(head + ". " + parts.join(". ")), btn);
+      };
+    });
+  }
+
+  // ---- Past exams & official practice (links, not copies) ----
+  function renderExams() {
+    var h = '<div class="topic-head"><h1>Past exams &amp; practice</h1></div>';
+    h += '<p class="topic-sub">Links to the course’s own public materials. Your exam is Midterm 1, so these are past Midterm 1 papers — open them at the source and work them timed. The format changed this semester, so expect some differences, but the topic questions are excellent practice.</p>';
+    h += '<h2 class="sec">Past midterms</h2><div class="exam-list">';
+    (window.CS70.exams || []).forEach(function (e) {
+      h += '<div class="exam-row"><span class="exam-sem">' + esc(e.sem) + '</span>' +
+        '<span class="exam-links"><a href="' + esc(e.exam) + '" target="_blank" rel="noopener">Exam ↗</a>' +
+        '<a href="' + esc(e.sol) + '" target="_blank" rel="noopener">Solutions ↗</a></span></div>';
+    });
+    h += '</div><h2 class="sec">Course resources</h2><div class="exam-list">';
+    (window.CS70.resourceLinks || []).forEach(function (r) {
+      h += '<div class="exam-row"><span class="exam-sem">' + esc(r.label) + '</span>' +
+        '<span class="exam-links"><a href="' + esc(r.url) + '" target="_blank" rel="noopener">Open ↗</a></span></div>';
+    });
+    h += '</div>';
+    h += '<div class="trap"><b>Why links instead of copies:</b> these are the staff’s own problems, so the right way to use them is at eecs70.org. The Practice problems inside each topic are written for this guide, so those are yours to work directly.</div>';
+    content.innerHTML = h;
+    addSectionAudio();
+    window.scrollTo(0, 0);
   }
 
   // ---- Guided lesson: teach a step, check it, require correct to advance ----
@@ -437,6 +498,7 @@
       h += '<div class="trap"><b>Takeaway:</b> ' + esc(s.lesson) + "</div>";
     });
     content.innerHTML = h;
+    addSectionAudio();
     window.scrollTo(0, 0);
   }
 
@@ -459,6 +521,7 @@
     h += "</div>";
     h += '<div class="trap"><b>Build it from your own gaps.</b> After each practice miss: a missing formula goes on the sheet, a concept gap sends you back to that note. Your sheet should be the things you forget, not a copy of mine.</div>';
     content.innerHTML = h;
+    addSectionAudio();
     window.scrollTo(0, 0);
   }
 
@@ -486,6 +549,7 @@
     });
     h += "</div>";
     content.innerHTML = h;
+    addSectionAudio();
     window.scrollTo(0, 0);
   }
 
@@ -498,6 +562,7 @@
     closeMenu();
     speech.stop();
     if (hash === "synthesis") { setActive(""); return renderSynthesis(); }
+    if (hash === "exams") { setActive(""); return renderExams(); }
     if (hash === "cheatsheet") { setActive(""); return renderCheat(); }
     if (hash === "plan" || !hash) { setActive(""); return renderPlan(); }
     var t = D.topics.find(function (x) { return x.id === hash; });
