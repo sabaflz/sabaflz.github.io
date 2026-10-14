@@ -244,6 +244,64 @@
     });
   }
 
+  // ---- Practice queue: round-robin across topics, click-through list ----
+  function renderQueue() {
+    var q = window.CS70.queue || [];
+    var done = store.getJSON("queueDone", {});
+    var mockE = "https://www.eecs70.org/resources/mt1/mock_midterm_fa26.pdf";
+    var mockS = "https://www.eecs70.org/resources/mt1/mock_midterm_fa26_sol.pdf";
+    var pdf = "https://www.eecs70.org/assets/pdf/";
+    function discLabel(d) { return d.replace("dis", "Disc "); }
+    var rounds = [
+      { id: "r1", label: "Round 1 — Mock midterm", sub: "Current exam format. If you finish only one round, finish this one.",
+        link: function (t) { return { url: mockE + "#page=" + t.mockPage, sol: mockS, what: "Mock midterm · " + t.name + " (p." + t.mockPage + ")" }; } },
+      { id: "r2", label: "Round 2 — Homework", sub: "That week’s homework problems for each topic.",
+        link: function (t) { return { url: pdf + t.hw + ".pdf", sol: pdf + t.hw + "-sol.pdf", what: t.hw.toUpperCase() + " · " + t.name }; } },
+      { id: "r3", label: "Round 3 — Discussion worksheets", sub: "Section worksheets — fast, focused reps.",
+        link: function (t) { return { url: pdf + t.disc + ".pdf", sol: pdf + t.disc + "-sol.pdf", what: discLabel(t.disc) + " · " + t.name }; } },
+      { id: "r4", label: "Round 4 — This guide’s practice problems", sub: "My original problems on each topic page.",
+        link: function (t) { return { url: "#" + t.id, sol: null, what: t.name + " · Practice problems" }; } }
+    ];
+    var h = '<div class="topic-head"><h1>Practice queue</h1></div>';
+    h += '<p class="topic-sub">Work top to bottom. Each round covers all six topics once in priority order, so even if you stop early you’ve touched every topic. Tick items off as you go — it saves in your browser.</p>';
+    rounds.forEach(function (r) {
+      h += '<h2 class="sec">' + esc(r.label) + "</h2>";
+      h += '<p class="sub" style="margin:-6px 0 10px">' + esc(r.sub) + "</p><div class=\"q-list\">";
+      q.forEach(function (t) {
+        var L = r.link(t), key = r.id + ":" + t.id, isDone = !!done[key];
+        var ext = L.url.charAt(0) === "#" ? "" : ' target="_blank" rel="noopener"';
+        h += '<div class="q-item' + (isDone ? " done" : "") + '" data-key="' + key + '">' +
+          '<input type="checkbox"' + (isDone ? " checked" : "") + '>' +
+          '<span class="q-main"><a href="' + esc(L.url) + '"' + ext + ">" + esc(L.what) + "</a>" +
+          (L.sol ? ' <a class="q-sol" href="' + esc(L.sol) + '" target="_blank" rel="noopener">solution ↗</a>' : "") +
+          "</span></div>";
+      });
+      h += "</div>";
+    });
+    h += '<h2 class="sec">Round 5 — Full timed past midterms</h2>';
+    h += '<p class="sub" style="margin:-6px 0 10px">Older format (not one question per topic), but ideal for a full timed run. Do one start to finish in two hours.</p><div class="q-list">';
+    [["Fall 2025", "midterm_fa25"], ["Spring 2025", "midterm_sp25"], ["Fall 2024", "midterm_fa24"]].forEach(function (e) {
+      var base = "https://www.eecs70.org/resources/mt1/" + e[1];
+      h += '<div class="q-item" data-key="r5:' + e[1] + '"><input type="checkbox">' +
+        '<span class="q-main"><a href="' + base + '.pdf" target="_blank" rel="noopener">' + esc(e[0]) + ' midterm</a>' +
+        ' <a class="q-sol" href="' + base + '_sol.pdf" target="_blank" rel="noopener">solution ↗</a></span></div>';
+    });
+    h += "</div>";
+    h += '<div class="trap"><b>Use the solutions to check, not to read first.</b> Try each on paper before opening its solution — the struggle is where the learning happens. All links go to the official PDFs at eecs70.org.</div>';
+    content.innerHTML = h;
+    content.querySelectorAll(".q-item").forEach(function (it) {
+      var box = it.querySelector("input"), key = it.dataset.key;
+      box.addEventListener("change", function () {
+        var d = store.getJSON("queueDone", {});
+        if (box.checked) d[key] = true; else delete d[key];
+        store.setJSON("queueDone", d);
+        it.classList.toggle("done", box.checked);
+      });
+    });
+    addSectionAudio();
+    window.scrollTo(0, 0);
+  }
+
   // ---- Past exams & official practice (links, not copies) ----
   function renderExams() {
     var h = '<div class="topic-head"><h1>Past exams &amp; practice</h1></div>';
@@ -562,6 +620,7 @@
     closeMenu();
     speech.stop();
     if (hash === "synthesis") { setActive(""); return renderSynthesis(); }
+    if (hash === "queue") { setActive(""); return renderQueue(); }
     if (hash === "exams") { setActive(""); return renderExams(); }
     if (hash === "cheatsheet") { setActive(""); return renderCheat(); }
     if (hash === "plan" || !hash) { setActive(""); return renderPlan(); }

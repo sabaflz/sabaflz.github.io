@@ -187,6 +187,18 @@ h2.sec::after{content:""; flex:1; height:1.5px; background:var(--line)}
 .prac-sol{margin-top:10px; padding-top:10px; border-top:1.5px dashed var(--line);
   color:var(--ink); font-size:14.5px; line-height:1.55}
 
+/* practice queue */
+.q-list{display:flex; flex-direction:column; gap:6px}
+.q-item{display:flex; align-items:flex-start; gap:11px; background:var(--surface);
+  border:1.5px solid var(--line); border-radius:10px; padding:11px 14px}
+.q-item.done{background:var(--good-soft); border-color:color-mix(in srgb,var(--good) 30%,var(--line))}
+.q-item input{margin-top:2px; width:17px; height:17px; accent-color:var(--good); flex:0 0 auto; cursor:pointer}
+.q-main{flex:1; min-width:0; font-size:14.5px}
+.q-main a{color:var(--ink); text-decoration-color:var(--saffron)}
+.q-main a:hover{color:var(--saffron-ink)}
+.q-item.done .q-main > a:first-child{text-decoration:line-through; opacity:.65}
+.q-sol{font:600 12px/1 var(--mono); color:var(--muted); margin-left:6px; white-space:nowrap}
+
 /* past exams list */
 .exam-list{display:flex; flex-direction:column; gap:7px}
 .exam-row{display:flex; align-items:center; justify-content:space-between; gap:12px;
