@@ -186,20 +186,9 @@ function render(filter) {
 
 searchEl.addEventListener("input", function () { render(searchEl.value); });
 render("");
-
-// theme
-(function () {
-  var root = document.documentElement, K = "sf_theme";
-  try { var t = localStorage.getItem(K); if (t) root.setAttribute("data-theme", t); } catch (e) {}
-  document.getElementById("themeBtn").onclick = function () {
-    var cur = root.getAttribute("data-theme");
-    var isDark = cur ? cur === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
-    var next = isDark ? "light" : "dark";
-    root.setAttribute("data-theme", next);
-    try { localStorage.setItem(K, next); } catch (e) {}
-  };
-})();
+// theme toggle handled site-wide by assets/js/theme.js
 </script>
 <script src="../assets/js/tts.js?v=1"></script>
+<script src="../assets/js/theme.js?v=1"></script>
 </body>
 </html>
