@@ -561,23 +561,114 @@
   }
 
   function renderCheat() {
-    var h = '<div class="topic-head"><h1>One-page cheat sheet</h1></div>';
-    h += '<p class="topic-sub">You get one double-sided handwritten 8.5×11 sheet, your own writing (tablet sheets must be printed, no screenshots). Copy these by hand. The writing is the studying.</p>';
+    var h = '<div class="topic-head"><h1>Complete cheat sheet</h1></div>';
+    h += '<p class="topic-sub">Every midterm topic, because synthesis questions can pull from <i>any</i> of them — including the ones you’ve already passed. Condense what you keep forgetting onto your handwritten 8.5×11 sheet (your own writing; printed tablet sheets allowed, no screenshots).</p>';
     var groups = [
-      ["Modular / number theory", ["a⁻¹ exists mod m iff gcd(a,m)=1 (extended Euclid)", "FLT: a^(p−1) ≡ 1 (mod p) for a≢0; a^p ≡ a always", "CRT: x = Σ aᵢuᵢ, uᵢ = (N/nᵢ)·[(N/nᵢ)⁻¹ mod nᵢ]", "RSA: d ≡ e⁻¹ mod (p−1)(q−1); E(x)=xᵉ, D=y^d mod N"]],
-      ["Polynomials over GF(p)", ["Δᵢ(x) = ∏(x−xⱼ)/∏(xᵢ−xⱼ); p(x)=Σ yᵢΔᵢ(x)", "degree d ⟹ ≤ d roots; d+1 points ⟹ unique", "deg(fg)=deg f+deg g; xᵖ ≡ x drops exponent by p−1", "reduce every coefficient into {0,…,p−1}"]],
-      ["Secret sharing / ECC", ["Erasure: send n+k, recover from any n", "General: send n+2k, recover from n+k correct", "k-threshold ⟹ degree k−1, secret = P(0), q > n,s", "Berlekamp-Welch: E deg k, Q=PE deg n+k−1, n+2k eqns"]],
-      ["Graphs", ["Σ deg = 2|E|; Kₙ: n(n−1)/2 edges; tree: n−1 edges", "Euler: v+f=e+2; planar e≤3v−6 (tri-free 2v−4)", "Eulerian tour iff connected + all even degree", "n-cube: 2ⁿ verts, deg n, n·2ⁿ⁻¹ edges, diam n, path = differing bits", "Non-planar: K₅, K₃,₃"]],
-      ["Stable matching", ["Stable = no rogue pair; propose-reject always gives one", "Proposer-optimal, receiver-pessimal", "Both runs identical ⟹ unique matching"]]
+      ["Propositional logic · N2", [
+        "P⟹Q ≡ ¬P∨Q; false only at T⟹F; vacuously true when P false",
+        "contrapositive ¬Q⟹¬P ≡ P⟹Q; converse Q⟹P ≢",
+        "¬(P⟹Q) ≡ P∧¬Q",
+        "De Morgan: ¬(P∧Q)≡¬P∨¬Q; ¬(P∨Q)≡¬P∧¬Q",
+        "¬∀x P ≡ ∃x ¬P; ¬∃x P ≡ ∀x ¬P; ∀x∃y ≢ ∃y∀x"
+      ]],
+      ["Proofs & techniques · N0–3", [
+        "odd n=2k+1, even n=2k, a|b ⇔ b=ka",
+        "direct: assume P, expand defs, chain to Q",
+        "contrapositive when ¬Q is the concrete start",
+        "contradiction: assume ¬P → R∧¬R; use for ‘no such’ / uniqueness",
+        "uniqueness: existence + (two solutions ⇒ equal)",
+        "well-ordering: nonempty S⊆ℕ has a least element"
+      ]],
+      ["Induction · N4", [
+        "base, IH P(k), step P(k+1)",
+        "strong: assume P(1)…P(k); use when step reaches further back",
+        "tools: strengthen the hypothesis, add base cases",
+        "game proofs: induct on state size, force a losing position to opponent"
+      ]],
+      ["Modular arithmetic · N5", [
+        "a≡b (mod m) ⇔ m|(a−b); + and × respect ≡",
+        "a⁻¹ exists mod m ⇔ gcd(a,m)=1 (extended Euclid)",
+        "solve ax≡c: x≡a⁻¹c; reduce base first (e.g. 67≡−1 mod 68)"
+      ]],
+      ["Euclid, FLT, CRT · N6", [
+        "ext Euclid: ax+by=gcd(a,b)",
+        "FLT: p prime, a≢0: a^(p−1)≡1 (mod p); a^p≡a for all a",
+        "CRT: pairwise-coprime nᵢ, N=∏nᵢ ⇒ unique x mod N",
+        "x=Σ aᵢuᵢ, uᵢ=(N/nᵢ)[(N/nᵢ)⁻¹ mod nᵢ]",
+        "ℤ_N ≅ ℤ_{n₁}×…×ℤ_{nₖ}"
+      ]],
+      ["RSA · N7", [
+        "N=pq, e coprime to (p−1)(q−1), d≡e⁻¹ mod (p−1)(q−1)",
+        "E(x)=xᵉ mod N, D(y)=y^d mod N",
+        "correctness: x^(ed)≡x via FLT on p and q, stitched by CRT",
+        "e changing by a multiple of (p−1)(q−1) keeps d valid",
+        "security = factoring N is hard"
+      ]],
+      ["Polynomials over GF(p) · N8", [
+        "Prop 1: deg d ⇒ ≤ d roots; deg(fg)=deg f+deg g",
+        "Prop 2: d+1 distinct points ⇒ unique deg≤d poly",
+        "Lagrange: Δᵢ=∏(x−xⱼ)/∏(xᵢ−xⱼ); p=Σ yᵢΔᵢ",
+        "counting: r points, deg≤d ⇒ p^(d+1−r) polys through them",
+        "xᵖ≡x (FLT) drops exponents by p−1; prime p needed or props break"
+      ]],
+      ["Secret sharing & ECC · N9", [
+        "k-of-n: deg k−1, secret P(0), prime q>n,s; k−1 shares ⇒ 0 info",
+        "erasure: send n+k, recover from any n",
+        "general errors: send n+2k, recover from n+k correct",
+        "Berlekamp-Welch: E deg k, Q=PE deg n+k−1, solve n+2k eqns, P=Q/E",
+        "roots of E = error locations"
+      ]],
+      ["Graphs · N10", [
+        "Σ deg = 2|E|; # odd-degree vertices is even",
+        "Kₙ: n(n−1)/2 edges, deg n−1; tree: connected acyclic, n−1 edges",
+        "Eulerian tour ⇔ connected + all degrees even",
+        "Euler planar: v+f=e+2; e≤3v−6 (triangle-free 2v−4)",
+        "non-planar: K₅, K₃,₃; bipartite ⇔ no odd cycle",
+        "n-cube: 2ⁿ verts, deg n, n·2ⁿ⁻¹ edges, diam n, path=differing bits"
+      ]],
+      ["Graph induction · N10", [
+        "induct on edges: remove 1 edge → two degrees ±1 (clean)",
+        "or on vertices (strong induction; remove a leaf)"
+      ]],
+      ["Stable matching · N11", [
+        "rogue pair = unmatched J,C each prefer the other; stable = none",
+        "propose-reject terminates, gives a stable matching",
+        "proposer-optimal, receiver-pessimal",
+        "both proposing orders match ⇒ exactly one stable matching"
+      ]]
     ];
+    h += '<h2 class="sec">By topic</h2>';
     h += '<div class="note-cols">';
     groups.forEach(function (g) {
       h += '<div class="note-block"><h3>' + esc(g[0]) + "</h3><ul style='margin:4px 0 0;padding-left:18px'>";
-      g[1].forEach(function (li) { h += "<li style='font-size:14px;margin:3px 0'>" + esc(li) + "</li>"; });
+      g[1].forEach(function (li) { h += "<li style='font-size:13.5px;margin:3px 0'>" + esc(li) + "</li>"; });
       h += "</ul></div>";
     });
     h += "</div>";
-    h += '<div class="trap"><b>Build it from your own gaps.</b> After each practice miss: a missing formula goes on the sheet, a concept gap sends you back to that note. Your sheet should be the things you forget, not a copy of mine.</div>';
+
+    // synthesis strategy section
+    h += '<h2 class="sec">Synthesis — when topics mix</h2>';
+    h += '<p class="sub" style="margin:-6px 0 12px">Synthesis questions combine topics or dig a new consequence out of a definition. These are the bridges and the attack plan.</p>';
+    h += '<div class="note-block"><h3>The bridges (what connects to what)</h3><ul style="margin:4px 0 0;padding-left:18px;font-size:14px">' +
+      '<li><b>Modular arithmetic</b> is the floor under CRT, RSA, and polynomials over GF(p). A number-theory question and a polynomial question are often the same move in different clothes.</li>' +
+      '<li><b>Polynomials over GF(p)</b> are the floor under secret sharing and error-correcting codes. Property 1 and Property 2 do the heavy lifting in all three.</li>' +
+      '<li><b>Induction + proof techniques</b> are tools, not topics — a synthesis question can ask you to <i>prove</i> a fact that lives in any other area.</li>' +
+      '<li><b>Counting</b> rides along: polynomial counting p^(d+1−r), the handshake sum, error-tolerance counts.</li></ul></div>';
+    h += '<div class="note-block"><h3>Attack plan</h3><ol style="margin:4px 0 0;padding-left:20px;font-size:14px">' +
+      '<li><b>Name the topics.</b> Scan for keywords (mod, degree, points, shares, errors, edges, stable) and list every area in play before writing.</li>' +
+      '<li><b>Reduce to a uniqueness theorem.</b> “How many solutions / polynomials?” → CRT (unique mod N) or Property 2 (unique deg≤d). Then count what’s missing: each missing point multiplies by p; lifting a CRT solution to a bigger modulus multiplies by the factor.</li>' +
+      '<li><b>Peel layered error correction.</b> Do the tolerance one layer at a time (general errors need n+2k, so a degree-d poly on m points tolerates ⌊(m−(d+1))/2⌋ errors), then multiply or chain across layers.</li>' +
+      '<li><b>Dig into the definition.</b> If it asks for something “new,” write the formal definition and push it algebraically until the new fact falls out — don’t look for a memorized result.</li>' +
+      '<li><b>Scale / substitute tricks.</b> A system that looks new is often the old one scaled: divide out a common factor (cx≡ca mod cp → x≡a mod p) to reveal a known structure, then count the lifts.</li>' +
+      '<li><b>Show the chain.</b> Synthesis is Pass/No Pass with justification — the reasoning earns the pass, not the final number.</li></ol></div>';
+    h += '<div class="note-block"><h3>Combinations seen on past exams</h3><ul style="margin:4px 0 0;padding-left:18px;font-size:14px">' +
+      '<li><b>CRT + scaling:</b> scaled congruences collapse to the original CRT system; answer = number of lifts to the larger modulus.</li>' +
+      '<li><b>Nested secret sharing + ECC:</b> run Berlekamp-Welch per sub-group, then at the top level; multiply the per-layer rogue/error counts.</li>' +
+      '<li><b>Polynomials + FLT:</b> reduce big exponents with xᵖ≡x, then interpolate or count roots.</li>' +
+      '<li><b>Graphs + induction + counting:</b> prove a degree/edge/face identity by induction, or count structures with the handshake and Euler’s formula.</li>' +
+      '<li><b>Proofs over number theory:</b> prove a divisibility or modular claim by contradiction or induction.</li></ul></div>';
+
+    h += '<div class="trap"><b>Copy by hand, from your gaps.</b> This is the full map; your 8.5×11 sheet should be the pieces <i>you</i> forget. The synthesis bridges and the “reduce to a uniqueness theorem” move are the highest-value things to have on it.</div>';
     content.innerHTML = h;
     addSectionAudio();
     window.scrollTo(0, 0);
@@ -587,7 +678,7 @@
     var h = '<div class="topic-head"><h1>Study plan &amp; exam strategy</h1></div>';
     h += '<p class="topic-sub">You have passed 7 of 12 discrete topics, so the midterm is just 5 topics plus 2 synthesis questions. With 5 topics (~75 min) and 2 synthesis (~40 min) that’s ~115 min of 120 — it now fits, barely. Front-load the easy locks, give the all-or-nothing topics the cleanest prep.</p>';
     h += '<h2 class="sec">Exam-time strategy</h2><ol>' +
-      '<li><b>First 2 min:</b> cross off your 6 passed topics on their checklist, circle your 6 targets.</li>' +
+      '<li><b>First 2 min:</b> cross off your 7 passed topics on their checklist, circle your 5 targets.</li>' +
       '<li><b>Synthesis first (~40 min):</b> separate weight, both secret-sharing/CRT flavored, do them while fresh.</li>' +
       '<li><b>Topics confidence-first (~75 min):</b> Graph Induction → Proof Techniques → Polynomials → Secret Sharing → Stable Matching.</li>' +
       '<li><b>Pass/No Pass means finish what you start.</b> One complete correct topic beats three half-done ones.</li>' +
