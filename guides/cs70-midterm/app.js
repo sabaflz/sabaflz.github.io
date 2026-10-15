@@ -642,18 +642,7 @@
     if (btn) btn.onclick = openMenu;
   })();
 
-  // ---- theme ----
-  (function () {
-    var root = document.documentElement;
-    try { var t = store.get("theme", null); if (t) root.setAttribute("data-theme", t); } catch (e) {}
-    document.getElementById("themeBtn").onclick = function () {
-      var cur = root.getAttribute("data-theme");
-      var isDark = cur ? cur === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
-      var next = isDark ? "light" : "dark";
-      root.setAttribute("data-theme", next);
-      store.set("theme", next);
-    };
-  })();
+  // theme toggle is handled site-wide by assets/js/theme.js
 
   buildNav();
   route();
