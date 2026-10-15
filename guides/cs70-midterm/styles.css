@@ -178,6 +178,17 @@ h2.sec::after{content:""; flex:1; height:1.5px; background:var(--line)}
 .note-cols > *{break-inside:avoid}
 @media (max-width:720px){ .note-cols{columns:1} }
 
+/* how-to recipes on the cheat sheet */
+.recipe{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; margin:10px 0}
+.recipe-head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:4px}
+.recipe-name{font:600 15.5px var(--body)}
+.recipe-note{font:500 10.5px/1 var(--mono); color:var(--muted); background:var(--surface-2); border-radius:5px; padding:3px 7px; flex:0 0 auto}
+.recipe-use{margin:0 0 8px; font-size:13.5px; color:var(--muted)}
+.recipe-steps{margin:0; padding-left:20px; display:flex; flex-direction:column; gap:4px}
+.recipe-steps li{font-size:14px; line-height:1.5}
+.recipe-ex{margin-top:9px; padding:9px 12px; background:var(--surface-2); border-radius:8px; font-size:13.5px; line-height:1.5}
+.recipe-ex b{color:var(--saffron-ink)}
+
 /* practice problems */
 .prac{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; margin:10px 0}
 .prac-q{font-weight:500; margin:0 0 10px}

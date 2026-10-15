@@ -562,7 +562,7 @@
 
   function renderCheat() {
     var h = '<div class="topic-head"><h1>Complete cheat sheet</h1></div>';
-    h += '<p class="topic-sub">Every midterm topic, because synthesis questions can pull from <i>any</i> of them — including the ones you’ve already passed. Condense what you keep forgetting onto your handwritten 8.5×11 sheet (your own writing; printed tablet sheets allowed, no screenshots).</p>';
+    h += '<p class="topic-sub">The formula <i>and</i> how to run it, for every midterm topic (synthesis can pull from any of them). Recipes first for the methods people blank on, then a quick-reference grid, then synthesis strategy.</p>';
     var groups = [
       ["Propositional logic · N2", [
         "P⟹Q ≡ ¬P∨Q; false only at T⟹F; vacuously true when P false",
@@ -637,7 +637,52 @@
         "both proposing orders match ⇒ exactly one stable matching"
       ]]
     ];
-    h += '<h2 class="sec">By topic</h2>';
+    // how-to recipes (formula + the steps to run it)
+    var recipes = [
+      { name: "Modular inverse (extended Euclid)", note: "N5", use: "Find a⁻¹ mod m (exists iff gcd(a,m)=1).",
+        steps: ["Run extended Euclid on (m, a) until the remainder is 1.", "Back-substitute to write 1 = x·m + y·a.", "Then a⁻¹ ≡ y (mod m); reduce into {0,…,m−1}."],
+        ex: "3⁻¹ mod 7: 1 = 7 − 2·3, so y=−2 ≡ 5. Check 3·5=15≡1. ✓" },
+      { name: "Solve a system with CRT", note: "N6", use: "x ≡ aᵢ (mod nᵢ) with pairwise-coprime moduli.",
+        steps: ["N = n₁·n₂·…", "For each i: bᵢ = N/nᵢ; find bᵢ⁻¹ mod nᵢ; uᵢ = bᵢ·(bᵢ⁻¹ mod nᵢ).", "x = Σ aᵢuᵢ (mod N); reduce for the smallest answer."],
+        ex: "x≡2(mod3), 3(mod5): N=15; u₁=5·2=10, u₂=3·2=6; x=2·10+3·6=38≡8." },
+      { name: "RSA keys / encrypt / decrypt", note: "N7", use: "Build keys and check correctness.",
+        steps: ["N = pq, φ = (p−1)(q−1).", "Private d = e⁻¹ mod φ (extended Euclid).", "Encrypt E(x)=xᵉ mod N; decrypt y^d mod N.", "Still correct iff e·d ≡ 1 (mod φ)."],
+        ex: "p=17, q=5, e=23: N=85, φ=64, d = 23⁻¹ mod 64 = 39." },
+      { name: "Lagrange interpolation", note: "N8", use: "Unique deg≤d poly through d+1 points over GF(p) (or just P(0)).",
+        steps: ["For each point i: Δᵢ(x) = ∏ⱼ≠ᵢ(x−xⱼ) ÷ ∏ⱼ≠ᵢ(xᵢ−xⱼ). The denominator is a constant — invert it mod p.", "p(x) = Σ yᵢΔᵢ(x). Skip any point with yᵢ=0.", "Only need the secret P(0)? plug x=0 into each Δᵢ, then combine."],
+        ex: "Through (1,3),(2,5) over GF(7): slope (5−3)/(2−1)=2, so p(x)=2x+1." },
+      { name: "Shrink a huge exponent (FLT)", note: "N6/8", use: "Reduce x^(big) over GF(p).",
+        steps: ["Replace every xᵖ by x → exponent drops by (p−1); repeat until exponent < p.", "Reduce coefficients mod p too."],
+        ex: "GF(13): x²⁶ → x² (drop 12 twice); 70 ≡ 5." },
+      { name: "Secret sharing (build + recover)", note: "N9", use: "Share s so any k of n recover it.",
+        steps: ["Pick a prime q > n and > s.", "Random degree-(k−1) poly P with P(0)=s; give person i the point P(i).", "Recover: any k people Lagrange-interpolate P, then read off P(0).", "k−1 people learn nothing — every secret stays equally likely."],
+        ex: "3-of-5: degree-2 poly, secret at P(0), hand out P(1)…P(5)." },
+      { name: "Berlekamp-Welch (decode k errors)", note: "N9", use: "Received points, some corrupted, you don’t know which. Message length n, up to k errors (so n+2k points were sent).",
+        steps: ["Set up two unknown polynomials. Error-locator E(x) = xᵏ + bₖ₋₁x^(k−1) + … + b₀ (degree k, leading coeff 1). Q(x) = P·E = a_(n+k−1)x^(n+k−1) + … + a₀ (degree n+k−1). Unknowns: the k b’s and the n+k a’s = n+2k total.",
+          "Write one equation per received point (i, rᵢ): Q(i) = rᵢ·E(i). That’s n+2k linear equations, all mod p.",
+          "Solve the n+2k × n+2k linear system for every a and b.",
+          "Recover the message: P(x) = Q(x) ÷ E(x) (it divides evenly).",
+          "Error positions = the roots of E(x) (where E(i)=0)."],
+        ex: "GF(7), n=2, k=1 → 4 points. E=x+b₀, Q=a₂x²+a₁x+a₀ (4 unknowns). Four equations Q(i)=rᵢ(i+b₀); solve, then P=Q/E, and the root of E is the bad position." },
+      { name: "Euler’s formula", note: "N10", use: "Connected planar graph: v + f = e + 2. Given any two, solve the third.",
+        steps: ["Plug in what you know, solve for the missing one.", "Non-planar check: if e > 3v−6 (or e > 2v−4 when triangle-free), it can’t be planar."],
+        ex: "v=10, e=15 → f = e+2−v = 7." },
+      { name: "Propose-reject (stable matching)", note: "N11", use: "Find a stable matching by hand.",
+        steps: ["Each unmatched proposer proposes to the next name on its list.", "Each receiver keeps its best offer so far and rejects the rest.", "Repeat until everyone is matched.", "Jobs proposing → job-optimal, candidate-pessimal (and vice-versa)."],
+        ex: "Both jobs prefer 1>2, both candidates prefer A>B → (A,1),(B,2)." }
+    ];
+    h += '<h2 class="sec">How to use each method</h2>';
+    h += '<p class="sub" style="margin:-6px 0 12px">The formula plus the steps to actually run it — the ones that are easy to blank on under time.</p>';
+    recipes.forEach(function (r) {
+      h += '<div class="recipe"><div class="recipe-head"><span class="recipe-name">' + esc(r.name) + '</span><span class="recipe-note">' + esc(r.note) + "</span></div>";
+      if (r.use) h += '<p class="recipe-use">' + esc(r.use) + "</p>";
+      h += '<ol class="recipe-steps">';
+      r.steps.forEach(function (s) { h += "<li>" + esc(s) + "</li>"; });
+      h += "</ol>";
+      if (r.ex) h += '<div class="recipe-ex"><b>e.g.</b> ' + esc(r.ex) + "</div>";
+      h += "</div>";
+    });
+    h += '<h2 class="sec">Quick reference</h2>';
     h += '<div class="note-cols">';
     groups.forEach(function (g) {
       h += '<div class="note-block"><h3>' + esc(g[0]) + "</h3><ul style='margin:4px 0 0;padding-left:18px'>";
