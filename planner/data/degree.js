@@ -21,7 +21,7 @@ window.PLANNER_DEGREE = {
     { id: "linalg", group: "CS lower division", name: "Linear algebra (Math 54)", any: ["MATH 54", "MATH 56"] },
 
     { id: "ac", group: "University", name: "American Cultures", any: ["ASAMST 128AC", "HISTORY 7B"] },
-    { id: "ahi-h", group: "University", name: "AH&I: History", any: ["HISTORY 7A", "HISTORY 7B"] },
+    { id: "ahi-h", group: "University", name: "AH&I: History", any: ["HISTORY 7A", "HISTORY 7B", "CC HIST"] },
     { id: "ahi-i", group: "University", name: "AH&I: Institutions", any: ["POLSCI 1"] },
 
     { id: "cog-core", group: "CogSci minor (summer)", name: "Core: CogSci C100 / Psych C120", minor: "cogsci-core", need: 1 },
@@ -43,6 +43,7 @@ window.PLANNER_DEGREE = {
     { id: "t-tcr", text: "[removed]" },
     { id: "t-61c", text: "[removed]" },
     { id: "t-ahi", text: "[removed]" },
+    { id: "t-cc", text: "[removed]" },
     { id: "t-cog", text: "[removed]" },
     { id: "t-aid", text: "[removed]" },
     { id: "t-5th", text: "[removed]" },
