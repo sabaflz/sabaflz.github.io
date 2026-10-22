@@ -47,7 +47,7 @@ window.PLANNER_DEGREE = {
     { id: "t-aid", text: "Ask Financial Aid how summer terms and a possible 5th semester affect Pell and the Transfer Scholarship" },
     { id: "t-5th", text: "If going 5 semesters: request the 5th semester from CDSS" },
     { id: "t-c8", text: "Check ASSIST: does De Anza CIS 9 count as Data C8? If yes, skip Data 8 and go straight to Data 100" },
-    { id: "t-cog-dec", text: "Decide whether to keep the CogSci summer minor or just take CogSci C100" }
+    { id: "t-cog-dec", text: "CogSci minor plan: C100 + 112, 116 (Summer 2027) + 110, 173 (Summer 2028). Check each summer schedule when it posts" }
   ],
 
   heavy: ["EECS 151", "CS 152", "CS 162", "CS 164", "CS 169A", "CS 169L", "CS 170", "CS 184", "CS 189"],
