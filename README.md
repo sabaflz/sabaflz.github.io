@@ -14,6 +14,8 @@ My personal site. Plain HTML, CSS, and JavaScript, no build step.
 | Interactive behavior (detection box, demo, terminal) | `assets/js/main.js` |
 | Courses I've finished, degree checklist | `planner/data/degree.js` |
 | A semester's course options | `planner/data/terms/<term>.js` |
+| Course facts reused across terms | `planner/data/catalog.js` |
+| Whole-degree plans (4 and 5 semesters) | `planner/data/paths.js` |
 
 ## Common edits
 
@@ -21,7 +23,7 @@ My personal site. Plain HTML, CSS, and JavaScript, no build step.
 
 **Update the resume:** in Overleaf, Download PDF. Rename it `Saba_Feilizadeh_Resume.pdf`. In this repo, open `assets/resume/`, choose Add file, Upload files, drop it in, commit. It replaces the old one.
 
-**Plan a new semester:** copy `planner/data/terms/_template.js` to e.g. `fall-2027.js`, fill in the courses, and add its `<script>` tag in `planner/index.html` above `planner.js`. At the end of each term, move the courses you passed into `done` in `planner/data/degree.js`.
+**Plan a new semester:** copy `planner/data/terms/_template.js` to e.g. `fall-2027.js`, list what's offered (times, rooms; course facts come from `catalog.js`), and add its `<script>` tag in `planner/index.html` above `planner.js`. At the end of each term, move the courses you passed into `done` in `planner/data/degree.js`.
 
 **Hide something without deleting it:** add `hidden: true` to that object in `content.js`.
 

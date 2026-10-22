@@ -122,13 +122,6 @@ dd{margin:0}
 .w-mid{background:var(--saffron-soft); color:var(--saffron-ink)}
 .w-info{background:var(--info-soft); color:var(--info)}
 .w-good{background:var(--ok-soft); color:var(--ok)}
-.presets{margin:16px 0 0; display:grid; gap:8px}
-.presets h3{font:500 11px var(--mono); text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:0}
-.preset{cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:3px; background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:10px 12px}
-.preset:hover{border-color:var(--saffron)}
-.preset b{font:600 14px var(--display)}
-.preset span{font:500 12px var(--mono); color:var(--saffron-ink)}
-.preset small{font-size:12.5px; color:var(--muted); line-height:1.4}
 .clear{cursor:pointer; margin-top:12px; background:none; border:0; color:var(--muted); font-size:13px; text-decoration:underline}
 
 .grid{display:grid; grid-template-columns:30px repeat(5,1fr); gap:4px; margin-top:12px}
@@ -142,23 +135,57 @@ dd{margin:0}
 .blk.clash{outline:2.5px solid var(--bad); outline-offset:1px}
 .tba{font-size:12.5px; color:var(--muted); margin:10px 0 0}
 
-#reqs{margin:28px 0 0}
-#reqs h2{font:600 22px/1.2 var(--display); margin:0 0 12px}
-#reqs h2 small{font:500 12px var(--mono); color:var(--muted); margin-left:6px}
-.req-groups{display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.p-sub{font-size:13px; color:var(--muted); margin:6px 0 0}
+
+#tracker{margin:36px 0 0; padding:24px 0 0; border-top:1.5px solid var(--line)}
+.tr-head{display:flex; justify-content:space-between; align-items:flex-end; gap:12px; flex-wrap:wrap}
+.tr-head h2{font:600 clamp(1.6rem,4vw,2.2rem)/1.05 var(--display); margin:0}
+.tr-tools{display:flex; gap:8px}
+.t-sm{cursor:pointer; font:500 12.5px/1 var(--mono); background:var(--surface); border:1.5px solid var(--line); border-radius:999px; padding:8px 12px; color:var(--ink)}
+.t-sm:hover{border-color:var(--saffron)}
+.tr-note{font-size:13.5px; color:var(--muted); margin:10px 0 0}
+.tr-note b{color:var(--ink)}
+.tiles{display:grid; gap:10px; margin:16px 0 0; grid-template-columns:repeat(auto-fill,minmax(160px,1fr))}
+.tile{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:14px 16px; display:flex; flex-direction:column; gap:2px}
+.tile b{font:700 30px/1 var(--display)}
+.tile b small{font:500 15px var(--display); color:var(--muted)}
+.tile span{font-weight:600; font-size:14px}
+.tile em{font:500 11px/1.35 var(--mono); color:var(--muted); font-style:normal}
+
+.paths{margin:22px 0 0}
+.paths h3, .rg h3{font:500 11px var(--mono); text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:0 0 8px}
+.path-row{display:grid; gap:10px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.path{cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:5px; background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:14px 16px}
+.path:hover{border-color:var(--saffron)}
+.path b{font:600 16px var(--display)}
+.path small{font-size:13px; color:var(--muted); line-height:1.45}
+.path span{font:500 11.5px var(--mono); color:var(--saffron-ink)}
+
+.roadmap{display:flex; gap:8px; overflow-x:auto; margin:18px 0 0; padding-bottom:4px}
+.rm{cursor:pointer; flex:0 0 190px; text-align:left; display:flex; flex-direction:column; gap:2px; background:var(--surface); border:1.5px solid var(--line); border-top:4px solid var(--saffron); border-radius:12px; padding:10px 12px}
+.rm b{font:600 14px var(--display)}
+.rm span{font:500 11px var(--mono); color:var(--muted)}
+.rm small{font:500 12px/1.4 var(--mono)}
+
+.req-groups{display:grid; gap:12px; margin:18px 0 0; grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
 .rg{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:14px 16px}
-.rg h3{font:500 11px var(--mono); text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:0 0 8px}
-.rg ul{list-style:none; margin:0; padding:0; display:grid; gap:6px; font-size:14px}
-.rg li{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap}
-.rg li i{width:10px; height:10px; border-radius:50%; flex:none; border:2px solid var(--line); transform:translateY(1px)}
-.r-done i{background:var(--ok); border-color:var(--ok)}
-.r-plan i{background:var(--saffron); border-color:var(--saffron)}
-.r-part i{background:linear-gradient(90deg,var(--saffron) 50%,transparent 50%); border-color:var(--saffron)}
-.rg em{font:500 11px var(--mono); color:var(--muted); font-style:normal}
+.rg ul{list-style:none; margin:0; padding:0; display:grid; gap:4px; font-size:14px}
+.rg li{display:flex; align-items:flex-start; gap:6px; border-left:3px solid var(--line); padding:4px 0 4px 8px; border-radius:2px}
+.rg li label{display:flex; gap:9px; align-items:flex-start; cursor:pointer; flex:1}
+.rg li input{margin:3px 0 0; width:16px; height:16px; accent-color:var(--ok); flex:none}
+.rg li em{display:block; font:500 11px/1.4 var(--mono); color:var(--muted); font-style:normal}
+.r-done{border-left-color:var(--ok)!important}
+.r-done > label > span{color:var(--muted)}
+.r-plan{border-left-color:var(--saffron)!important}
+.r-part{border-left-color:var(--saffron)!important; border-left-style:dashed!important}
 .ru{font:500 12px var(--mono); color:var(--muted)}
-.legend{display:flex; gap:14px; flex-wrap:wrap; font:500 11px var(--mono); color:var(--muted); margin:10px 0 0}
+.rg-todo{grid-column:1 / -1}
+.todo-add{display:flex; gap:8px; margin:10px 0 0}
+.todo-add input{flex:1; font:500 14px var(--body); padding:8px 10px; background:var(--surface-2); border:1.5px solid var(--line); border-radius:10px; color:var(--ink)}
+.legend{display:flex; gap:14px; flex-wrap:wrap; font:500 11px var(--mono); color:var(--muted); margin:12px 0 0}
 .legend span{display:inline-flex; align-items:center; gap:5px}
-.legend i{width:9px; height:9px; border-radius:50%; border:2px solid var(--line)}
+.legend i{width:12px; height:3px; background:var(--line)}
+.legend .lg-done{background:var(--ok)} .legend .lg-plan{background:var(--saffron)} .legend .lg-part{background:repeating-linear-gradient(90deg,var(--saffron) 0 3px,transparent 3px 5px)}
 
 footer{padding:36px 0 56px; color:var(--muted); font-size:13.5px; border-top:1.5px solid var(--line); margin-top:36px}
 </style>
@@ -181,7 +208,7 @@ footer{padding:36px 0 56px; color:var(--muted); font-size:13.5px; border-top:1.5
   <header class="page">
     <p class="eyebrow">CS BA · CDSS</p>
     <h1>Course Planner</h1>
-    <p class="lede">Every course that matters for my degree this term, checked against what I've already finished. Add courses to see units, time conflicts, workload, and which requirements they fill.</p>
+    <p class="lede">Every course that matters for my CS degree and CogSci minor, checked against what I've finished. Plan each term, then track what's left below: units, tech electives, the minor, AH&I, and to-dos.</p>
     <div class="terms" id="terms" role="tablist" aria-label="Semesters"></div>
     <p class="intro" id="termIntro"></p>
   </header>
@@ -202,18 +229,24 @@ footer{padding:36px 0 56px; color:var(--muted); font-size:13.5px; border-top:1.5
     </aside>
   </div>
 
-  <section id="reqs" aria-label="Degree progress"></section>
-  <div class="legend"><span><i style="background:var(--ok);border-color:var(--ok)"></i>done</span><span><i style="background:var(--saffron);border-color:var(--saffron)"></i>planned</span><span><i></i>still needed</span></div>
+  <section id="tracker" aria-label="Degree tracker"></section>
 
   <footer>
     Schedules from the EECS and Berkeley class schedules, pulled October 2026. Always confirm on classes.berkeley.edu before enrolling. Your picks save in this browser only.
   </footer>
 </main>
 
-<script src="data/degree.js?v=1"></script>
-<script src="data/terms/spring-2027.js?v=1"></script>
-<!-- Add a new semester: copy data/terms/_template.js, fill it in, and add a script tag here. -->
-<script src="planner.js?v=1"></script>
+<script src="data/degree.js?v=2"></script>
+<script src="data/catalog.js?v=2"></script>
+<script src="data/paths.js?v=2"></script>
+<!-- One script per semester. New one: copy data/terms/_template.js and add its tag here. -->
+<script src="data/terms/spring-2027.js?v=2"></script>
+<script src="data/terms/summer-2027.js?v=2"></script>
+<script src="data/terms/fall-2027.js?v=2"></script>
+<script src="data/terms/spring-2028.js?v=2"></script>
+<script src="data/terms/summer-2028.js?v=2"></script>
+<script src="data/terms/fall-2028.js?v=2"></script>
+<script src="planner.js?v=2"></script>
 <script src="../assets/js/theme.js?v=1"></script>
 </body>
 </html>
