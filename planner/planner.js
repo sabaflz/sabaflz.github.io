@@ -1,15 +1,19 @@
 /*
   planner.js: renders every term in data/terms/*.js plus the degree tracker.
-  Nothing term-specific lives here. Plans and check-offs save in this browser;
-  use Export / Import to move them between devices.
+  Nothing term-specific lives here. sync.js loads your data (state.json) and calls
+  PlannerApp.start(data, { editable, onChange }). Visitors get a read-only view;
+  only admin mode can change anything, and changes save back to GitHub.
 */
-(function () {
+window.PlannerApp = { start: function (D, OPTS) {
   "use strict";
+  OPTS = OPTS || {};
+  var EDIT = !!OPTS.editable;
+  D.done = D.done || []; D.plans = D.plans || {}; D.manual = D.manual || {}; D.todos = D.todos || []; D.paths = D.paths || [];
 
   var DEG = window.PLANNER_DEGREE;
   var CATALOG = window.PLANNER_CATALOG || {};
-  var PATHS = window.PLANNER_PATHS || [];
-  var KEY = "sf_planner_v1";
+  var PATHS = D.paths;
+  var UIKEY = "sf_planner_ui";
   var DAYS = ["Mo", "Tu", "We", "Th", "Fr"];
   var DAYNAME = { Mo: "Mon", Tu: "Tue", We: "Wed", Th: "Thu", Fr: "Fri" };
   var BUCKET = { design: "Design", cs: "UD CS", cseecs: "UD CS/EE", te: "Non-CS TE" };
@@ -34,25 +38,20 @@
   Object.keys(CATALOG).forEach(function (id) { BYID[id] = CATALOG[id]; });
 
   // ---------- state ----------
-  var store = load();
-  store.plans = store.plans || {}; store.manual = store.manual || {}; store.custom = store.custom || [];
-  // pre-load the recommended path once (re-applies if the recommended path changes)
+  var store = D;   // plans, manual, done, todos, paths
+  var ui = loadUI();
   var BEST = PATHS.filter(function (p) { return p.default; })[0];
-  var BEST_VER = BEST ? BEST.id + ":" + JSON.stringify(BEST.plan) : "";
-  if (BEST && store.bestApplied !== BEST_VER) {
-    Object.keys(BEST.plan).forEach(function (tid) { store.plans[tid] = BEST.plan[tid].slice(); });
-    store.bestApplied = BEST_VER; save();
-  }
   if (BEST) TERMS.forEach(function (t) {
     (BEST.plan[t.id] || []).forEach(function (id) { var c = t.courses.filter(function (x) { return x.id === id; })[0]; if (c) c.rec = "Best pick"; });
   });
 
-  var termId = store.term && TERMS.some(function (t) { return t.id === store.term; }) ? store.term : defaultTerm();
+  var termId = ui.term && TERMS.some(function (t) { return t.id === ui.term; }) ? ui.term : defaultTerm();
   var cat = "all", query = "";
 
   function defaultTerm() { var p = TERMS.filter(function (t) { return t.status === "Planning"; }); return (p[0] || TERMS[0] || {}).id; }
-  function load() { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } }
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(store)); } catch (e) {} }
+  function loadUI() { try { return JSON.parse(localStorage.getItem(UIKEY)) || {}; } catch (e) { return {}; } }
+  function saveUI() { try { localStorage.setItem(UIKEY, JSON.stringify(ui)); } catch (e) {} }
+  function save() { if (EDIT && OPTS.onChange) OPTS.onChange(store); }
   function plan(id) { return store.plans[id || termId] || (store.plans[id || termId] = []); }
   function term(id) { id = id || termId; return TERMS.filter(function (t) { return t.id === id; })[0]; }
   function course(t, id) { return t.courses.filter(function (c) { return c.id === id; })[0]; }
@@ -78,7 +77,7 @@
 
   function doneBefore(t) {
     var set = {};
-    DEG.done.forEach(function (id) { set[id] = true; });
+    store.done.forEach(function (id) { set[id] = true; });
     TERMS.forEach(function (o) { if (o.order < t.order) plan(o.id).forEach(function (id) { set[id] = true; }); });
     return set;
   }
@@ -97,7 +96,7 @@
   }
   tabsEl.addEventListener("click", function (e) {
     var b = e.target.closest("[data-term]"); if (!b) return;
-    termId = b.getAttribute("data-term"); store.term = termId; save(); renderAll();
+    termId = b.getAttribute("data-term"); ui.term = termId; saveUI(); renderAll();
   });
 
   // ---------- filters ----------
@@ -145,12 +144,12 @@
         (c.prereqNote ? '<dt>Prereq</dt><dd>' + esc(c.prereqNote) + '</dd>' : "") + '</dl>' +
         '<p class="note">' + esc(c.note || "") + '</p><div class="c-foot">' +
         (c.link ? '<a href="' + esc(c.link) + '" target="_blank" rel="noopener">Class page ↗</a>' : '<span></span>') +
-        (taken && !inPlan ? "" : '<button type="button" class="add" data-add="' + esc(c.id) + '">' + (inPlan ? "Remove" : "Add to plan") + '</button>') +
+        (!EDIT || (taken && !inPlan) ? "" : '<button type="button" class="add" data-add="' + esc(c.id) + '">' + (inPlan ? "Remove" : "Add to plan") + '</button>') +
         '</div></article>';
     }).join("");
   }
   listEl.addEventListener("click", function (e) { var b = e.target.closest("[data-add]"); if (b) toggle(b.getAttribute("data-add")); });
-  function toggle(id) { var p = plan(), i = p.indexOf(id); if (i === -1) p.push(id); else p.splice(i, 1); save(); renderAll(); }
+  function toggle(id) { if (!EDIT) return; var p = plan(), i = p.indexOf(id); if (i === -1) p.push(id); else p.splice(i, 1); save(); renderAll(); }
 
   // ---------- plan panel ----------
   var planEl = document.getElementById("plan");
@@ -195,14 +194,14 @@
       (ids.length ? '<ul class="p-list">' + ids.map(function (id) {
         var c = course(t, id);
         return '<li><div><b>' + esc(label(id)) + '</b> <span>' + esc(c.title) + '</span><small>' + esc(meetText(c)) + '</small></div><span class="pu">' + c.units + '</span>' +
-          '<button type="button" class="x" data-add="' + esc(id) + '" aria-label="Remove ' + esc(id) + '">×</button></li>';
-      }).join("") + '</ul>' : '<p class="p-empty">Nothing yet. Add courses from the list, or load a full plan in the tracker below.</p>') +
+          (EDIT ? '<button type="button" class="x" data-add="' + esc(id) + '" aria-label="Remove ' + esc(id) + '">×</button>' : "") + '</li>';
+      }).join("") + '</ul>' : '<p class="p-empty">' + (EDIT ? "Nothing yet. Add courses from the list, or load a full plan in the tracker below." : "Nothing planned for this term.") + '</p>') +
       (warn.length ? '<ul class="warn">' + warn.map(function (w) { return '<li class="w-' + w[0] + '">' + esc(w[1]) + '</li>'; }).join("") + '</ul>' : "") +
-      (ids.length ? '<button type="button" class="clear" id="clearPlan">Clear this term</button>' : "");
+      (EDIT && ids.length ? '<button type="button" class="clear" id="clearPlan">Clear this term</button>' : "");
   }
   planEl.addEventListener("click", function (e) {
     var x = e.target.closest("[data-add]"); if (x) { toggle(x.getAttribute("data-add")); return; }
-    if (e.target.id === "clearPlan") { store.plans[termId] = []; save(); renderAll(); }
+    if (EDIT && e.target.id === "clearPlan") { store.plans[termId] = []; save(); renderAll(); }
   });
 
   // ---------- week grid ----------
@@ -235,7 +234,7 @@
   function where() {
     // id -> "done" or the name of the first term it's planned in
     var map = {};
-    DEG.done.forEach(function (id) { map[id] = "done"; });
+    store.done.forEach(function (id) { map[id] = "done"; });
     TERMS.forEach(function (t) { plan(t.id).forEach(function (id) { if (!map[id]) map[id] = t.name; }); });
     return map;
   }
@@ -282,14 +281,14 @@
     var minorRows = rows.filter(function (x) { return x.r.minor; });
     var minorHave = minorRows.reduce(function (s, x) { return s + x.have; }, 0), minorNeed = minorRows.reduce(function (s, x) { return s + x.need; }, 0);
     var ahi = rows.filter(function (x) { return /^ahi/.test(x.r.id); });
-    var todoAll = DEG.todos.concat(store.custom);
+    var todoAll = store.todos;
     var todoDone = todoAll.filter(function (x) { return man[x.id]; }).length;
     var lastTerm = TERMS.filter(function (t) { return plan(t.id).length; }).pop();
     function tile(n, of, lbl, sub) { return '<div class="tile"><b>' + n + '<small>/' + of + '</small></b><span>' + esc(lbl) + '</span>' + (sub ? '<em>' + esc(sub) + '</em>' : "") + '</div>'; }
 
     var html = '<div class="tr-head"><div><p class="eyebrow">Tracker</p><h2>What\'s left</h2></div>' +
-      '<div class="tr-tools"><button type="button" class="t-sm" id="exportBtn">Export</button><label class="t-sm">Import<input type="file" id="importIn" accept="application/json" hidden></label></div></div>' +
-      '<p class="tr-note">Counts include courses you\'ve finished plus everything planned in any term. Check a row by hand if it\'s satisfied some other way.</p>' +
+      '</div>' +
+      '<p class="tr-note">Counts include finished courses plus everything planned in any term.' + (EDIT ? ' Check a row by hand if it\'s satisfied some other way.' : '') + '</p>' +
       '<div class="tiles">' +
       tile(udU, 24, "Upper-div units", udDone + " done, " + (udU - udDone) + " planned") +
       tile(te.u >= 4 || te.st === "done" ? 1 : 0, 1, "Non-CS tech elective", te.f.ids.length ? te.f.ids.join(", ") : "4+ units needed") +
@@ -301,12 +300,12 @@
       (lastTerm ? '<p class="tr-note">Last planned term: <b>' + esc(lastTerm.name) + '</b>.</p>' : "");
 
     // paths
-    if (PATHS.length) {
+    if (EDIT && PATHS.length) {
       html += '<div class="paths"><h3>Load a full plan</h3><div class="path-row">' + PATHS.map(function (p) {
         var terms = TERMS.filter(function (t) { return (p.plan[t.id] || []).length; }).map(function (t) { return t.name; });
         return '<button type="button" class="path" data-path="' + esc(p.id) + '"><b>' + esc(p.name) + '</b><small>' + esc(p.why) + '</small>' +
           '<span>' + esc(terms[0] + " to " + terms[terms.length - 1]) + '</span></button>';
-      }).join("") + '</div><p class="tr-note">Loading a plan replaces your picks in those terms. Export first if you want a backup.</p></div>';
+      }).join("") + '</div><p class="tr-note">Loading a plan replaces your picks in those terms.</p></div>';
     }
 
     // per-term summary
@@ -324,40 +323,32 @@
     Object.keys(groups).forEach(function (g) {
       html += '<div class="rg"><h3>' + esc(g) + '</h3><ul>' + groups[g].map(function (x) {
         var detail = x.pool.map(function (id) { return label(id) + (at[id] === "done" ? "" : " (" + at[id] + ")"); }).join(", ");
-        return '<li class="r-' + x.st + '"><label><input type="checkbox" data-man="' + esc(x.r.id) + '"' + (man[x.r.id] || x.st === "done" ? " checked" : "") + (x.st === "done" && !man[x.r.id] ? " disabled" : "") + '>' +
+        return '<li class="r-' + x.st + '"><label><input type="checkbox" data-man="' + esc(x.r.id) + '"' + (man[x.r.id] || x.st === "done" ? " checked" : "") + (!EDIT || (x.st === "done" && !man[x.r.id]) ? " disabled" : "") + '>' +
           '<span>' + esc(x.r.name) + (x.need > 1 ? ' <span class="ru">' + x.have + '/' + x.need + '</span>' : "") + (detail ? '<em>' + esc(detail) + '</em>' : "") + '</span></label></li>';
       }).join("") + '</ul></div>';
     });
     html += '<div class="rg"><h3>Upper division (24 units)</h3><ul>' + udRows.map(function (x) {
       var detail = x.f.ids.map(function (id) { return label(id) + (at[id] === "done" ? "" : " (" + at[id] + ")"); }).join(", ");
-      return '<li class="r-' + x.st + '"><label><input type="checkbox" data-man="ud-' + x.b.key + '"' + (man["ud-" + x.b.key] || x.st === "done" ? " checked" : "") + (x.st === "done" && !man["ud-" + x.b.key] ? " disabled" : "") + '>' +
+      return '<li class="r-' + x.st + '"><label><input type="checkbox" data-man="ud-' + x.b.key + '"' + (man["ud-" + x.b.key] || x.st === "done" ? " checked" : "") + (!EDIT || (x.st === "done" && !man["ud-" + x.b.key]) ? " disabled" : "") + '>' +
         '<span>' + esc(x.b.name) + ' <span class="ru">' + x.u + '/' + x.b.units + ' u</span>' + (detail ? '<em>' + esc(detail) + '</em>' : "") + '</span></label></li>';
     }).join("") + '</ul></div>';
 
     // to-dos
     html += '<div class="rg rg-todo"><h3>To-dos</h3><ul>' + todoAll.map(function (x) {
-      var custom = store.custom.some(function (c) { return c.id === x.id; });
-      return '<li class="' + (man[x.id] ? "r-done" : "r-todo") + '"><label><input type="checkbox" data-man="' + esc(x.id) + '"' + (man[x.id] ? " checked" : "") + '><span>' + esc(x.text) + '</span></label>' +
-        (custom ? '<button type="button" class="x" data-deltodo="' + esc(x.id) + '" aria-label="Delete to-do">×</button>' : "") + '</li>';
-    }).join("") + '</ul><form id="todoForm" class="todo-add"><input id="todoIn" placeholder="Add a to-do" aria-label="New to-do"><button type="submit" class="t-sm">Add</button></form></div>';
+      return '<li class="' + (man[x.id] ? "r-done" : "r-todo") + '"><label><input type="checkbox" data-man="' + esc(x.id) + '"' + (man[x.id] ? " checked" : "") + (EDIT ? "" : " disabled") + '><span>' + esc(x.text) + '</span></label>' +
+        (EDIT ? '<button type="button" class="x" data-deltodo="' + esc(x.id) + '" aria-label="Delete to-do">×</button>' : "") + '</li>';
+    }).join("") + '</ul>' + (EDIT ? '<form id="todoForm" class="todo-add"><input id="todoIn" placeholder="Add a to-do" aria-label="New to-do"><button type="submit" class="t-sm">Add</button></form>' : "") + '</div>';
     html += '</div>';
     html += '<div class="legend"><span><i class="lg-done"></i>done</span><span><i class="lg-plan"></i>planned</span><span><i class="lg-part"></i>partly planned</span><span><i></i>still needed</span></div>';
     trackEl.innerHTML = html;
   }
   trackEl.addEventListener("change", function (e) {
+    if (!EDIT) return;
     var id = e.target.getAttribute && e.target.getAttribute("data-man");
     if (id) { if (e.target.checked) store.manual[id] = true; else delete store.manual[id]; save(); renderTracker(); return; }
-    if (e.target.id === "importIn" && e.target.files[0]) {
-      var r = new FileReader();
-      r.onload = function () {
-        try { var d = JSON.parse(r.result); if (!d || typeof d !== "object" || !d.plans) throw 0; store = d; store.manual = store.manual || {}; store.custom = store.custom || []; save(); renderAll(); }
-        catch (err) { alert("That file isn't a planner export."); }
-      };
-      r.readAsText(e.target.files[0]);
-    }
   });
   trackEl.addEventListener("click", function (e) {
-    var p = e.target.closest("[data-path]");
+    var p = EDIT && e.target.closest("[data-path]");
     if (p) {
       var path = PATHS.filter(function (x) { return x.id === p.getAttribute("data-path"); })[0];
       if (!confirm('Load "' + path.name + '"? This replaces your picks in those terms.')) return;
@@ -365,22 +356,17 @@
       save(); renderAll(); return;
     }
     var rm = e.target.closest(".rm[data-term]");
-    if (rm) { termId = rm.getAttribute("data-term"); store.term = termId; save(); renderAll(); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
-    var del = e.target.closest("[data-deltodo]");
-    if (del) { var id = del.getAttribute("data-deltodo"); store.custom = store.custom.filter(function (c) { return c.id !== id; }); delete store.manual[id]; save(); renderTracker(); return; }
-    if (e.target.id === "exportBtn") {
-      var blob = new Blob([JSON.stringify(store, null, 2)], { type: "application/json" });
-      var a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "course-planner-backup.json"; a.click();
-      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
-    }
+    if (rm) { termId = rm.getAttribute("data-term"); ui.term = termId; saveUI(); renderAll(); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    var del = EDIT && e.target.closest("[data-deltodo]");
+    if (del) { var id = del.getAttribute("data-deltodo"); store.todos = store.todos.filter(function (c) { return c.id !== id; }); delete store.manual[id]; save(); renderTracker(); return; }
   });
   trackEl.addEventListener("submit", function (e) {
-    if (e.target.id !== "todoForm") return; e.preventDefault();
+    if (!EDIT || e.target.id !== "todoForm") return; e.preventDefault();
     var v = document.getElementById("todoIn").value.trim(); if (!v) return;
-    store.custom.push({ id: "c-" + Date.now(), text: v }); save(); renderTracker();
+    store.todos.push({ id: "c-" + Date.now(), text: v }); save(); renderTracker();
   });
 
   function renderIntro() { var t = term(); document.getElementById("termIntro").innerHTML = t ? '<b>' + esc(t.name) + '</b> · ' + esc(t.dates || "") + '<br>' + esc(t.intro || "") : ""; }
   function renderAll() { renderTabs(); renderIntro(); renderChips(); renderList(); renderPlan(); renderWeek(); renderTracker(); }
   renderAll();
-})();
+} };

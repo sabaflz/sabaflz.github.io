@@ -12,10 +12,10 @@ My personal site. Plain HTML, CSS, and JavaScript, no build step.
 | Colors and fonts | tokens at the top of `assets/css/main.css` |
 | Page layout and section order | `index.html` |
 | Interactive behavior (detection box, demo, terminal) | `assets/js/main.js` |
-| Courses I've finished, degree checklist | `planner/data/degree.js` |
+| Degree requirement structure | `planner/data/degree.js` |
 | A semester's course options | `planner/data/terms/<term>.js` |
 | Course facts reused across terms | `planner/data/catalog.js` |
-| Whole-degree plans (4 and 5 semesters) | `planner/data/paths.js` |
+| My plans, check-offs, to-dos | `planner/data/state.json`, edited on the page in admin mode |
 
 ## Common edits
 
@@ -36,3 +36,10 @@ python3 -m http.server 8000
 ```
 
 Then visit http://localhost:8000.
+
+## Planner admin
+
+Visitors only see the planner when it's set to "Everyone", and even then it's read-only. To edit:
+open the planner, click **Admin** at the bottom, and paste a fine-grained GitHub token
+(this repo only, Contents: Read and write). The admin bar switches who can see it.
+"Only me" encrypts `state.json` with your passphrase; it isn't stored anywhere, so don't lose it.

@@ -1,16 +1,9 @@
 /*
-  degree.js: what I've finished and everything the degree (and minor) still asks for.
-  At the end of each term, move passed courses into `done`.
-  Anything can also be checked off by hand on the page (saved in this browser).
+  degree.js: the requirement structure (public, generic). Your personal data
+  (finished courses, plans, check-offs, to-dos) lives in state.json and is edited
+  on the page in admin mode.
 */
 window.PLANNER_DEGREE = {
-  // Finished, in progress, or satisfied by De Anza transfer credit.
-  // Fall 2026 courses are listed so later prereqs unlock; remove one if it doesn't pass.
-  done: [
-    "CS 61A", "CS 70", "ASAMST 128AC",          // Berkeley, Fall 2026
-    "MATH 1A", "MATH 1B", "MATH 53", "MATH 54", "IGETC"  // De Anza (confirm on your Transfer Credit Report)
-  ],
-
   // Checklist. A row is met when `need` distinct courses from `any` are done or planned.
   checklist: [
     { id: "cs61a", group: "CS lower division", name: "CS 61A", any: ["CS 61A"] },
@@ -39,21 +32,6 @@ window.PLANNER_DEGREE = {
     { key: "cs", name: "Upper-div CS", units: 8 },
     { key: "cseecs", name: "Upper-div CS/EE/EECS", units: 8 },
     { key: "te", name: "Non-CS technical elective", units: 4 }
-  ],
-
-  // Things to do that aren't courses. Check them off on the page.
-  todos: [
-    { id: "t-47b", text: "[removed]" },
-    { id: "t-tcr", text: "[removed]" },
-    { id: "t-61c", text: "[removed]" },
-    { id: "t-ahi", text: "[removed]" },
-    { id: "t-cc", text: "[removed]" },
-    { id: "t-cog", text: "[removed]" },
-    { id: "t-aid", text: "[removed]" },
-    { id: "t-5th", text: "[removed]" },
-    { id: "t-c8", text: "[removed]" },
-    { id: "t-es", text: "[removed]" },
-    { id: "t-cog-dec", text: "[removed]" }
   ],
 
   heavy: ["EECS 151", "CS 152", "CS 162", "CS 164", "CS 169A", "CS 169L", "CS 170", "CS 184", "CS 189"],
