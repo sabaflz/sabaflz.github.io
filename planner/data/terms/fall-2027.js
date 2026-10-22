@@ -17,7 +17,6 @@
     { id: "CS 184", meet: [], location: "Schedule TBA" },
     { id: "CS 162", meet: [], location: "Schedule TBA" },
     { id: "CS 164", meet: [], location: "Schedule TBA" },
-    { id: "CS C176", meet: [], location: "Schedule TBA" },
     { id: "COGSCI C100", meet: [], location: "Schedule TBA" },
     { id: "COGSCI 131", meet: [], location: "Schedule TBA" },
     { id: "DATA C100", meet: [], location: "Schedule TBA" },

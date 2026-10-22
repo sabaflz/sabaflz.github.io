@@ -74,7 +74,7 @@ window.PLANNER_CATALOG = {
   "CS 174": { title: "Combinatorics and Discrete Probability", units: 4, cat: ["ud"], ud: ["cs", "cseecs"], prereq: [["CS 170"]],
     note: "Theory. Not on the 2026-27 schedule, so it may not run before you graduate.", link: "https://www2.eecs.berkeley.edu/Courses/CS174/" },
   "CS C176": { title: "Algorithms for Computational Biology", units: 4, cat: ["ud"], ud: ["cs", "cseecs"],
-    prereq: [["CS 70"], ["CS 170"]], note: "Lines up with DNA and genomics research. Needs 170.",
+    prereq: [["CS 70"], ["CS 170"]], note: "Lines up with DNA and genomics research. Needs 170. Spring-only lately.",
     link: "https://www2.eecs.berkeley.edu/Courses/CS176/" },
   "CS 172": { title: "Computability and Complexity", units: 4, cat: ["ud"], ud: ["cs", "cseecs"],
     prereq: [["CS 170"]], note: "Theory follow-up to 170.", link: "https://www2.eecs.berkeley.edu/Courses/CS172/" },
