@@ -128,8 +128,9 @@
       var status = taken ? '<span class="st st-done">Already done or planned earlier</span>'
         : miss.length ? '<span class="st st-lock">Needs ' + esc(miss.join(", ")) + '</span>' : '<span class="st st-ok">Eligible</span>';
       var flags = (c.rec ? '<span class="st st-rec">' + esc(c.rec) + '</span>' : "") +
+        (c.load ? '<span class="st st-heavy" title="Workload, 1 light to 5 very heavy">Load ' + c.load + '/5</span>' : "") +
         (c.verify ? '<span class="st st-ver" title="Something here still needs checking">Verify</span>' : "") +
-        (DEG.heavy.indexOf(c.id) !== -1 ? '<span class="st st-heavy">Heavy</span>' : "");
+        "";
       var counts = (c.ud || []).map(function (k) { return BUCKET[k]; });
       if ((c.minor || []).length) counts.push((c.minor || []).indexOf("cogsci-core") !== -1 ? "CogSci minor core" : "CogSci minor topical");
       if ((c.cat || []).indexOf("ahi") !== -1) counts.push("AH&I");
@@ -182,6 +183,9 @@
     if (ids.some(function (id) { return course(t, id).verify; })) warn.push(["info", "Some picks are flagged Verify; see their cards."]);
     if (ids.length && !warn.some(function (w) { return w[0] !== "info"; })) warn.unshift(["good", "No conflicts, prereqs met, unit load in range."]);
 
+    var load = ids.reduce(function (s2, id) { return s2 + (course(t, id).load || 0); }, 0);
+    var lvl = load <= 8 ? ["light", "good"] : load <= 12 ? ["balanced", "good"] : load <= 13.5 ? ["heavy", "mid"] : ["overloaded", "bad"];
+    if (ids.length && !t.summer) warn.unshift([lvl[1], "Workload " + load + " (" + lvl[0] + "). Balanced is about 10 to 12 on this scale."]);
     var cap = t.summer ? 12 : DEG.maxUnits;
     planEl.innerHTML =
       '<div class="p-head"><h2>My ' + esc(t.name) + ' plan</h2><span class="p-units"><b>' + units + '</b> units</span></div>' +
@@ -309,7 +313,8 @@
     html += '<div class="roadmap">' + TERMS.map(function (t) {
       var p = plan(t.id); if (!p.length) return "";
       var u = p.reduce(function (s, id) { var c = course(t, id) || info(id); return s + (c.units || 0); }, 0);
-      return '<button type="button" class="rm" data-term="' + esc(t.id) + '"><b>' + esc(t.name) + '</b><span>' + u + ' u</span><small>' + esc(p.map(label).join(" · ")) + '</small></button>';
+      var ld = p.reduce(function (s, id) { var c = course(t, id) || info(id); return s + (c.load || 0); }, 0);
+      return '<button type="button" class="rm" data-term="' + esc(t.id) + '"><b>' + esc(t.name) + '</b><span>' + u + ' u · load ' + ld + '</span><small>' + esc(p.map(label).join(" · ")) + '</small></button>';
     }).join("") + '</div>';
 
     // checklist groups
