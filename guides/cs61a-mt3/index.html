@@ -1,0 +1,479 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CS 61A Midterm 3 Guide</title>
+<meta name="description" content="Full reference for the CS 61A Fall 2026 Midterm 3: scope, what's likely, a complete cheatsheet (trees, generators, OOP, mutation, iterators, recursion, linked lists), problem-type attack plans, note-sheet advice, and a practice plan.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='40' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>61A</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.6 var(--body);
+  -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron); outline-offset:3px; border-radius:3px}
+
+#topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--bg); border-bottom:1.5px solid var(--line)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:16px; max-width:1180px; margin:0 auto; padding:14px clamp(16px,4vw,40px)}
+.nav .mark{font:800 20px/1 var(--display); text-decoration:none; letter-spacing:-.02em}
+.crumbs{font:500 14px var(--body); color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.crumbs a{text-decoration:none} .crumbs a:hover{color:var(--saffron-ink)} .crumbs b{color:var(--ink)}
+.crumbs span{margin:0 6px; color:var(--line)}
+.t-btn{font:500 13px/1 var(--mono); background:var(--surface); color:var(--ink);
+  border:1.5px solid var(--line); border-radius:999px; padding:8px 13px; cursor:pointer; white-space:nowrap}
+.t-btn:hover{border-color:var(--saffron)}
+
+#exam-strip{background:var(--saffron-soft); border-bottom:1.5px solid var(--line); color:var(--saffron-ink);
+  font:500 13.5px/1.4 var(--mono); text-align:center; padding:9px 16px}
+#exam-strip b{font-weight:700}
+
+#layout{display:grid; grid-template-columns:260px minmax(0,1fr); gap:0; max-width:1180px; margin:0 auto}
+#sidebar{position:sticky; top:96px; align-self:start; height:calc(100vh - 110px); overflow-y:auto;
+  padding:28px 10px 28px clamp(16px,4vw,40px)}
+.side-head{font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 12px}
+#toc{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px}
+#toc a{display:block; text-decoration:none; color:var(--muted); font-size:14.5px; padding:7px 12px; border-radius:9px; border-left:2.5px solid transparent}
+#toc a:hover{background:var(--surface-2); color:var(--ink)}
+#toc a.active{color:var(--saffron-ink); border-left-color:var(--saffron); background:var(--surface-2); font-weight:600}
+
+#main{padding:30px clamp(16px,4vw,40px) 80px; min-width:0}
+header.page{padding:14px 0 10px}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--saffron-ink); margin:0 0 10px}
+h1{font:600 clamp(2rem,6vw,2.8rem)/1.05 var(--display); margin:0 0 12px; letter-spacing:-.01em; text-wrap:balance}
+.lede{color:var(--muted); max-width:66ch; margin:0 0 8px}
+.cta-row{display:flex; flex-wrap:wrap; gap:10px; margin:18px 0 6px}
+.cta{display:inline-flex; align-items:center; gap:7px; text-decoration:none; font:600 14.5px var(--body);
+  background:var(--saffron); color:var(--on-saffron); border:1.5px solid var(--saffron); border-radius:999px; padding:10px 18px}
+.cta.ghost{background:transparent; color:var(--ink); border-color:var(--line)}
+.cta.ghost:hover{border-color:var(--saffron)}
+
+section.topic{padding:30px 0; border-top:1.5px solid var(--line); scroll-margin-top:150px}
+section.topic:first-of-type{border-top:none}
+h2{font:600 clamp(1.4rem,3.5vw,1.9rem)/1.1 var(--display); margin:0 0 14px; letter-spacing:-.01em}
+h3{font:600 17px/1.2 var(--mono); color:var(--saffron-ink); margin:26px 0 8px; letter-spacing:.01em}
+p{margin:0 0 14px; max-width:72ch}
+ul,ol{margin:0 0 14px; padding-left:22px; max-width:72ch} li{margin:5px 0}
+strong{font-weight:600}
+code{font:500 14px var(--mono); background:var(--surface-2); border:1px solid var(--line); border-radius:5px; padding:1px 5px}
+pre{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; overflow:auto; margin:0 0 16px}
+pre code{background:none; border:none; padding:0; font-size:13.5px; line-height:1.55; color:var(--ink); white-space:pre}
+.callout{background:var(--surface-2); border:1.5px solid var(--line); border-left:3px solid var(--saffron); border-radius:12px; padding:14px 18px; margin:0 0 16px}
+.callout.warn{border-left-color:#C64545}
+.callout p:last-child{margin-bottom:0}
+
+table{border-collapse:collapse; width:100%; margin:0 0 16px; font-size:14.5px; display:block; overflow-x:auto}
+th,td{border:1.5px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top}
+th{background:var(--surface-2); font:600 13px var(--mono); letter-spacing:.02em}
+td code{font-size:13px}
+
+footer{border-top:1.5px solid var(--line); padding:28px 0 10px; color:var(--muted); font-size:14px; margin-top:10px}
+#menuBtn{display:none}
+
+@media (max-width:860px){
+  #layout{grid-template-columns:1fr}
+  #sidebar{display:none}
+  #main{padding-top:22px}
+}
+</style>
+</head>
+<body>
+<header id="topbar">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="../../" aria-label="Back to site">SF</a>
+    <div class="crumbs"><a href="../">Study Guides</a> <span>/</span> <b>CS 61A Midterm 3</b></div>
+    <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+  </nav>
+</header>
+
+<div id="exam-strip">
+  <b>Midterm 3</b> · Tuesday Oct 27, 8:00–10:00pm · 110 minutes · on paper · study guides + 2 note sheets allowed
+</div>
+
+<div id="layout">
+  <aside id="sidebar" aria-label="Sections">
+    <div class="side-head">On this page</div>
+    <ul id="toc">
+      <li><a href="#scope">Scope &amp; format</a></li>
+      <li><a href="#likely">What's likely</a></li>
+      <li><a href="#cheat1">Cheatsheet: foundations</a></li>
+      <li><a href="#cheat2">Cheatsheet: new topics</a></li>
+      <li><a href="#attack">Problem types &amp; attack plans</a></li>
+      <li><a href="#notes">Your note sheets</a></li>
+      <li><a href="#plan">Practice plan</a></li>
+      <li><a href="#videos">Videos</a></li>
+    </ul>
+  </aside>
+
+  <main id="main">
+    <header class="page">
+      <p class="eyebrow">Reference · Fall 2026</p>
+      <h1>CS 61A Midterm 3 Guide</h1>
+      <p class="lede">Everything for the Midterm 3 scope in one place: the exact topics, what past exams say is likely, a full cheatsheet across trees, generators, OOP, mutation, iterators, recursion and linked lists, step-by-step attack plans for each problem type, what to put on your note sheets, and a day-by-day plan. Built from the FA26 study guide and past Midterm 2 exams.</p>
+      <div class="cta-row">
+        <a class="cta" href="../cs61a-mt3-practice/">Open the practice app →</a>
+        <a class="cta ghost" href="https://cs61a.org/fa26/resources/" target="_blank" rel="noopener">CS 61A resources ↗</a>
+      </div>
+    </header>
+
+    <section class="topic" id="scope">
+      <h2>Scope &amp; format</h2>
+      <p>Midterm 3 is <strong>Tuesday 10/27, 8:00–10:00pm, 110 minutes, on paper.</strong> Materials start at 8:00, the exam starts 8:10. You get a seat assignment by email Monday night; email <code>cs61a@berkeley.edu</code> if it hasn't arrived by Tuesday morning. The three study guides (MT1, MT2, MT3) and scratch paper are provided.</p>
+      <p>Because it's on paper there's no autograder to lean on: your code has to be right by reading, and partial credit is on the table, so write the structure even when you're unsure of a detail.</p>
+      <p><strong>You may bring:</strong> pencils (plus a spare), photo ID, two 8.5×11 sheets of notes (front and back) you make yourself, a drink, non-digital ear plugs. Everything else is closed.</p>
+      <h3>In scope (through Lecture 24, Efficiency)</h3>
+      <ul>
+        <li>Recursion and tree recursion</li>
+        <li>Sequences: lists, slicing, comprehensions, <code>for</code>, ranges, aggregation</li>
+        <li>Dictionaries</li>
+        <li>Higher-order functions and lambdas</li>
+        <li>Linked lists (non-mutating)</li>
+        <li><strong>Trees</strong> (the <code>Tree</code> label/branches abstraction)</li>
+        <li><strong>List and dictionary mutation</strong> (<code>append</code>, <code>pop</code>, item assignment, <code>+=</code>, aliasing, <code>is</code> vs <code>==</code>)</li>
+        <li><strong>Box-and-pointer / environment diagrams</strong>, including closures that hold state</li>
+        <li><strong>Iterators</strong> (<code>iter</code>, <code>next</code>, <code>StopIteration</code>) and <strong>lazy evaluation</strong> (<code>map</code>, <code>filter</code>, <code>zip</code>, <code>reversed</code>)</li>
+        <li><strong>Generators</strong> (<code>yield</code>, <code>yield from</code>, recursive generators)</li>
+        <li><strong>OOP</strong>: classes, <code>__init__</code>, <code>self</code>, class vs instance attributes, methods, <strong>inheritance</strong> and <code>super()</code></li>
+        <li><strong>Memoization</strong></li>
+      </ul>
+      <div class="callout warn">
+        <p><strong>Explicitly NOT on this exam</strong> (staff said so directly): orders of growth, linked-list mutation, tree mutation, <code>repr</code> strings, and special method names like <code>__add__</code> / <code>__iter__</code>.</p>
+      </div>
+      <p>You still need <code>__init__</code>, <code>__str__</code>, and ordinary methods, but not <code>__repr__</code> or operator methods. And since tree and linked-list <em>mutation</em> are out, every tree/linked-list answer <strong>builds and returns a new structure</strong> rather than changing one in place.</p>
+      <p>One naming note: this exam is scoped like past semesters' <strong>Midterm 2</strong>, so when you pull old exams for practice, use the Midterm 2 papers, not old Midterm 3s.</p>
+    </section>
+
+    <section class="topic" id="likely">
+      <h2>What's likely to appear</h2>
+      <p>Past Midterm 2 exams (which match this scope) are remarkably consistent. The heaviest new weight is on trees, generators, and OOP.</p>
+      <table>
+        <thead><tr><th>Question type</th><th>Likelihood</th><th>What it looks like</th></tr></thead>
+        <tbody>
+          <tr><td>What Would Python Display</td><td>Near-certain</td><td>A block of expressions. On MT3 this leans on iterators (<code>next</code>, exhausted <code>StopIteration</code>), lazy <code>map</code>/<code>filter</code>/<code>zip</code>, mutation &amp; aliasing, and object attribute lookup</td></tr>
+          <tr><td>Trees</td><td>Near-certain</td><td>A function over a <code>Tree</code>: sum/count/height, or build a new tree (prune, transform, filter paths)</td></tr>
+          <tr><td>Generators</td><td>Near-certain</td><td>Write a generator with <code>yield</code> / <code>yield from</code>, often recursive, often over a tree or to enumerate possibilities</td></tr>
+          <tr><td>OOP + inheritance</td><td>Very likely</td><td>Define/complete classes with <code>__init__</code>, methods, a subclass that overrides and calls <code>super()</code>; or a stateful object</td></tr>
+          <tr><td>Environment / box-and-pointer</td><td>Very likely</td><td>Draw frames and values for code with mutation, a closure holding state, or aliasing</td></tr>
+          <tr><td>Tree recursion (counting/choices)</td><td>Likely</td><td>Count or enumerate with the with-it/without-it pattern, sometimes combined with a generator</td></tr>
+          <tr><td>Mutation function</td><td>Likely</td><td>Write a function that changes a list or dict in place and returns <code>None</code></td></tr>
+          <tr><td>Linked lists</td><td>Likely</td><td>A recursive function building a new linked list (no mutation this time)</td></tr>
+        </tbody>
+      </table>
+      <div class="callout">
+        <p>It's on paper with partial credit, so the scoring reality differs from the CBTF midterm: <strong>write the skeleton even when stuck.</strong> A tree function with the right base case and recursive shape but one wrong detail earns most of the points; a blank earns zero.</p>
+      </div>
+      <p>The three topics that decide your score, because they're new and heavily weighted: <strong>trees, generators, and OOP.</strong> If those feel automatic, you've secured the bulk of the exam. WWPD and a diagram are free points if you slow down.</p>
+    </section>
+
+    <section class="topic" id="cheat1">
+      <h2>Cheatsheet: the foundations</h2>
+      <h3>The recursion skeleton</h3>
+      <p>Everything is a variation of this: (1) state what the function takes and returns, (2) base case for the smallest input, (3) recurse on a smaller input, trust it, combine.</p>
+<pre><code>def sum_digits(n):          # positive int -&gt; sum of its digits
+    if n &lt; 10:              # base case
+        return n
+    return sum_digits(n // 10) + n % 10</code></pre>
+      <h3>Tree recursion (more than one call)</h3>
+      <p>"Try each choice": base cases for success and failure, one recursive call per branch, combine (add for counting, <code>max</code>/<code>min</code> for best).</p>
+<pre><code>def count_ways(n, m):       # ways to build n from parts up to m
+    if n == 0:
+        return 1            # one complete way
+    if n &lt; 0 or m == 0:
+        return 0            # dead end
+    return count_ways(n - m, m) + count_ways(n, m - 1)   # use m / skip m</code></pre>
+      <h3>Lists &amp; slicing</h3>
+<pre><code>s = [6, 5, 4, 3, 2, 1, 0]
+s[0], s[-1]        # 6, 0
+s[1:3]             # [5, 4]   end excluded
+s[:3], s[3:]       # [6,5,4], [3,2,1,0]
+s[::-1]            # reversed
+s[10:]             # []   slicing never errors
+s[10]              # IndexError   indexing can</code></pre>
+      <h3>Comprehensions</h3>
+<pre><code>[x*x for x in range(4) if x % 2 == 0]   # [0, 4]
+{x: x*x for x in range(3)}              # {0:0, 1:1, 2:4}</code></pre>
+      <p>The loop variable isn't bound after the comprehension.</p>
+      <h3>Aggregation</h3>
+      <p><code>sum(s, start)</code>, <code>max(s, key=...)</code>, <code>min(s, key=...)</code>, <code>len</code>, <code>all</code>, <code>any</code>. Empty cases bite: <code>all([])</code> is <code>True</code>, <code>any([])</code> is <code>False</code>, <code>sum([])</code> is <code>0</code>. <code>max([1,-2], key=abs)</code> is <code>-2</code> (key ranks, returns the element).</p>
+      <h3>Dictionaries</h3>
+<pre><code>d = {'a': 1, 'b': 2}
+d['a']              # 1
+d['z']              # KeyError
+d.get('z', 0)       # 0   safe lookup
+'a' in d            # checks KEYS not values
+list(d)             # ['a', 'b']   the keys
+list(d.values())    # [1, 2]</code></pre>
+      <h3>Lambda &amp; higher-order functions</h3>
+<pre><code>square = lambda x: x * x          # one-expression anonymous function
+curry2 = lambda f: lambda x: lambda y: f(x, y)
+curry2(add)(3)(4)                 # 7</code></pre>
+      <p>Free variables in a lambda are looked up when it's <em>called</em>, not when it's defined.</p>
+      <h3>Linked lists (non-mutating)</h3>
+      <p><code>Link</code> has <code>.first</code> and <code>.rest</code>; empty is <code>()</code>; no indexing, walk with <code>.rest</code>; test empty with <code>not isinstance(s, Link)</code>.</p>
+<pre><code>s = Link(3, Link(4, Link(5)))   # (3 4 5)
+s.first, s.rest.first           # 3, 4
+
+def length(s):                  # recursive
+    if not isinstance(s, Link):
+        return 0
+    return 1 + length(s.rest)
+
+def range_link(a, b):           # build a NEW one
+    if a &gt;= b:
+        return ()
+    return Link(a, range_link(a + 1, b))</code></pre>
+      <p>Because linked-list mutation is out of scope, every linked-list answer <strong>builds a new <code>Link</code> chain</strong> with the recursive result as its <code>.rest</code>, exactly like <code>range_link</code>.</p>
+    </section>
+
+    <section class="topic" id="cheat2">
+      <h2>Cheatsheet: the new MT3 topics</h2>
+      <p>Where the exam's new weight is. Learn the Tree template, the generator template, and the class template cold.</p>
+      <h3>Trees</h3>
+      <p>A <code>Tree</code> has a <code>label</code> and a list of <code>branches</code>, each itself a <code>Tree</code>. A leaf has no branches.</p>
+<pre><code>t = Tree(1, [Tree(2), Tree(3, [Tree(4)])])
+t.label               # 1
+t.branches[0].label   # 2
+
+def is_leaf(t):
+    return not t.branches</code></pre>
+      <p>Universal template: do something with <code>t.label</code>, recurse on each branch, combine (usually a comprehension).</p>
+<pre><code>def tree_sum(t):
+    return t.label + sum([tree_sum(b) for b in t.branches])
+
+def count_leaves(t):
+    if is_leaf(t):
+        return 1
+    return sum([count_leaves(b) for b in t.branches])
+
+def height(t):                       # edges in longest path; leaf = 0
+    if is_leaf(t):
+        return 0
+    return 1 + max([height(b) for b in t.branches])</code></pre>
+      <p>To <strong>build a new tree</strong> (how every transform works, since mutation is out): construct <code>Tree(new_label, [recurse(b) for b in t.branches])</code>.</p>
+<pre><code>def double(t):
+    return Tree(t.label * 2, [double(b) for b in t.branches])</code></pre>
+      <h3>List mutation</h3>
+      <p>These change the list in place and the mutating methods <strong>return <code>None</code></strong>:</p>
+<pre><code>s = [1, 2, 3]
+s.append(4)        # [1,2,3,4]
+s.pop()            # returns 4, s is [1,2,3]
+s.pop(0)           # returns 1, s is [2,3]
+s.remove(2)        # removes first 2 by value
+s.insert(1, 9)     # inserts, shifts right
+s.extend([7,8])    # adds each element
+s[0] = 99          # item assignment</code></pre>
+      <p><code>+=</code> mutates a list in place; <code>+</code> makes a new one. Classic diagram trap:</p>
+<pre><code>a = [1, 2]; b = a
+a += [3]           # a and b are BOTH [1,2,3]  (same object)
+a = a + [4]        # a is new [1,2,3,4]; b still [1,2,3]</code></pre>
+      <p><code>is</code> tests same object; <code>==</code> tests same value.</p>
+      <h3>Dictionary mutation</h3>
+<pre><code>d = {'a': 1}
+d['b'] = 2         # add key
+d['a'] += 1        # update value
+d.pop('a')         # remove, returns value</code></pre>
+      <p>Adding keys to a dict while iterating over it raises <code>RuntimeError</code>.</p>
+      <h3>Iterators &amp; lazy evaluation</h3>
+      <p><code>iter(x)</code> makes an iterator; <code>next(it)</code> pulls the next value; past the end raises <code>StopIteration</code>.</p>
+<pre><code>it = iter([3, 1, 4])
+next(it)           # 3
+next(it)           # 1</code></pre>
+      <p><code>map</code>, <code>filter</code>, <code>zip</code>, <code>reversed</code> are <strong>lazy</strong>: they return iterators, not lists. Nothing is computed until you pull from them (or wrap in <code>list</code>/<code>tuple</code>/<code>sorted</code>). A half-consumed iterator remembers where it left off.</p>
+<pre><code>m = map(lambda x: x*10, [1, 2, 3])
+next(m)            # 10
+list(m)            # [20, 30]  (the 10 is already gone)</code></pre>
+      <h3>Generators</h3>
+      <p>A function with <code>yield</code> is a generator: calling it returns an iterator, each <code>yield</code> produces one value and pauses until the next pull.</p>
+<pre><code>def countdown(n):
+    while n &gt; 0:
+        yield n
+        n -= 1
+list(countdown(3))     # [3, 2, 1]</code></pre>
+      <p><code>yield from &lt;iterable&gt;</code> yields every value from that iterable, the key to recursive generators:</p>
+<pre><code>def tree_labels(t):              # every label, root first
+    yield t.label
+    for b in t.branches:
+        yield from tree_labels(b)</code></pre>
+      <p><code>yield from gen()</code> is shorthand for <code>for x in gen(): yield x</code>. Use it whenever a generator relays another generator's values, especially a recursive call.</p>
+      <h3>OOP: classes &amp; inheritance</h3>
+<pre><code>class Account:
+    interest = 0.02                 # class attribute, shared by all instances
+    def __init__(self, holder):     # runs on Account('Sam')
+        self.holder = holder        # instance attributes
+        self.balance = 0
+    def deposit(self, amount):
+        self.balance += amount
+        return self.balance
+    def withdraw(self, amount):
+        if amount &gt; self.balance:
+            return 'Insufficient funds'
+        self.balance -= amount
+        return self.balance
+
+class CheckingAccount(Account):     # inherits everything
+    withdraw_fee = 1
+    interest = 0.01                 # overrides the class attribute
+    def withdraw(self, amount):     # overrides, reuses parent via super()
+        return super().withdraw(amount + self.withdraw_fee)</code></pre>
+      <p>Key rules: <code>self</code> is the instance; attribute lookup checks the instance first, then its class, then parent classes. <code>super().method(args)</code> calls the parent's version (no <code>self</code> passed). A class attribute is shared until an instance assigns its own, which then shadows it for that instance only.</p>
+      <h3>Memoization</h3>
+      <p>Cache results in a dict so each input is computed once. Turns exponential tree recursion linear.</p>
+<pre><code>def memo(f):
+    cache = {}
+    def memoized(n):
+        if n not in cache:
+            cache[n] = f(n)
+        return cache[n]
+    return memoized</code></pre>
+    </section>
+
+    <section class="topic" id="attack">
+      <h2>Problem types &amp; attack plans</h2>
+      <p>For every coding problem, first write the one-line contract (what goes in, what comes out). Then attack by type.</p>
+      <h3>Tree function</h3>
+      <ol>
+        <li>Decide: computing a value (sum/count/height/bool) or building a new tree?</li>
+        <li>Base case is usually the leaf: <code>if is_leaf(t): return &lt;answer for a lone label&gt;</code>.</li>
+        <li>Recurse on every branch: <code>[f(b) for b in t.branches]</code> gives a list of sub-answers.</li>
+        <li>Combine that list: <code>sum</code>, <code>max</code>, <code>any</code>, or wrap in <code>Tree(new_label, [...])</code> to build.</li>
+        <li>Often no explicit leaf base case is needed, since <code>sum([])</code> over no branches handles it.</li>
+      </ol>
+      <h3>Build-a-new-tree (prune / transform / filter)</h3>
+      <ol>
+        <li>Still the tree template, but you return <code>Tree(label, kept_branches)</code>.</li>
+        <li>Filtering: recurse on each branch, keep only non-<code>None</code> (or non-empty) results, then decide what this node returns from that list.</li>
+        <li>Pass any "running total down the path" as an extra argument (e.g. <code>n - t.label</code>).</li>
+      </ol>
+      <h3>Generator</h3>
+      <ol>
+        <li>Use <code>yield</code> for each value, not <code>return</code> a list.</li>
+        <li>Base case: <code>yield</code> the trivial value(s), then a bare <code>return</code> to stop.</li>
+        <li>To relay another generator's values (including a recursive call), use <code>yield from</code>.</li>
+        <li>For "all the ways": loop over each first choice, and for each, <code>yield from</code> the recursive generator on the rest, gluing your choice on (<code>yield [choice] + rest</code>).</li>
+        <li>Trace with <code>list(gen(...))</code> in your head to check order.</li>
+      </ol>
+      <h3>OOP / classes</h3>
+      <ol>
+        <li><code>__init__(self, ...)</code> sets instance attributes; anything the object must remember goes here.</li>
+        <li>Methods take <code>self</code> first; use <code>self.attr</code> to read/update state.</li>
+        <li>Shared-across-all-instances values are class attributes (in the class body, not <code>__init__</code>).</li>
+        <li>Inheritance: <code>class B(A):</code> gets everything; override by redefining; reuse the parent with <code>super().method(args)</code> (no <code>self</code>).</li>
+        <li>For stateful problems, decide what changes per call, update that attribute, return the required value/message.</li>
+      </ol>
+      <h3>What Would Python Display</h3>
+      <ol>
+        <li>Go top to bottom, tracking every variable's current value.</li>
+        <li><code>print</code> shows args space-separated, no quotes, and its value is <code>None</code>; a bare expression echoes its value (strings keep quotes).</li>
+        <li>Iterators: <code>map</code>/<code>filter</code>/<code>zip</code> are lazy; <code>next</code> past the end is <code>StopIteration</code>; a half-consumed iterator continues where it left off.</li>
+        <li>Mutation: after <code>b = a</code>, mutating <code>a</code> with <code>append</code>/<code>+=</code>/item-assignment changes <code>b</code> too; rebinding <code>a = a + [...]</code> does not.</li>
+        <li>An error stops that expression; note the error type and move on.</li>
+      </ol>
+      <h3>Environment / box-and-pointer diagram</h3>
+      <ol>
+        <li>One frame per call, in order, with its parent noted.</li>
+        <li>Lists/dicts are objects drawn once; variables point at them; aliases share one box.</li>
+        <li>On mutation, change the object in place (every arrow sees it). On rebinding, redraw the arrow.</li>
+        <li>A function defined inside another captures its parent frame; that's how closures hold state.</li>
+      </ol>
+      <h3>Mutation function</h3>
+      <ol>
+        <li>Change the list/dict in place with <code>append</code>, <code>pop</code>, <code>insert</code>, item assignment, or <code>+=</code>.</li>
+        <li>Return <code>None</code> unless told otherwise.</li>
+        <li>Watch loop-while-mutating: if you insert into a list you're indexing through, advance your index past what you inserted.</li>
+      </ol>
+    </section>
+
+    <section class="topic" id="notes">
+      <h2>Your note sheets</h2>
+      <p>Two 8.5×11 sheets, front and back, that you make yourself. The provided study guides already cover syntax and simple examples, so don't duplicate them. Put <strong>templates and traps</strong> on yours, the things you'd otherwise blank on under time.</p>
+      <p>High-value things to write (that the study guides don't hand you):</p>
+      <ul>
+        <li>The <strong>tree build template</strong>: <code>Tree(new_label, [recurse(b) for b in t.branches])</code>, plus the filter version that collects non-<code>None</code> branches then decides.</li>
+        <li>The <strong>"all the ways" generator template</strong>: loop over first choice, <code>for rest in gen(rest_args): yield [choice] + rest</code>.</li>
+        <li>The <strong>with-it/without-it</strong> tree-recursion template, plus one worked count example.</li>
+        <li>A <strong>worked inheritance</strong> example showing <code>super().method(...)</code> and a class attribute being overridden.</li>
+        <li>The <strong>closure-with-state</strong> pattern (a function returning a function that mutates a captured list/variable), since the diagram question loves this.</li>
+        <li>The <strong>mutation vs rebinding</strong> rules with one tiny box-and-pointer sketch.</li>
+        <li>Iterator traps: lazy <code>map</code>/<code>filter</code>/<code>zip</code>; <code>next</code> past end is <code>StopIteration</code>; a half-used iterator resumes.</li>
+        <li>Aggregation edge cases: <code>all([])</code> True, <code>any([])</code> False, <code>max(..., key=...)</code> returns the element.</li>
+      </ul>
+      <p>Skip: basic slicing, dict <code>.get</code>, lambda syntax, the <code>Link</code> definition, those are on the provided guides. Spend the space on the templates above and 2–3 problems you keep getting wrong, written out fully. Handwrite (or type and print) and actually use them while practicing this week.</p>
+    </section>
+
+    <section class="topic" id="plan">
+      <h2>Practice plan (now → 10/27)</h2>
+      <p>The exam is on paper, so the single most important habit is <strong>writing code by hand and checking it by reading, not by running.</strong> Do most reps on paper, then type them into the practice app to confirm.</p>
+      <ol>
+        <li><strong>Front-load trees, generators, and OOP</strong>, the new, heavily-weighted topics. Do every Trees and Generators problem in the practice app, then the OOP ones.</li>
+        <li><strong>Pull past Midterm 2 exams</strong> from the resources page (scope matches). Do the tree, generator, OOP, iterator, and mutation questions. Skip excluded topics (orders of growth, linked-list/tree mutation, repr, special methods). Use the staff's in-scope list once it's posted.</li>
+        <li><strong>Do one past exam timed, on paper, in one sitting</strong> (110 min, just your note sheets + study guides). This rehearses pacing and the paper format.</li>
+        <li><strong>Re-solve from scratch, not from reading.</strong> Cover the solution and rewrite the function cold.</li>
+        <li><strong>Build your note sheets early</strong> and use them during practice so they're tuned by exam day.</li>
+        <li><strong>Watch the 10/23 and 10/26 lectures</strong> (and videos); staff said they're designed to help you prepare.</li>
+      </ol>
+      <div class="callout">
+        <p><strong>Logistics to handle now:</strong> if you need accommodations, a left-handed desk, or the alternate time, submit <code>go.cs61a.org/mt3-alt-req</code> by 11:59pm Thursday 10/22. Make your two note sheets. Watch for your seat email by Monday 10/25. Bring pencils + spare, photo ID, a drink; no food or electronics. Arrive before 8:00pm.</p>
+      </div>
+    </section>
+
+    <section class="topic" id="videos">
+      <h2>Videos</h2>
+      <p>CS61A-specific first, because they use the exact <code>Tree</code> and <code>Link</code> abstractions:</p>
+      <ul>
+        <li><a href="https://cs61a.org/fa26/resources/" target="_blank" rel="noopener">CS61A Resources page</a> — per-topic walkthrough videos tied to past exam questions, plus every past exam with solutions.</li>
+        <li><a href="https://www.youtube.com/playlist?list=PLNnP2sX3mtCw" target="_blank" rel="noopener">CS61A walkthrough playlist</a> (needs @berkeley.edu login).</li>
+      </ul>
+      <p>For the new concepts, these plain-Python videos match 61A's syntax closely:</p>
+      <ul>
+        <li>OOP: <a href="https://www.youtube.com/watch?v=ZDa-Z5JzLYM" target="_blank" rel="noopener">Corey Schafer — Classes and Instances</a> and <a href="https://www.youtube.com/watch?v=RSl87lqOXDE" target="_blank" rel="noopener">Inheritance</a>.</li>
+        <li>Generators: <a href="https://www.youtube.com/watch?v=bD05uGo_sVI" target="_blank" rel="noopener">Corey Schafer — Python Generators</a>.</li>
+      </ul>
+      <p>Watching isn't studying: use video only to unstick a concept, then go back to writing problems by hand.</p>
+    </section>
+
+    <footer>
+      Built by Saba Feilizadeh from the FA26 study guide and past exams. Pair it with the <a href="../cs61a-mt3-practice/">practice app</a>. Not affiliated with the CS 61A course staff.
+    </footer>
+  </main>
+</div>
+
+<script>
+// scrollspy: highlight the section currently in view
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var map = {};
+  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+  var secs = Array.prototype.slice.call(document.querySelectorAll('section.topic'));
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        links.forEach(function (l) { l.classList.remove('active'); });
+        if (map[e.target.id]) map[e.target.id].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-140px 0px -70% 0px', threshold: 0 });
+  secs.forEach(function (s) { obs.observe(s); });
+})();
+</script>
+<script src="../../assets/js/theme.js?v=1"></script>
+</body>
+</html>
