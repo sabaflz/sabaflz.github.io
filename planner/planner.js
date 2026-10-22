@@ -14,7 +14,7 @@
   var DAYNAME = { Mo: "Mon", Tu: "Tue", We: "Wed", Th: "Thu", Fr: "Fri" };
   var BUCKET = { design: "Design", cs: "UD CS", cseecs: "UD CS/EE", te: "Non-CS TE" };
   var CATS = [
-    { key: "all", label: "All" }, { key: "rec", label: "Recommended" }, { key: "eligible", label: "Eligible" },
+    { key: "all", label: "All" }, { key: "rec", label: "Best picks" }, { key: "eligible", label: "Eligible" },
     { key: "core", label: "Core" }, { key: "ud", label: "Upper-div" }, { key: "design", label: "Design" },
     { key: "te", label: "Non-CS elective" }, { key: "minor", label: "CogSci minor" }, { key: "ahi", label: "AH&I" },
     { key: "small", label: "Small / P-NP" }
@@ -36,6 +36,17 @@
   // ---------- state ----------
   var store = load();
   store.plans = store.plans || {}; store.manual = store.manual || {}; store.custom = store.custom || [];
+  // pre-load the recommended path once (re-applies if the recommended path changes)
+  var BEST = PATHS.filter(function (p) { return p.default; })[0];
+  var BEST_VER = BEST ? BEST.id + ":" + JSON.stringify(BEST.plan) : "";
+  if (BEST && store.bestApplied !== BEST_VER) {
+    Object.keys(BEST.plan).forEach(function (tid) { store.plans[tid] = BEST.plan[tid].slice(); });
+    store.bestApplied = BEST_VER; save();
+  }
+  if (BEST) TERMS.forEach(function (t) {
+    (BEST.plan[t.id] || []).forEach(function (id) { var c = t.courses.filter(function (x) { return x.id === id; })[0]; if (c) c.rec = "Best pick"; });
+  });
+
   var termId = store.term && TERMS.some(function (t) { return t.id === store.term; }) ? store.term : defaultTerm();
   var cat = "all", query = "";
 
