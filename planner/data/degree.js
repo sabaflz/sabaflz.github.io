@@ -22,7 +22,7 @@ window.PLANNER_DEGREE = {
 
     { id: "ac", group: "University", name: "American Cultures", any: ["ASAMST 128AC", "HISTORY 7B"] },
     { id: "ahi-h", group: "University", name: "AH&I: History", any: ["HISTORY 7A", "HISTORY 7B", "CC HIST"] },
-    { id: "ahi-i", group: "University", name: "AH&I: Institutions", any: ["POLSCI 1"] },
+    { id: "ahi-i", group: "University", name: "AH&I: Institutions", any: ["POLSCI 1", "CC POLI"] },
 
     { id: "cog-core", group: "CogSci minor (summer)", name: "Core: CogSci C100 / Psych C120", minor: "cogsci-core", need: 1 },
     { id: "cog-topic", group: "CogSci minor (summer)", name: "Topical courses", minor: "cogsci-topic", need: 4 }

@@ -53,6 +53,7 @@
       seats: "324 seats, no reserved seats", rec: "Take",
       note: "Clears the AH&I Institutions half. Plenty of seats, so it can wait for Phase 2 if Phase 1 gets tight.",
       link: "https://classes.berkeley.edu/content/2027-spring-polsci-1-001-lec-001" },
+    { id: "CC POLI", instructor: "De Anza or Foothill", meet: [], location: "Online, any quarter" },
     { id: "CC HIST", instructor: "De Anza or Foothill", meet: [], location: "Online, Winter or Spring quarter", rec: "AH&I History" },
     { id: "HISTORY 7B", instructor: "TBA", meet: [{ days: "TuTh", start: "11:00", end: "12:29" }], location: "Dwinelle 155",
       link: "https://classes.berkeley.edu/content/2027-spring-history-7b-001-lec-001" },
