@@ -118,6 +118,9 @@ window.PLANNER_CATALOG = {
   /* ---------- AH&I ---------- */
   "POLSCI 1": { title: "Introduction to American Politics", units: 4, cat: ["ahi"], prereq: [],
     note: "Clears the AH&I Institutions half.", link: "https://classes.berkeley.edu/" },
+  "CC HIST": { title: "U.S. History at De Anza or Foothill (HIST 17A, 17B, or 17C), online", units: 0, cat: ["ahi"], prereq: [], verify: true,
+    note: "Covers the AH&I History half as a transfer course. Units show as 0 here because they don't count toward Berkeley's 12-unit minimum (and you're likely past the 70-unit transfer cap, so they may not add to your 120). Confirm the exact course with CDSS first, earn a C- or better, and send the transcript to Berkeley.",
+    link: "https://cdss.berkeley.edu/academics/policies/transfer-credit" },
   "HISTORY 7B": { title: "U.S. History: Civil War to Present", units: 4, cat: ["ahi"], prereq: [],
     note: "Clears the AH&I History half (also AC, already done).", link: "https://classes.berkeley.edu/" },
 
