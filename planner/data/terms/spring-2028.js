@@ -25,6 +25,7 @@
     { id: "PUBHLTH 150A", meet: [], location: "Schedule TBA" },
     { id: "INFO 159", meet: [], location: "Schedule TBA" },
     { id: "POLSCI 1", meet: [], location: "Schedule TBA" },
+    { id: "CC POLI", meet: [], location: "Online at De Anza or Foothill" },
     { id: "CC HIST", meet: [], location: "Online at De Anza or Foothill" },
     { id: "HISTORY 7B", meet: [], location: "Schedule TBA" },
     { id: "RESEARCH", meet: [], location: "Schedule TBA" }
