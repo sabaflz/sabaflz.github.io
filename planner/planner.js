@@ -238,13 +238,19 @@
 
     // upper-div buckets (greedy: design, CS, CS/EE, TE), done courses first
     var fill = {}; DEG.upperDiv.forEach(function (b) { fill[b.key] = { u: 0, ids: [] }; });
-    ids.slice().sort(function (a, b) { return (at[a] === "done" ? 0 : 1) - (at[b] === "done" ? 0 : 1); }).forEach(function (id) {
-      var c = info(id); if (!c.ud || c.units < 3) return;
-      var order = ["design", "cs", "cseecs", "te"];
-      for (var i = 0; i < order.length; i++) {
-        var k = order[i], cap = DEG.upperDiv.filter(function (b) { return b.key === k; })[0].units;
-        if (c.ud.indexOf(k) !== -1 && fill[k].u < cap) { fill[k].u += c.units; fill[k].ids.push(id); break; }
-      }
+    // fill the scarcest buckets first (TE, then design, CS, CS/EE); within a bucket prefer
+    // finished courses, 4-unit courses, and courses with the fewest other bucket options
+    var pool = ids.filter(function (id) { var c = info(id); return c.ud && c.units >= 3; });
+    var used = {};
+    ["te", "design", "cs", "cseecs"].forEach(function (k) {
+      var cap = DEG.upperDiv.filter(function (b) { return b.key === k; })[0].units;
+      pool.filter(function (id) { return !used[id] && info(id).ud.indexOf(k) !== -1; })
+        .sort(function (a, b) {
+          var A = info(a), B = info(b);
+          return ((at[a] === "done" ? 0 : 4) + (A.units >= 4 ? 0 : 2) + A.ud.length * 0.1) -
+                 ((at[b] === "done" ? 0 : 4) + (B.units >= 4 ? 0 : 2) + B.ud.length * 0.1);
+        })
+        .forEach(function (id) { if (fill[k].u < cap) { fill[k].u += info(id).units; fill[k].ids.push(id); used[id] = true; } });
     });
     var udRows = DEG.upperDiv.map(function (b) {
       var f = fill[b.key], mk = man["ud-" + b.key];
@@ -274,7 +280,7 @@
       tile(te.u >= 4 || te.st === "done" ? 1 : 0, 1, "Non-CS tech elective", te.f.ids.length ? te.f.ids.join(", ") : "4+ units needed") +
       tile(design.st === "todo" || design.st === "part" ? 0 : 1, 1, "Design course", design.f.ids.join(", ") || "not picked") +
       tile(minorHave, minorNeed, "CogSci minor courses", "1 core + 4 summer") +
-      tile(ahi.filter(function (x) { return x.st !== "todo"; }).length, 2, "AH&I halves", "") +
+      tile(ahi.filter(function (x) { return x.st !== "todo"; }).length, ahi.length, "AH&I", "") +
       tile(todoDone, todoAll.length, "Admin to-dos", "") +
       '</div>' +
       (lastTerm ? '<p class="tr-note">Last planned term: <b>' + esc(lastTerm.name) + '</b>.</p>' : "");

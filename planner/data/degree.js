@@ -21,8 +21,7 @@ window.PLANNER_DEGREE = {
     { id: "linalg", group: "CS lower division", name: "Linear algebra (Math 54)", any: ["MATH 54", "MATH 56"] },
 
     { id: "ac", group: "University", name: "American Cultures", any: ["ASAMST 128AC", "HISTORY 7B"] },
-    { id: "ahi-h", group: "University", name: "AH&I: History", any: ["HISTORY 7A", "HISTORY 7B", "CC HIST"] },
-    { id: "ahi-i", group: "University", name: "AH&I: Institutions", any: ["POLSCI 1", "CC POLI"] },
+    { id: "ahi", group: "University", name: "AH&I (one course: Pol Sci)", any: ["POLSCI 1", "CC POLI", "HISTORY 7A", "HISTORY 7B", "CC HIST"] },
 
     { id: "cog-core", group: "CogSci minor (summer)", name: "Core: CogSci C100 / Psych C120", minor: "cogsci-core", need: 1 },
     { id: "cog-topic", group: "CogSci minor (summer)", name: "Topical courses", minor: "cogsci-topic", need: 4 }
@@ -47,7 +46,8 @@ window.PLANNER_DEGREE = {
     { id: "t-cog", text: "[removed]" },
     { id: "t-aid", text: "[removed]" },
     { id: "t-5th", text: "[removed]" },
-    { id: "t-c8", text: "[removed]" }
+    { id: "t-c8", text: "[removed]" },
+    { id: "t-cog-dec", text: "[removed]" }
   ],
 
   heavy: ["EECS 151", "CS 152", "CS 162", "CS 164", "CS 169A", "CS 169L", "CS 170", "CS 184", "CS 189"],
