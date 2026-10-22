@@ -14,16 +14,16 @@
 
   courses: [
     { id: "CS 61B", instructor: "Manuel Sabin", meet: [{ days: "MWF", start: "15:00", end: "15:59" }], location: "Dwinelle 155",
-      seats: "481 seats, no reserved seats", rec: "5-sem route",
+      seats: "481 seats, no reserved seats",
       link: "https://classes.berkeley.edu/content/2027-spring-compsci-61b-001-lec-001" },
-    { id: "CS 47B", instructor: "Manuel Sabin", meet: [], location: "Self-paced", rec: "4-sem route" },
+    { id: "CS 47B", instructor: "Manuel Sabin", meet: [], location: "Self-paced" },
     { id: "CS 61C", instructor: "Lisa Yan", meet: [{ days: "MWF", start: "13:00", end: "13:59" }], location: "Gateway 1210",
       seats: "252 seats, CE and CS majors only", verify: true,
       note: "Needs 61B (or 47B) finished first. Same-term enrollment only if cs-advising says yes; otherwise Fall 2027.",
       link: "https://classes.berkeley.edu/content/2027-spring-compsci-61c-001-lec-001" },
 
     { id: "CS 189", instructor: "Jonathan Shewchuk", meet: [{ days: "MW", start: "18:30", end: "19:59" }], location: "Wheeler 150",
-      seats: "684 seats, CS/DS BA and Engineering majors", rec: "Take",
+      seats: "684 seats, CS/DS BA and Engineering majors",
       link: "https://classes.berkeley.edu/content/2027-spring-compsci-189-001-lec-001" },
     { id: "CS 188", instructor: "Pieter Abbeel, Peyrin Kao", meet: [{ days: "TuTh", start: "12:30", end: "13:59" }], location: "Lewis 100" },
     { id: "CS 170", instructor: "Christian Borgs, Shafi Goldwasser", meet: [{ days: "TuTh", start: "14:00", end: "15:29" }], location: "Gateway 1210" },
@@ -40,9 +40,9 @@
     { id: "CS 172", instructor: "Alistair Sinclair", meet: [{ days: "TuTh", start: "11:00", end: "12:29" }], location: "Lewis 9" },
     { id: "CS C177", instructor: "Federico Echenique", meet: [{ days: "MWF", start: "10:00", end: "10:59" }], location: "Etcheverry 3106" },
 
-    { id: "COGSCI C100", instructor: "Mariam Aly", meet: [], location: "Time TBA", rec: "Minor core",
+    { id: "COGSCI C100", instructor: "Mariam Aly", meet: [], location: "Time TBA",
       note: "Required core for the CogSci minor and the only minor course you can take during the regular year. Taking it now leaves only summer topical courses." },
-    { id: "COGSCI 131", instructor: "Steven Piantadosi", meet: [], location: "Time TBA", rec: "Tech elective" },
+    { id: "COGSCI 131", instructor: "Steven Piantadosi", meet: [], location: "Time TBA" },
     { id: "DATA C8", instructor: "TBA", meet: [], location: "Time TBA", verify: true },
     { id: "DATA C100", instructor: "TBA", meet: [], location: "Time TBA" },
     { id: "DATA C104", instructor: "TBA", meet: [], location: "Time TBA" },
@@ -50,11 +50,11 @@
     { id: "INFO 159", instructor: "TBA", meet: [], location: "Time TBA" },
 
     { id: "POLSCI 1", instructor: "Hunter Rendleman", meet: [{ days: "TuTh", start: "17:00", end: "18:29" }], location: "Undergrad Academic Bldg 100",
-      seats: "324 seats, no reserved seats", rec: "Take",
+      seats: "324 seats, no reserved seats",
       note: "Clears the AH&I Institutions half. Plenty of seats, so it can wait for Phase 2 if Phase 1 gets tight.",
       link: "https://classes.berkeley.edu/content/2027-spring-polsci-1-001-lec-001" },
     { id: "CC POLI", instructor: "De Anza or Foothill", meet: [], location: "Online, any quarter" },
-    { id: "CC HIST", instructor: "De Anza or Foothill", meet: [], location: "Online, Winter or Spring quarter", rec: "AH&I History" },
+    { id: "CC HIST", instructor: "De Anza or Foothill", meet: [], location: "Online, Winter or Spring quarter" },
     { id: "HISTORY 7B", instructor: "TBA", meet: [{ days: "TuTh", start: "11:00", end: "12:29" }], location: "Dwinelle 155",
       link: "https://classes.berkeley.edu/content/2027-spring-history-7b-001-lec-001" },
 
