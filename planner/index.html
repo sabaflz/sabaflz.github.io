@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Course Planner</title>
+<meta name="description" content="Saba Feilizadeh's semester course planner for the UC Berkeley CS BA.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='44' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>SF</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --ok:#1E7A4C; --ok-soft:#E1F3E8; --bad:#B3261E; --bad-soft:#FBE4E2; --info:#3D4A8C; --info-soft:#E6E9F7;
+  --b0:#E9A400; --b1:#3D6FD9; --b2:#1E9E6A; --b3:#C2477A; --b4:#7A55C7; --b5:#D9693D;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#6FD39B; --ok-soft:#173326; --bad:#FF8A80; --bad-soft:#3A1D22; --info:#AEB8F2; --info-soft:#22284A; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#6FD39B; --ok-soft:#173326; --bad:#FF8A80; --bad-soft:#3A1D22; --info:#AEB8F2; --info-soft:#22284A; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 16px/1.55 var(--body); -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit}
+button{font:inherit; color:inherit}
+:focus-visible{outline:3px solid var(--saffron); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1240px; margin:0 auto; padding:0 clamp(16px,4vw,40px)}
+
+.topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:10; background:var(--bg); border-bottom:1.5px solid var(--line)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:16px; padding:16px 0}
+.nav .mark{font:800 20px/1 var(--display); text-decoration:none; letter-spacing:-.02em}
+.nav ul{list-style:none; display:flex; align-items:center; gap:22px; margin:0; padding:0; font-weight:500; font-size:15px; overflow-x:auto}
+.nav ul a{text-decoration:none; white-space:nowrap}
+.nav ul a:hover{color:var(--saffron-ink)}
+.t-btn{font:500 13px/1 var(--mono); background:var(--surface); border:1.5px solid var(--line); border-radius:999px; padding:8px 13px; cursor:pointer}
+
+header.page{padding:40px 0 18px}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--saffron-ink); margin:0 0 10px}
+h1{font:600 clamp(2rem,6vw,3rem)/1.03 var(--display); margin:0 0 12px; letter-spacing:-.01em}
+.lede{color:var(--muted); max-width:68ch; margin:0}
+
+.terms{display:flex; gap:8px; overflow-x:auto; padding:6px 0 2px; margin:18px 0 0}
+.terms button{display:flex; flex-direction:column; align-items:flex-start; gap:2px; cursor:pointer; white-space:nowrap;
+  background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:10px 16px; font:600 15px/1.1 var(--display)}
+.terms button span{font:500 11px/1 var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:.06em}
+.terms button[aria-selected="true"]{border-color:var(--saffron); background:var(--saffron-soft)}
+.intro{margin:14px 0 0; padding:14px 16px; background:var(--surface); border:1.5px solid var(--line); border-left:4px solid var(--saffron); border-radius:12px; font-size:15px; color:var(--muted)}
+.intro b{color:var(--ink)}
+
+.layout{display:grid; gap:24px; margin:24px 0 0; grid-template-columns:minmax(0,1fr)}
+@media (max-width:979px){ .side{order:-1} }
+@media (min-width:980px){ .layout{grid-template-columns:minmax(0,1fr) 400px; align-items:start} .side{position:sticky; top:84px; max-height:calc(100vh - 100px); overflow:auto; padding-right:4px} }
+
+.tools{display:flex; flex-direction:column; gap:10px; margin:0 0 14px}
+#q{width:100%; font:500 15px var(--body); padding:12px 14px; background:var(--surface); border:1.5px solid var(--line); border-radius:12px; color:var(--ink)}
+#q:focus{outline:none; border-color:var(--saffron)}
+.chips{display:flex; flex-wrap:wrap; gap:6px}
+.chip{cursor:pointer; font:500 13px/1 var(--mono); background:var(--surface); border:1.5px solid var(--line); border-radius:999px; padding:8px 12px}
+.chip[aria-pressed="true"]{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.count{font:500 12px var(--mono); color:var(--muted)}
+
+.list{display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.course{display:flex; flex-direction:column; gap:8px; background:var(--surface); border:1.5px solid var(--line); border-radius:16px; padding:16px 18px; transition:border-color .15s}
+.course.in{border-color:var(--saffron); box-shadow:0 0 0 3px var(--saffron-soft)}
+.course.taken{opacity:.6}
+.c-top{display:flex; justify-content:space-between; align-items:center}
+.cid{font:700 15px/1 var(--mono); color:var(--saffron-ink)}
+.units{font:500 12px var(--mono); color:var(--muted)}
+.course h3{font:600 18px/1.2 var(--display); margin:0}
+.badges{display:flex; flex-wrap:wrap; gap:5px}
+.st{font:500 11px/1 var(--mono); padding:5px 8px; border-radius:999px; border:1.5px solid transparent}
+.st-ok{background:var(--ok-soft); color:var(--ok)}
+.st-lock{background:var(--bad-soft); color:var(--bad)}
+.st-done{background:var(--surface-2); color:var(--muted); border-color:var(--line)}
+.st-rec{background:var(--saffron); color:var(--on-saffron)}
+.st-ver{background:var(--info-soft); color:var(--info)}
+.st-heavy{border-color:var(--line); color:var(--muted)}
+dl{display:grid; grid-template-columns:62px 1fr; gap:3px 10px; margin:2px 0 0; font-size:13.5px}
+dt{font:500 11px/1.9 var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:.05em}
+dd{margin:0}
+.note{margin:0; font-size:13.5px; color:var(--muted)}
+.c-foot{display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:auto; padding-top:6px}
+.c-foot a{font:600 13px var(--body); color:var(--saffron-ink); text-decoration:none}
+.add{cursor:pointer; font:600 13px var(--body); background:var(--ink); color:var(--bg); border:0; border-radius:10px; padding:9px 14px}
+.course.in .add{background:transparent; color:var(--ink); border:1.5px solid var(--line)}
+.empty{color:var(--muted)}
+
+.panel{background:var(--surface); border:1.5px solid var(--line); border-radius:16px; padding:18px; margin:0 0 16px}
+.panel h2{font:600 18px/1.2 var(--display); margin:0}
+.p-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px}
+.p-units{font:500 13px var(--mono); color:var(--muted)}
+.p-units b{font:700 26px var(--display); color:var(--ink)}
+.meter{position:relative; height:10px; background:var(--surface-2); border:1.5px solid var(--line); border-radius:999px; margin:12px 0 4px; overflow:hidden}
+.meter i{position:absolute; inset:0 auto 0 0; background:var(--saffron); border-radius:999px}
+.meter s{position:absolute; top:0; bottom:0; width:2px; background:var(--ink); opacity:.5}
+.meter-key{display:flex; justify-content:space-between; font:500 10.5px var(--mono); color:var(--muted)}
+.p-list{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:6px}
+.p-list li{display:flex; align-items:center; gap:10px; padding:9px 10px; background:var(--surface-2); border-radius:10px}
+.p-list li div{flex:1; min-width:0}
+.p-list b{font:700 14px var(--mono)}
+.p-list span{font-size:13.5px}
+.p-list small{display:block; font-size:12px; color:var(--muted)}
+.pu{font:500 12px var(--mono); color:var(--muted)}
+.x{cursor:pointer; border:0; background:none; font-size:20px; line-height:1; color:var(--muted); padding:2px 6px}
+.p-empty{color:var(--muted); font-size:14px; margin:14px 0 0}
+.warn{list-style:none; margin:12px 0 0; padding:0; display:grid; gap:6px; font-size:13px}
+.warn li{padding:8px 10px; border-radius:8px}
+.w-bad{background:var(--bad-soft); color:var(--bad)}
+.w-mid{background:var(--saffron-soft); color:var(--saffron-ink)}
+.w-info{background:var(--info-soft); color:var(--info)}
+.w-good{background:var(--ok-soft); color:var(--ok)}
+.presets{margin:16px 0 0; display:grid; gap:8px}
+.presets h3{font:500 11px var(--mono); text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:0}
+.preset{cursor:pointer; text-align:left; display:flex; flex-direction:column; gap:3px; background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:10px 12px}
+.preset:hover{border-color:var(--saffron)}
+.preset b{font:600 14px var(--display)}
+.preset span{font:500 12px var(--mono); color:var(--saffron-ink)}
+.preset small{font-size:12.5px; color:var(--muted); line-height:1.4}
+.clear{cursor:pointer; margin-top:12px; background:none; border:0; color:var(--muted); font-size:13px; text-decoration:underline}
+
+.grid{display:grid; grid-template-columns:30px repeat(5,1fr); gap:4px; margin-top:12px}
+.hours{position:relative; margin-top:22px; height:360px}
+.hours span{position:absolute; right:2px; transform:translateY(-50%); font:500 10px var(--mono); color:var(--muted)}
+.dh{font:500 11px var(--mono); color:var(--muted); text-align:center; height:18px; margin-bottom:4px}
+.col{position:relative; height:360px; background:repeating-linear-gradient(var(--surface-2) 0 59px, var(--line) 59px 60px); border-radius:8px; border:1px solid var(--line)}
+.blk{position:absolute; left:2px; right:2px; border-radius:6px; padding:3px 4px; overflow:hidden; color:#fff; font-size:10px; line-height:1.15}
+.blk b{display:block; font:700 10.5px var(--mono)}
+.blk.c0{background:var(--b0); color:#16193A} .blk.c1{background:var(--b1)} .blk.c2{background:var(--b2)} .blk.c3{background:var(--b3)} .blk.c4{background:var(--b4)} .blk.c5{background:var(--b5)}
+.blk.clash{outline:2.5px solid var(--bad); outline-offset:1px}
+.tba{font-size:12.5px; color:var(--muted); margin:10px 0 0}
+
+#reqs{margin:28px 0 0}
+#reqs h2{font:600 22px/1.2 var(--display); margin:0 0 12px}
+#reqs h2 small{font:500 12px var(--mono); color:var(--muted); margin-left:6px}
+.req-groups{display:grid; gap:12px; grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.rg{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:14px 16px}
+.rg h3{font:500 11px var(--mono); text-transform:uppercase; letter-spacing:.08em; color:var(--muted); margin:0 0 8px}
+.rg ul{list-style:none; margin:0; padding:0; display:grid; gap:6px; font-size:14px}
+.rg li{display:flex; align-items:baseline; gap:8px; flex-wrap:wrap}
+.rg li i{width:10px; height:10px; border-radius:50%; flex:none; border:2px solid var(--line); transform:translateY(1px)}
+.r-done i{background:var(--ok); border-color:var(--ok)}
+.r-plan i{background:var(--saffron); border-color:var(--saffron)}
+.r-part i{background:linear-gradient(90deg,var(--saffron) 50%,transparent 50%); border-color:var(--saffron)}
+.rg em{font:500 11px var(--mono); color:var(--muted); font-style:normal}
+.ru{font:500 12px var(--mono); color:var(--muted)}
+.legend{display:flex; gap:14px; flex-wrap:wrap; font:500 11px var(--mono); color:var(--muted); margin:10px 0 0}
+.legend span{display:inline-flex; align-items:center; gap:5px}
+.legend i{width:9px; height:9px; border-radius:50%; border:2px solid var(--line)}
+
+footer{padding:36px 0 56px; color:var(--muted); font-size:13.5px; border-top:1.5px solid var(--line); margin-top:36px}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <nav class="nav wrap" aria-label="Main">
+    <a class="mark" href="../" aria-label="Back to home">SF</a>
+    <ul>
+      <li><a href="../#work">Work</a></li>
+      <li><a href="../resume/">Resume</a></li>
+      <li><a href="../guides/">Study Guides</a></li>
+      <li><a href="./" aria-current="page">Planner</a></li>
+      <li><button type="button" id="themeBtn" class="t-btn">theme</button></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="wrap">
+  <header class="page">
+    <p class="eyebrow">CS BA · CDSS</p>
+    <h1>Course Planner</h1>
+    <p class="lede">Every course that matters for my degree this term, checked against what I've already finished. Add courses to see units, time conflicts, workload, and which requirements they fill.</p>
+    <div class="terms" id="terms" role="tablist" aria-label="Semesters"></div>
+    <p class="intro" id="termIntro"></p>
+  </header>
+
+  <div class="layout">
+    <section aria-label="Course options">
+      <div class="tools">
+        <input id="q" type="search" placeholder="Search by course, title, instructor, or topic" aria-label="Search courses">
+        <div class="chips" id="chips"></div>
+        <span class="count" id="count"></span>
+      </div>
+      <div class="list" id="list"></div>
+    </section>
+
+    <aside class="side" aria-label="My plan">
+      <div class="panel" id="plan"></div>
+      <div class="panel" id="week"></div>
+    </aside>
+  </div>
+
+  <section id="reqs" aria-label="Degree progress"></section>
+  <div class="legend"><span><i style="background:var(--ok);border-color:var(--ok)"></i>done</span><span><i style="background:var(--saffron);border-color:var(--saffron)"></i>planned</span><span><i></i>still needed</span></div>
+
+  <footer>
+    Schedules from the EECS and Berkeley class schedules, pulled October 2026. Always confirm on classes.berkeley.edu before enrolling. Your picks save in this browser only.
+  </footer>
+</main>
+
+<script src="data/degree.js?v=1"></script>
+<script src="data/terms/spring-2027.js?v=1"></script>
+<!-- Add a new semester: copy data/terms/_template.js, fill it in, and add a script tag here. -->
+<script src="planner.js?v=1"></script>
+<script src="../assets/js/theme.js?v=1"></script>
+</body>
+</html>
