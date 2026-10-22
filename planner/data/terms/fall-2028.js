@@ -28,6 +28,10 @@
     { id: "CC POLI", meet: [], location: "Online at De Anza or Foothill" },
     { id: "CC HIST", meet: [], location: "Online at De Anza or Foothill" },
     { id: "HISTORY 7B", meet: [], location: "Schedule TBA" },
+    { id: "CS 182", meet: [], location: "Schedule TBA" },
+    { id: "CS 171", meet: [], location: "Schedule TBA" },
+    { id: "CS 152", meet: [], location: "Schedule TBA" },
+    { id: "DATA C8", meet: [], location: "Schedule TBA" },
     { id: "RESEARCH", meet: [], location: "Schedule TBA" }
   ]
 });

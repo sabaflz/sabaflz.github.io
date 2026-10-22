@@ -21,8 +21,7 @@ window.PLANNER_DEGREE = {
     { id: "linalg", group: "CS lower division", name: "Linear algebra (Math 54)", any: ["MATH 54", "MATH 56"] },
 
     { id: "ac", group: "University", name: "American Cultures", any: ["ASAMST 128AC", "HISTORY 7B"] },
-    { id: "ahi-h", group: "University", name: "AH&I: History", any: ["HISTORY 7A", "HISTORY 7B", "CC HIST"] },
-    { id: "ahi-i", group: "University", name: "AH&I: Institutions", any: ["POLSCI 1", "CC POLI"] },
+    { id: "ahi", group: "University", name: "AH&I (one course: Pol Sci)", any: ["POLSCI 1", "CC POLI", "HISTORY 7A", "HISTORY 7B", "CC HIST"] },
 
     { id: "cog-core", group: "CogSci minor (summer)", name: "Core: CogSci C100 / Psych C120", minor: "cogsci-core", need: 1 },
     { id: "cog-topic", group: "CogSci minor (summer)", name: "Topical courses", minor: "cogsci-topic", need: 4 }
@@ -42,12 +41,13 @@ window.PLANNER_DEGREE = {
     { id: "t-47b", text: "Confirm with cs-advising that CS 47B fully replaces 61B as a prereq, and whether CS 9G is also needed" },
     { id: "t-tcr", text: "Check the Transfer Credit Report shows Math 53 and 54 equivalents (CS 189 prereqs)" },
     { id: "t-61c", text: "Ask cs-advising whether 61C can be taken in the same term as 61B/47B" },
-    { id: "t-ahi", text: "Confirm with CDSS (Course Equivalency Request) which De Anza/Foothill courses cover AH&I (U.S. history for History, POLI 1 for Institutions)" },
-    { id: "t-cc", text: "Re-enroll at De Anza or Foothill and register for the online history and POLI 1 courses; send the transcript to Berkeley after" },
+    { id: "t-ahi", text: "Confirm with CDSS (Course Equivalency Request) that De Anza/Foothill POLI 1 satisfies AH&I (or take POL SCI 1 at Berkeley)" },
+    { id: "t-cc", text: "Re-enroll at De Anza or Foothill and register for online POLI 1; send the transcript to Berkeley after" },
     { id: "t-cog", text: "Declare the CogSci summer minor and check the Summer Minor Finances page" },
     { id: "t-aid", text: "Ask Financial Aid how summer terms and a possible 5th semester affect Pell and the Transfer Scholarship" },
     { id: "t-5th", text: "If going 5 semesters: request the 5th semester from CDSS" },
-    { id: "t-c8", text: "Only if adding Data 100: check ASSIST for De Anza CIS 9 to Data C8" }
+    { id: "t-c8", text: "Check ASSIST: does De Anza CIS 9 count as Data C8? If yes, skip Data 8 and go straight to Data 100" },
+    { id: "t-cog-dec", text: "Decide whether to keep the CogSci summer minor or just take CogSci C100" }
   ],
 
   heavy: ["EECS 151", "CS 152", "CS 162", "CS 164", "CS 169A", "CS 169L", "CS 170", "CS 184", "CS 189"],

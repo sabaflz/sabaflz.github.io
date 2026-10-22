@@ -4,29 +4,29 @@
 */
 window.PLANNER_PATHS = [
   {
-    id: "four",
-    name: "4 semesters + CogSci minor",
-    why: "47B route. Both AH&I courses online at De Anza or Foothill (history in Winter/Spring quarter, POLI 1 in Fall quarter), so every Berkeley slot goes to CS, the minor, or the tech elective. Minor courses two per summer, graduating after Summer 2028.",
+    id: "five",
+    name: "5 semesters: full wishlist",
+    why: "Every course on the wishlist, one heavy course per semester (189, 170, 162, 164). Data 100 is the non-CS tech elective. Pol Sci online at De Anza/Foothill. Summers hold the CogSci minor if you keep it.",
     plan: {
-      sp27: ["CS 47B", "CS 189", "COGSCI C100", "COGSCI 131", "CC HIST"],
+      sp27: ["CS 61B", "CS 189", "DATA C8", "COGSCI C100"],
       su27: ["COGSCI 112", "COGSCI 116"],
-      fa27: ["CS 61C", "CS 170", "CS 188", "CC POLI"],
-      sp28: ["CS 160", "CS 186", "CS C176"],
+      fa27: ["CS 61C", "CS 170", "DATA C100", "CC POLI"],
+      sp28: ["CS 162", "CS 185", "CS 186", "RESEARCH"],
       su28: ["COGSCI 173", "COGSCI 139"],
-      fa28: []
+      fa28: ["CS 164", "CS 182", "CS 161"]
     }
   },
   {
-    id: "five",
-    name: "5 semesters + CogSci minor",
-    why: "Full 61B and 12 to 13 unit semesters. Both AH&I courses online at De Anza or Foothill. Minor courses two per summer, so pair each summer with a part-time or remote internship. Finishes Fall 2028 with room for extra electives.",
+    id: "four",
+    name: "4 semesters: core of the wishlist",
+    why: "47B route. Fits 189, 170, 162, 161, 185, 186, Data 8 and 100. Drops 164 and 182: with only three semesters left, four heavy courses can't each get their own term. Pol Sci online.",
     plan: {
-      sp27: ["CS 61B", "CS 189", "COGSCI C100", "RESEARCH", "CC HIST"],
+      sp27: ["CS 47B", "CS 189", "DATA C8", "COGSCI C100"],
       su27: ["COGSCI 112", "COGSCI 116"],
-      fa27: ["CS 61C", "CS 170", "COGSCI 131", "CC POLI"],
-      sp28: ["CS 160", "CS 188", "CS 161"],
+      fa27: ["CS 61C", "CS 170", "DATA C100", "CC POLI"],
+      sp28: ["CS 162", "CS 161", "CS 185", "CS 186"],
       su28: ["COGSCI 173", "COGSCI 139"],
-      fa28: ["CS 186", "CS C176", "PUBHLTH 150A"]
+      fa28: []
     }
   }
 ];
