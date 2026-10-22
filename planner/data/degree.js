@@ -8,7 +8,7 @@ window.PLANNER_DEGREE = {
   // Fall 2026 courses are listed so later prereqs unlock; remove one if it doesn't pass.
   done: [
     "CS 61A", "CS 70", "ASAMST 128AC",          // Berkeley, Fall 2026
-    "MATH 1A", "MATH 1B", "MATH 53", "MATH 54"  // De Anza (confirm on your Transfer Credit Report)
+    "MATH 1A", "MATH 1B", "MATH 53", "MATH 54", "IGETC"  // De Anza (confirm on your Transfer Credit Report)
   ],
 
   // Checklist. A row is met when `need` distinct courses from `any` are done or planned.
@@ -22,6 +22,11 @@ window.PLANNER_DEGREE = {
 
     { id: "ac", group: "University", name: "American Cultures", any: ["ASAMST 128AC", "HISTORY 7B"] },
     { id: "ahi", group: "University", name: "AH&I (one course: Pol Sci)", any: ["POLSCI 1", "CC POLI", "HISTORY 7A", "HISTORY 7B", "CC HIST"] },
+
+    { id: "es-rc", group: "CDSS Essential Skills", name: "Reading & Composition (IGETC)", any: ["IGETC"] },
+    { id: "es-hsd", group: "CDSS Essential Skills", name: "Human & Social Dynamics of Data and Technology (ethics)", any: ["DATA C104", "DATA C4AC", "CDSS 94"] },
+    { id: "es-comp", group: "CDSS Essential Skills", name: "Computational Reasoning (check APR)", any: [] },
+    { id: "es-stat", group: "CDSS Essential Skills", name: "Statistical Reasoning (check APR)", any: [] },
 
     { id: "cog-core", group: "CogSci minor (summer)", name: "Core: CogSci C100 / Psych C120", minor: "cogsci-core", need: 1 },
     { id: "cog-topic", group: "CogSci minor (summer)", name: "Topical courses", minor: "cogsci-topic", need: 4 }
@@ -47,6 +52,7 @@ window.PLANNER_DEGREE = {
     { id: "t-aid", text: "Ask Financial Aid how summer terms and a possible 5th semester affect Pell and the Transfer Scholarship" },
     { id: "t-5th", text: "If going 5 semesters: request the 5th semester from CDSS" },
     { id: "t-c8", text: "Check ASSIST: does De Anza CIS 9 count as Data C8? If yes, skip Data 8 and go straight to Data 100" },
+    { id: "t-es", text: "Check the Academic Progress Report: are Computational and Statistical Reasoning already met (De Anza stats, CS 61A, Data 8)? Ask CDSS if Data C104 can count for both the ethics requirement and the tech elective" },
     { id: "t-cog-dec", text: "CogSci minor plan: C100 + 112, 116 (Summer 2027) + 110, 173 (Summer 2028). Check each summer schedule when it posts" }
   ],
 

@@ -90,7 +90,7 @@ window.PLANNER_CATALOG = {
     note: "Counts toward the upper-div CS units even though it isn't CS-titled. Needs Data 8 (or an approved equivalent).",
     link: "https://undergraduate.catalog.berkeley.edu/courses/1480473" },
   "DATA C104": { load: 2, title: "Human Contexts and Ethics of Data", units: 4, cat: ["te"], ud: ["te"], prereq: [], verify: true,
-    note: "Approved non-CS technical elective. Ethics and real-world impact of data systems.",
+    note: "Satisfies the CDSS ethics requirement (Human & Social Dynamics of Data and Technology), which every CDSS student needs. Also an approved non-CS tech elective. Ethics and real-world impact of data systems, a natural fit for health tech.",
     link: "https://cdss.berkeley.edu/dsus/academics/courses" },
   "PUBHLTH 150A": { load: 2, title: "Introduction to Epidemiology and Human Disease", units: 4, cat: ["te"], ud: ["te"], prereq: [],
     prereqNote: "Check prereqs in the catalog.", verify: true,

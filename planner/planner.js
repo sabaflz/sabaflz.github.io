@@ -176,7 +176,7 @@
       if (units > DEG.maxUnits) warn.push(["bad", "Over the " + DEG.maxUnits + "-unit cap."]);
       else if (units > DEG.phase1Cap && t.status === "Planning") warn.push(["mid", "Over " + DEG.phase1Cap + " units: enroll the rest in Phase 2."]);
       if (tech.length > 3) warn.push(["mid", tech.length + " CS technical courses. Three is already a full load."]);
-    } else if (ids.length > 2) warn.push(["mid", ids.length + " summer courses. Two per summer is the realistic max next to an internship."]);
+    } else if (ids.filter(function (id) { return course(t, id).units > 0; }).length > 2) warn.push(["mid", "3+ Berkeley summer courses. Two per summer is the realistic max next to an internship."]);
     if (heavy.length > 1) warn.push(["mid", heavy.join(" + ") + " are both on the EECS heavy-workload list."]);
     conflicts(t, ids).forEach(function (p) { warn.push(["bad", "Time conflict: " + p + "."]); });
     ids.forEach(function (id) { var m = missing(course(t, id), done); if (m.length) warn.push(["bad", label(id) + " needs " + m.join(", ") + " first."]); });
