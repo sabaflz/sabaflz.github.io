@@ -8,7 +8,7 @@ window.PLANNER_DEGREE = {
   // Fall 2026 courses are listed so later prereqs unlock; remove one if it doesn't pass.
   done: [
     "CS 61A", "CS 70", "ASAMST 128AC",          // Berkeley, Fall 2026
-    "MATH 1A", "MATH 1B", "MATH 53", "MATH 54"  // De Anza (confirm on your Transfer Credit Report)
+    "MATH 1A", "MATH 1B", "MATH 53", "MATH 54", "IGETC"  // De Anza (confirm on your Transfer Credit Report)
   ],
 
   // Checklist. A row is met when `need` distinct courses from `any` are done or planned.
@@ -22,6 +22,11 @@ window.PLANNER_DEGREE = {
 
     { id: "ac", group: "University", name: "American Cultures", any: ["ASAMST 128AC", "HISTORY 7B"] },
     { id: "ahi", group: "University", name: "AH&I (one course: Pol Sci)", any: ["POLSCI 1", "CC POLI", "HISTORY 7A", "HISTORY 7B", "CC HIST"] },
+
+    { id: "es-rc", group: "CDSS Essential Skills", name: "Reading & Composition (IGETC)", any: ["IGETC"] },
+    { id: "es-hsd", group: "CDSS Essential Skills", name: "Human & Social Dynamics of Data and Technology (ethics)", any: ["DATA C104", "DATA C4AC", "CDSS 94"] },
+    { id: "es-comp", group: "CDSS Essential Skills", name: "Computational Reasoning (check APR)", any: [] },
+    { id: "es-stat", group: "CDSS Essential Skills", name: "Statistical Reasoning (check APR)", any: [] },
 
     { id: "cog-core", group: "CogSci minor (summer)", name: "Core: CogSci C100 / Psych C120", minor: "cogsci-core", need: 1 },
     { id: "cog-topic", group: "CogSci minor (summer)", name: "Topical courses", minor: "cogsci-topic", need: 4 }
@@ -47,6 +52,7 @@ window.PLANNER_DEGREE = {
     { id: "t-aid", text: "[removed]" },
     { id: "t-5th", text: "[removed]" },
     { id: "t-c8", text: "[removed]" },
+    { id: "t-es", text: "[removed]" },
     { id: "t-cog-dec", text: "[removed]" }
   ],
 
