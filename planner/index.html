@@ -88,6 +88,13 @@ h1{font:600 clamp(2rem,6vw,3rem)/1.03 var(--display); margin:0 0 12px; letter-sp
 .st-rec{background:var(--saffron); color:var(--on-saffron)}
 .st-ver{background:var(--info-soft); color:var(--info)}
 .st-term{background:var(--info-soft); color:var(--info)}
+.jump{all:unset; cursor:pointer; display:inline}
+.jump:hover b, .jump:hover span{color:var(--saffron-ink); text-decoration:underline; text-decoration-color:var(--saffron)}
+.jump:focus-visible{outline:3px solid var(--saffron); outline-offset:2px; border-radius:3px}
+.blk{cursor:pointer}
+.course.flash{animation:flash 1.6s ease-out}
+@keyframes flash{0%,35%{box-shadow:0 0 0 4px var(--saffron)}100%{box-shadow:0 0 0 0 transparent}}
+.live{margin:0; font:500 11px/1.4 var(--mono); color:var(--ok)}
 .pnote{display:block; font-size:12px; color:var(--muted); margin-top:2px}
 .st-heavy{border-color:var(--line); color:var(--muted)}
 dl{display:grid; grid-template-columns:62px 1fr; gap:3px 10px; margin:2px 0 0; font-size:13.5px}
@@ -286,17 +293,18 @@ footer{padding:36px 0 56px; color:var(--muted); font-size:13.5px; border-top:1.5
   <div class="modal" id="modal" hidden></div>
 </main>
 
-<script src="data/degree.js?v=13"></script>
-<script src="data/catalog.js?v=13"></script>
+<script src="data/degree.js?v=14"></script>
+<script src="data/catalog.js?v=14"></script>
 <!-- One script per semester. New one: copy data/terms/_template.js and add its tag here. -->
-<script src="data/terms/spring-2027.js?v=13"></script>
-<script src="data/terms/summer-2027.js?v=13"></script>
-<script src="data/terms/fall-2027.js?v=13"></script>
-<script src="data/terms/spring-2028.js?v=13"></script>
-<script src="data/terms/summer-2028.js?v=13"></script>
-<script src="data/terms/fall-2028.js?v=13"></script>
-<script src="planner.js?v=13"></script>
-<script src="sync.js?v=13"></script>
+<script src="data/terms/spring-2027.js?v=14"></script>
+<script src="data/terms/summer-2027.js?v=14"></script>
+<script src="data/terms/fall-2027.js?v=14"></script>
+<script src="data/terms/spring-2028.js?v=14"></script>
+<script src="data/terms/summer-2028.js?v=14"></script>
+<script src="data/terms/fall-2028.js?v=14"></script>
+<script src="data/live.js?v=14" onerror="window.PLANNER_LIVE=null"></script>
+<script src="planner.js?v=14"></script>
+<script src="sync.js?v=14"></script>
 <script src="../assets/js/theme.js?v=1"></script>
 </body>
 </html>
