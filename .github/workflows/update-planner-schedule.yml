@@ -45,5 +45,5 @@ jobs:
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add planner/data/live.js
             git commit -m "Planner: refresh class schedule from classes.berkeley.edu"
-            git push
+            for i in 1 2 3; do git pull --rebase -q origin main && git push && break; sleep 5; done
           fi
