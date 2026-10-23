@@ -1,0 +1,12 @@
+{
+  "v": 1,
+  "note": "GitHub token for the planner, encrypted with the admin password.",
+  "enc": {
+    "v": 1,
+    "kdf": "PBKDF2-SHA256",
+    "iter": 600000,
+    "salt": "5EuW2mk0Jwensb+2jQ9nfQ==",
+    "iv": "0TLxjSqoKRApk++p",
+    "ct": "hbqPLjTsNSCk6ijU1viH5lVC3vyo8bJuL2cmM7cLPVQcgd96Z/T6mIEDSTwJaQjGTkNTUrMgEncZBapSadjGJPTCw7I+phoR0UZWmeFOLUGouIcXTZqpmpKeat3k3iTA9SAR3eG+lYdbw/GkxA=="
+  }
+}
