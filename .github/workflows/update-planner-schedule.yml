@@ -25,7 +25,15 @@ jobs:
           python-version: "3.12"
       - name: Debug one course
         if: ${{ inputs.debug_course != '' }}
-        run: python3 scripts/update_schedule.py --debug "${{ inputs.debug_course }}" "${{ inputs.debug_term }}"
+        run: |
+          python3 scripts/update_schedule.py --debug "${{ inputs.debug_course }}" "${{ inputs.debug_term }}" > /tmp/debug.txt 2>&1 || true
+          python3 scripts/update_schedule.py > /tmp/full.txt 2>&1 || true
+          git config user.name "planner-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan planner-debug
+          git rm -rq --cached . && rm -rf planner scripts README.md index.html assets guides resume cs61a-mt2 .nojekyll .gitignore
+          cp /tmp/debug.txt debug.txt; cp /tmp/full.txt full.txt; cp planner/data/live.js live.js 2>/dev/null || true
+          git add debug.txt full.txt && git commit -qm "debug output" && git push -f origin planner-debug
       - name: Refresh schedule data
         if: ${{ inputs.debug_course == '' }}
         run: python3 scripts/update_schedule.py
