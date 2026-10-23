@@ -2,6 +2,47 @@
 window.PLANNER_LIVE = {
  "updated": "2026-10-23",
  "terms": {
+  "fa26": {
+   "CS 61A": {
+    "meet": [
+     {
+      "days": "MWF",
+      "start": "12:00",
+      "end": "12:59"
+     }
+    ],
+    "location": "Wheeler 150",
+    "instructor": "Kay Ousterhout, John DeNero",
+    "seats": "1750 seats, 1466 enrolled",
+    "link": "https://classes.berkeley.edu/content/2026-fall-compsci-61a-001-lec-001"
+   },
+   "CS 70": {
+    "meet": [
+     {
+      "days": "TuTh",
+      "start": "15:30",
+      "end": "16:59"
+     }
+    ],
+    "location": "Li Ka Shing 245",
+    "instructor": "Joshua A Hug, Manuel A Sabin",
+    "seats": "571 seats, 549 enrolled",
+    "link": "https://classes.berkeley.edu/content/2026-fall-compsci-70-001-lec-001"
+   },
+   "ASAMST 128AC": {
+    "meet": [
+     {
+      "days": "W",
+      "start": "16:00",
+      "end": "18:59"
+     }
+    ],
+    "location": "Dwinelle 145",
+    "instructor": "Hatem Albazian",
+    "seats": "192 seats, 192 enrolled. Reserved: 5",
+    "link": "https://classes.berkeley.edu/content/2026-fall-asamst-128ac-001-lec-001"
+   }
+  },
   "fa27": {},
   "fa28": {},
   "sp27": {
