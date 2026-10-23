@@ -43,7 +43,7 @@ def read_terms():
             continue
         text = f.read_text()
         tid = re.search(r'\bid:\s*"([^"]+)"', text).group(1)
-        ids = re.findall(r'\{\s*id:\s*"([^"]+)"', text)
+        ids = [i for i in re.findall(r'\{\s*id:\s*"([^"]+)"', text) if i != tid]
         terms.append({"id": tid, "season": m.group(1), "year": m.group(2), "courses": ids})
     return terms
 
@@ -80,6 +80,21 @@ def text_of(page):
     return [l for l in lines if l]
 
 
+def block(page, cls):
+    """Text inside the first element whose class list contains cls (e.g. sf--instructors)."""
+    m = re.search(r'<(\w+)[^>]*class="[^"]*\b%s\b[^"]*"[^>]*>' % re.escape(cls), page)
+    if not m:
+        return None
+    tag, start, depth, i = m.group(1), m.end(), 1, m.end()
+    for t in re.finditer(r"<(/?)%s\b[^>]*>" % tag, page[start:]):
+        depth += -1 if t.group(1) else 1
+        if depth == 0:
+            inner = page[start:start + t.start()]
+            txt = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", inner))).strip()
+            return txt or None
+    return None
+
+
 def parse(page):
     """Pull meetings, location, instructor, seats out of a class page. Returns {} if nothing found."""
     out = {}
@@ -99,24 +114,32 @@ def parse(page):
     if meets:
         out["meet"] = meets[:1]   # first block on the page is the lecture
 
-    # location: the campus-map link text
-    loc = re.search(r'<a[^>]+href="[^"]*(?:maps?\.berkeley|campus-?map|/map)[^"]*"[^>]*>(.*?)</a>', page, re.I | re.S)
-    if loc:
+    # location / instructor: the page's own blocks (sf--location, sf--instructors), else fallbacks
+    loc_txt = block(page, "sf--location")
+    if loc_txt:
+        out["location"] = loc_txt
+    ins_txt = block(page, "sf--instructors")
+    if ins_txt:
+        ins_txt = re.sub(r"^(Instructors?:?\s*)", "", ins_txt).strip()
+        if ins_txt and ins_txt.lower() not in ("staff", "the staff", "tba"):
+            out["instructor"] = ins_txt
+    loc = None if "location" in out else re.search(r'<a[^>]+href="[^"]*(?:maps?\.berkeley|campus-?map|/map)[^"]*"[^>]*>(.*?)</a>', page, re.I | re.S)
+    if loc and "location" not in out:
         out["location"] = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", "", loc.group(1)))).strip()
 
     # instructor: an element whose class mentions instructor, else the line right before the date range
-    ins = re.search(r'class="[^"]*instructor[^"]*"[^>]*>(.*?)</', page, re.I | re.S)
+    ins = None if "instructor" in out else re.search(r'class="[^"]*instructor[^"]*"[^>]*>(.*?)</', page, re.I | re.S)
     name = None
     if ins:
         name = re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", ins.group(1)))).strip()
-    if not name:
+    if not name and "instructor" not in out:
         for i, l in enumerate(lines):
             if re.match(r"[A-Z][a-z]{2} \d{1,2}, \d{4} ?- ?[A-Z][a-z]{2} \d{1,2}, \d{4}", l) and i > 0:
                 prev = lines[i - 1]
-                if re.match(r"^[A-Z][\w.'-]+(?: [A-Z][\w.'-]+)+(?:, [A-Z][\w.'-]+(?: [A-Z][\w.'-]+)+)*$", prev) and len(prev) < 80:
+                if re.match(r"^[A-Z][\w.'-]*(?: [A-Z][\w.'-]*)+(?:, [A-Z][\w.'-]+(?: [A-Z][\w.'-]+)+)*$", prev) and len(prev) < 80:
                     name = prev
                 break
-    if name and name.lower() not in ("instructor", "instructors", "staff", "the staff"):
+    if name and "instructor" not in out and name.lower() not in ("instructor", "instructors", "staff", "the staff"):
         out["instructor"] = name
 
     cap = re.search(r"Capacity:?\s*(\d+)", joined)
