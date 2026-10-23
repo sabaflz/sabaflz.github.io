@@ -39,7 +39,9 @@ Then visit http://localhost:8000.
 
 ## Planner admin
 
-Visitors only see the planner when it's set to "Everyone", and even then it's read-only. To edit:
-open the planner, click **Admin** at the bottom, and paste a fine-grained GitHub token
-(this repo only, Contents: Read and write). The admin bar switches who can see it.
-"Only me" encrypts `state.json` with your passphrase; it isn't stored anywhere, so don't lose it.
+Visitors only see the planner when it's set to "Everyone", and even then it's read-only.
+To edit: open the planner, click **Admin** at the bottom, and enter your admin password.
+First time only: you set the password and paste a fine-grained GitHub token (this repo only,
+Contents: Read and write). The token is stored in `planner/data/admin.json`, encrypted with
+your password. "Only me" encrypts `state.json` with the same password. If the token expires,
+the login asks for a new one. The password can't be recovered, so keep it in a password manager.
