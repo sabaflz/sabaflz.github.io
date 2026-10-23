@@ -58,11 +58,27 @@ window.PlannerApp = { start: function (D, OPTS) {
   var termId = ui.term && TERMS.some(function (t) { return t.id === ui.term; }) ? ui.term : defaultTerm();
   var cat = "all", query = "";
 
-  function defaultTerm() { var p = TERMS.filter(function (t) { return t.status === "Planning"; }); return (p[0] || TERMS[0] || {}).id; }
+  // term state is automatic: after `ends` a term is Completed, between starts and ends it's In progress
+  var TODAY = (function () { var d = new Date(); return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); })();
+  function termState(t) { if (t.ends && TODAY > t.ends) return "done"; if (t.starts && TODAY >= t.starts) return "current"; return "plan"; }
+  function statusLabel(t) { var s = termState(t); return s === "done" ? "Completed" : s === "current" ? "In progress" : (t.status || ""); }
+  var unlocked = {};   // admin can temporarily unlock a completed term for this page view
+  function locked(t) { return !!t.enrolled || (termState(t) === "done" && !unlocked[t.id]); }
+  function canEdit(t) { return EDIT && t && !locked(t); }
+  function defaultTerm() {
+    var p = TERMS.filter(function (t) { return termState(t) === "plan" && t.status === "Planning"; });
+    var q = TERMS.filter(function (t) { return termState(t) === "plan"; });
+    return (p[0] || q[0] || TERMS[TERMS.length - 1] || {}).id;
+  }
   function loadUI() { try { return JSON.parse(localStorage.getItem(UIKEY)) || {}; } catch (e) { return {}; } }
   function saveUI() { try { localStorage.setItem(UIKEY, JSON.stringify(ui)); } catch (e) {} }
   function save() { if (EDIT && OPTS.onChange) OPTS.onChange(store); }
-  function plan(id) { return store.plans[id || termId] || (store.plans[id || termId] = []); }
+  function plan(id) {
+    id = id || termId;
+    var t = TERMS.filter(function (x) { return x.id === id; })[0];
+    if (t && t.enrolled) return t.enrolled;            // fixed record of what I actually took
+    return store.plans[id] || (store.plans[id] = []);
+  }
   function term(id) { id = id || termId; return TERMS.filter(function (t) { return t.id === id; })[0]; }
   function course(t, id) { return t.courses.filter(function (c) { return c.id === id; })[0]; }
   function info(id) { return BYID[id] || TERMS.reduce(function (f, t) { return f || course(t, id); }, null) || { units: 0 }; }
@@ -113,7 +129,7 @@ window.PlannerApp = { start: function (D, OPTS) {
     tabsEl.innerHTML = TERMS.map(function (t) {
       var n = plan(t.id).length;
       return '<button type="button" role="tab" aria-selected="' + (t.id === termId) + '" data-term="' + esc(t.id) + '">' + esc(t.name) +
-        '<span>' + esc(t.status || "") + (n ? " · " + n + " picked" : "") + '</span></button>';
+        '<span>' + esc(statusLabel(t)) + (n ? " · " + n + (termState(t) === "plan" ? " picked" : " courses") : "") + '</span></button>';
     }).join("");
   }
   tabsEl.addEventListener("click", function (e) {
@@ -146,7 +162,8 @@ window.PlannerApp = { start: function (D, OPTS) {
     if (!shown.length) { listEl.innerHTML = '<p class="empty">Nothing matches. Try another filter.</p>'; return; }
     listEl.innerHTML = shown.map(function (c) {
       var miss = missing(c, done), inPlan = mine.indexOf(c.id) !== -1, taken = !!done[c.id];
-      var status = taken ? '<span class="st st-done">Already done or planned earlier</span>'
+      var status = t.enrolled && t.enrolled.indexOf(c.id) !== -1 ? '<span class="st st-ok">' + (termState(t) === "done" ? "Taken" : "Enrolled") + '</span>'
+        : taken ? '<span class="st st-done">Already done or planned earlier</span>'
         : miss.length ? '<span class="st st-lock">Needs ' + esc(miss.join(", ")) + '</span>' : '<span class="st st-ok">Eligible</span>';
       var off = c.offered ? (notOffered(c, t)
         ? '<span class="st st-lock" title="Usually not offered this term">' + esc(OFFERED[c.offered] || "") + ': not this term</span>'
@@ -171,12 +188,12 @@ window.PlannerApp = { start: function (D, OPTS) {
         (c.live ? '<p class="live">Times, room, and instructor from the class schedule, checked ' + esc(c.live) + '</p>' : "") +
         '<div class="c-foot">' +
         (c.link ? '<a href="' + esc(c.link) + '" target="_blank" rel="noopener">Class page ↗</a>' : '<span></span>') +
-        (!EDIT || (taken && !inPlan) ? "" : '<button type="button" class="add" data-add="' + esc(c.id) + '">' + (inPlan ? "Remove" : "Add to plan") + '</button>') +
+        (!canEdit(t) || (taken && !inPlan) ? "" : '<button type="button" class="add" data-add="' + esc(c.id) + '">' + (inPlan ? "Remove" : "Add to plan") + '</button>') +
         '</div></article>';
     }).join("");
   }
   listEl.addEventListener("click", function (e) { var b = e.target.closest("[data-add]"); if (b) toggle(b.getAttribute("data-add")); });
-  function toggle(id) { if (!EDIT) return; var p = plan(), i = p.indexOf(id); if (i === -1) p.push(id); else p.splice(i, 1); save(); renderAll(); }
+  function toggle(id) { if (!canEdit(term())) return; var p = plan(), i = p.indexOf(id); if (i === -1) p.push(id); else p.splice(i, 1); save(); renderAll(); }
 
   // ---------- plan panel ----------
   var planEl = document.getElementById("plan");
@@ -197,7 +214,7 @@ window.PlannerApp = { start: function (D, OPTS) {
     var tech = ids.filter(function (id) { var c = course(t, id); return (c.cat || []).some(function (k) { return ["core", "ud", "design"].indexOf(k) !== -1; }) && c.units >= 3; });
     var heavy = ids.filter(function (id) { return DEG.heavy.indexOf(id) !== -1; });
     var warn = [];
-    if (!t.summer) {
+    if (!t.summer && termState(t) === "plan") {
       if (ids.length && units < DEG.minUnits) warn.push(["bad", "Under the " + DEG.minUnits + "-unit minimum (full-time aid needs 12 too)."]);
       if (units > DEG.maxUnits) warn.push(["bad", "Over the " + DEG.maxUnits + "-unit cap."]);
       else if (units > DEG.phase1Cap && t.status === "Planning") warn.push(["mid", "Over " + DEG.phase1Cap + " units: enroll the rest in Phase 2."]);
@@ -212,24 +229,27 @@ window.PlannerApp = { start: function (D, OPTS) {
 
     var load = ids.reduce(function (s2, id) { return s2 + (course(t, id).load || 0); }, 0);
     var lvl = load <= 8 ? ["light", "good"] : load <= 12 ? ["balanced", "good"] : load <= 13.5 ? ["heavy", "mid"] : ["overloaded", "bad"];
-    if (ids.length && !t.summer) warn.unshift([lvl[1], "Workload " + load + " (" + lvl[0] + "). Balanced is about 10 to 12 on this scale."]);
+    if (ids.length && !t.summer && termState(t) === "plan") warn.unshift([lvl[1], "Workload " + load + " (" + lvl[0] + "). Balanced is about 10 to 12 on this scale."]);
     var cap = t.summer ? 12 : DEG.maxUnits;
     planEl.innerHTML =
-      '<div class="p-head"><h2>My ' + esc(t.name) + ' plan</h2><span class="p-units"><b>' + units + '</b> units</span></div>' +
+      '<div class="p-head"><h2>' + (termState(t) === "plan" ? "My " + esc(t.name) + " plan" : esc(t.name) + (termState(t) === "done" ? " (completed)" : " (in progress)")) + '</h2><span class="p-units"><b>' + units + '</b> units</span></div>' +
       (t.summer ? '<p class="p-sub">Summer term: no unit minimum.</p>' :
         '<div class="meter" aria-hidden="true"><i style="width:' + Math.min(100, units / cap * 100) + '%"></i><s style="left:' + (DEG.minUnits / cap * 100) + '%"></s><s style="left:' + (DEG.phase1Cap / cap * 100) + '%"></s></div>' +
         '<div class="meter-key"><span>0</span><span>min 12</span><span>Phase 1 · 13.5</span><span>17.5</span></div>') +
       (ids.length ? '<ul class="p-list">' + ids.map(function (id) {
         var c = course(t, id);
         return '<li><div><button type="button" class="jump" data-jump="' + esc(id) + '" title="Show this course\'s card"><b>' + esc(label(id)) + '</b> <span>' + esc(c.title) + '</span></button><small>' + esc(meetText(c)) + '</small></div><span class="pu">' + c.units + '</span>' +
-          (EDIT ? '<button type="button" class="x" data-add="' + esc(id) + '" aria-label="Remove ' + esc(id) + '">×</button>' : "") + '</li>';
-      }).join("") + '</ul>' : '<p class="p-empty">' + (EDIT ? "Nothing yet. Add courses from the list, or load a full plan in the tracker below." : "Nothing planned for this term.") + '</p>') +
+          (canEdit(t) ? '<button type="button" class="x" data-add="' + esc(id) + '" aria-label="Remove ' + esc(id) + '">×</button>' : "") + '</li>';
+      }).join("") + '</ul>' : '<p class="p-empty">' + (canEdit(t) ? "Nothing yet. Add courses from the list, or load a full plan in the tracker below." : "Nothing planned for this term.") + '</p>') +
       (warn.length ? '<ul class="warn">' + warn.map(function (w) { return '<li class="w-' + w[0] + '">' + esc(w[1]) + '</li>'; }).join("") + '</ul>' : "") +
-      (EDIT && ids.length ? '<button type="button" class="clear" id="clearPlan">Clear this term</button>' : "");
+      (canEdit(t) && ids.length ? '<button type="button" class="clear" id="clearPlan">Clear this term</button>' : "") +
+      (locked(t) ? '<p class="lockednote">' + (t.enrolled ? (termState(t) === "done" ? "Courses I took this term, kept as a fixed record." : "What I'm enrolled in this term, so it's fixed here.") : "Completed term: locked so nothing changes by accident.") +
+        (EDIT && !t.enrolled ? ' <button type="button" class="clear" id="unlockTerm">Edit anyway</button>' : "") + '</p>' : "");
   }
   planEl.addEventListener("click", function (e) {
     var x = e.target.closest("[data-add]"); if (x) { toggle(x.getAttribute("data-add")); return; }
-    if (EDIT && e.target.id === "clearPlan") { store.plans[termId] = []; save(); renderAll(); }
+    if (canEdit(term()) && e.target.id === "clearPlan") { store.plans[termId] = []; save(); renderAll(); }
+    if (EDIT && e.target.id === "unlockTerm") { unlocked[termId] = true; renderAll(); }
   });
 
   // ---------- week grid ----------
@@ -263,7 +283,10 @@ window.PlannerApp = { start: function (D, OPTS) {
     // id -> "done" or the name of the first term it's planned in
     var map = {};
     store.done.forEach(function (id) { map[id] = "done"; });
-    TERMS.forEach(function (t) { plan(t.id).forEach(function (id) { if (!map[id]) map[id] = t.name; }); });
+    TERMS.forEach(function (t) {
+      var st = termState(t);
+      plan(t.id).forEach(function (id) { if (!map[id] || map[id] !== "done") map[id] = st === "done" ? "done" : (map[id] || (st === "current" ? t.name + ", in progress" : t.name)); });
+    });
     return map;
   }
   function renderTracker() {

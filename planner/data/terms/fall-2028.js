@@ -3,6 +3,8 @@
   id: "fa28",
   name: "Fall 2028",
   order: 20283,
+  starts: "2028-08-16",
+  ends: "2028-12-15",          // approximate; after this date the term is locked as completed
   status: "Future",
   dates: "Schedule not published yet",
   intro: "Only on the 5-semester route. Needs a 5th-semester request with CDSS, and check how financial aid handles a fifth term.",

@@ -3,6 +3,8 @@
   id: "sp28",
   name: "Spring 2028",
   order: 20281,
+  starts: "2028-01-11",
+  ends: "2028-05-12",          // approximate; after this date the term is locked as completed
   status: "Future",
   dates: "Schedule not published yet",
   intro: "Schedule not published yet. Final semester on the 4-semester route.",

@@ -3,6 +3,8 @@
   id: "su27",
   name: "Summer 2027",
   order: 20272,
+  starts: "2027-05-24",
+  ends: "2027-08-13",          // approximate; after this date the term is locked as completed
   status: "Future",
   summer: true,
   dates: "Schedule not published yet",

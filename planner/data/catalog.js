@@ -10,6 +10,18 @@
     prereqNote, verify, note, link
 */
 window.PLANNER_CATALOG = {
+  /* ---------- Already taken (Fall 2026) ---------- */
+  "CS 61A": { offered: "FS", load: 4, title: "The Structure and Interpretation of Computer Programs", units: 4, cat: ["core"], prereq: [],
+    note: "Taken Fall 2026.", link: "https://cs61a.org/" },
+  "CS 70": { offered: "FS", load: 4, title: "Discrete Mathematics and Probability Theory", units: 4, cat: ["core"], prereq: [],
+    note: "Taken Fall 2026.", link: "https://www.eecs70.org/" },
+  "ASAMST 128AC": { offered: "?", load: 2, title: "Muslims in America", units: 4, cat: ["small"], prereq: [],
+    note: "Taken Fall 2026. Covers American Cultures." },
+  "CS 198": { offered: "FS", load: 1, title: "Directed Group Study (student-led)", units: 2, cat: ["small"], prereq: [], verify: true,
+    note: "Taken Fall 2026. P/NP. Units are a placeholder; tell me the real number to fix it." },
+  "FUNG 188": { offered: "?", load: 2.5, title: "Fung Fellows: health-tech project course", units: 3, cat: ["small"], prereq: [], verify: true,
+    note: "Taken Fall 2026. Course number and units are placeholders; tell me the real ones to fix them." },
+
   /* ---------- Core ---------- */
   "CS 61B": { offered: "FS", profs: {"fall": "Joshua Hug, Manuel Sabin", "spring": "Manuel Sabin"}, load: 4, title: "Data Structures", units: 4, cat: ["core"], prereq: [["CS 61A"]],
     note: "Gate course for nearly every upper-div class. Full Java depth plus a large design project.",
