@@ -8,6 +8,8 @@
     scenes, so during one-time setup you paste a token once; it's stored in
     planner/data/admin.json encrypted with your password (AES-GCM, PBKDF2 key, 600k rounds).
     After that, your password alone unlocks it on any device.
+  - Admin bar has Download backup / Restore. A backup is your plan as a plain file on your
+    own computer, so a forgotten password never means losing your work.
   - "Only me" encrypts state.json with the same password. Nothing unencrypted is stored,
     and your password is kept only for the current tab.
 */
@@ -133,6 +135,46 @@
   }
   window.addEventListener("beforeunload", function (e) { if (document.querySelector(".ab-status.mid")) { e.preventDefault(); e.returnValue = ""; } });
 
+  // ---------- backups ----------
+  var LS_BACKUP = "sf_planner_last_backup";
+  function backupAge() {
+    var t = null; try { t = localStorage.getItem(LS_BACKUP); } catch (e) {}
+    if (!t) return "never";
+    var d = Math.floor((Date.now() - +t) / 86400000);
+    return d <= 0 ? "today" : d === 1 ? "yesterday" : d + " days ago";
+  }
+  function downloadBackup() {
+    var file = { type: "sf-planner-backup", v: 1, exported: new Date().toISOString(), visibility: visibility, data: data };
+    var blob = new Blob([JSON.stringify(file, null, 2)], { type: "application/json" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "planner-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    try { localStorage.setItem(LS_BACKUP, String(Date.now())); } catch (e) {}
+    renderAdminBar(); setStatus("Backup downloaded", "good");
+  }
+  function readBackupFile(fileObj) {
+    return new Promise(function (resolve, reject) {
+      var r = new FileReader();
+      r.onload = function () {
+        try {
+          var j = JSON.parse(r.result);
+          var d = j && j.type === "sf-planner-backup" ? j.data : null;
+          if (!d || typeof d !== "object" || !d.plans) throw 0;
+          resolve(d);
+        } catch (e) { reject(new Error("That file isn't a planner backup.")); }
+      };
+      r.onerror = function () { reject(new Error("Couldn't read that file.")); };
+      r.readAsText(fileObj);
+    });
+  }
+  async function restoreInto(d) {
+    data = d; await saveNow();
+    if (document.querySelector(".ab-status.bad")) return;
+    location.reload();
+  }
+
   // ---------- page shell ----------
   function showPlanner(editable) {
     $("locked").hidden = true; closeModal();
@@ -151,6 +193,8 @@
         '<button type="button" data-vis="private" aria-pressed="' + (visibility === "private") + '">Only me</button>' +
         '<button type="button" data-vis="public" aria-pressed="' + (visibility === "public") + '">Everyone</button></span>' +
       '<span class="ab-status good">Saved</span>' +
+      '<span class="ab-bk">Backup: ' + backupAge() + ' <button type="button" class="ab-out" id="bkBtn">Download</button>' +
+        '<label class="ab-out">Restore<input type="file" id="restoreIn" accept="application/json,.json" hidden></label></span>' +
       '<button type="button" class="ab-out" id="pwBtn">Change password</button>' +
       '<button type="button" class="ab-out" id="logoutBtn">Log out</button>';
   }
@@ -167,7 +211,18 @@
       ssSet(SS_TOKEN, null); ssSet(SS_PASS, null); location.reload(); return;
     }
     if (e.target.id === "pwBtn") { changePassword(); return; }
+    if (e.target.id === "bkBtn" && data) { downloadBackup(); return; }
     if (e.target.id === "adminLink" || e.target.id === "lockedLogin") { e.preventDefault(); if (!token) openLogin(); }
+  });
+
+  document.addEventListener("change", async function (e) {
+    if (e.target.id !== "restoreIn" || !e.target.files[0] || !token) return;
+    try {
+      var d = await readBackupFile(e.target.files[0]);
+      if (!confirm("Replace your current planner with this backup? Download a backup of the current one first if you might want it.")) return;
+      await restoreInto(d);
+    } catch (err) { alert(err.message); }
+    e.target.value = "";
   });
 
   // ---------- modals ----------
@@ -262,10 +317,18 @@
   }
   function askVisibility() {
     return new Promise(function (resolve) {
+      var restored = null;
       var m = modal('<h2>Who can see your planner?</h2><p>You can switch this any time from the admin bar.</p>' +
         '<div class="mrow col"><button type="button" class="mbtn" data-first="private">Only me (encrypted)</button>' +
-        '<button type="button" class="mbtn ghost" data-first="public">Everyone (read-only for visitors)</button></div>');
-      m.querySelectorAll("[data-first]").forEach(function (b) { b.onclick = function () { closeModal(); resolve(b.getAttribute("data-first")); }; });
+        '<button type="button" class="mbtn ghost" data-first="public">Everyone (read-only for visitors)</button></div>' +
+        '<div class="mrestore"><b>Starting over after a reset?</b> <label class="mlink">Restore from a backup file<input type="file" id="firstRestore" accept="application/json,.json" hidden></label>' +
+        '<p class="mnote" id="restoreNote">Otherwise you start from the default plan.</p></div>');
+      m.querySelector("#firstRestore").addEventListener("change", async function (e) {
+        var note = m.querySelector("#restoreNote");
+        try { restored = await readBackupFile(e.target.files[0]); note.textContent = "Backup loaded. Now pick who can see it."; note.className = "mnote mok"; }
+        catch (err) { restored = null; note.textContent = err.message; note.className = "mnote merr"; }
+      });
+      m.querySelectorAll("[data-first]").forEach(function (b) { b.onclick = function () { closeModal(); resolve({ vis: b.getAttribute("data-first"), data: restored }); }; });
     });
   }
 
@@ -294,7 +357,9 @@
   async function firstRun() {
     await loadScript("data/seed.js");
     data = window.PLANNER_SEED ? clone(window.PLANNER_SEED) : { done: [], plans: {}, manual: {}, todos: [], paths: [] };
-    visibility = await askVisibility();
+    var choice = await askVisibility();
+    visibility = choice.vis;
+    if (choice.data) data = choice.data;
     renderAdminBar(); showPlanner(true);
     await saveNow();
     deleteSeed();
