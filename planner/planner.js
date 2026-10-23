@@ -74,6 +74,18 @@ window.PlannerApp = { start: function (D, OPTS) {
     return c.meet.map(function (m) { return daysOf(m).map(function (d) { return DAYNAME[d]; }).join("/") + " " + fmt(m.start) + " to " + fmt(m.end); }).join(", ");
   }
   function label(id) { return id.replace("-GC", ""); }
+  // which season a term is: last digit of order (1 spring, 2 summer, 3 fall)
+  function season(t) { return { 1: "S", 2: "U", 3: "F" }[t.order % 10]; }
+  var SEASON = { F: "fall", S: "spring", U: "summer" };
+  var OFFERED = { FS: "Fall & Spring", F: "Fall only", S: "Spring only", U: "Summer only", FSU: "Fall, Spring & Summer",
+                  A: "Any quarter (De Anza/Foothill)", X: "Not on the 2026-27 schedule", "?": "Terms unconfirmed" };
+  function notOffered(c, t) { var o = c.offered; return !!o && o !== "?" && o !== "A" && o.indexOf(season(t)) === -1; }
+  function who(c, t) {
+    if (c.instructor && c.instructor !== "TBA") return c.instructor;
+    var p = c.profs && c.profs[SEASON[season(t)]];
+    if (p) return "Likely " + p + " (taught it " + (season(t) === "F" ? "Fall 2026" : season(t) === "S" ? "Spring 2027" : "last summer") + ")";
+    return "TBA";
+  }
 
   function doneBefore(t) {
     var set = {};
@@ -126,7 +138,10 @@ window.PlannerApp = { start: function (D, OPTS) {
       var miss = missing(c, done), inPlan = mine.indexOf(c.id) !== -1, taken = !!done[c.id];
       var status = taken ? '<span class="st st-done">Already done or planned earlier</span>'
         : miss.length ? '<span class="st st-lock">Needs ' + esc(miss.join(", ")) + '</span>' : '<span class="st st-ok">Eligible</span>';
-      var flags = (c.rec ? '<span class="st st-rec">' + esc(c.rec) + '</span>' : "") +
+      var off = c.offered ? (notOffered(c, t)
+        ? '<span class="st st-lock" title="Usually not offered this term">' + esc(OFFERED[c.offered] || "") + ': not this term</span>'
+        : '<span class="st st-term">' + esc(OFFERED[c.offered] || "") + '</span>') : "";
+      var flags = off + (c.rec ? '<span class="st st-rec">' + esc(c.rec) + '</span>' : "") +
         (c.load ? '<span class="st st-heavy" title="Workload, 1 light to 5 very heavy">Load ' + c.load + '/5</span>' : "") +
         (c.verify ? '<span class="st st-ver" title="Something here still needs checking">Verify</span>' : "") +
         "";
@@ -138,7 +153,7 @@ window.PlannerApp = { start: function (D, OPTS) {
         '<div class="c-top"><span class="cid">' + esc(label(c.id)) + '</span><span class="units">' + c.units + ' u</span></div>' +
         '<h3>' + esc(c.title) + '</h3><div class="badges">' + status + flags + '</div>' +
         '<dl><dt>When</dt><dd>' + esc(meetText(c)) + '</dd><dt>Where</dt><dd>' + esc(c.location || "TBA") + '</dd>' +
-        '<dt>Who</dt><dd>' + esc(c.instructor || "TBA") + '</dd>' +
+        '<dt>Who</dt><dd>' + esc(who(c, t)) + (c.profNote ? '<small class="pnote">' + esc(c.profNote) + '</small>' : "") + '</dd>' +
         (counts.length ? '<dt>Counts</dt><dd>' + esc(counts.join(" · ")) + '</dd>' : "") +
         (c.seats ? '<dt>Seats</dt><dd>' + esc(c.seats) + '</dd>' : "") +
         (c.prereqNote ? '<dt>Prereq</dt><dd>' + esc(c.prereqNote) + '</dd>' : "") + '</dl>' +
@@ -179,6 +194,7 @@ window.PlannerApp = { start: function (D, OPTS) {
     if (heavy.length > 1) warn.push(["mid", heavy.join(" + ") + " are both on the EECS heavy-workload list."]);
     conflicts(t, ids).forEach(function (p) { warn.push(["bad", "Time conflict: " + p + "."]); });
     ids.forEach(function (id) { var m = missing(course(t, id), done); if (m.length) warn.push(["bad", label(id) + " needs " + m.join(", ") + " first."]); });
+    ids.forEach(function (id) { var c = course(t, id); if (notOffered(c, t)) warn.push(["bad", label(id) + " is " + OFFERED[c.offered].toLowerCase() + ", so it likely won't run in " + t.name + "."]); });
     if (ids.some(function (id) { return course(t, id).verify; })) warn.push(["info", "Some picks are flagged Verify; see their cards."]);
     if (ids.length && !warn.some(function (w) { return w[0] !== "info"; })) warn.unshift(["good", "No conflicts, prereqs met, unit load in range."]);
 
