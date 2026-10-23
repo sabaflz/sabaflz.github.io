@@ -87,6 +87,8 @@ h1{font:600 clamp(2rem,6vw,3rem)/1.03 var(--display); margin:0 0 12px; letter-sp
 .st-done{background:var(--surface-2); color:var(--muted); border-color:var(--line)}
 .st-rec{background:var(--saffron); color:var(--on-saffron)}
 .st-ver{background:var(--info-soft); color:var(--info)}
+.st-term{background:var(--info-soft); color:var(--info)}
+.pnote{display:block; font-size:12px; color:var(--muted); margin-top:2px}
 .st-heavy{border-color:var(--line); color:var(--muted)}
 dl{display:grid; grid-template-columns:62px 1fr; gap:3px 10px; margin:2px 0 0; font-size:13.5px}
 dt{font:500 11px/1.9 var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:.05em}
@@ -190,14 +192,16 @@ dd{margin:0}
 
 /* admin, lock screen, modal */
 [hidden]{display:none!important}
-.admin-bar{display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; margin:16px 0 0; padding:10px 14px; background:var(--ink); color:var(--bg); border-radius:12px; font-size:14px}
-.ab-badge{font:700 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; background:var(--saffron); color:var(--on-saffron); padding:5px 8px; border-radius:6px}
+.admin-bar{display:flex; flex-wrap:wrap; align-items:center; gap:10px 14px; margin:16px 0 0; padding:10px 14px; background:var(--surface); color:var(--ink); border:1.5px solid var(--line); border-left:4px solid var(--saffron); border-radius:12px; font-size:14px}
+.ab-badge{font:700 11px/1 var(--mono); letter-spacing:.1em; text-transform:uppercase; background:var(--saffron-soft); color:var(--saffron-ink); padding:5px 8px; border-radius:6px}
 .ab-vis{display:inline-flex; align-items:center; gap:6px}
-.ab-vis button{cursor:pointer; font:500 12.5px var(--mono); border:1.5px solid rgba(255,255,255,.35); background:transparent; color:inherit; border-radius:999px; padding:5px 11px}
-.ab-vis button[aria-pressed="true"]{background:var(--saffron); color:var(--on-saffron); border-color:var(--saffron)}
-.ab-status{font:500 12px var(--mono); opacity:.85; margin-left:auto}
-.ab-status.bad{color:#FF8A80; opacity:1} .ab-status.mid{color:var(--saffron)}
-.ab-out{cursor:pointer; background:none; border:0; color:inherit; text-decoration:underline; font-size:13px}
+.ab-vis{color:var(--muted)}
+.ab-vis button{cursor:pointer; font:500 12.5px var(--mono); border:1.5px solid var(--line); background:transparent; color:var(--ink); border-radius:999px; padding:5px 11px}
+.ab-vis button[aria-pressed="true"]{background:var(--saffron-soft); color:var(--saffron-ink); border-color:var(--saffron)}
+.ab-status{font:500 12px var(--mono); color:var(--muted); margin-left:auto}
+.ab-status.good{color:var(--ok)} .ab-status.bad{color:var(--bad)} .ab-status.mid{color:var(--saffron-ink)}
+.ab-out{cursor:pointer; background:none; border:0; color:var(--muted); text-decoration:underline; font-size:13px}
+.ab-out:hover{color:var(--ink)}
 .locked{text-align:center; max-width:460px; margin:48px auto; padding:36px 24px; background:var(--surface); border:1.5px solid var(--line); border-radius:18px}
 .locked h2{font:600 24px/1.2 var(--display); margin:10px 0 6px}
 .locked p{color:var(--muted); margin:0 0 18px}
@@ -217,7 +221,7 @@ dd{margin:0}
 .mok{color:var(--ok)!important; font-weight:600}
 .mrestore{margin-top:16px; padding-top:14px; border-top:1.5px solid var(--line); font-size:13.5px}
 .mlink{cursor:pointer; color:var(--saffron-ink); text-decoration:underline; font:600 13.5px var(--body)!important; display:inline!important; margin:0!important}
-.ab-bk{display:inline-flex; align-items:center; gap:8px; font:500 12px var(--mono); opacity:.9}
+.ab-bk{display:inline-flex; align-items:center; gap:8px; font:500 12px var(--mono); color:var(--muted)}
 label.ab-out{cursor:pointer}
 .mrow{display:flex; justify-content:flex-end; gap:8px; margin-top:16px} .mrow.col{flex-direction:column}
 .mbtn{cursor:pointer; font:600 14px var(--body); background:var(--ink); color:var(--bg); border:1.5px solid var(--ink); border-radius:10px; padding:10px 16px}
@@ -282,17 +286,17 @@ footer{padding:36px 0 56px; color:var(--muted); font-size:13.5px; border-top:1.5
   <div class="modal" id="modal" hidden></div>
 </main>
 
-<script src="data/degree.js?v=12"></script>
-<script src="data/catalog.js?v=12"></script>
+<script src="data/degree.js?v=13"></script>
+<script src="data/catalog.js?v=13"></script>
 <!-- One script per semester. New one: copy data/terms/_template.js and add its tag here. -->
-<script src="data/terms/spring-2027.js?v=12"></script>
-<script src="data/terms/summer-2027.js?v=12"></script>
-<script src="data/terms/fall-2027.js?v=12"></script>
-<script src="data/terms/spring-2028.js?v=12"></script>
-<script src="data/terms/summer-2028.js?v=12"></script>
-<script src="data/terms/fall-2028.js?v=12"></script>
-<script src="planner.js?v=12"></script>
-<script src="sync.js?v=12"></script>
+<script src="data/terms/spring-2027.js?v=13"></script>
+<script src="data/terms/summer-2027.js?v=13"></script>
+<script src="data/terms/fall-2027.js?v=13"></script>
+<script src="data/terms/spring-2028.js?v=13"></script>
+<script src="data/terms/summer-2028.js?v=13"></script>
+<script src="data/terms/fall-2028.js?v=13"></script>
+<script src="planner.js?v=13"></script>
+<script src="sync.js?v=13"></script>
 <script src="../assets/js/theme.js?v=1"></script>
 </body>
 </html>
