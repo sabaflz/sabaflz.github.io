@@ -118,6 +118,7 @@ footer{border-top:1.5px solid var(--line); padding:28px 0 10px; color:var(--mute
       <li><a href="#cheat1">Cheatsheet: foundations</a></li>
       <li><a href="#cheat2">Cheatsheet: new topics</a></li>
       <li><a href="#attack">Problem types &amp; attack plans</a></li>
+      <li><a href="#approach">How staff say to approach it</a></li>
       <li><a href="#notes">Your note sheets</a></li>
       <li><a href="#plan">Practice plan</a></li>
       <li><a href="#videos">Videos</a></li>
@@ -286,6 +287,8 @@ s[0] = 99          # item assignment</code></pre>
 a += [3]           # a and b are BOTH [1,2,3]  (same object)
 a = a + [4]        # a is new [1,2,3,4]; b still [1,2,3]</code></pre>
       <p><code>is</code> tests same object; <code>==</code> tests same value.</p>
+      <p><strong>Copies are shallow.</strong> <code>+</code>, slicing (<code>lst[:]</code>), and <code>list(lst)</code> each make a new outer list, but any nested list inside is <em>reused</em> (the copy holds a pointer to the same inner list). So mutating an inner list shows up in both. <code>+=</code> is not a copy at all, it mutates in place like <code>extend</code>.</p>
+      <p>Method behaviors to have cold: <code>append</code> adds one element and returns <code>None</code> (appending a list nests it); <code>extend</code> takes a list and adds each element, returns <code>None</code>; <code>remove</code> deletes the first matching value, returns <code>None</code>; <code>pop()</code> removes and <em>returns</em> the last element, <code>pop(i)</code> the one at index <code>i</code>.</p>
       <h3>Dictionary mutation</h3>
 <pre><code>d = {'a': 1}
 d['b'] = 2         # add key
@@ -400,6 +403,35 @@ class CheckingAccount(Account):     # inherits everything
         <li>Return <code>None</code> unless told otherwise.</li>
         <li>Watch loop-while-mutating: if you insert into a list you're indexing through, advance your index past what you inserted.</li>
       </ol>
+    </section>
+
+    <section class="topic" id="approach">
+      <h2>How staff say to approach it</h2>
+      <p>Straight from the staff's exam-prep post, and it lines up with everything above. Two moves for any tree-recursion problem: first name your <strong>cases</strong>, then name the <strong>connection</strong> between them.</p>
+      <h3>Name your cases</h3>
+      <ul>
+        <li><strong>Use or skip</strong> — either include the current value or don't, then recurse on the rest. The subset / with-it-without-it pattern.</li>
+        <li><strong>Use this or use that</strong> — pick among a few options at each step (one step or two, this coin or that), one recursive call per option.</li>
+        <li><strong>Build from smaller parts</strong> — assemble the answer from several recursive calls, like <code>fib(n) = fib(n-1) + fib(n-2)</code>.</li>
+      </ul>
+      <h3>Name the connection</h3>
+      <ul>
+        <li><strong>Sum</strong> → add the cases: <code>rec(n-1) + rec(n-2)</code>.</li>
+        <li><strong>Count</strong> → a base case returns <code>1</code> (or you add <code>1</code> as you go), then sum the recursive calls.</li>
+        <li><strong>Max / min</strong> → wrap the cases in <code>max(...)</code> or <code>min(...)</code>.</li>
+      </ul>
+      <p>And never forget the base case(s).</p>
+      <h3>Per-topic reminders staff flagged</h3>
+      <ul>
+        <li><strong>Linked lists:</strong> you will <em>not</em> mutate in place; you build new ones with <code>Link</code> and traverse. The general recursive shape is base case <code>if not isinstance(s, Link):</code> (check empty before touching <code>.first</code>/<code>.rest</code>), recursive case calls <code>func(s.rest)</code>.</li>
+        <li><strong>Trees:</strong> recursion almost always means a <code>for b in t.branches:</code> loop with a recursive call on each <code>b</code>. When in doubt, the base case is <code>is_leaf(t)</code>. Map out a tiny tree by hand to check your recursion.</li>
+        <li><strong>OOP:</strong> read the problem twice and the doctests twice. They're long and every sentence matters, and the doctests often reveal behavior the description doesn't state.</li>
+        <li><strong>Assignment:</strong> <code>=</code> on a primitive (int, bool, str, float, None) rebinds the name; <code>=</code> on anything else (list, Link, Tree, instance) makes the name a pointer to that object, so two names can share one object.</li>
+        <li><strong>Memoization:</strong> store each computed input→result in a dict; on a repeat input, return the stored value instead of recomputing. That's what collapses the duplicate <code>fib</code> calls.</li>
+      </ul>
+      <div class="callout">
+        <p><strong>Exam-day strategy staff emphasized:</strong> take about 5 past Midterm 2 exams (3–10 is the range successful students do), and for every miss, write down <em>why</em> you missed it. During the exam, if you're stuck, think for about 6 minutes, then move on and come back. Sleep and eat well; a rested brain is the cheapest point boost there is.</p>
+      </div>
     </section>
 
     <section class="topic" id="notes">
