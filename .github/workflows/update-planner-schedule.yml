@@ -1,0 +1,49 @@
+name: Update planner schedule
+
+on:
+  schedule:
+    - cron: "17 13 * * *"     # daily, ~6am Pacific
+  workflow_dispatch:
+    inputs:
+      debug_course:
+        description: "Optional: debug one course, e.g. CS 61B"
+        required: false
+      debug_term:
+        description: "Term id for debug, e.g. sp27"
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Debug one course
+        if: ${{ inputs.debug_course != '' }}
+        run: |
+          python3 scripts/update_schedule.py --debug "${{ inputs.debug_course }}" "${{ inputs.debug_term }}" > /tmp/debug.txt 2>&1 || true
+          python3 scripts/update_schedule.py > /tmp/full.txt 2>&1 || true
+          git config user.name "planner-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout --orphan planner-debug
+          git rm -rq --cached . && rm -rf planner scripts README.md index.html assets guides resume cs61a-mt2 .nojekyll .gitignore
+          cp /tmp/debug.txt debug.txt; cp /tmp/full.txt full.txt; cp planner/data/live.js live.js 2>/dev/null || true
+          git add debug.txt full.txt && git commit -qm "debug output" && git push -f origin planner-debug
+      - name: Refresh schedule data
+        if: ${{ inputs.debug_course == '' }}
+        run: python3 scripts/update_schedule.py
+      - name: Commit if changed
+        if: ${{ inputs.debug_course == '' }}
+        run: |
+          if [ -n "$(git status --porcelain planner/data/live.js)" ]; then
+            git config user.name "planner-bot"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add planner/data/live.js
+            git commit -m "Planner: refresh class schedule from classes.berkeley.edu"
+            git push
+          fi

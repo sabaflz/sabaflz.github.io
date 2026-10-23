@@ -1,0 +1,501 @@
+/*
+  content.js — CS 70 Fall 2026 midterm study content.
+  All topic notes, formulas, worked examples, and quiz questions live here.
+  Edit this file to change what the guide teaches.
+
+  Each topic object:
+    id        slug, used in URL hash and progress storage
+    name      display name
+    passed    optional: true if Saffron already passed it (dimmed, "done")
+    threshold short line on how many questions pass the topic on the exam
+    allOrNothing  true if you must get every question right
+    note      array of sections: { h, body } where body is HTML
+    formulas  array of { k, v } quick-reference rows
+    worked    array of { tag, q, a } fully worked examples (HTML in a)
+    quiz      array of questions for the interactive self-test:
+                { q, choices:[...], answer:index, why }  (multiple choice)
+              or
+                { q, type:"sa", accept:[...], answer, why }  (short answer, string match)
+*/
+
+window.CS70 = {
+  meta: {
+    course: "CS 70",
+    term: "Fall 2026",
+    staff: "Hug, Sabin",
+    examDate: "2026-10-15T19:00:00-07:00",
+    examLabel: "Thursday Oct 15, 7–9pm",
+    room: "A–K: Dwinelle 155 · L–U: Pimentel 1 · V–Z: Mulford 159",
+    notesUrl: "https://www.eecs70.org/",
+    policiesUrl: "https://www.eecs70.org/policies/"
+  },
+
+  // Saffron's current state, drives the "what to attempt" view
+  passedTopics: ["direct-proofs", "prop-logic", "induction", "modular", "crt", "rsa", "graphs"],
+
+  topics: [
+    /* ---------------- PASSED TOPICS (reference only) ---------------- */
+    {
+      id: "direct-proofs", name: "Direct Proofs", passed: true,
+      threshold: "2 of 3 on the midterm", allOrNothing: false,
+      note: [
+        { h: "The move", body: "Assume the hypothesis, expand definitions, chain forward to the conclusion. State the technique in line one." },
+        { h: "Definitions you expand", body: "<b>Odd:</b> n = 2k+1. <b>Even:</b> n = 2k. <b>Divides</b> (a|b): b = ka for some integer k. Always name the integer you introduce and note it stays an integer." }
+      ],
+      formulas: [
+        { k: "Odd", v: "n = 2k + 1, k ∈ ℤ" },
+        { k: "Even", v: "n = 2k, k ∈ ℤ" },
+        { k: "a | b", v: "b = ka, k ∈ ℤ" }
+      ],
+      worked: [
+        { tag: "Mock MT 1(b)", q: "a | b and b | c ⟹ a | c.", a: "b = k₁a, c = k₂b. Then c = k₂(k₁a) = (k₂k₁)a, and k₂k₁ ∈ ℤ, so a | c." }
+      ],
+      quiz: [
+        { q: "To prove 'if n is odd then 3n+4 is odd' directly, what's your first substitution?", choices: ["n = 2k", "n = 2k+1", "3n+4 = 2k", "n = k/2"], answer: 1, why: "Odd hypothesis means n = 2k+1. Then 3n+4 = 6k+7 = 2(3k+3)+1, odd." },
+        { q: "In a direct proof of a|b ∧ b|c ⟹ a|c, after writing b=k₁a and c=k₂b, what do you conclude?", type: "sa", accept: ["c=(k1k2)a", "c = (k2k1)a", "a|c", "c=k1k2a"], answer: "c = (k₁k₂)a, so a | c", why: "Substitute b into c: c = k₂(k₁a) = (k₁k₂)a, a product of integers times a." }
+      ]
+    },
+    {
+      id: "prop-logic", name: "Propositional Logic", passed: true,
+      threshold: "4 of 6 on the midterm", allOrNothing: false,
+      note: [
+        { h: "Implication", body: "P ⟹ Q is false only when P true, Q false. Equivalent to ¬P ∨ Q. Vacuously true when P is false." },
+        { h: "Contrapositive vs converse", body: "Contrapositive ¬Q ⟹ ¬P is <b>equivalent</b>. Converse Q ⟹ P is <b>not</b>. This is the most common trap." },
+        { h: "Negating", body: "¬(P ⟹ Q) ≡ P ∧ ¬Q. Pushing ¬ through quantifiers flips each: ¬∀x P(x) ≡ ∃x ¬P(x), and ¬∃x P(x) ≡ ∀x ¬P(x)." },
+        { h: "Quantifier order", body: "∀x∃y ≢ ∃y∀x. Order matters." }
+      ],
+      formulas: [
+        { k: "P ⟹ Q", v: "≡ ¬P ∨ Q" },
+        { k: "Contrapositive", v: "¬Q ⟹ ¬P (equivalent)" },
+        { k: "¬(P ⟹ Q)", v: "≡ P ∧ ¬Q" },
+        { k: "¬∀x P(x)", v: "≡ ∃x ¬P(x)" },
+        { k: "¬∃x P(x)", v: "≡ ∀x ¬P(x)" },
+        { k: "'Not every'", v: "∃x(S(x) ∧ ¬P(x))" }
+      ],
+      worked: [
+        { tag: "Mock MT 2(a)", q: "Translate: 'Not every student who studies passes.'", a: "¬∀x(S(x) ⟹ P(x)) ≡ ∃x(S(x) ∧ ¬P(x))." },
+        { tag: "Mock MT 2(f)", q: "Is ∃x(P(x) ∧ ¬Q(x)) ≡ ¬∀x(P(x) ⟹ Q(x))?", a: "Yes. ¬∀x(P⟹Q) ≡ ∃x¬(P⟹Q) ≡ ∃x(P ∧ ¬Q)." }
+      ],
+      quiz: [
+        { q: "P ⟹ Q is logically equivalent to:", choices: ["P ∧ ¬Q", "¬P ∨ Q", "Q ⟹ P", "¬P ∧ Q"], answer: 1, why: "The implication identity. It fails only when P true and Q false, exactly when ¬P∨Q is false." },
+        { q: "Which is equivalent to P ⟹ Q?", choices: ["Its converse Q⟹P", "Its contrapositive ¬Q⟹¬P", "Both", "Neither"], answer: 1, why: "Contrapositive is equivalent; converse is not. Classic trap." },
+        { q: "¬(P ⟹ Q) simplifies to:", type: "sa", accept: ["p and not q", "p ∧ ¬q", "p^¬q", "p and ~q"], answer: "P ∧ ¬Q", why: "The only way an implication is false is a true hypothesis with a false conclusion." },
+        { q: "Is ∀x∃y R(x,y) the same as ∃y∀x R(x,y)?", choices: ["Yes, quantifiers commute", "No, order matters"], answer: 1, why: "∀x∃y lets y depend on x; ∃y∀x forces one y for all x. Different statements." }
+      ]
+    },
+    {
+      id: "induction", name: "Induction", passed: true,
+      threshold: "1 of 1 on the midterm", allOrNothing: true,
+      note: [
+        { h: "Structure", body: "Base case, inductive hypothesis (assume P(k)), inductive step (show P(k+1)). <b>Strong induction</b> assumes P(1)…P(k) all hold." },
+        { h: "Game/strategy proofs", body: "For 'player X can guarantee a win' problems, induct on the game-state size and show X can always hand the opponent a losing position." }
+      ],
+      formulas: [
+        { k: "Weak IH", v: "assume P(k), show P(k+1)" },
+        { k: "Strong IH", v: "assume P(1)…P(k), show P(k+1)" }
+      ],
+      worked: [
+        { tag: "Pattern", q: "When do you need strong induction?", a: "When P(k+1) depends on a case smaller than k, not just k itself (e.g. splitting into two smaller subproblems, or the raisin-pile game where the next even pile can be any size < k)." }
+      ],
+      quiz: [
+        { q: "Strong induction differs from weak how?", choices: ["It skips the base case", "It assumes all of P(1)…P(k), not just P(k)", "It proves P(k-1)", "It needs two base cases always"], answer: 1, why: "Strong induction's hypothesis covers every case up to k, useful when the step reaches back further than one." }
+      ]
+    },
+    {
+      id: "modular", name: "Modular Arithmetic", passed: true,
+      threshold: "4 of 5 on the midterm", allOrNothing: false,
+      note: [
+        { h: "Inverses", body: "a⁻¹ mod m exists iff gcd(a,m) = 1. Find it with the extended Euclidean algorithm. Over GF(prime), every nonzero element has an inverse." },
+        { h: "Reducing powers", body: "Use a ≡ small (mod m) first. 67 ≡ −1 (mod 68), so 67^odd ≡ −1. 98·99·100 ≡ (−3)(−2)(−1) (mod 101)." }
+      ],
+      formulas: [
+        { k: "Inverse exists", v: "iff gcd(a, m) = 1" },
+        { k: "# invertibles mod m", v: "count of a with gcd(a,m)=1" },
+        { k: "a ≡ b (mod m)", v: "m | (a − b)" }
+      ],
+      worked: [
+        { tag: "Mock MT 4(a)", q: "67^6767 (mod 68).", a: "67 ≡ −1, exponent odd, so ≡ −1 ≡ 67 (mod 68)." },
+        { tag: "Mock MT 4(e)", q: "How many a ∈ {0..15} have an inverse mod 16?", a: "Those coprime to 16: the 8 odd numbers 1,3,5,7,9,11,13,15." }
+      ],
+      quiz: [
+        { q: "a⁻¹ exists mod m exactly when:", choices: ["a is prime", "gcd(a,m) = 1", "m is even", "a < m"], answer: 1, why: "Coprimality is necessary and sufficient; extended Euclid then produces the inverse." },
+        { q: "98·99·100 (mod 101) =", type: "sa", accept: ["95", "-6", "−6"], answer: "95", why: "≡ (−3)(−2)(−1) = −6 ≡ 95 (mod 101)." },
+        { q: "How many invertible elements mod 16?", type: "sa", accept: ["8"], answer: "8", why: "The 8 odd residues are coprime to 16." }
+      ]
+    },
+    {
+      id: "crt", name: "CRT", passed: true,
+      threshold: "1 of 1 on the midterm", allOrNothing: true,
+      note: [
+        { h: "What it says", body: "For pairwise-coprime moduli n₁…nₖ with product N, any system x ≡ aᵢ (mod nᵢ) has a unique solution mod N." },
+        { h: "Construction", body: "x = Σ aᵢuᵢ where uᵢ = (N/nᵢ)·[(N/nᵢ)⁻¹ mod nᵢ]. Each uᵢ is 1 mod nᵢ and 0 mod the others." }
+      ],
+      formulas: [
+        { k: "N", v: "n₁·n₂·…·nₖ" },
+        { k: "uᵢ", v: "(N/nᵢ)·[(N/nᵢ)⁻¹ mod nᵢ]" },
+        { k: "x", v: "Σ aᵢuᵢ (mod N)" }
+      ],
+      worked: [
+        { tag: "Mock MT CRT", q: "x ≡ 2 (mod 5), 1 (mod 6), 4 (mod 7).", a: "N = 210. u₁ = 42·(42⁻¹ mod 5)=42·3=126, u₂=35·5=175, u₃=30·4=120. x = 2·126+1·175+4·120 = 907 ≡ 67 (mod 210)." }
+      ],
+      quiz: [
+        { q: "CRT guarantees a unique solution mod N when the moduli are:", choices: ["All prime", "Pairwise coprime", "All even", "Consecutive"], answer: 1, why: "Pairwise coprimality is the exact condition; the primes themselves need not be prime, just coprime." },
+        { q: "In the basis uᵢ = (N/nᵢ)·c, what is c?", choices: ["nᵢ itself", "(N/nᵢ)⁻¹ mod nᵢ", "N⁻¹ mod nᵢ", "aᵢ"], answer: 1, why: "c is the inverse of N/nᵢ modulo nᵢ, which forces uᵢ ≡ 1 (mod nᵢ)." }
+      ]
+    },
+    {
+      id: "rsa", name: "RSA", passed: true,
+      threshold: "2 of 3 on the midterm", allOrNothing: false,
+      note: [
+        { h: "Setup", body: "N = pq. e coprime to (p−1)(q−1). d ≡ e⁻¹ mod (p−1)(q−1). Public key (N, e); private key d." },
+        { h: "Functions", body: "E(x) = xᵉ mod N, D(y) = y^d mod N. Correctness rests on Fermat's Little Theorem." },
+        { h: "Correctness still holds if", body: "e changes by a multiple of (p−1)(q−1): then e'd ≡ ed ≡ 1 mod (p−1)(q−1), so d still works." }
+      ],
+      formulas: [
+        { k: "N", v: "p·q" },
+        { k: "d", v: "e⁻¹ mod (p−1)(q−1)" },
+        { k: "E(x)", v: "xᵉ mod N" },
+        { k: "D(y)", v: "y^d mod N" }
+      ],
+      worked: [
+        { tag: "Mock MT RSA(a)", q: "p=17, q=5, e=23. Public key and E(x)?", a: "N = 85, public key (85, 23), E(x) = x²³ mod 85." },
+        { tag: "Mock MT RSA(b)", q: "Smallest d for p=17,q=5,e=23.", a: "d = 23⁻¹ mod 64. Extended Euclid gives d = 39." }
+      ],
+      quiz: [
+        { q: "The private key d satisfies:", choices: ["d ≡ e⁻¹ mod N", "d ≡ e⁻¹ mod (p−1)(q−1)", "d = pq", "d = e"], answer: 1, why: "d is e's inverse modulo (p−1)(q−1), which is why ed ≡ 1 there and decryption works." },
+        { q: "For p=17, q=5, the modulus N is:", type: "sa", accept: ["85"], answer: "85", why: "N = pq = 17·5 = 85." }
+      ]
+    },
+
+    /* ---------------- TARGET TOPICS (to attempt Thursday) ---------------- */
+    {
+      id: "proof-tech", name: "Proof Techniques",
+      threshold: "2 of 2 — all or nothing", allOrNothing: true,
+      note: [
+        { h: "Pick the technique fast", body: "<b>Direct:</b> assuming P hands you something. <b>Contrapositive:</b> ¬Q is more concrete than P. <b>Contradiction:</b> proving something doesn't exist or is unique. <b>Cases:</b> you know one of several situations holds." },
+        { h: "Uniqueness", body: "Show one solution works (existence), then assume two solutions e₁, e₂ and force e₁ = e₂." },
+        { h: "Iff proofs", body: "Prove both directions. For the hard direction, factoring the expression is often the trick." },
+        { h: "State it in line one", body: "'We proceed by contraposition / contradiction.' Free credit, and keeps your structure honest." }
+      ],
+      formulas: [
+        { k: "Contrapositive", v: "prove ¬Q ⟹ ¬P instead of P ⟹ Q" },
+        { k: "Contradiction", v: "assume ¬P, derive R ∧ ¬R" },
+        { k: "Uniqueness", v: "existence + (two solutions ⟹ equal)" }
+      ],
+      worked: [
+        { tag: "Mock MT 3(a)", q: "Prove a unique real x has x+a = a+x = a for all a.", a: "<b>Existence:</b> x = 0 works. <b>Uniqueness:</b> if e₁, e₂ both work, e₁ = e₁+e₂ = e₂, so e₁ = e₂." },
+        { tag: "Mock MT 3(b)", q: "a even ∧ b odd ⟺ ab+7b−2a−14 odd.", a: "(⟹) sub a=2k, b=2m+1, expand to 2(·)+1. (⟸) factor as (a+7)(b−2); odd product ⟹ both factors odd ⟹ a even, b odd." }
+      ],
+      quiz: [
+        { q: "To prove 'a+b ≤ 15 ⟹ a ≤ 11 or b ≤ 4', the cleanest technique is:", choices: ["Direct proof", "Contrapositive", "Induction", "Cases on parity"], answer: 1, why: "¬Q is 'a>11 and b>4', two concrete inequalities you add to contradict the hypothesis." },
+        { q: "A uniqueness proof needs which two parts?", choices: ["Base case and step", "Existence and 'two solutions are equal'", "Forward and converse", "Contrapositive and contradiction"], answer: 1, why: "Show something works, then show any two somethings coincide." },
+        { q: "Which technique best fits 'prove √2 is irrational'?", choices: ["Direct", "Contradiction", "Cases", "Induction"], answer: 1, why: "You're showing integers a,b with √2=a/b don't exist, the signature of a contradiction proof." },
+        { q: "What's the ideal first line of a contrapositive proof?", choices: ["\"Assume P, then expand the definition.\"", "\"We prove the contrapositive: assume ¬Q.\"", "\"Suppose for contradiction that the claim is false.\"", "\"By induction on n.\""], answer: 1, why: "Name the technique and state the new assumption (¬Q). Graders reward it and it keeps your structure honest." }
+      ],
+      videos: [
+        { t: "Methods of proof: direct, contradiction, contraposition", by: "Dr. Trefor Bazett", note: "All three side by side — the 'pick the technique fast' skill", url: "https://www.youtube.com/watch?v=0wsTtLyWTOk" },
+        { t: "Proof by Contraposition", by: "Dr. Trefor Bazett", note: "When and how to flip to the contrapositive", url: "https://www.youtube.com/watch?v=vMwejR0bqwo" },
+        { t: "Proof by Contradiction", by: "Dr. Trefor Bazett", note: "The assume-the-opposite structure", url: "https://www.youtube.com/watch?v=b-kFWP9a2tw" }
+      ],
+      learn: [
+        { teach: "<h3>Four tools, one decision</h3><p>Every proof here uses one of four techniques, and the real skill is choosing fast. <b>Direct:</b> when assuming P hands you something to expand. <b>Contrapositive:</b> when ¬Q is more concrete to start from than P. <b>Contradiction:</b> when you're proving something doesn't exist or is unique. <b>Cases:</b> when you know one of several situations must hold.</p>",
+          check: { q: "To prove 'a+b ≤ 15 ⟹ a ≤ 11 or b ≤ 4', which technique is cleanest?", choices: ["Direct", "Contrapositive", "Induction", "Cases"], answer: 1, why: "¬Q is 'a>11 and b>4', two concrete inequalities you add to contradict a+b≤15." } },
+        { teach: "<h3>Contradiction</h3><p>Assume the opposite of what you want, then derive something impossible (R ∧ ¬R). Since the assumption forces nonsense, it must be false. Reach for it when the claim says something <i>can't</i> happen: no largest prime, √2 is not a fraction.</p>",
+          check: { q: "Which technique best fits 'prove √2 is irrational'?", choices: ["Direct", "Contradiction", "Cases"], answer: 1, why: "You're showing integers a,b with √2=a/b don't exist, the signature of a contradiction proof." } },
+        { teach: "<h3>Uniqueness = existence + collision</h3><p>To prove a <b>unique</b> object exists, do two things: show one works (existence), then assume two solutions e₁ and e₂ and force e₁ = e₂.</p>",
+          check: { q: "A uniqueness proof needs which two parts?", choices: ["Base case and step", "Existence, and 'any two solutions are equal'", "Forward and converse"], answer: 1, why: "Show something works, then show any two somethings coincide." } },
+        { teach: "<h3>Iff proofs</h3><p>An 'if and only if' needs <b>both directions</b> proved separately. For the harder direction, <b>factoring</b> is often the unlock, like rewriting ab+7b−2a−14 as (a+7)(b−2).</p>",
+          check: { q: "To prove an iff statement, how many directions must you prove?", type: "sa", accept: ["2", "two", "both"], answer: "2", why: "Forward (⟹) and backward (⟸), each on its own." } },
+        { teach: "<h3>One free habit</h3><p>Open every proof by naming the technique: 'We proceed by contraposition.' Graders reward it and it keeps your own structure honest. You're ready, take the self-test next.</p>" }
+      ]
+    },
+    {
+      id: "polynomials", name: "Polynomials",
+      threshold: "3 of 3 — all or nothing", allOrNothing: true,
+      note: [
+        { h: "Over GF(p)", body: "All arithmetic is mod a prime p. 'Divide' means multiply by the inverse. Reduce every coefficient into {0,…,p−1} at the end." },
+        { h: "Property 1", body: "A nonzero degree-d polynomial has at most d roots. Degrees of a product add." },
+        { h: "Property 2", body: "d+1 points with distinct x determine a unique degree-≤d polynomial." },
+        { h: "Lagrange interpolation", body: "Δᵢ(x) = ∏(j≠i)(x−xⱼ) / ∏(j≠i)(xᵢ−xⱼ), each 1 at xᵢ and 0 at the others. Then p(x) = Σ yᵢΔᵢ(x). A point with yᵢ=0 lets you skip its Δ." },
+        { h: "FLT reduction", body: "Over GF(p), xᵖ ≡ x, so xᵖ drops the exponent by p−1. Repeat while exponent ≥ p." }
+      ],
+      formulas: [
+        { k: "Δᵢ(x)", v: "∏(x−xⱼ)/∏(xᵢ−xⱼ), j≠i" },
+        { k: "p(x)", v: "Σ yᵢ Δᵢ(x)" },
+        { k: "≤ roots", v: "degree d ⟹ ≤ d roots" },
+        { k: "deg(fg)", v: "deg f + deg g" },
+        { k: "FLT", v: "xᵖ ≡ x (mod p)" }
+      ],
+      worked: [
+        { tag: "Mock MT 5(a) · GF(11)", q: "Points (1,7),(3,5),(4,0). Given Δ₂=5x²+8x+9.", a: "Skip Δ₃ (y=0). Δ₁ denom (1−3)(1−4)=6, 6⁻¹=2, so Δ₁=2(x−3)(x−4)=2x²+8x+2. p = 7Δ₁+5Δ₂ = 6x²+8x+4 (mod 11)." },
+        { tag: "Mock MT 5(b)", q: "deg f=4, deg g=3 over GF(11). Max distinct roots of fg?", a: "deg(fg)=7, so at most 7." },
+        { tag: "Mock MT 5(c) · GF(13)", q: "Reduce 70x⁷²+2x²⁶+7 to degree <13.", a: "x¹³≡x drops exponents by 12: 72→12, 26→2. 70≡5. Answer 5x¹²+2x²+7." }
+      ],
+      quiz: [
+        { q: "A nonzero degree-7 polynomial over GF(11) has at most how many roots?", type: "sa", accept: ["7", "seven"], answer: "7", why: "Property 1: at most d roots for degree d." },
+        { q: "How many distinct points uniquely determine a degree-≤3 polynomial?", type: "sa", accept: ["4", "four", "d+1"], answer: "4", why: "Property 2: d+1 = 4 points." },
+        { q: "In Lagrange interpolation, when can you skip computing Δᵢ entirely?", choices: ["When xᵢ = 0", "When yᵢ = 0", "When the degree is even", "Never"], answer: 1, why: "yᵢΔᵢ vanishes if yᵢ=0, so that basis polynomial never contributes." },
+        { q: "Over GF(13), x²⁶ reduces to:", type: "sa", accept: ["x^2", "x2", "x²"], answer: "x²", why: "x¹³≡x drops the exponent by 12 each time: 26 → 14 → 2." },
+        { q: "Why must the field be a prime (not composite) for Properties 1 and 2?", choices: ["So addition works", "So every nonzero element has an inverse (it's a field)", "To make it finite", "So FLT fails"], answer: 1, why: "Mod a composite there are zero divisors and missing inverses; both properties break (mod 8, x³=0 has 4 roots)." }
+      ],
+      videos: [
+        { t: "Simple intro to Shamir's Secret Sharing and Lagrange interpolation", by: "YouTube", note: "Lagrange interpolation over a finite field, the core skill here", url: "https://www.youtube.com/watch?v=kkMps3X_tEE" },
+        { t: "Protecting Your Secrets With Polynomials", by: "YouTube", note: "Clearest 'secret at P(0), degree k−1' intuition", url: "https://www.youtube.com/watch?v=_EHMd8gpApo" }
+      ],
+      learn: [
+        { teach: "<h3>Everything lives in GF(p)</h3><p>All arithmetic is modulo a prime p. There are no fractions: 'divide by 5' means 'multiply by 5⁻¹ mod p'. And always reduce every final coefficient into {0,…,p−1}.</p>",
+          check: { q: "Over GF(11), 'divide by 6' means multiply by:", choices: ["6", "6⁻¹ mod 11 = 2", "−6", "1/6"], answer: 1, why: "6·2 = 12 ≡ 1 (mod 11), so 6⁻¹ = 2. Division is multiplication by the inverse." } },
+        { teach: "<h3>Property 1 — roots</h3><p>A nonzero degree-d polynomial has <b>at most d roots</b>. And degrees of a product add: deg(fg) = deg f + deg g.</p>",
+          check: { q: "deg f = 4, deg g = 3 over GF(11). Max distinct roots of f·g?", type: "sa", accept: ["7", "seven"], answer: "7", why: "deg(fg) = 4+3 = 7, so at most 7 roots." } },
+        { teach: "<h3>Property 2 — points determine polynomials</h3><p>d+1 points with distinct x-values pin down a <b>unique</b> degree-≤d polynomial. This is the backbone of interpolation, secret sharing, and error correction.</p>",
+          check: { q: "How many points uniquely determine a degree-≤3 polynomial?", type: "sa", accept: ["4", "four"], answer: "4", why: "d+1 = 4." } },
+        { teach: "<h3>Lagrange interpolation</h3><p>Build one basis polynomial per point: Δᵢ(x) = ∏(x−xⱼ)/∏(xᵢ−xⱼ), which is 1 at xᵢ and 0 at the others. Then p(x) = Σ yᵢΔᵢ(x). Shortcut: if a point has yᵢ = 0, skip its Δ entirely.</p>",
+          check: { q: "When can you skip computing a basis polynomial Δᵢ?", choices: ["When xᵢ = 0", "When yᵢ = 0", "When the degree is even"], answer: 1, why: "yᵢΔᵢ vanishes if yᵢ=0, so it contributes nothing." } },
+        { teach: "<h3>Shrinking big exponents with FLT</h3><p>Over GF(p), xᵖ ≡ x. So any xᵖ drops the exponent by p−1. Repeat while the exponent is ≥ p.</p>",
+          check: { q: "Over GF(13), x²⁶ reduces to:", type: "sa", accept: ["x^2", "x2", "x²"], answer: "x²", why: "x¹³≡x drops the exponent by 12: 26 → 14 → 2." } }
+      ]
+    },
+    {
+      id: "secret-sharing", name: "Secret Sharing & ECCs",
+      threshold: "3 of 4 on the midterm", allOrNothing: false,
+      note: [
+        { h: "Erasure vs general", body: "Erasure (you know which packets dropped): send <b>n+k</b>, recover from any n. General errors (you don't know which are corrupted): send <b>n+2k</b>, recover from n+k correct." },
+        { h: "Secret sharing", body: "Secret at P(0). For a k-threshold, polynomial degree is <b>k−1</b>. Field prime q > n and s. k shares reconstruct; k−1 shares reveal nothing (all q secrets equally likely)." },
+        { h: "k sets the degree, n sets the shares", body: "The threshold k decides the polynomial degree (k−1). The number of people n only decides how many points you hand out." },
+        { h: "Berlekamp-Welch", body: "Error-locator E(x) has degree k. Q(x)=P(x)E(x) has degree n+k−1. Solve n+2k linear equations in n+2k unknowns, then P = Q/E. Roots of E are the error locations." },
+        { h: "Layered schemes", body: "For 'group A or group B' access, use a top polynomial for the secret and a sub-polynomial whose P(0) equals one of the top polynomial's shares." }
+      ],
+      formulas: [
+        { k: "Erasure", v: "send n+k, recover from any n" },
+        { k: "General", v: "send n+2k, recover from n+k" },
+        { k: "k-threshold", v: "degree k−1, secret = P(0)" },
+        { k: "E(x) degree", v: "k" },
+        { k: "Q=PE degree", v: "n+k−1" },
+        { k: "BW system", v: "n+2k eqns, n+2k unknowns" }
+      ],
+      worked: [
+        { tag: "Mock MT 6(a)", q: "Guard 1 general error, 5 points sent. Message length?", a: "n+2k=5, k=1, so n=3." },
+        { tag: "Mock MT 6(b)", q: "Client corrupts k packets. Recover from n+k?", a: "False. Corruption is general error, needs n+2k." },
+        { tag: "Mock MT 6(c)", q: "2 co-presidents + 10 officers; access = both co-pres OR 1 co-pres + 7 officers.", a: "Top P degree 1 (co-pres hold P(1),P(2)). Sub Q degree 6 with Q(0)=P(3); 7 officers recover P(3). Two polynomials; degrees 1 and 6; each person gets 1 point." }
+      ],
+      quiz: [
+        { q: "To correct k general errors, how many total packets for an n-symbol message?", type: "sa", accept: ["n+2k", "n + 2k"], answer: "n + 2k", why: "General errors need double redundancy because you must locate them too." },
+        { q: "To survive k erasures (known positions), send:", type: "sa", accept: ["n+k", "n + k"], answer: "n + k", why: "Erasures only need enough surviving points to interpolate: any n of n+k." },
+        { q: "A 3-of-5 secret sharing scheme uses a polynomial of degree:", type: "sa", accept: ["2", "k-1", "k−1"], answer: "2", why: "Degree = k−1 = 2, so exactly 3 points pin it down." },
+        { q: "In Berlekamp-Welch, Q(x) = P(x)E(x) has degree:", choices: ["k", "n−1", "n+k−1", "n+2k"], answer: 2, why: "deg P = n−1, deg E = k, product degree n+k−1." },
+        { q: "Why do k−1 shares reveal zero information about the secret?", choices: ["They're encrypted", "For every candidate secret there's a unique consistent polynomial, so all q are equally likely", "The polynomial is random", "k−1 is always too few points to compute anything"], answer: 1, why: "k−1 points plus any choice of (0, b) give a valid degree k−1 polynomial, so the secret could equally be any value." }
+      ],
+      videos: [
+        { t: "Protecting Your Secrets With Polynomials (Shamir's)", by: "YouTube", note: "The k-of-n scheme, secret at P(0)", url: "https://www.youtube.com/watch?v=_EHMd8gpApo" },
+        { t: "Reed-Solomon Encoding, Intuitive / Simplified", by: "YouTube", note: "The error-correcting half: n+k vs n+2k and why", url: "https://www.youtube.com/watch?v=3HRIeWYbIuI" },
+        { t: "What are Reed-Solomon Codes? How computers recover lost data", by: "YouTube", note: "Longer, good if the ECC idea still feels fuzzy", url: "https://www.youtube.com/watch?v=1pQJkt7-R4Q" }
+      ],
+      learn: [
+        { teach: "<h3>Two error models, two costs</h3><p><b>Erasures</b> (you know which packets dropped): send <b>n+k</b>, recover from any n. <b>General errors</b> (you don't know which are corrupted): send <b>n+2k</b>, because you must both locate and fix each error.</p>",
+          check: { q: "To correct k general errors in an n-symbol message, send:", type: "sa", accept: ["n+2k", "n + 2k"], answer: "n + 2k", why: "General errors need double redundancy, since locating them costs as much as fixing them." } },
+        { teach: "<h3>Run the formula backwards</h3><p>Exam questions often give you the packets sent and the error count, then ask for the message length. Just solve the equation.</p>",
+          check: { q: "Guarding 1 general error, 5 points were sent. Original message length?", type: "sa", accept: ["3", "three"], answer: "3", why: "n+2k = 5 with k=1, so n = 3." } },
+        { teach: "<h3>Secret sharing basics</h3><p>The secret sits at <b>P(0)</b>. For a k-of-n scheme, the polynomial has degree <b>k−1</b>, so exactly k shares pin it down. The field prime q must exceed both n and the secret. Remember: <b>k sets the degree, n sets how many shares</b>.</p>",
+          check: { q: "A 3-of-5 secret sharing scheme uses a polynomial of degree:", type: "sa", accept: ["2", "k-1", "k−1"], answer: "2", why: "Degree = k−1 = 2, so 3 points determine it." } },
+        { teach: "<h3>Why k−1 shares leak nothing</h3><p>With only k−1 points, for <i>every</i> possible secret value there's exactly one consistent degree-(k−1) polynomial. So all q secrets stay equally likely, provably zero information, not just 'hard'.</p>",
+          check: { q: "Why do k−1 shares reveal nothing about the secret?", choices: ["They're encrypted", "Every candidate secret has a consistent polynomial, so all are equally likely", "The polynomial is random"], answer: 1, why: "k−1 points plus any choice of (0,b) give a valid polynomial, so the secret could be anything." } },
+        { teach: "<h3>Berlekamp-Welch degrees</h3><p>The error-locator E(x) has degree k. Q(x) = P(x)E(x) has degree n+k−1. You solve n+2k linear equations in n+2k unknowns, then recover P = Q/E. The roots of E tell you where the errors were.</p>",
+          check: { q: "In Berlekamp-Welch, Q(x) = P(x)E(x) has degree:", choices: ["k", "n−1", "n+k−1", "n+2k"], answer: 2, why: "deg P = n−1, deg E = k, so the product is n+k−1." } }
+      ]
+    },
+    {
+      id: "graphs", name: "Graphs", passed: true,
+      threshold: "4 of 5 — your easiest lock", allOrNothing: false,
+      note: [
+        { h: "Handshake", body: "Σ deg(v) = 2|E|. The workhorse: it ties degrees to edge count, and forces the number of odd-degree vertices to be even." },
+        { h: "Complete graphs & trees", body: "Kₙ: each vertex degree n−1, n(n−1)/2 edges. Tree on n vertices: connected, acyclic, exactly n−1 edges." },
+        { h: "Eulerian tour", body: "Exists iff connected and every vertex has even degree. (Uses each edge once, returns to start.)" },
+        { h: "Planarity", body: "Euler: v + f = e + 2. Bound e ≤ 3v−6; triangle-free (e.g. bipartite) e ≤ 2v−4. K₅ and K₃,₃ are the non-planar obstructions. Passing a bound doesn't prove planar; failing proves non-planar." },
+        { h: "Hypercube", body: "n-dim: 2ⁿ vertices, degree n, n·2ⁿ⁻¹ edges, diameter n. Shortest path between two vertices = number of bits that differ." }
+      ],
+      formulas: [
+        { k: "Handshake", v: "Σ deg(v) = 2|E|" },
+        { k: "Kₙ edges", v: "n(n−1)/2" },
+        { k: "Tree edges", v: "n − 1" },
+        { k: "Euler's formula", v: "v + f = e + 2" },
+        { k: "Planar bound", v: "e ≤ 3v−6 (tri-free 2v−4)" },
+        { k: "n-cube", v: "2ⁿ verts, deg n, n·2ⁿ⁻¹ edges, diam n" }
+      ],
+      worked: [
+        { tag: "Mock MT 7(c)", q: "12-sided die: 12 faces, 20 vertices. Edges?", a: "Euler: 20 + 12 = e + 2, so e = 30." },
+        { tag: "Mock MT 7(d)", q: "5-cube shortest path 10010 → 01000.", a: "Bits differing: positions 1,2,4 → 3." },
+        { tag: "Mock MT 7(e)", q: "Odd-degree vertex ⟹ another exists.", a: "Σ deg = 2|E| is even. One odd vertex would make the sum odd. Contradiction, so there's a second." }
+      ],
+      quiz: [
+        { q: "Kₙ has how many edges?", type: "sa", accept: ["n(n-1)/2", "n(n−1)/2", "nc2", "n choose 2"], answer: "n(n−1)/2", why: "Every pair of the n vertices gets one edge." },
+        { q: "A graph has an Eulerian tour iff:", choices: ["It's a tree", "It's connected and every degree is even", "It's planar", "It has n−1 edges"], answer: 1, why: "Even degrees let the pen enter and leave each vertex in pairs; connectivity ties it together." },
+        { q: "A tree on 50 vertices has how many edges?", type: "sa", accept: ["49"], answer: "49", why: "A tree always has n−1 edges." },
+        { q: "Euler's formula for a connected planar graph is:", type: "sa", accept: ["v+f=e+2", "v + f = e + 2", "v-e+f=2", "v−e+f=2"], answer: "v + f = e + 2", why: "Vertices plus faces equal edges plus two." },
+        { q: "Shortest path in a 5-cube from 10010 to 01000 is:", type: "sa", accept: ["3", "three"], answer: "3", why: "Count differing bit positions: 1, 2, and 4 differ." },
+        { q: "Is K₅ planar?", choices: ["Yes", "No"], answer: 1, why: "v=5, e=10, but 3v−6 = 9 < 10, so it fails the planar bound." }
+      ],
+      videos: [
+        { t: "Discrete Math full course (jump to Graph Theory section)", by: "Dr. Trefor Bazett", note: "Euler's formula, planarity, handshake — consistent notation", url: "https://youtube.com/playlist?list=PLHXZ9OQGMqxersk8fUxiUMSIx0DBqsKZS" }
+      ],
+      learn: [
+        { teach: "<h3>The handshake lemma</h3><p>Σ deg(v) = 2|E|. Every edge adds 1 to two vertices' degrees, so the total degree is always twice the edge count. One consequence: the number of odd-degree vertices is always even.</p>",
+          check: { q: "Every vertex has degree 3 and there are 8 vertices. How many edges?", type: "sa", accept: ["12", "twelve"], answer: "12", why: "Σdeg = 3·8 = 24 = 2|E|, so |E| = 12." } },
+        { teach: "<h3>Complete graphs and trees</h3><p>Kₙ has n(n−1)/2 edges (every pair connected). A tree on n vertices is connected and acyclic with exactly n−1 edges.</p>",
+          check: { q: "A tree on 50 vertices has how many edges?", type: "sa", accept: ["49"], answer: "49", why: "Always n−1 edges." } },
+        { teach: "<h3>Euler's formula</h3><p>For a connected planar graph, v + f = e + 2 (vertices, faces, edges). Rearrange to find any one from the other two.</p>",
+          check: { q: "A 12-sided die has 12 faces and 20 vertices. How many edges?", type: "sa", accept: ["30", "thirty"], answer: "30", why: "20 + 12 = e + 2, so e = 30." } },
+        { teach: "<h3>Planarity bounds</h3><p>A planar graph satisfies e ≤ 3v−6 (and e ≤ 2v−4 if triangle-free). The two non-planar graphs to know are K₅ and K₃,₃. Failing a bound proves non-planar; passing it does not prove planar.</p>",
+          check: { q: "Is K₅ planar?", choices: ["Yes", "No"], answer: 1, why: "v=5, e=10, but 3v−6 = 9 < 10, so it fails the bound." } },
+        { teach: "<h3>Hypercubes</h3><p>The n-dimensional hypercube has 2ⁿ vertices, each of degree n, with n·2ⁿ⁻¹ edges and diameter n. The shortest path between two vertices equals the number of bit positions where their labels differ.</p>",
+          check: { q: "Shortest path in a 5-cube from 10010 to 01000?", type: "sa", accept: ["3", "three"], answer: "3", why: "Bits differ in positions 1, 2, and 4 → 3 flips." } },
+        { teach: "<h3>Eulerian tours</h3><p>A graph has an Eulerian tour (uses every edge once, returns to start) iff it is connected and every vertex has even degree. You're set, try the self-test.</p>",
+          check: { q: "Does a graph need all-even degrees for an Eulerian tour?", choices: ["Yes, plus connected", "No, any connected graph works"], answer: 0, why: "Even degrees let the pen enter and leave each vertex in pairs." } }
+      ]
+    },
+    {
+      id: "graph-induction", name: "Graph Induction",
+      threshold: "1 of 1 — one pattern", allOrNothing: true,
+      note: [
+        { h: "The reliable pattern", body: "Induct on the number of <b>edges</b>, removing one edge. Removing an edge changes exactly two degrees by one each, which keeps the step clean. (Removing a vertex can disconnect the graph and needs strong induction.)" },
+        { h: "Proving the handshake lemma", body: "Base |E|=0: all degrees 0, sum 0 = 2·0. Step: remove an edge, apply IH to get Σdeg = 2k, add the edge back, two degrees rise by 1 so the sum rises by 2 = 2(k+1)." }
+      ],
+      formulas: [
+        { k: "Induct on", v: "number of edges |E|" },
+        { k: "Add an edge", v: "two degrees +1, sum +2" }
+      ],
+      worked: [
+        { tag: "Mock MT 8(a)", q: "Prove Σ deg(v) = 2|E| by induction.", a: "Base |E|=0: sum of zeros = 0 = 2·0. IH: holds at k edges. Step: k+1 edges, remove {u,v}, remaining has sum 2k by IH; adding it back raises deg(u),deg(v) by 1 each, so sum = 2k+2 = 2(k+1). ✓" }
+      ],
+      quiz: [
+        { q: "For graph induction proofs, the cleanest thing to induct on is usually:", choices: ["Number of vertices (weak)", "Number of edges", "Degree of one vertex", "The diameter"], answer: 1, why: "Removing one edge changes exactly two degrees by one, avoiding the disconnection issue vertex removal causes." },
+        { q: "When you add one edge back into a graph, the total degree sum changes by:", type: "sa", accept: ["2", "+2", "two"], answer: "2", why: "The edge's two endpoints each gain one degree." }
+      ],
+      videos: [
+        { t: "Discrete Math full course (induction section)", by: "Dr. Trefor Bazett", note: "The induction technique transfers directly; apply the 'remove one edge' pattern", url: "https://youtube.com/playlist?list=PLHXZ9OQGMqxersk8fUxiUMSIx0DBqsKZS" }
+      ],
+      learn: [
+        { teach: "<h3>Induct on edges, not vertices</h3><p>For graph induction, removing one <b>edge</b> changes exactly two degrees by one each, clean and controlled. Removing a vertex can delete many edges at once and even disconnect the graph, which forces strong induction and extra cases.</p>",
+          check: { q: "For a clean graph-induction proof, what do you usually remove in the step?", choices: ["A whole vertex", "A single edge", "A connected component"], answer: 1, why: "One edge touches exactly two vertices, keeping the bookkeeping simple." } },
+        { teach: "<h3>The skeleton</h3><p><b>Base:</b> |E| = 0, the claim holds trivially (e.g. all degrees 0, sum = 0 = 2·0). <b>Hypothesis:</b> assume it holds for all graphs with k edges.</p>" },
+        { teach: "<h3>The step</h3><p>Take a graph with k+1 edges. Remove one edge {u,v}; the rest has k edges, so the hypothesis applies. Add the edge back: deg(u) and deg(v) each rise by 1, so the degree sum rises by exactly 2.</p>",
+          check: { q: "Adding one edge back raises the total degree sum by:", type: "sa", accept: ["2", "+2", "two"], answer: "2", why: "Each of the edge's two endpoints gains one degree." } },
+        { teach: "<h3>Putting it together</h3><p>So the sum goes from 2k to 2k+2 = 2(k+1) = 2|E|, exactly what the handshake lemma claims. That single 'remove an edge, add it back' move is the whole pattern. Now take the self-test.</p>" }
+      ]
+    },
+    {
+      id: "stable-matching", name: "Stable Matching",
+      threshold: "3 of 5 — new, never quizzed", allOrNothing: false,
+      note: [
+        { h: "Stability", body: "A rogue (unstable) pair is a job J and candidate C not matched together, but each prefers the other to their current partner. A matching is stable if no rogue pair exists." },
+        { h: "Propose-reject (Gale-Shapley)", body: "Proposers propose down their lists; receivers hold their best offer and reject the rest. Always terminates, always yields a stable matching." },
+        { h: "Optimality", body: "The proposing side gets its best possible stable partner (proposer-optimal); the receiving side gets its worst (receiver-pessimal)." },
+        { h: "Key facts", body: "If job-proposing and candidate-proposing give the same matching, there's exactly one stable matching. 'Least favorite' or 'not top choice' pairings can still be stable, as long as no rogue pair can form." }
+      ],
+      formulas: [
+        { k: "Rogue pair", v: "both prefer each other to current" },
+        { k: "Stable", v: "no rogue pair exists" },
+        { k: "Job-proposing", v: "job-optimal, candidate-pessimal" },
+        { k: "Both runs equal", v: "exactly one stable matching" }
+      ],
+      worked: [
+        { tag: "Mock MT 9(a)", q: "How do you check a given matching is stable?", a: "For every unmatched job-candidate pair, check whether both prefer each other to their current partner. Any such pair = rogue = unstable." },
+        { tag: "Mock MT 9(e)", q: "Both proposer runs give the same matching. How many stable matchings?", a: "Exactly one. Job-proposing is job-optimal, candidate-proposing is job-pessimal; if they coincide there's only one." }
+      ],
+      quiz: [
+        { q: "A matching is stable when:", choices: ["Everyone gets their top choice", "No rogue pair exists", "It's produced by proposing", "Each side ranks the other first"], answer: 1, why: "Stability is exactly the absence of a mutually-preferring unmatched pair." },
+        { q: "Propose-reject with jobs proposing produces a matching that is:", choices: ["Job-pessimal", "Job-optimal, candidate-pessimal", "Always unique", "Random"], answer: 1, why: "The proposing side does best possible; the receiving side does worst possible, across all stable matchings." },
+        { q: "If both proposer-orderings yield the same matching, the number of stable matchings is:", type: "sa", accept: ["1", "one", "exactly one"], answer: "1", why: "The job-optimal and job-pessimal matchings coincide, leaving only one." },
+        { q: "Can a pair of mutual least-favorites appear in a stable matching?", choices: ["Yes", "No"], answer: 0, why: "Stability only forbids rogue pairs. If no one can do better, even mutual-least-favorites can be stable." }
+      ],
+      videos: [
+        { t: "Propose and Reject (Gale-Shapley) for Stable Matching", by: "YouTube", note: "Walks the algorithm step by step, exactly what the mock tested", url: "https://www.youtube.com/watch?v=Iw-Iq4vXDAM" },
+        { t: "Gale-Shapley Algorithm for Stable Matching", by: "YouTube", note: "A second pass to cement proposer-optimality", url: "https://www.youtube.com/watch?v=pc5WSJkFk24" }
+      ],
+      learn: [
+        { teach: "<h3>What 'stable' means</h3><p>A <b>rogue pair</b> is a job J and candidate C who aren't matched together, but each prefers the other over their current partner. A matching is <b>stable</b> when no rogue pair exists.</p>",
+          check: { q: "A matching is stable when:", choices: ["Everyone gets their top choice", "No rogue pair exists", "It was made by proposing"], answer: 1, why: "Stability is exactly the absence of a mutually-preferring unmatched pair." } },
+        { teach: "<h3>Propose-reject (Gale-Shapley)</h3><p>Proposers propose down their lists; receivers hold their best offer so far and reject the rest. It always terminates and always produces a stable matching.</p>" },
+        { teach: "<h3>Who does best?</h3><p>The <b>proposing</b> side gets its best possible stable partner (proposer-optimal); the receiving side gets its worst (receiver-pessimal).</p>",
+          check: { q: "When jobs propose, the resulting matching is:", choices: ["Job-pessimal", "Job-optimal, candidate-pessimal", "Random"], answer: 1, why: "The proposing side does best possible across all stable matchings; the receiving side does worst." } },
+        { teach: "<h3>Counting stable matchings</h3><p>If job-proposing and candidate-proposing produce the <i>same</i> matching, then the job-optimal and job-pessimal matchings coincide, so there is exactly one stable matching.</p>",
+          check: { q: "Both proposer-orderings give the same matching. How many stable matchings exist?", type: "sa", accept: ["1", "one"], answer: "1", why: "Job-optimal and job-pessimal coincide, leaving only one." } },
+        { teach: "<h3>The classic trap</h3><p>'Least favorite' or 'not top choice' pairings can still be perfectly stable, as long as no rogue pair can form. Stability is about rogue pairs, never about absolute ranking. You're ready, take the self-test.</p>",
+          check: { q: "Can two mutual least-favorites be matched in a stable matching?", choices: ["Yes", "No"], answer: 0, why: "If neither can do better given everyone's preferences, it's stable." } }
+      ]
+    }
+  ],
+
+  /* Synthesis questions get their own panel */
+  synthesis: [
+    { tag: "Mock synthesis · CRT revisited",
+      q: "Given cx ≡ ca (mod cp) and dx ≡ db (mod dq) with p,q coprime, how many solutions mod cdpq?",
+      a: "Divide each congruence by its common factor (invertible): it collapses to x ≡ a (mod p), x ≡ b (mod q), the original CRT system with unique solution x′ mod pq. Lifting to mod cdpq gives x′ + k·pq for k ∈ {0,…,cd−1}: <b>cd solutions</b>.",
+      lesson: "Manipulate the structure before grinding numbers. The scaled system is secretly the original." },
+    { tag: "Mock synthesis · Rogue Delegates (hardest)",
+      q: "Degree-49 shared polynomial, 70 delegations (1 point each). Each delegation: degree-5 polynomial, 10 delegates. Smallest number of rogue delegates to break recovery?",
+      a: "<b>Shared layer:</b> degree 49 needs 50 correct of 70, tolerates 10 errors, so breaking needs 11 corrupted delegation-points. <b>Per delegation:</b> degree 5 needs 6 correct; 10 delegates = 6 + 2·2 tolerates 2 errors, so 3 rogue delegates corrupt one point. <b>Total:</b> 11 × 3 = <b>33</b>.",
+      lesson: "Count error tolerance layer by layer (n+2k each time), then multiply. Show the chain: Pass/No Pass grading needs the justification, not just the number." }
+  ]
+};
+
+/* Original practice problems (written for this guide, in exam style). Try, then reveal. */
+window.CS70.practice = {
+  "proof-tech": [
+    { q: "Prove: for every integer n, if n² is even then n is even.", sol: "Contrapositive: if n is odd then n² is odd. Let n = 2k+1. Then n² = 4k²+4k+1 = 2(2k²+2k)+1, which is odd. ∎" },
+    { q: "Prove there is no smallest positive rational number.", sol: "Contradiction. Suppose r > 0 is the smallest positive rational. Then r/2 is also rational, positive, and smaller than r. That contradicts r being smallest. ∎" },
+    { q: "Prove: for integers a, b, if ab is odd then a and b are both odd.", sol: "Contrapositive: if a or b is even, then ab is even. WLOG a = 2k, so ab = 2(kb), even. ∎" }
+  ],
+  "polynomials": [
+    { q: "Over GF(7), find the unique degree-≤1 polynomial through (1,3) and (2,5).", sol: "Slope = (5−3)/(2−1) = 2. So p(x) = 2x + 1. Check: p(1)=3, p(2)=5. ✓" },
+    { q: "Over GF(5), how many degree-≤3 polynomials pass through (0,1) and (2,4)?", sol: "q^(d+1−r) = 5^(4−2) = 25." },
+    { q: "Reduce x¹⁷ + 3x⁸ to degree < 7 over GF(7).", sol: "x⁷ ≡ x drops each exponent by 6: 17 → 11 → 5, and 8 → 2. Answer: x⁵ + 3x²." }
+  ],
+  "secret-sharing": [
+    { q: "Design a 4-of-9 secret sharing scheme: what polynomial degree, what prime field, how many points per person?", sol: "Degree k−1 = 3; prime q > 9 (e.g. 11); each person gets 1 point P(i); any 4 reconstruct P and read P(0)." },
+    { q: "To survive 3 erasures on a 5-symbol message, how many packets do you send?", sol: "n + k = 5 + 3 = 8." },
+    { q: "Berlekamp-Welch on a length-4 message correcting 2 errors: how many packets, and what is the degree of Q = P·E?", sol: "n + 2k = 4 + 4 = 8 packets. deg P = 3, deg E = 2, so deg Q = 5." }
+  ],
+  "graphs": [
+    { q: "Does K₆ have an Eulerian tour?", sol: "Each vertex has degree 5 (odd). An Eulerian tour needs every degree even, so no." },
+    { q: "A connected planar graph has 10 vertices and 15 edges. How many faces?", sol: "v + f = e + 2 → 10 + f = 17 → f = 7." },
+    { q: "In a 4-dimensional hypercube: how many edges, and the shortest path from 1100 to 0011?", sol: "Edges = 4·2³ = 32. All 4 bits differ, so shortest path = 4." }
+  ],
+  "graph-induction": [
+    { q: "Prove by induction on edges that every graph has an even number of odd-degree vertices.", sol: "Base |E|=0: all degrees 0, so zero odd-degree vertices (even). Step: adding one edge flips the parity of its two endpoints' degrees. Flipping two vertices changes the count of odd-degree vertices by −2, 0, or +2 — always an even change — so the count stays even. ∎" },
+    { q: "Prove by induction that a tree on n vertices has n−1 edges.", sol: "Base n=1: 0 edges. Step: a tree on n+1 vertices has a leaf; remove it and its single edge, leaving a tree on n vertices with n−1 edges by the hypothesis. Add the leaf back: n edges = (n+1)−1. ∎" }
+  ],
+  "stable-matching": [
+    { q: "Jobs A,B both prefer 1 > 2. Candidates 1,2 both prefer A > B. Run job-proposing propose-reject — what's the result?", sol: "A and B both propose to 1; candidate 1 keeps A, rejects B. B proposes to 2, accepted. Result: (A,1), (B,2), which is stable." },
+    { q: "In that result, is there a rogue pair? Why or why not?", sol: "No. A has its top choice. B is with 2; B would prefer 1, but 1 has A and prefers A to B, so (B,1) is not a rogue pair. No mutually-preferring unmatched pair exists." },
+    { q: "True or False: if propose-reject gives the same matching whether jobs or candidates propose, there is exactly one stable matching.", sol: "True. Job-proposing is job-optimal and candidate-proposing is job-pessimal; if they coincide, only one stable matching exists." }
+  ]
+};
+
+/* Official public practice sources (linked, not copied). Her exam is Midterm 1. */
+window.CS70.exams = [
+  { sem: "Fall 2026 · mock midterm", exam: "https://www.eecs70.org/resources/mt1/mock_midterm_fa26.pdf", sol: "https://www.eecs70.org/resources/mt1/mock_midterm_fa26_sol.pdf" },
+  { sem: "Fall 2025 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_fa25.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_fa25_sol.pdf" },
+  { sem: "Summer 2025 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_su25.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_su25_sol.pdf" },
+  { sem: "Spring 2025 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_sp25.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_sp25_sol.pdf" },
+  { sem: "Fall 2024 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_fa24.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_fa24_sol.pdf" },
+  { sem: "Spring 2024 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_sp24.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_sp24_sol.pdf" },
+  { sem: "Fall 2023 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_fa23.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_fa23_sol.pdf" },
+  { sem: "Spring 2023 · midterm", exam: "https://www.eecs70.org/resources/mt1/midterm_sp23.pdf", sol: "https://www.eecs70.org/resources/mt1/midterm_sp23_sol.pdf" }
+];
+window.CS70.resourceLinks = [
+  { label: "All past exams archive", url: "https://www.eecs70.org/resources/previous-exams" },
+  { label: "Course notes & homework", url: "https://www.eecs70.org/" },
+  { label: "Resources page", url: "https://www.eecs70.org/resources/" },
+  { label: "Discussions", url: "https://www.eecs70.org/discussions/" }
+];
+
+/* Round-robin practice queue. Each round covers all six target topics once,
+   in priority order, so stopping early still touches every topic.
+   mockPage = page in the Fall 2026 mock midterm; hw/disc = official PDFs. */
+window.CS70.queue = [
+  { id: "graph-induction", name: "Graph Induction",        mockPage: 18, hw: "hw05", disc: "dis04" },
+  { id: "proof-tech",      name: "Proof Techniques",       mockPage: 5,  hw: "hw01", disc: "dis00" },
+  { id: "polynomials",     name: "Polynomials",            mockPage: 12, hw: "hw04", disc: "dis03" },
+  { id: "secret-sharing",  name: "Secret Sharing & ECCs",  mockPage: 14, hw: "hw04", disc: "dis03" },
+  { id: "stable-matching", name: "Stable Matching",        mockPage: 19, hw: "hw06", disc: "dis05" }
+];

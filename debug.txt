@@ -1,0 +1,96 @@
+URL https://classes.berkeley.edu/content/2027-spring-compsci-61b-001-lec-001 -> 26951 bytes
+2027 Spring COMPSCI 61B 001 LEC 001 | UCB Class Search
+Jump to navigation
+Top menu
+UC Berkeley
+Suggested Classes
+Ask Oski BETA
+Academic Calendar
+Main navigation
+Class Schedule
+Course Catalog
+Undergraduate
+Graduate
+Archive
+Graduate Archive
+Undergraduate Archive
+2027 Spring COMPSCI 61B 001 LEC 001
+Spring 2027
+COMPSCI 61B
+001
+-
+LEC
+001
+Course Description
+Rules & Requirements
+Reserved Seats
+Textbooks
+Associated Sections
+Data Structures
+Manuel A Sabin
+Jan 19, 2027 - May 07, 2027
+Mo, We, Fr
+03:00 pm - 03:59 pm
+Dwinelle 155
+Class #:
+28355
+Units:
+4
+Instruction Mode:
+In-Person Instruction
+Offered through
+Electrical Engineering and Computer Sciences
+Current Enrollment
+Total Open Seats:
+481
+Enrolled: 0
+Waitlisted: 0
+Capacity: 481
+Waitlist Max: 555
+No Reserved Seats
+Hours & Workload
+3 hours of instructor presentation of course materials per week, 6 hours of outside work hours per week, 2 hours of instructional experiences requiring special laboratory equipment and facilities per week, and 1 hours of the exchange of opinions or questions on course material per week.
+Other classes by Manuel A Sabin
+COMPSCI 39 001 001SEM
+COMPSCI 47B 001 001SLF
+Course Catalog Description
+Fundamental dynamic data structures, including linear lists, queues, trees, and other linked structures; arrays strings, and hash tables. Storage management. Elementary principles of software engineering. Abstract data types. Algorithms for sorting and searching. Introduction to the Java programming language.
+Rules & Requirements
+Requisites
+Students not in the Master of Engineering Program
+Credit Restrictions
+Students will receive no credit for COMPSCI 61B after completing COMPSCI 61BL, or COMPSCI 47B. A deficient grade in COMPSCI 61B may be removed by taking COMPSCI 61BL.
+Repeat Rules
+Course is not repeatable for credit.
+Reserved Seats
+Reserved Seating For This Term
+Current Enrollment
+No Reserved Seats
+Textbooks & Materials
+See class syllabus or https://calstudentstore.berkeley.edu/textbooks for the most current information.
+Textbook Lookup
+Guide to Open, Free, & Affordable Course Materials
+eTextbooks
+Associated Sections
+Copyright © 2024-25, UC Regents; all rights reserved. • Accessibility
+PARSED {
+ "meet": [
+  {
+   "days": "MWF",
+   "start": "15:00",
+   "end": "15:59"
+  }
+ ],
+ "location": "Dwinelle 155",
+ "seats": "481 seats, 0 enrolled"
+}
+CLASS sf--instructors
+CLASS icon icon-instructor
+CLASS sf--meetings
+CLASS sf--meeting-details
+CLASS sf--meeting-dates
+CLASS sf--meeting-days
+CLASS sf--meeting-time
+CLASS icon icon-time
+CLASS sf--location
+CLASS icon icon-location

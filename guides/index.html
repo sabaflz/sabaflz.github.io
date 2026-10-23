@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Study Guides</title>
+<meta name="description" content="Saba Feilizadeh's study guides and practice environments, sorted by semester.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='44' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>SF</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.6 var(--body);
+  -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron); outline-offset:3px; border-radius:3px}
+.wrap{max-width:1000px; margin:0 auto; padding:0 clamp(20px,5vw,48px)}
+
+.topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:10; background:var(--bg); border-bottom:1.5px solid var(--line)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:16px; padding:16px 0}
+.nav .mark{font:800 20px/1 var(--display); text-decoration:none; letter-spacing:-.02em}
+.nav ul{list-style:none; display:flex; gap:22px; margin:0; padding:0; font-weight:500; font-size:15px; overflow-x:auto}
+.nav ul a{text-decoration:none; white-space:nowrap}
+.nav ul a:hover{color:var(--saffron-ink)}
+
+header.page{padding:48px 0 24px}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--saffron-ink); margin:0 0 10px}
+h1{font:600 clamp(2rem,6vw,3rem)/1.03 var(--display); margin:0 0 12px; letter-spacing:-.01em; text-wrap:balance}
+.lede{color:var(--muted); max-width:60ch; margin:0}
+
+.search-row{margin:28px 0 8px; position:relative}
+#search{width:100%; font:500 16px var(--body); padding:14px 16px 14px 44px;
+  background:var(--surface); border:1.5px solid var(--line); border-radius:12px; color:var(--ink)}
+#search:focus{outline:none; border-color:var(--saffron)}
+.search-row::before{content:"⌕"; position:absolute; left:16px; top:50%; transform:translateY(-50%);
+  font-size:20px; color:var(--muted)}
+
+.sem-group{margin:34px 0}
+.sem-head{display:flex; align-items:baseline; gap:12px; margin:0 0 14px}
+.sem-head h2{font:600 15px/1 var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--ink); margin:0}
+.sem-head .count{font:500 13px var(--mono); color:var(--muted)}
+.sem-head::after{content:""; flex:1; height:1.5px; background:var(--line)}
+
+.cards{display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:14px}
+.card{display:flex; flex-direction:column; gap:8px; text-decoration:none; color:inherit;
+  background:var(--surface); border:1.5px solid var(--line); border-radius:16px; padding:20px;
+  transition:border-color .15s, transform .15s}
+.card:hover{border-color:var(--saffron); transform:translateY(-2px)}
+.card .ctop{display:flex; align-items:center; justify-content:space-between; gap:10px}
+.card .course{font:700 15px/1 var(--mono); color:var(--saffron-ink)}
+.card .kind{font:500 11px/1 var(--mono); color:var(--muted); border:1.5px solid var(--line);
+  border-radius:999px; padding:4px 9px; white-space:nowrap}
+.card h3{font:600 20px/1.15 var(--display); margin:2px 0 0; text-wrap:balance}
+.card p{margin:0; font-size:14.5px; color:var(--muted)}
+.card .go{margin-top:auto; padding-top:6px; font:600 14px var(--body); color:var(--saffron-ink)}
+.empty{color:var(--muted); font-size:15px; padding:20px 0}
+
+footer{padding:40px 0 56px; color:var(--muted); font-size:14px; border-top:1.5px solid var(--line); margin-top:30px}
+.t-btn{font:500 13px/1 var(--mono); background:var(--surface); color:var(--ink);
+  border:1.5px solid var(--line); border-radius:999px; padding:8px 13px; cursor:pointer}
+.t-btn:hover{border-color:var(--saffron)}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <nav class="nav wrap" aria-label="Main">
+    <a class="mark" href="../" aria-label="Back to home">SF</a>
+    <ul>
+      <li><a href="../#work">Work</a></li>
+      <li><a href="../resume/">Resume</a></li>
+      <li><a href="./" aria-current="page">Study Guides</a></li>
+      <li><a href="../planner/">Planner</a></li>
+      <li><a href="../#contact">Contact</a></li>
+      <li><button type="button" id="themeBtn" class="t-btn">theme</button></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="wrap">
+  <header class="page">
+    <p class="eyebrow">Reference &amp; practice</p>
+    <h1>Study Guides</h1>
+    <p class="lede">The guides and practice environments I build for my own courses. Each one is the thing I wished existed while studying, so I made it. Sorted by semester, newest first.</p>
+  </header>
+
+  <div class="search-row">
+    <input id="search" type="search" placeholder="Search guides by course, topic, or keyword" aria-label="Search study guides">
+  </div>
+
+  <div id="results"></div>
+
+  <footer>
+    Built and maintained by Saba Feilizadeh. Progress in each interactive guide saves in your own browser.
+  </footer>
+</main>
+
+<script>
+// Guide registry. Add a new guide by appending an object here.
+var GUIDES = [
+  {
+    course: "CS 61A",
+    title: "Midterm 3 Guide",
+    kind: "Reference",
+    semester: "Fall 2026",
+    semOrder: 20262,
+    url: "cs61a-mt3/",
+    desc: "Full reference for the MT3 scope: trees, generators, OOP and inheritance, mutation, iterators, recursion and linked lists, with a cheatsheet, problem-type attack plans, note-sheet advice, and a day-by-day plan.",
+    tags: ["cs61a", "python", "trees", "generators", "yield", "oop", "classes", "inheritance", "super", "mutation", "iterators", "recursion", "linked lists", "memoization", "midterm", "midterm 3", "mt3"]
+  },
+  {
+    course: "CS 61A",
+    title: "Midterm 3 Practice",
+    kind: "Interactive · Python",
+    semester: "Fall 2026",
+    semOrder: 20262,
+    url: "cs61a-mt3-practice/",
+    desc: "Type real Python, run it, and get graded all-or-nothing against hidden tests. 49 verified problems across trees, generators, OOP, mutation, recursion, and linked lists, with a 110-minute timer.",
+    tags: ["cs61a", "python", "trees", "generators", "oop", "classes", "inheritance", "mutation", "iterators", "recursion", "linked lists", "practice", "coding", "midterm 3", "mt3"]
+  },
+  {
+    course: "CS 70",
+    title: "Midterm Guide",
+    kind: "Reference + quiz",
+    semester: "Fall 2026",
+    semOrder: 20262,
+    url: "cs70-midterm/",
+    desc: "Every discrete topic with notes, formulas, worked mock-midterm examples, interactive self-tests, synthesis questions, and a cheat sheet.",
+    tags: ["cs70", "discrete math", "probability", "proofs", "modular", "rsa", "crt", "polynomials", "secret sharing", "graphs", "stable matching", "induction", "lagrange", "berlekamp welch", "midterm"]
+  },
+  {
+    course: "CS 61A",
+    title: "Midterm 2 Practice",
+    kind: "Interactive · Python",
+    semester: "Fall 2026",
+    semOrder: 20262,
+    url: "cs61a-mt2/",
+    desc: "A CBTF-style environment: type real Python, run it, and get graded all-or-nothing against hidden tests. Recursion, trees, linked lists, and more.",
+    tags: ["cs61a", "python", "recursion", "trees", "linked lists", "midterm", "practice", "coding"]
+  },
+  {
+    course: "ASAMST 128AC",
+    title: "Midterm Guide",
+    kind: "Reference + practice exam",
+    semester: "Fall 2026",
+    semOrder: 20262,
+    url: "asamst128ac-midterm/",
+    desc: "Everything for the Muslims in America midterm: Diouf Ch 1 and 2, Bazian's lectures, GhaneaBassiri on race and citizenship, and Malcolm X, with a glossary, a full practice exam, and model short-answer and reflection responses.",
+    tags: ["asamst", "asamst 128ac", "128ac", "muslims in america", "diouf", "servants of allah", "five pillars", "ghaneabassiri", "bazian", "malcolm x", "letter from mecca", "race", "citizenship", "migration", "midterm"]
+  }
+];
+
+var resultsEl = document.getElementById("results");
+var searchEl = document.getElementById("search");
+
+function render(filter) {
+  var q = (filter || "").trim().toLowerCase();
+  var shown = GUIDES.filter(function (g) {
+    if (!q) return true;
+    var hay = (g.course + " " + g.title + " " + g.desc + " " + g.semester + " " + g.tags.join(" ")).toLowerCase();
+    return hay.indexOf(q) !== -1;
+  });
+
+  if (!shown.length) {
+    resultsEl.innerHTML = '<p class="empty">No guides match "' + q.replace(/[<>&]/g, "") + '". Try a course name or topic.</p>';
+    return;
+  }
+
+  // group by semester, newest first
+  var groups = {};
+  shown.forEach(function (g) { (groups[g.semester] = groups[g.semester] || { order: g.semOrder, items: [] }).items.push(g); });
+  var sems = Object.keys(groups).sort(function (a, b) { return groups[b].order - groups[a].order; });
+
+  var html = "";
+  sems.forEach(function (sem) {
+    var items = groups[sem].items;
+    html += '<section class="sem-group"><div class="sem-head"><h2>' + sem + '</h2>' +
+      '<span class="count">' + items.length + ' guide' + (items.length > 1 ? "s" : "") + '</span></div><div class="cards">';
+    items.forEach(function (g) {
+      html += '<a class="card" href="' + g.url + '">' +
+        '<div class="ctop"><span class="course">' + g.course + '</span><span class="kind">' + g.kind + '</span></div>' +
+        '<h3>' + g.title + '</h3>' +
+        '<p>' + g.desc + '</p>' +
+        '<span class="go">Open guide →</span></a>';
+    });
+    html += "</div></section>";
+  });
+  resultsEl.innerHTML = html;
+}
+
+searchEl.addEventListener("input", function () { render(searchEl.value); });
+render("");
+// theme toggle handled site-wide by assets/js/theme.js
+</script>
+<script src="../assets/js/tts.js?v=1"></script>
+<script src="../assets/js/theme.js?v=1"></script>
+</body>
+</html>

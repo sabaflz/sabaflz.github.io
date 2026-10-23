@@ -1,0 +1,112 @@
+--  fa27 fa27 not published yet
+--  fa27 CS 61C not published yet
+--  fa27 CS 170 not published yet
+--  fa27 CS 188 not published yet
+--  fa27 CS 189 not published yet
+--  fa27 CS 160 not published yet
+--  fa27 CS 186 not published yet
+--  fa27 CS 161 not published yet
+--  fa27 CS 184 not published yet
+--  fa27 CS 162 not published yet
+--  fa27 CS 164 not published yet
+--  fa27 COGSCI C100 not published yet
+--  fa27 COGSCI 131 not published yet
+--  fa27 DATA C100 not published yet
+--  fa27 DATA C104 not published yet
+--  fa27 PUBHLTH 150A not published yet
+--  fa27 INFO 159 not published yet
+--  fa27 POLSCI 1 not published yet
+--  fa27 HISTORY 7B not published yet
+--  fa27 CS 182 not published yet
+--  fa27 CS 171 not published yet
+--  fa27 CS 152 not published yet
+--  fa27 DATA C8 not published yet
+--  fa28 fa28 not published yet
+--  fa28 CS 61C not published yet
+--  fa28 CS 170 not published yet
+--  fa28 CS 188 not published yet
+--  fa28 CS 189 not published yet
+--  fa28 CS 160 not published yet
+--  fa28 CS 186 not published yet
+--  fa28 CS 161 not published yet
+--  fa28 CS 184 not published yet
+--  fa28 CS 162 not published yet
+--  fa28 CS 164 not published yet
+--  fa28 COGSCI C100 not published yet
+--  fa28 COGSCI 131 not published yet
+--  fa28 DATA C100 not published yet
+--  fa28 DATA C104 not published yet
+--  fa28 PUBHLTH 150A not published yet
+--  fa28 INFO 159 not published yet
+--  fa28 POLSCI 1 not published yet
+--  fa28 HISTORY 7B not published yet
+--  fa28 CS 182 not published yet
+--  fa28 CS 171 not published yet
+--  fa28 CS 152 not published yet
+--  fa28 DATA C8 not published yet
+--  sp27 sp27 not published yet
+ok  sp27 CS 61B {"meet": [{"days": "MWF", "start": "15:00", "end": "15:59"}], "location": "Dwinelle 155", "seats": "481 seats, 0 enrolled", "link": "https:/
+ok  sp27 CS 61C {"meet": [{"days": "MWF", "start": "13:00", "end": "13:59"}], "instructor": "Lisa Yan", "seats": "252 seats, 0 enrolled", "link": "https://c
+ok  sp27 CS 189 {"meet": [{"days": "MW", "start": "18:30", "end": "19:59"}], "location": "Wheeler 150", "instructor": "Jonathan Shewchuk", "seats": "684 sea
+ok  sp27 CS 188 {"meet": [{"days": "TuTh", "start": "12:30", "end": "13:59"}], "location": "Lewis 100", "instructor": "Peyrin Kao, Pieter Abbeel", "seats": 
+ok  sp27 CS 170 {"meet": [{"days": "TuTh", "start": "14:00", "end": "15:29"}], "seats": "252 seats, 0 enrolled", "link": "https://classes.berkeley.edu/conte
+ok  sp27 CS 160 {"meet": [{"days": "MW", "start": "10:00", "end": "11:29"}], "location": "Jacobs Hall 310", "instructor": "Amy Pavel, Bjoern Hartmann", "sea
+ok  sp27 CS 184 {"meet": [{"days": "TuTh", "start": "09:30", "end": "10:59"}], "instructor": "Ren Ng", "seats": "120 seats, 0 enrolled", "link": "https://cl
+ok  sp27 CS 186 {"meet": [{"days": "MW", "start": "09:30", "end": "10:59"}], "instructor": "Alvin Cheung", "seats": "252 seats, 0 enrolled", "link": "https:
+ok  sp27 CS 161 {"meet": [{"days": "MW", "start": "17:00", "end": "18:29"}], "instructor": "Raluca Ada Popa", "seats": "370 seats, 0 enrolled", "link": "htt
+ok  sp27 CS 162 {"meet": [{"days": "TuTh", "start": "15:30", "end": "16:59"}], "instructor": "Matei Zaharia", "seats": "252 seats, 0 enrolled", "link": "htt
+ok  sp27 CS 164 {"meet": [{"days": "TuTh", "start": "14:00", "end": "15:29"}], "instructor": "S. E. Chasins", "seats": "77 seats, 0 enrolled", "link": "http
+--  sp27 CS 169L not published yet
+ok  sp27 CS 185 {"meet": [{"days": "WF", "start": "08:00", "end": "09:29"}], "instructor": "Sergey Levine", "seats": "200 seats, 0 enrolled", "link": "https
+ok  sp27 CS C176 {"meet": [{"days": "TuTh", "start": "15:30", "end": "16:59"}], "instructor": "Allon Wagner", "seats": "15 seats, 0 enrolled", "link": "https
+ok  sp27 CS 172 {"meet": [{"days": "TuTh", "start": "11:00", "end": "12:29"}], "location": "Lewis 9", "seats": "70 seats, 0 enrolled", "link": "https://clas
+ok  sp27 CS C177 {"meet": [{"days": "MWF", "start": "10:00", "end": "10:59"}], "location": "Etcheverry 3106", "instructor": "Federico Manuel Echenique", "sea
+ok  sp27 COGSCI C100 {"meet": [{"days": "TuTh", "start": "08:00", "end": "09:29"}], "location": "Barker 101", "instructor": "Mariam Aly", "seats": "28 seats, 0 e
+--  sp27 COGSCI 131 not published yet
+ok  sp27 DATA C8 {"meet": [{"days": "MWF", "start": "10:00", "end": "10:59"}], "location": "Wheeler 150", "instructor": "John DeNero, Ramesh Sridharan", "sea
+ok  sp27 DATA C100 {"meet": [{"days": "TuTh", "start": "11:00", "end": "12:29"}], "location": "Wheeler 150", "instructor": "Josh Grossman", "seats": "900 seats
+ok  sp27 DATA C104 {"meet": [{"days": "MWF", "start": "14:00", "end": "14:59"}], "location": "Wheeler 150", "seats": "500 seats, 0 enrolled", "link": "https://
+ok  sp27 PUBHLTH 150A {"meet": [{"days": "MW", "start": "15:00", "end": "16:59"}], "location": "Lewis 100", "seats": "240 seats, 0 enrolled. Reserved: 200", "link
+--  sp27 INFO 159 not published yet
+ok  sp27 POLSCI 1 {"meet": [{"days": "TuTh", "start": "17:00", "end": "18:29"}], "instructor": "Hunter Rendleman", "seats": "324 seats, 0 enrolled", "link": "
+ok  sp27 HISTORY 7B {"meet": [{"days": "TuTh", "start": "11:00", "end": "12:29"}], "location": "Dwinelle 155", "seats": "440 seats, 0 enrolled", "link": "https:
+ok  sp27 CS 195 {"meet": [{"days": "Tu", "start": "12:30", "end": "13:59"}], "seats": "120 seats, 0 enrolled", "link": "https://classes.berkeley.edu/content
+--  sp28 sp28 not published yet
+--  sp28 CS 61C not published yet
+--  sp28 CS 170 not published yet
+--  sp28 CS 188 not published yet
+--  sp28 CS 189 not published yet
+--  sp28 CS 160 not published yet
+--  sp28 CS 186 not published yet
+--  sp28 CS 161 not published yet
+--  sp28 CS 184 not published yet
+--  sp28 CS 162 not published yet
+--  sp28 CS 164 not published yet
+--  sp28 CS C176 not published yet
+--  sp28 COGSCI C100 not published yet
+--  sp28 COGSCI 131 not published yet
+--  sp28 DATA C100 not published yet
+--  sp28 DATA C104 not published yet
+--  sp28 PUBHLTH 150A not published yet
+--  sp28 INFO 159 not published yet
+--  sp28 POLSCI 1 not published yet
+--  sp28 HISTORY 7B not published yet
+--  sp28 CS 185 not published yet
+--  sp28 CS 172 not published yet
+--  sp28 CS 174 not published yet
+--  sp28 DATA C8 not published yet
+--  su27 su27 not published yet
+--  su27 COGSCI C100 not published yet
+--  su27 COGSCI 110 not published yet
+--  su27 COGSCI 112 not published yet
+--  su27 COGSCI 116 not published yet
+--  su27 COGSCI 139 not published yet
+--  su27 COGSCI 173 not published yet
+--  su28 su28 not published yet
+--  su28 COGSCI C100 not published yet
+--  su28 COGSCI 110 not published yet
+--  su28 COGSCI 112 not published yet
+--  su28 COGSCI 116 not published yet
+--  su28 COGSCI 139 not published yet
+--  su28 COGSCI 173 not published yet
+wrote /home/runner/work/sabaflz.github.io/sabaflz.github.io/planner/data/live.js courses found: 23
