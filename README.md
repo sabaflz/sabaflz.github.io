@@ -45,3 +45,7 @@ First time only: you set the password and paste a fine-grained GitHub token (thi
 Contents: Read and write). The token is stored in `planner/data/admin.json`, encrypted with
 your password. "Only me" encrypts `state.json` with the same password. If the token expires,
 the login asks for a new one. The password can't be recovered, so keep it in a password manager.
+
+**Backups:** the admin bar has Download (saves your plan as a file on your computer) and Restore.
+**Forgot the password?** On GitHub, delete `planner/data/admin.json` and `planner/data/state.json`,
+then click Admin: setup runs again, and you can restore your latest backup file.
