@@ -11,7 +11,10 @@
   id: "fa29",
   name: "Fall 2029",
   order: 20293,
-  status: "Planning",          // Planning | Future | Done
+  starts: "2029-08-15",        // first day of the term (roughly)
+  ends: "2029-12-14",          // last day of finals: after this the term locks as Completed
+  status: "Planning",          // Planning | Future (Completed / In progress are automatic)
+  // enrolled: ["CS 61C"],     // once you're actually enrolled: fixes the term to these courses
   // summer: true,             // turns off the 12-unit minimum checks
   dates: "",
   intro: "",

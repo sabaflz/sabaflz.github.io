@@ -8,6 +8,8 @@
   id: "sp27",
   name: "Spring 2027",
   order: 20271,
+  starts: "2027-01-12",
+  ends: "2027-05-14",          // approximate; after this date the term is locked as completed
   status: "Planning",
   dates: "Classes Jan 19 to May 7, 2027",
   intro: "Second semester. Every upper-div course except CS 189 needs 61B (or 47B) finished first, so this term is about the 61B route, CS 189, and clearing non-CS requirements while you can: AH&I, the tech elective, and the CogSci minor core.",

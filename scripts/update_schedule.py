@@ -6,6 +6,8 @@ For every course in planner/data/terms/*.js it looks up that term's class page a
 what it finds to planner/data/live.js. The planner shows live data over the hand-written
 term files, so "TBA" fills in by itself as soon as Berkeley publishes it.
 
+Completed terms (past their `ends` date) are frozen: their data is copied forward unchanged.
+
 Debug locally: python3 scripts/update_schedule.py --debug "CS 61B" sp27
 """
 import html, json, re, sys, time, urllib.request, urllib.error
@@ -19,7 +21,7 @@ UA = "Mozilla/5.0 (planner schedule refresh for sabaflz.github.io)"
 
 # course id in the planner -> class-page subject slugs to try (cross-listed courses live under one subject)
 SUBJECT = {"CS": ["compsci"], "DATA": ["data"], "COGSCI": ["cogsci"], "POLSCI": ["polsci"], "HISTORY": ["history"],
-           "INFO": ["info"], "PUBHLTH": ["pbhlth"], "EECS": ["eecs"], "STAT": ["stat"]}
+           "INFO": ["info"], "PUBHLTH": ["pbhlth"], "EECS": ["eecs"], "STAT": ["stat"], "ASAMST": ["asamst"]}
 EXTRA = {
     "DATA C100": ["stat-c100", "compsci-c100"],
     "DATA C8": ["stat-c8", "compsci-c8", "info-c8"],
@@ -29,7 +31,7 @@ EXTRA = {
     "CS C176": ["cmpbio-c176"],
     "CS C177": ["econ-c177"],
 }
-SKIP = {"CC POLI", "CC HIST", "FUNG-SP", "RESEARCH", "CS 198-GC", "CS 47B", "CS 47C"}
+SKIP = {"CC POLI", "CC HIST", "FUNG-SP", "FUNG 188", "RESEARCH", "CS 198", "CS 198-GC", "CS 47B", "CS 47C"}
 DAYMAP = {"Mo": "M", "Tu": "Tu", "We": "W", "Th": "Th", "Fr": "F", "Sa": "Sa", "Su": "Su"}
 
 
@@ -44,7 +46,9 @@ def read_terms():
         text = f.read_text()
         tid = re.search(r'\bid:\s*"([^"]+)"', text).group(1)
         ids = [i for i in re.findall(r'\{\s*id:\s*"([^"]+)"', text) if i != tid]
-        terms.append({"id": tid, "season": m.group(1), "year": m.group(2), "courses": ids})
+        ends = re.search(r'\bends:\s*"(\d{4}-\d{2}-\d{2})"', text)
+        terms.append({"id": tid, "season": m.group(1), "year": m.group(2), "courses": ids,
+                      "ends": ends.group(1) if ends else None})
     return terms
 
 
@@ -192,7 +196,12 @@ def main():
             prev = json.loads(m.group(1)).get("terms", {})
     live = {}
     found = 0
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     for term in read_terms():
+        if term["ends"] and today > term["ends"]:          # term is over: freeze what we had, never change it
+            live[term["id"]] = prev.get(term["id"], {})
+            print("== ", term["id"], "completed, left unchanged")
+            continue
         live[term["id"]] = {}
         for cid in term["courses"]:
             if cid in SKIP:

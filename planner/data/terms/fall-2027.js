@@ -3,6 +3,8 @@
   id: "fa27",
   name: "Fall 2027",
   order: 20273,
+  starts: "2027-08-18",
+  ends: "2027-12-17",          // approximate; after this date the term is locked as completed
   status: "Future",
   dates: "Schedule not published yet",
   intro: "Schedule not published yet. These courses normally run every fall; times fill in once classes.berkeley.edu posts the term. 61C is the priority so the design and systems courses open up.",
