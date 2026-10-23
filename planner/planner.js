@@ -34,6 +34,16 @@ window.PlannerApp = { start: function (D, OPTS) {
       return c;
     });
   });
+  // live schedule data (scripts/update_schedule.py, refreshed daily) beats hand-written TBA
+  var LIVE = window.PLANNER_LIVE || { terms: {} };
+  TERMS.forEach(function (t) {
+    var lt = LIVE.terms[t.id] || {};
+    t.courses.forEach(function (c) {
+      var l = lt[c.id]; if (!l) return;
+      ["meet", "location", "instructor", "seats", "link"].forEach(function (k) { if (l[k]) c[k] = l[k]; });
+      c.live = LIVE.updated;
+    });
+  });
   var BYID = {};
   Object.keys(CATALOG).forEach(function (id) { BYID[id] = CATALOG[id]; });
 
@@ -149,7 +159,7 @@ window.PlannerApp = { start: function (D, OPTS) {
       if ((c.minor || []).length) counts.push((c.minor || []).indexOf("cogsci-core") !== -1 ? "CogSci minor core" : "CogSci minor topical");
       if ((c.cat || []).indexOf("ahi") !== -1) counts.push("AH&I");
       if ((c.cat || []).indexOf("lower") !== -1) counts.push("Doesn't count toward major");
-      return '<article class="course' + (inPlan ? " in" : "") + (taken ? " taken" : "") + '">' +
+      return '<article class="course' + (inPlan ? " in" : "") + (taken ? " taken" : "") + '" data-cid="' + esc(c.id) + '">' +
         '<div class="c-top"><span class="cid">' + esc(label(c.id)) + '</span><span class="units">' + c.units + ' u</span></div>' +
         '<h3>' + esc(c.title) + '</h3><div class="badges">' + status + flags + '</div>' +
         '<dl><dt>When</dt><dd>' + esc(meetText(c)) + '</dd><dt>Where</dt><dd>' + esc(c.location || "TBA") + '</dd>' +
@@ -157,7 +167,9 @@ window.PlannerApp = { start: function (D, OPTS) {
         (counts.length ? '<dt>Counts</dt><dd>' + esc(counts.join(" · ")) + '</dd>' : "") +
         (c.seats ? '<dt>Seats</dt><dd>' + esc(c.seats) + '</dd>' : "") +
         (c.prereqNote ? '<dt>Prereq</dt><dd>' + esc(c.prereqNote) + '</dd>' : "") + '</dl>' +
-        '<p class="note">' + esc(c.note || "") + '</p><div class="c-foot">' +
+        '<p class="note">' + esc(c.note || "") + '</p>' +
+        (c.live ? '<p class="live">Times, room, and instructor from the class schedule, checked ' + esc(c.live) + '</p>' : "") +
+        '<div class="c-foot">' +
         (c.link ? '<a href="' + esc(c.link) + '" target="_blank" rel="noopener">Class page ↗</a>' : '<span></span>') +
         (!EDIT || (taken && !inPlan) ? "" : '<button type="button" class="add" data-add="' + esc(c.id) + '">' + (inPlan ? "Remove" : "Add to plan") + '</button>') +
         '</div></article>';
@@ -209,7 +221,7 @@ window.PlannerApp = { start: function (D, OPTS) {
         '<div class="meter-key"><span>0</span><span>min 12</span><span>Phase 1 · 13.5</span><span>17.5</span></div>') +
       (ids.length ? '<ul class="p-list">' + ids.map(function (id) {
         var c = course(t, id);
-        return '<li><div><b>' + esc(label(id)) + '</b> <span>' + esc(c.title) + '</span><small>' + esc(meetText(c)) + '</small></div><span class="pu">' + c.units + '</span>' +
+        return '<li><div><button type="button" class="jump" data-jump="' + esc(id) + '" title="Show this course\'s card"><b>' + esc(label(id)) + '</b> <span>' + esc(c.title) + '</span></button><small>' + esc(meetText(c)) + '</small></div><span class="pu">' + c.units + '</span>' +
           (EDIT ? '<button type="button" class="x" data-add="' + esc(id) + '" aria-label="Remove ' + esc(id) + '">×</button>' : "") + '</li>';
       }).join("") + '</ul>' : '<p class="p-empty">' + (EDIT ? "Nothing yet. Add courses from the list, or load a full plan in the tracker below." : "Nothing planned for this term.") + '</p>') +
       (warn.length ? '<ul class="warn">' + warn.map(function (w) { return '<li class="w-' + w[0] + '">' + esc(w[1]) + '</li>'; }).join("") + '</ul>' : "") +
@@ -234,7 +246,7 @@ window.PlannerApp = { start: function (D, OPTS) {
         (course(t, id).meet || []).forEach(function (m) {
           if (daysOf(m).indexOf(d) === -1) return;
           var top = (mins(m.start) - START) / H * 100, ht = (mins(m.end) - mins(m.start)) / H * 100;
-          blocks += '<div class="blk c' + (idx % 6) + (clash[label(id)] ? " clash" : "") + '" style="top:' + top + '%;height:' + ht + '%"><b>' + esc(label(id)) + '</b><span>' + fmt(m.start) + '</span></div>';
+          blocks += '<div class="blk c' + (idx % 6) + (clash[label(id)] ? " clash" : "") + '" data-jump="' + esc(id) + '" title="' + esc(label(id) + ": " + course(t, id).title) + '" style="top:' + top + '%;height:' + ht + '%"><b>' + esc(label(id)) + '</b><span>' + fmt(m.start) + '</span></div>';
         });
       });
       return '<div class="day"><div class="dh">' + DAYNAME[d] + '</div><div class="col">' + blocks + '</div></div>';
@@ -380,6 +392,23 @@ window.PlannerApp = { start: function (D, OPTS) {
     if (!EDIT || e.target.id !== "todoForm") return; e.preventDefault();
     var v = document.getElementById("todoIn").value.trim(); if (!v) return;
     store.todos.push({ id: "c-" + Date.now(), text: v }); save(); renderTracker();
+  });
+
+  // ---------- jump from plan / week view to a course card ----------
+  function jumpTo(id) {
+    var card = listEl.querySelector('[data-cid="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+    if (!card) {                                   // filtered out: reset filters, then find it
+      cat = "all"; query = ""; var q = document.getElementById("q"); if (q) q.value = "";
+      renderChips(); renderList();
+      card = listEl.querySelector('[data-cid="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]');
+    }
+    if (!card) return;
+    card.scrollIntoView({ behavior: "smooth", block: "center" });
+    card.classList.remove("flash"); void card.offsetWidth; card.classList.add("flash");
+  }
+  document.addEventListener("click", function (e) {
+    var j = e.target.closest && e.target.closest("[data-jump]");
+    if (j) jumpTo(j.getAttribute("data-jump"));
   });
 
   function renderIntro() { var t = term(); document.getElementById("termIntro").innerHTML = t ? '<b>' + esc(t.name) + '</b> · ' + esc(t.dates || "") + '<br>' + esc(t.intro || "") : ""; }
