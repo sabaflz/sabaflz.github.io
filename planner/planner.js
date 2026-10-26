@@ -55,7 +55,8 @@ window.PlannerApp = { start: function (D, OPTS) {
     (BEST.plan[t.id] || []).forEach(function (id) { var c = t.courses.filter(function (x) { return x.id === id; })[0]; if (c) c.rec = "Best pick"; });
   });
 
-  var termId = ui.term && TERMS.some(function (t) { return t.id === ui.term; }) ? ui.term : defaultTerm();
+  var GRAD = window.PLANNER_GRADPLAN, GRADID = "__grad";
+  var termId = ui.term && (TERMS.some(function (t) { return t.id === ui.term; }) || (GRAD && ui.term === GRADID)) ? ui.term : defaultTerm();
   var cat = "all", query = "";
 
   // term state is automatic: after `ends` a term is Completed, between starts and ends it's In progress
@@ -130,7 +131,8 @@ window.PlannerApp = { start: function (D, OPTS) {
       var n = plan(t.id).length;
       return '<button type="button" role="tab" aria-selected="' + (t.id === termId) + '" data-term="' + esc(t.id) + '">' + esc(t.name) +
         '<span>' + esc(statusLabel(t)) + (n ? " · " + n + (termState(t) === "plan" ? " picked" : " courses") : "") + '</span></button>';
-    }).join("");
+    }).join("") + (GRAD ? '<button type="button" role="tab" class="tab-grad" aria-selected="' + (termId === GRADID) + '" data-term="' + GRADID + '">Grad Plan' +
+      '<span>4 vs 5 semesters</span></button>' : "");
   }
   tabsEl.addEventListener("click", function (e) {
     var b = e.target.closest("[data-term]"); if (!b) return;
@@ -434,7 +436,53 @@ window.PlannerApp = { start: function (D, OPTS) {
     if (j) jumpTo(j.getAttribute("data-jump"));
   });
 
-  function renderIntro() { var t = term(); document.getElementById("termIntro").innerHTML = t ? '<b>' + esc(t.name) + '</b> · ' + esc(t.dates || "") + '<br>' + esc(t.intro || "") : ""; }
-  function renderAll() { renderTabs(); renderIntro(); renderChips(); renderList(); renderPlan(); renderWeek(); renderTracker(); }
+  // ---------- grad plan tab ----------
+  var gradEl = document.getElementById("gradplan");
+  function units(ids, tid) {
+    var t = term(tid);
+    return ids.reduce(function (n, id) { var c = (t && course(t, id)) || info(id); return n + (+c.units || 0); }, 0);
+  }
+  function renderGrad() {
+    if (!gradEl || !GRAD) return;
+    var G = GRAD, h = '<p class="g-lead">' + esc(G.lead) + '</p>';
+    h += '<div class="g-plans">' + G.plans.map(function (p) {
+      return '<article class="g-plan"><div class="g-head"><div><h2>' + esc(p.name) + '</h2><span class="g-grad">' + esc(p.grad) + '</span></div>' +
+        (EDIT ? '<button type="button" class="t-sm" data-loadgrad="' + esc(p.id) + '">Load into planner</button>' : '') + '</div>' +
+        '<p class="g-blurb">' + esc(p.blurb) + '</p><ol class="g-terms">' + p.terms.map(function (r) {
+          var t = term(r.term), ids = r.fixed || r.courses || [], u = r.fixed ? 0 : units(ids, r.term);
+          var heavy = (DEG.heavy || []);
+          return '<li class="g-term' + (r.fixed ? ' g-fixed' : '') + '"><div class="g-tname">' +
+            (t && !r.fixed ? '<button type="button" class="jump" data-goterm="' + esc(r.term) + '"><b>' + esc(t.name) + '</b></button>' : '<b>' + esc(r.label || (t && t.name) || r.term) + '</b>') +
+            (u ? '<span class="pu">' + u + ' u</span>' : '') + '</div><div class="g-cs">' + ids.map(function (id) {
+              var c = (t && course(t, id)) || CATALOG[id] || {};
+              return '<span class="g-c' + (heavy.indexOf(id) > -1 ? ' g-heavy' : '') + '" title="' + esc(c.title || "") + '">' + esc(label(id) === "CC POLI" ? "POLI 1 (AH&I)" : label(id)) + '</span>';
+            }).join("") + '</div>' + (r.note ? '<small>' + esc(r.note) + '</small>' : '') + '</li>';
+        }).join("") + '</ol></article>';
+    }).join("") + '</div>';
+    h += '<p class="legend"><span><i class="lg-heavy"></i>heavy workload (one per term)</span></p>';
+    h += '<div class="g-two"><div class="rg"><h3>Plan A vs Plan B</h3><table class="g-tbl"><thead><tr><th></th><th>Plan A</th><th>Plan B</th></tr></thead><tbody>' +
+      G.compare.map(function (r) { return '<tr><th scope="row">' + esc(r[0]) + '</th><td>' + esc(r[1]) + '</td><td>' + esc(r[2]) + '</td></tr>'; }).join("") + '</tbody></table></div>' +
+      '<div class="rg"><h3>What\'s left after Fall 2026</h3><table class="g-tbl"><tbody>' +
+      G.left.map(function (r) { return '<tr><th scope="row">' + esc(r.req) + '<em>' + esc(r.units) + '</em></th><td>' + esc(r.how) + '</td></tr>'; }).join("") + '</tbody></table></div></div>';
+    h += '<div class="rg g-q"><h3>Ask at advising</h3><ul>' + G.questions.map(function (q) { return '<li><span>' + esc(q) + '</span></li>'; }).join("") + '</ul></div>';
+    gradEl.innerHTML = h;
+  }
+  if (gradEl) gradEl.addEventListener("click", function (e) {
+    var g = e.target.closest("[data-goterm]");
+    if (g) { termId = g.getAttribute("data-goterm"); ui.term = termId; saveUI(); renderAll(); window.scrollTo({ top: 0, behavior: "smooth" }); return; }
+    var b = EDIT && e.target.closest("[data-loadgrad]"); if (!b) return;
+    var p = GRAD.plans.filter(function (x) { return x.id === b.getAttribute("data-loadgrad"); })[0]; if (!p) return;
+    if (!confirm('Load "' + p.name + '"? This replaces your picks in those terms.')) return;
+    p.terms.forEach(function (r) { var t = term(r.term); if (r.courses && t && canEdit(t)) store.plans[r.term] = r.courses.filter(function (id) { return course(t, id); }); });
+    save(); renderAll();
+  });
+
+  function renderIntro() { if (termId === GRADID) { document.getElementById("termIntro").innerHTML = '<b>Grad Plan</b> · updated ' + esc(GRAD.updated) + '<br>Pick a route, then load it into the terms and adjust course by course.'; return; } var t = term(); document.getElementById("termIntro").innerHTML = t ? '<b>' + esc(t.name) + '</b> · ' + esc(t.dates || "") + '<br>' + esc(t.intro || "") : ""; }
+  function renderAll() {
+    var g = termId === GRADID; document.querySelector("main").classList.toggle("view-grad", g);
+    renderTabs(); renderIntro();
+    if (g) { renderGrad(); return; }
+    renderChips(); renderList(); renderPlan(); renderWeek(); renderTracker();
+  }
   renderAll();
 } };
