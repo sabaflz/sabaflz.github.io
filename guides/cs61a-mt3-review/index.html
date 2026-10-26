@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CS 61A Midterm 3 Walkthrough</title>
+<meta name="description" content="An auto-playing visual walkthrough of everything on the CS 61A Fall 2026 Midterm 3: trees, generators, OOP, mutation, iterators, recursion, and linked lists.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='40' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>61A</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.6 var(--body); -webkit-font-smoothing:antialiased; overflow:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron); outline-offset:3px; border-radius:3px}
+
+#topbar{position:fixed; top:0; left:0; right:0; z-index:30; background:var(--bg); border-bottom:1.5px solid var(--line)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:16px; max-width:1200px; margin:0 auto; padding:12px clamp(16px,4vw,40px)}
+.nav .mark{font:800 19px/1 var(--display); text-decoration:none}
+.crumbs{font:500 13.5px var(--body); color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.crumbs a{text-decoration:none} .crumbs a:hover{color:var(--saffron-ink)} .crumbs b{color:var(--ink)} .crumbs span{margin:0 6px; color:var(--line)}
+.t-btn{font:500 12.5px/1 var(--mono); background:var(--surface); color:var(--ink); border:1.5px solid var(--line); border-radius:999px; padding:7px 12px; cursor:pointer; white-space:nowrap}
+.t-btn:hover{border-color:var(--saffron)}
+
+/* progress bar under the top bar */
+#progress{position:fixed; top:53px; left:0; right:0; height:3px; background:var(--line); z-index:29}
+#progress-fill{height:100%; width:0; background:var(--saffron); transition:width .12s linear}
+
+#stage{position:fixed; top:56px; bottom:84px; left:0; right:0; display:flex; align-items:center; justify-content:center; padding:clamp(18px,3vw,36px)}
+.slide{position:absolute; width:min(960px,94vw); max-height:100%; overflow:auto; opacity:0; transform:translateY(14px); transition:opacity .4s ease, transform .4s ease; pointer-events:none}
+.slide.active{opacity:1; transform:none; pointer-events:auto}
+.eyebrow{font:600 12.5px/1 var(--mono); letter-spacing:.16em; text-transform:uppercase; color:var(--saffron-ink); margin:0 0 12px}
+.slide h2{font:600 clamp(1.7rem,4.4vw,2.8rem)/1.06 var(--display); margin:0 0 20px; letter-spacing:-.01em; text-wrap:balance}
+.slide p.big{font:400 clamp(1.05rem,2.4vw,1.4rem)/1.5 var(--body); color:var(--muted); margin:0 0 18px; max-width:40ch}
+.cols{display:flex; gap:20px; flex-wrap:wrap}
+.col{flex:1; min-width:260px}
+.card{background:var(--surface); border:1.5px solid var(--line); border-radius:16px; padding:22px 24px; margin:0 0 14px}
+.card h3{font:600 15px/1.2 var(--mono); color:var(--saffron-ink); margin:0 0 8px}
+.card p, .card li{font-size:clamp(.98rem,2vw,1.15rem); color:var(--ink); line-height:1.5; margin:4px 0}
+.card.muted p, .card.muted li{color:var(--muted)}
+ul.clean{list-style:none; margin:0; padding:0}
+ul.clean li{position:relative; padding-left:20px; margin:8px 0}
+ul.clean li::before{content:"›"; position:absolute; left:0; color:var(--saffron); font-weight:700}
+pre{background:var(--surface-2); border:1.5px solid var(--line); border-radius:14px; padding:18px 20px; overflow:auto; margin:0 0 14px}
+pre code{font:500 clamp(.95rem,1.9vw,1.15rem)/1.55 var(--mono); color:var(--ink); white-space:pre}
+.cmt{color:var(--muted)}
+.kw{color:var(--saffron-ink); font-weight:600}
+.accent{background:var(--saffron-soft); border-color:var(--saffron)}
+.big-num{font:700 clamp(2rem,5vw,3rem)/1 var(--display); color:var(--saffron-ink); margin:0 0 6px}
+.pill{display:inline-block; font:600 13px var(--mono); background:var(--saffron); color:var(--on-saffron); border-radius:999px; padding:7px 14px; margin:2px 6px 2px 0}
+
+/* cover / closing full-bleed look */
+.slide.hero h2{font-size:clamp(2.1rem,6vw,3.6rem)}
+.slide.hero .eyebrow{color:var(--saffron)}
+
+#controls{position:fixed; bottom:0; left:0; right:0; z-index:30; background:var(--bg); border-top:1.5px solid var(--line); display:flex; align-items:center; justify-content:center; gap:14px; padding:16px; flex-wrap:wrap}
+.ctrl{font:500 14px var(--body); background:var(--surface); color:var(--ink); border:1.5px solid var(--line); border-radius:999px; padding:9px 16px; cursor:pointer; display:inline-flex; align-items:center; gap:7px}
+.ctrl:hover{border-color:var(--saffron)}
+.ctrl.primary{background:var(--saffron); color:var(--on-saffron); border-color:var(--saffron); font-weight:600}
+#counter{font:500 13px var(--mono); color:var(--muted); min-width:66px; text-align:center}
+.hint{position:fixed; bottom:84px; left:0; right:0; text-align:center; font:500 12px var(--mono); color:var(--muted); padding:6px; pointer-events:none}
+@media (max-width:560px){ .hint{display:none} }
+</style>
+</head>
+<body>
+<header id="topbar">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="../../" aria-label="Back to site">SF</a>
+    <div class="crumbs"><a href="../">Study Guides</a> <span>/</span> <a href="../cs61a-mt3/">CS 61A MT3</a> <span>/</span> <b>Walkthrough</b></div>
+    <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+  </nav>
+</header>
+<div id="progress"><div id="progress-fill"></div></div>
+
+<main id="stage" aria-live="polite"></main>
+<div class="hint">space play/pause · ← → to move · click to advance</div>
+
+<div id="controls">
+  <button class="ctrl" id="prev" aria-label="Previous">← Prev</button>
+  <button class="ctrl primary" id="play" aria-label="Play or pause">▶ Play</button>
+  <button class="ctrl" id="next" aria-label="Next">Next →</button>
+  <span id="counter">1 / 1</span>
+  <button class="ctrl" id="restart" aria-label="Restart">↺ Restart</button>
+</div>
+
+<script>
+// Each slide is an HTML string. Kept compact; mirrors the deck + written guide.
+var SLIDES = [
+  {hero:true, html:
+    '<p class="eyebrow">CS 61A · Fall 2026</p>'+
+    '<h2>Midterm 3, everything you need</h2>'+
+    '<p class="big">Trees, generators, OOP, mutation, iterators, recursion and linked lists, one visual pass, with the templates that solve each kind of problem.</p>'+
+    '<div><span class="pill">Tue Oct 27 · 8–10pm</span><span class="pill">110 min · on paper</span></div>'},
+
+  {html:
+    '<p class="eyebrow">Before anything else</p><h2>The exam in one glance</h2>'+
+    '<div class="cols">'+
+    '<div class="col"><div class="card"><h3>When</h3><p><b>Tue Oct 27</b>, 8–10pm, 110 min. Arrive before 8; starts 8:10.</p></div></div>'+
+    '<div class="col"><div class="card"><h3>Graded on paper</h3><p>No autograder. Partial credit, so write the skeleton even when stuck.</p></div></div>'+
+    '<div class="col"><div class="card"><h3>Bring</h3><p>2 self-made note sheets, pencils, photo ID, a drink.</p></div></div>'+
+    '</div><p class="big">The study guides are provided, so your note sheets should hold <b>templates and traps</b>, not basic syntax.</p>'},
+
+  {html:
+    '<p class="eyebrow">Scope</p><h2>What’s in, what’s out</h2>'+
+    '<div class="cols">'+
+    '<div class="col"><div class="card"><h3>In scope</h3><ul class="clean"><li>Recursion &amp; tree recursion</li><li>Sequences, comprehensions, dicts</li><li>HOFs, lambdas, linked lists</li><li>Trees</li><li>List &amp; dict mutation, aliasing</li><li>Iterators &amp; lazy eval</li><li>Generators</li><li>OOP &amp; inheritance</li><li>Memoization</li></ul></div></div>'+
+    '<div class="col"><div class="card accent"><h3>Not on this exam</h3><ul class="clean"><li>Orders of growth</li><li>Linked list mutation</li><li>Tree mutation</li><li>repr strings</li><li>Special methods (__add__, __iter__)</li></ul><p style="margin-top:10px">Mutation of trees/linked lists is out, so every answer <b>builds a new structure</b>.</p></div></div>'+
+    '</div>'},
+
+  {html:
+    '<p class="eyebrow">Recursion</p><h2>The skeleton it all builds on</h2>'+
+    '<div class="cols"><div class="col">'+
+    '<ul class="clean"><li>Say what it takes and returns.</li><li><b>Base case:</b> smallest input, no recursion.</li><li><b>Recursive case:</b> call smaller, trust it, combine.</li></ul></div>'+
+    '<div class="col"><pre><code><span class="kw">def</span> sum_digits(n):\n    <span class="kw">if</span> n &lt; 10:\n        <span class="kw">return</span> n\n    rest = sum_digits(n // 10)\n    <span class="kw">return</span> rest + n % 10</code></pre></div></div>'+
+    '<p class="big">Trust the recursive call on the smaller input. That leap is the whole game.</p>'},
+
+  {html:
+    '<p class="eyebrow">Tree recursion · step 1</p><h2>Name your cases</h2>'+
+    '<div class="cols">'+
+    '<div class="col"><div class="card"><h3>Use or skip</h3><p>Include the value or don’t, then recurse on the rest. Subsets.</p></div></div>'+
+    '<div class="col"><div class="card"><h3>Use this or that</h3><p>Pick among a few options. One step or two; this coin or that.</p></div></div>'+
+    '<div class="col"><div class="card"><h3>Build from parts</h3><p>Assemble from several calls: fib(n) = fib(n-1) + fib(n-2).</p></div></div>'+
+    '</div>'},
+
+  {html:
+    '<p class="eyebrow">Tree recursion · step 2</p><h2>Name the connection</h2>'+
+    '<div class="cols"><div class="col">'+
+    '<div class="card"><h3>Sum / total</h3><p>add the cases &nbsp;<code>rec(n-1) + rec(n-2)</code></p></div>'+
+    '<div class="card"><h3>Count</h3><p>base returns 1, then sum &nbsp;<code>1 + rec(n-1)</code></p></div>'+
+    '<div class="card"><h3>Best / largest</h3><p>wrap in <code>max()</code> or <code>min()</code></p></div></div>'+
+    '<div class="col"><p class="big">Cases + connection + base case = a complete tree-recursion answer. Name all three fast and you can write any of these.</p></div></div>'},
+
+  {html:
+    '<p class="eyebrow">Trees</p><h2>A label and a list of branches</h2>'+
+    '<div class="cols"><div class="col"><pre><code>t = Tree(1, [Tree(2),\n        Tree(3, [Tree(4)])])\n\nt.label             <span class="cmt"># 1</span>\nt.branches[0].label <span class="cmt"># 2</span>\n\n<span class="kw">def</span> is_leaf(t):\n    <span class="kw">return</span> <span class="kw">not</span> t.branches</code></pre></div>'+
+    '<div class="col"><ul class="clean"><li>A branch is itself a Tree.</li><li>A leaf has no branches.</li><li>Reach in with <code>.label</code> and <code>.branches</code>.</li><li>Recursion loops <code>for b in t.branches</code>.</li></ul></div></div>'},
+
+  {html:
+    '<p class="eyebrow">Trees · the one template</p><h2>Do something with the label, recurse on each branch</h2>'+
+    '<div class="cols"><div class="col"><pre><code><span class="cmt"># sum all labels</span>\n<span class="kw">def</span> tree_sum(t):\n    subs = [tree_sum(b)\n        <span class="kw">for</span> b <span class="kw">in</span> t.branches]\n    <span class="kw">return</span> t.label + sum(subs)</code></pre></div>'+
+    '<div class="col"><pre><code><span class="cmt"># height: leaf is 0</span>\n<span class="kw">def</span> height(t):\n    <span class="kw">if</span> is_leaf(t):\n        <span class="kw">return</span> 0\n    <span class="kw">return</span> 1 + max([height(b)\n        <span class="kw">for</span> b <span class="kw">in</span> t.branches])</code></pre></div></div>'+
+    '<p class="big">Same shape, different connection. The <code>[f(b) for b in t.branches]</code> line is the heartbeat.</p>'},
+
+  {html:
+    '<p class="eyebrow">Trees · building a new one</p><h2>Transforms build a new Tree</h2>'+
+    '<div class="cols"><div class="col"><pre><code><span class="cmt"># double every label</span>\n<span class="kw">def</span> double(t):\n    <span class="kw">return</span> Tree(t.label * 2,\n      [double(b) <span class="kw">for</span> b <span class="kw">in</span> t.branches])</code></pre></div>'+
+    '<div class="col"><div class="card accent"><h3>The build template</h3><p><code>Tree(new_label,<br>&nbsp;&nbsp;[recurse(b) for b in t.branches])</code></p><p style="margin-top:8px">Filtering? Recurse, keep the non-None branches, then decide what this node returns.</p></div></div></div>'},
+
+  {html:
+    '<p class="eyebrow">Sequences &amp; dicts</p><h2>Slicing, comprehensions, lookups</h2>'+
+    '<div class="cols"><div class="col"><pre><code>s[1:3]   <span class="cmt"># end excluded</span>\ns[::-1]  <span class="cmt"># reversed</span>\ns[10:]   <span class="cmt"># []  never errors</span>\n\n[x*x <span class="kw">for</span> x <span class="kw">in</span> r <span class="kw">if</span> x%2==0]\nd.get(k, 0)  <span class="cmt"># safe lookup</span></code></pre></div>'+
+    '<div class="col"><ul class="clean"><li><code>all([])</code> is True, <code>any([])</code> is False, <code>sum([])</code> is 0.</li><li><code>max(s, key=abs)</code> returns the <i>element</i>.</li><li><code>in</code> on a dict checks <b>keys</b>.</li><li>Adding keys while iterating &rarr; RuntimeError.</li></ul></div></div>'},
+
+  {html:
+    '<p class="eyebrow">List mutation</p><h2>These change the list in place</h2>'+
+    '<div class="cols"><div class="col"><ul class="clean"><li><code>append(x)</code> &rarr; None, adds one</li><li><code>extend(lst)</code> &rarr; None, adds each</li><li><code>remove(x)</code> &rarr; None, first match</li><li><code>pop()</code> &rarr; <b>the element</b> (or index i)</li><li><code>s[i] = v</code> item assignment</li></ul></div>'+
+    '<div class="col"><div class="card accent"><h3>The trap</h3><p>Only <code>pop</code> returns something useful. The rest return <code>None</code>: <code>x = s.append(4)</code> makes <code>x</code> None.</p></div></div></div>'},
+
+  {html:
+    '<p class="eyebrow">Mutation · the diagram trap</p><h2>+= mutates, + makes a new list</h2>'+
+    '<div class="cols"><div class="col"><pre><code>a = [1, 2]\nb = a         <span class="cmt"># same object</span>\na += [3]      <span class="cmt"># a AND b</span>\n\na = a + [4]   <span class="cmt"># new list</span>\n<span class="cmt"># a=[1,2,3,4], b=[1,2,3]</span></code></pre></div>'+
+    '<div class="col"><div class="card"><p><b>is</b> = same object. &nbsp; <b>==</b> = same value.</p></div>'+
+    '<div class="card accent"><p><b>Copies are shallow.</b> <code>+</code>, <code>s[:]</code>, <code>list(s)</code> make a new outer list but <i>reuse</i> the nested lists.</p></div></div></div>'},
+
+  {html:
+    '<p class="eyebrow">Iterators</p><h2>iter, next, and running out</h2>'+
+    '<div class="cols"><div class="col"><pre><code>it = iter([3, 1, 4])\nnext(it)  <span class="cmt"># 3</span>\nnext(it)  <span class="cmt"># 1</span>\nnext(it)  <span class="cmt"># 4</span>\nnext(it)  <span class="cmt"># StopIteration</span></code></pre></div>'+
+    '<div class="col"><ul class="clean"><li><code>iter(x)</code> makes an iterator.</li><li><code>next(it)</code> pulls the next value.</li><li>Past the end &rarr; <code>StopIteration</code>.</li><li>It <b>remembers</b> where it left off.</li></ul></div></div>'},
+
+  {html:
+    '<p class="eyebrow">Lazy evaluation</p><h2>map, filter, zip compute nothing yet</h2>'+
+    '<div class="cols"><div class="col"><pre><code>m = map(<span class="kw">lambda</span> x: x*10,\n        [1, 2, 3])\nnext(m)   <span class="cmt"># 10</span>\nlist(m)   <span class="cmt"># [20, 30]</span>\n<span class="cmt"># the 10 is already gone</span></code></pre></div>'+
+    '<div class="col"><ul class="clean"><li><code>map/filter/zip/reversed</code> return iterators, not lists.</li><li>Nothing runs until you pull or wrap in <code>list</code>.</li><li>One-shot: consume once, then spent.</li></ul></div></div>'},
+
+  {html:
+    '<p class="eyebrow">Generators</p><h2>yield produces one value, then pauses</h2>'+
+    '<div class="cols"><div class="col"><pre><code><span class="kw">def</span> countdown(n):\n    <span class="kw">while</span> n &gt; 0:\n        <span class="kw">yield</span> n\n        n -= 1\n\nlist(countdown(3))  <span class="cmt"># [3,2,1]</span></code></pre></div>'+
+    '<div class="col"><ul class="clean"><li>A function with <code>yield</code> is a generator.</li><li>Calling it returns an iterator; runs nothing yet.</li><li>Each <code>yield</code> hands back one value and pauses.</li><li>A bare <code>return</code> just stops it.</li></ul></div></div>'},
+
+  {html:
+    '<p class="eyebrow">Generators · yield from</p><h2>yield from relays a whole iterable</h2>'+
+    '<div class="cols"><div class="col"><pre><code><span class="cmt"># every label, root first</span>\n<span class="kw">def</span> tree_labels(t):\n    <span class="kw">yield</span> t.label\n    <span class="kw">for</span> b <span class="kw">in</span> t.branches:\n        <span class="kw">yield from</span> tree_labels(b)</code></pre></div>'+
+    '<div class="col"><div class="card accent"><h3>The equivalence</h3><p><code>yield from gen()</code> is exactly <code>for x in gen(): yield x</code>. Use it to relay a recursive call.</p></div></div></div>'},
+
+  {html:
+    '<p class="eyebrow">Generators · the big template</p><h2>&ldquo;Yield all the ways&rdquo;</h2>'+
+    '<div class="cols"><div class="col"><pre><code><span class="kw">def</span> ways(...):\n    <span class="kw">if</span> &lt;done&gt;:\n        <span class="kw">yield</span> &lt;trivial&gt;\n        <span class="kw">return</span>\n    <span class="kw">for</span> choice <span class="kw">in</span> options:\n        <span class="kw">for</span> rest <span class="kw">in</span> ways(smaller):\n            <span class="kw">yield</span> [choice] + rest</code></pre></div>'+
+    '<div class="col"><ul class="clean"><li>Base case yields the trivial answer, then returns.</li><li>Pick each first choice in a loop.</li><li>For each, pull every way to finish the rest.</li><li>Glue: <code>yield [choice] + rest</code>.</li></ul></div></div>'},
+
+  {html:
+    '<p class="eyebrow">OOP</p><h2>The class template</h2>'+
+    '<div class="cols"><div class="col"><pre><code><span class="kw">class</span> Account:\n    interest = 0.02  <span class="cmt"># class attr</span>\n    <span class="kw">def</span> __init__(self, holder):\n        self.holder = holder\n        self.balance = 0\n    <span class="kw">def</span> deposit(self, amt):\n        self.balance += amt\n        <span class="kw">return</span> self.balance</code></pre></div>'+
+    '<div class="col"><ul class="clean"><li><code>__init__</code> runs on <code>Account(’Sam’)</code>.</li><li><code>self</code> is the specific object.</li><li>Class attrs shared; instance attrs per object.</li><li>Lookup: instance, then class, then parents.</li></ul><p class="big" style="margin-top:6px">Read the prompt and the doctests twice.</p></div></div>'},
+
+  {html:
+    '<p class="eyebrow">OOP · inheritance</p><h2>Override, reuse with super()</h2>'+
+    '<div class="cols"><div class="col"><pre><code><span class="kw">class</span> CheckingAccount(Account):\n    withdraw_fee = 1\n    <span class="kw">def</span> withdraw(self, amt):\n        <span class="kw">return</span> super().withdraw(\n            amt + self.withdraw_fee)</code></pre></div>'+
+    '<div class="col"><ul class="clean"><li><code>class B(A)</code> inherits everything.</li><li>Redefine a method to override it.</li><li><code>super().method(args)</code> calls A’s version, no self.</li><li>A class attr is shared until an instance sets its own.</li></ul></div></div>'},
+
+  {html:
+    '<p class="eyebrow">Efficiency · memoization</p><h2>Cache each result in a dict</h2>'+
+    '<div class="cols"><div class="col"><pre><code><span class="kw">def</span> memo(f):\n    cache = {}\n    <span class="kw">def</span> memoized(n):\n        <span class="kw">if</span> n <span class="kw">not in</span> cache:\n            cache[n] = f(n)\n        <span class="kw">return</span> cache[n]\n    <span class="kw">return</span> memoized</code></pre></div>'+
+    '<div class="col"><ul class="clean"><li>Store each input &rarr; result in a dict.</li><li>On a repeat input, return the stored value.</li><li>Collapses duplicate <code>fib</code> calls.</li><li>The <code>cache</code> is a closure that persists.</li></ul></div></div>'},
+
+  {html:
+    '<p class="eyebrow">What Would Python Display</p><h2>The free-points checklist</h2>'+
+    '<ul class="clean" style="font-size:clamp(1rem,2.2vw,1.25rem)">'+
+    '<li><b>print vs return:</b> print shows args, no quotes, value is None; a bare expression echoes its value.</li>'+
+    '<li><b>Iterators:</b> map/filter/zip are lazy; next past end is StopIteration; a half-used iterator resumes.</li>'+
+    '<li><b>Mutation:</b> after <code>b = a</code>, mutating a changes b; rebinding doesn’t.</li>'+
+    '<li><b>Errors:</b> an error stops that expression; note the type and move on.</li></ul>'+
+    '<p class="big">Go top to bottom, track every variable, and slow down.</p>'},
+
+  {html:
+    '<p class="eyebrow">Exam-day strategy</p><h2>How to actually prepare</h2>'+
+    '<div class="cols">'+
+    '<div class="col"><div class="card"><p class="big-num">~5</p><p>past Midterm 2 exams, timed on paper. For every miss, write down <i>why</i>.</p></div></div>'+
+    '<div class="col"><div class="card"><p class="big-num">6 min</p><p>stuck? think ~6 minutes, then move on and come back.</p></div></div>'+
+    '<div class="col"><div class="card"><p class="big-num">2</p><p>note sheets of templates and traps, built early, used while practicing.</p></div></div>'+
+    '</div><p class="big">Write code by hand, check by reading. Front-load <b>trees, generators, and OOP</b>. Sleep well.</p>'},
+
+  {hero:true, html:
+    '<p class="eyebrow">One skeleton, every problem</p>'+
+    '<h2>Base case. Recurse.<br>Combine. You’ve got this.</h2>'+
+    '<p class="big">Every tree, generator, OOP method, and linked-list function is a variation of the same move. Go make trees, generators, and OOP automatic.</p>'+
+    '<div><a class="pill" href="../cs61a-mt3-practice/" style="text-decoration:none">Practice app →</a><a class="pill" href="../cs61a-mt3/" style="text-decoration:none; background:transparent; color:var(--saffron-ink); border:1.5px solid var(--saffron)">Full written guide →</a></div>'}
+];
+
+var DURATION = 9000; // ms per slide when playing
+var stage = document.getElementById('stage');
+var fill = document.getElementById('progress-fill');
+var counter = document.getElementById('counter');
+var playBtn = document.getElementById('play');
+var idx = 0, playing = false, timer = null, tick = null, elapsed = 0;
+
+// build slide nodes once
+var nodes = SLIDES.map(function (s, i) {
+  var d = document.createElement('div');
+  d.className = 'slide' + (s.hero ? ' hero' : '');
+  d.innerHTML = s.html;
+  stage.appendChild(d);
+  return d;
+});
+
+function show(n) {
+  idx = (n + SLIDES.length) % SLIDES.length;
+  nodes.forEach(function (d, i) { d.classList.toggle('active', i === idx); });
+  counter.textContent = (idx + 1) + ' / ' + SLIDES.length;
+  elapsed = 0; fill.style.width = '0%';
+  stage.scrollTop = 0;
+}
+function next() { show(idx + 1); if (playing) resetTimer(); }
+function prev() { show(idx - 1); if (playing) resetTimer(); }
+
+function resetTimer() {
+  clearInterval(tick); clearTimeout(timer);
+  elapsed = 0;
+  tick = setInterval(function () {
+    elapsed += 100;
+    fill.style.width = Math.min(100, (elapsed / DURATION) * 100) + '%';
+  }, 100);
+  timer = setTimeout(function () {
+    if (idx === SLIDES.length - 1) { pause(); return; } // stop at the end
+    show(idx + 1); resetTimer();
+  }, DURATION);
+}
+function play() {
+  playing = true; playBtn.innerHTML = '❚❚ Pause';
+  if (idx === SLIDES.length - 1) show(0);
+  resetTimer();
+}
+function pause() {
+  playing = false; playBtn.innerHTML = '▶ Play';
+  clearInterval(tick); clearTimeout(timer); fill.style.width = '0%';
+}
+function toggle() { playing ? pause() : play(); }
+
+document.getElementById('next').addEventListener('click', next);
+document.getElementById('prev').addEventListener('click', prev);
+document.getElementById('restart').addEventListener('click', function () { show(0); if (playing) resetTimer(); });
+playBtn.addEventListener('click', toggle);
+stage.addEventListener('click', function (e) { if (e.target.tagName !== 'A') next(); });
+document.addEventListener('keydown', function (e) {
+  if (e.key === 'ArrowRight') { next(); e.preventDefault(); }
+  else if (e.key === 'ArrowLeft') { prev(); e.preventDefault(); }
+  else if (e.key === ' ') { toggle(); e.preventDefault(); }
+});
+
+show(0);
+</script>
+<script src="../../assets/js/theme.js?v=1"></script>
+</body>
+</html>
