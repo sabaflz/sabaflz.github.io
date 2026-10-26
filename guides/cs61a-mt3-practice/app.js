@@ -60,6 +60,8 @@
   function fnName(p) { var m = /def\s+(\w+)\s*\(/.exec(p.starter); return m ? m[1] : ""; }
   function statusOf(id) { return store.get("status_" + id, "unattempted"); }
   function subsOf(id) { return parseInt(store.get("subs_" + id, "0"), 10) || 0; }
+  function isStarred(id) { return store.get("star_" + id, "0") === "1"; }
+  function toggleStar(id) { store.set("star_" + id, isStarred(id) ? "0" : "1"); }
   function codeOf(p) { var c = store.get("code_" + p.id, null); return c === null ? p.starter : c; }
   function showBootOverlay(msg) { byId("boot-msg").textContent = msg; byId("boot").style.display = "flex"; }
   function hideBootOverlay() { byId("boot").style.display = "none"; }
@@ -84,7 +86,10 @@
         var st = statusOf(p.id), n = subsOf(p.id);
         var el = document.createElement("div");
         el.className = "p-item" + (current && current.id === p.id ? " active" : "");
-        el.innerHTML = '<span class="dot ' + st + '"></span><span class="name">' + esc(p.title) + "</span>" +
+        var ind = isStarred(p.id)
+          ? '<span class="star ' + st + '" title="Starred">★</span>'
+          : '<span class="dot ' + st + '"></span>';
+        el.innerHTML = ind + '<span class="name">' + esc(p.title) + "</span>" +
           (n ? '<span class="n-subs">' + n + "x</span>" : "");
         el.addEventListener("click", function () { selectProblem(p.id); });
         group.appendChild(el);
@@ -113,7 +118,7 @@
     editor.setValue(codeOf(p));
     editor.clearHistory();
     setTimeout(function () { editor.refresh(); }, 0);
-    updateStatusChip(); updateSubs(); updateRevealBtn();
+    updateStatusChip(); updateSubs(); updateRevealBtn(); updateStarBtn();
     renderSidebar(byId("search").value);
   }
 
@@ -123,6 +128,20 @@
     chip.textContent = st === "passed" ? "Passed" : st === "attempted" ? "Attempted" : "Not attempted";
   }
   function updateSubs() { byId("subs").textContent = subsOf(current.id) + " submission" + (subsOf(current.id) === 1 ? "" : "s"); }
+  function updateStarBtn() {
+    var btn = byId("btn-star");
+    if (!btn || !current) return;
+    var on = isStarred(current.id);
+    btn.textContent = on ? "★ Starred" : "☆ Star";
+    btn.classList.toggle("on", on);
+    btn.title = on ? "Remove the star" : "Star this to revisit it";
+  }
+  function onStar() {
+    if (!current) return;
+    toggleStar(current.id);
+    updateStarBtn();
+    renderSidebar(byId("search").value);
+  }
   function updateRevealBtn() {
     var btn = byId("btn-reveal");
     btn.disabled = false;
@@ -243,6 +262,7 @@
     byId("btn-submit").addEventListener("click", onSubmit);
     byId("btn-reset").addEventListener("click", onReset);
     byId("btn-reveal").addEventListener("click", onReveal);
+    var starBtn = byId("btn-star"); if (starBtn) starBtn.addEventListener("click", onStar);
     byId("search").addEventListener("input", function (e) { renderSidebar(e.target.value); });
     byId("timer-toggle").addEventListener("click", toggleTimer);
     byId("timer-reset").addEventListener("click", resetTimer);
