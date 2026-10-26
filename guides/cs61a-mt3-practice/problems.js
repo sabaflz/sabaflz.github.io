@@ -11,7 +11,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def semiperfect(n):\n    \"\"\"Return whether n equals the sum of some subset of its proper divisors.\n    >>> semiperfect(6)    # 1 + 2 + 3\n    True\n    >>> semiperfect(7)    # only proper divisor is 1\n    False\n    >>> semiperfect(28)   # 1 + 2 + 4 + 7 + 14\n    True\n    >>> [k for k in range(1, 40) if semiperfect(k)]\n    [6, 12, 18, 20, 24, 28, 30, 36]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def semiperfect(n):\n    divs = [d for d in range(1, n) if n % d == 0]\n    def f(s, i):\n        if s == 0:\n            return True\n        if s < 0 or i == len(divs):\n            return False\n        return f(s - divs[i], i + 1) or f(s, i + 1)\n    return f(n, 0)",
-  "tests": "assert semiperfect(6) is True\nassert semiperfect(7) is False\nassert semiperfect(28) is True\nassert semiperfect(22) is False\nassert [k for k in range(1, 40) if semiperfect(k)] == [6, 12, 18, 20, 24, 28, 30, 36]"
+  "tests": "assert semiperfect(6) is True\nassert semiperfect(7) is False\nassert semiperfect(28) is True\nassert semiperfect(22) is False\nassert [k for k in range(1, 40) if semiperfect(k)] == [6, 12, 18, 20, 24, 28, 30, 36]",
+  "explain": "Subset-sum. For each proper divisor, recurse on USING it (subtract from the target) OR skipping it, and combine with `or`. Base cases: target 0 is True, overshoot or no divisors left is False."
  },
  {
   "id": "sp25_ways",
@@ -24,7 +25,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def ways(k, n):\n    \"\"\"Count plus-times expressions for n numbers with no run of\n    consecutive * longer than k.\n    >>> ways(1, 4)\n    5\n    >>> ways(2, 4)\n    7\n    >>> ways(2, 5)\n    13\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def ways(k, n):\n    def f(gaps, run):\n        if gaps == 0:\n            return 1\n        total = f(gaps - 1, 0)          # place +\n        if run < k:\n            total += f(gaps - 1, run + 1)  # place *\n        return total\n    return f(n - 1, 0)",
-  "tests": "assert ways(1, 4) == 5\nassert ways(2, 4) == 7\nassert ways(2, 5) == 13\nassert ways(1, 1) == 1\nassert ways(3, 4) == 8"
+  "tests": "assert ways(1, 4) == 5\nassert ways(2, 4) == 7\nassert ways(2, 5) == 13\nassert ways(1, 1) == 1\nassert ways(3, 4) == 8",
+  "explain": "Carry the current star-streak as a parameter. At each gap you may place a `+` (streak resets, always allowed) or a `*` (streak+1, only if still under k). Add the two counts; base case gaps==0 returns 1."
  },
  {
   "id": "sp25_close",
@@ -37,7 +39,8 @@ window.PROBLEMS = [
   "setup": "def product(s):\n    p = 1\n    for x in s:\n        p *= x\n    return p",
   "starter": "def close(s, x):\n    \"\"\"Return the plus-times expression value for list s closest to x.\n    >>> close([1, 2, 3, 4], 10)   # 1 + 2 + 3 + 4\n    10\n    >>> close([1, 2, 3, 4], 20)   # 1 * 2 * 3 * 4\n    24\n    >>> close([3, 7, 5, 4, 2, 6], 66)  # 3*7 + 5*4*2 + 6\n    67\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def close(s, x):\n    def values(s):\n        if len(s) == 0:\n            return {0}\n        res = set()\n        for i in range(1, len(s) + 1):\n            head = product(s[:i])\n            if i == len(s):\n                res.add(head)\n            else:\n                for r in values(s[i:]):\n                    res.add(head + r)\n        return res\n    if len(s) == 0:\n        return 0\n    return min(values(s), key=lambda v: abs(v - x))",
-  "tests": "assert close([1, 2, 3, 4], 10) == 10\nassert close([1, 2, 3, 4], 20) == 24\nassert close([3, 7, 5, 4, 2, 6], 66) == 67\nassert close([], 5) == 0\nassert close([5], 0) == 5"
+  "tests": "assert close([1, 2, 3, 4], 10) == 10\nassert close([1, 2, 3, 4], 20) == 24\nassert close([3, 7, 5, 4, 2, 6], 66) == 67\nassert close([], 5) == 0\nassert close([5], 0) == 5",
+  "explain": "Values bounce around, so you can't be greedy. Generate EVERY achievable value: choose where the first *-group ends, take its product, add that to each value of the rest. Then pick with min(values, key=lambda v: abs(v-x))."
  },
  {
   "id": "fa23_fit",
@@ -50,7 +53,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def fit(total, n):\n    \"\"\"Return whether total is a sum of exactly n positive perfect squares.\n    >>> fit(4, 1)    # 4 = 2*2\n    True\n    >>> fit(4, 2)    # cannot be two positive squares\n    False\n    >>> fit(12, 3)   # 4 + 4 + 4\n    True\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def fit(total, n):\n    def f(total, n, k):\n        if total == 0 and n == 0:\n            return True\n        if total <= 0 or n == 0 or k * k > total:\n            return False\n        return f(total - k * k, n - 1, k) or f(total, n, k + 1)\n    return f(total, n, 1)",
-  "tests": "assert fit(4, 1) is True\nassert fit(4, 2) is False\nassert fit(12, 3) is True\nassert fit(1, 1) is True\nassert fit(2, 2) is True\nassert fit(3, 2) is False"
+  "tests": "assert fit(4, 1) is True\nassert fit(4, 2) is False\nassert fit(12, 3) is True\nassert fit(1, 1) is True\nassert fit(2, 2) is True\nassert fit(3, 2) is False",
+  "explain": "Try squares k*k in increasing order. Each step: use k again (subtract, one fewer square) or move to k+1. Base: total 0 and n 0 is True; overshoot or k*k>total is False."
  },
  {
   "id": "sp23_count_park",
@@ -63,7 +67,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def count_park(n):\n    \"\"\"Count the ways to fill a row of n spots.\n    >>> count_park(1)   # '.'  '%'\n    2\n    >>> count_park(2)   # '..' '.%' '%.' '%%' '<>'\n    5\n    >>> count_park(4)\n    29\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def count_park(n):\n    if n < 0:\n        return 0\n    if n == 0:\n        return 1\n    return count_park(n - 1) + count_park(n - 1) + count_park(n - 2)",
-  "tests": "assert count_park(1) == 2\nassert count_park(2) == 5\nassert count_park(3) == 12\nassert count_park(4) == 29\nassert count_park(0) == 1"
+  "tests": "assert count_park(1) == 2\nassert count_park(2) == 5\nassert count_park(3) == 12\nassert count_park(4) == 29\nassert count_park(0) == 1",
+  "explain": "Three choices for the first spot: '.' or '%' each leave n-1, '<>' leaves n-2. Sum the three recursive counts. Base: n==0 returns 1, n<0 returns 0."
  },
  {
   "id": "fa22_count_subsets",
@@ -76,7 +81,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def count_subsets(s):\n    \"\"\"Count subsequences of s that sum to exactly 100.\n    >>> count_subsets([25, 50, 75, 100, 125, 150])  # [25, 75], [100]\n    2\n    >>> count_subsets([25, 50, 25, 75])             # three ways\n    3\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def count_subsets(s):\n    def helper(sum_so_far, index):\n        if sum_so_far == 100:\n            return 1\n        if index == len(s) or sum_so_far > 100:\n            return 0\n        return helper(sum_so_far + s[index], index + 1) + helper(sum_so_far, index + 1)\n    return helper(0, 0)",
-  "tests": "assert count_subsets([25, 50, 75, 100, 125, 150]) == 2\nassert count_subsets([25, 50, 25, 75]) == 3\nassert count_subsets([]) == 0\nassert count_subsets([100]) == 1\nassert count_subsets([50, 50, 50]) == 3"
+  "tests": "assert count_subsets([25, 50, 75, 100, 125, 150]) == 2\nassert count_subsets([25, 50, 25, 75]) == 3\nassert count_subsets([]) == 0\nassert count_subsets([100]) == 1\nassert count_subsets([50, 50, 50]) == 3",
+  "explain": "Subset-count. At each element, include it (add to a running sum) or skip it, then recurse on the rest. Count 1 when the running sum hits the target."
  },
  {
   "id": "fa19_switch",
@@ -89,7 +95,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def switch(s, t, k):\n    \"\"\"Return the max-sum switch list of s and t with at most k switches.\n    >>> switch([1, 2, 7], [3, 4, 5], 0)\n    [1, 2, 7]\n    >>> switch([1, 2, 7], [3, 4, 5], 1)\n    [3, 4, 5]\n    >>> switch([1, 2, 7], [3, 4, 5], 2)\n    [3, 4, 7]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def switch(s, t, k):\n    from itertools import product as _p\n    n = len(s)\n    best = None\n    for ch in _p([0, 1], repeat=n):\n        sw = (1 if n and ch[0] == 1 else 0)\n        for i in range(1, n):\n            if ch[i] != ch[i - 1]:\n                sw += 1\n        if sw <= k:\n            lst = [t[i] if ch[i] else s[i] for i in range(n)]\n            if best is None or sum(lst) > sum(best):\n                best = lst\n    return best if best is not None else list(s)",
-  "tests": "assert switch([1, 2, 7], [3, 4, 5], 0) == [1, 2, 7]\nassert switch([1, 2, 7], [3, 4, 5], 1) == [3, 4, 5]\nassert switch([1, 2, 7], [3, 4, 5], 2) == [3, 4, 7]\nassert switch([5], [9], 0) == [5]\nassert switch([5], [9], 1) == [9]"
+  "tests": "assert switch([1, 2, 7], [3, 4, 5], 0) == [1, 2, 7]\nassert switch([1, 2, 7], [3, 4, 5], 1) == [3, 4, 5]\nassert switch([1, 2, 7], [3, 4, 5], 2) == [3, 4, 7]\nassert switch([5], [9], 0) == [5]\nassert switch([5], [9], 1) == [9]",
+  "explain": "At each position take from s or t. Track whether a switch happened and how many switches are left (k). Compare the two branches and keep the max-sum list with max(..., key=sum)."
  },
  {
   "id": "fa18_plus",
@@ -102,7 +109,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def plus(n):\n    \"\"\"Largest sum from splitting n's digits into 1- or 2-digit terms.\n    >>> plus(123456)   # 12 + 34 + 56\n    102\n    >>> plus(1604)     # 1 + 60 + 4\n    65\n    >>> plus(160450)   # 1 + 60 + 4 + 50\n    115\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def plus(n):\n    s = str(n)\n    def go(s):\n        if s == \"\":\n            return 0\n        best = int(s[0]) + go(s[1:])\n        if len(s) >= 2:\n            best = max(best, int(s[:2]) + go(s[2:]))\n        return best\n    return go(s)",
-  "tests": "assert plus(123456) == 102\nassert plus(1604) == 65\nassert plus(160450) == 115\nassert plus(0) == 0\nassert plus(5) == 5"
+  "tests": "assert plus(123456) == 102\nassert plus(1604) == 65\nassert plus(160450) == 115\nassert plus(0) == 0\nassert plus(5) == 5",
+  "explain": "Split the digit string: take 1 digit or 2 digits as the next term, recurse on the rest, and max the two results. Base: empty string returns 0."
  },
  {
   "id": "fa18_plusses",
@@ -115,7 +123,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def plusses(n, cap):\n    \"\"\"Count plus expressions for n whose value is < cap.\n    >>> plusses(123, 16)   # 1+2+3=6 and 12+3=15 count; 1+23=24 does not\n    2\n    >>> plusses(2018, 38)\n    4\n    >>> plusses(1, 2)\n    1\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def plusses(n, cap):\n    s = str(n)\n    def go(s, acc):\n        if s == \"\":\n            return 1 if acc < cap else 0\n        total = go(s[1:], acc + int(s[0]))\n        if len(s) >= 2:\n            total += go(s[2:], acc + int(s[:2]))\n        return total\n    return go(s, 0)",
-  "tests": "assert plusses(123, 16) == 2\nassert plusses(2018, 38) == 4\nassert plusses(1, 2) == 1\nassert plusses(9, 5) == 0"
+  "tests": "assert plusses(123, 16) == 2\nassert plusses(2018, 38) == 4\nassert plusses(1, 2) == 1\nassert plusses(9, 5) == 0",
+  "explain": "Same 1-or-2-digit split as plus, but COUNT the expressions whose running total stays under cap. Base: empty string counts as 1."
  },
  {
   "id": "fa17_ways",
@@ -128,7 +137,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def ways(start, end, k, actions):\n    \"\"\"Count length-<=k action sequences taking start to end.\n    >>> ways(-1, 1, 5, [abs, lambda x: x + 2])\n    2\n    >>> ways(1, 10, 5, [lambda x: x + 1, lambda x: x + 4])\n    3\n    >>> ways(1, 20, 5, [lambda x: x + 1, lambda x: x + 4])\n    0\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def ways(start, end, k, actions):\n    if start == end:\n        return 1\n    if k == 0:\n        return 0\n    return sum(ways(f(start), end, k - 1, actions) for f in actions)",
-  "tests": "assert ways(-1, 1, 5, [abs, lambda x: x + 2]) == 2\nassert ways(1, 10, 5, [lambda x: x + 1, lambda x: x + 4]) == 3\nassert ways(1, 20, 5, [lambda x: x + 1, lambda x: x + 4]) == 0\nassert ways(5, 5, 0, [lambda x: x + 1]) == 1"
+  "tests": "assert ways(-1, 1, 5, [abs, lambda x: x + 2]) == 2\nassert ways(1, 10, 5, [lambda x: x + 1, lambda x: x + 4]) == 3\nassert ways(1, 20, 5, [lambda x: x + 1, lambda x: x + 4]) == 0\nassert ways(5, 5, 0, [lambda x: x + 1]) == 1",
+  "explain": "Count length-<=k action sequences from start to end. Base: start==end returns 1; k==0 returns 0. Otherwise sum over each action applied to start, with k-1."
  },
  {
   "id": "fa14_no_eleven",
@@ -141,7 +151,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def no_eleven(n):\n    \"\"\"All length-n lists of 1s and 6s with no two adjacent 1s.\n    >>> no_eleven(2)\n    [[6, 6], [6, 1], [1, 6]]\n    >>> no_eleven(3)\n    [[6, 6, 6], [6, 6, 1], [6, 1, 6], [1, 6, 6], [1, 6, 1]]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def no_eleven(n):\n    if n == 0:\n        return [[]]\n    if n == 1:\n        return [[6], [1]]\n    return ([[6] + r for r in no_eleven(n - 1)] +\n            [[1, 6] + r for r in no_eleven(n - 2)])",
-  "tests": "assert no_eleven(2) == [[6, 6], [6, 1], [1, 6]]\nassert no_eleven(3) == [[6, 6, 6], [6, 6, 1], [6, 1, 6], [1, 6, 6], [1, 6, 1]]\nassert no_eleven(1) == [[6], [1]]"
+  "tests": "assert no_eleven(2) == [[6, 6], [6, 1], [1, 6]]\nassert no_eleven(3) == [[6, 6, 6], [6, 6, 1], [6, 1, 6], [1, 6, 6], [1, 6, 1]]\nassert no_eleven(1) == [[6], [1]]",
+  "explain": "List-building recursion. Base case returns [[]] (one empty arrangement). Prepend 6 to each arrangement of n-1, and 1-then-6 to each of n-2; concatenate with the 6-first ones first."
  },
  {
   "id": "fa25_exclude",
@@ -154,7 +165,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def exclude(s, x):\n    \"\"\"Return a new list of elements of s not equal to x.\n    >>> exclude([1, 2, 3, 2, 1], 2)\n    [1, 3, 1]\n    >>> exclude([], 5)\n    []\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def exclude(s, x):\n    return [e for e in s if e != x]",
-  "tests": "assert exclude([1, 2, 3, 2, 1], 2) == [1, 3, 1]\nassert exclude([], 5) == []\nassert exclude([7, 7, 7], 7) == []\n_a = [1, 2, 3]\nexclude(_a, 2)\nassert _a == [1, 2, 3]  # input unchanged"
+  "tests": "assert exclude([1, 2, 3, 2, 1], 2) == [1, 3, 1]\nassert exclude([], 5) == []\nassert exclude([7, 7, 7], 7) == []\n_a = [1, 2, 3]\nexclude(_a, 2)\nassert _a == [1, 2, 3]  # input unchanged",
+  "explain": "One-line comprehension: keep each element not equal to x. Build a new list, don't mutate the input."
  },
  {
   "id": "fa25_symmetrical",
@@ -167,7 +179,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def symmetrical(d):\n    \"\"\"Return whether d maps symmetrically.\n    >>> symmetrical({'M': 'P', 'P': 'M'})\n    True\n    >>> symmetrical({'M': 'P'})\n    False\n    >>> symmetrical({})\n    True\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def symmetrical(d):\n    return all([d.get(v) == k for k, v in d.items()])",
-  "tests": "assert symmetrical({'M': 'P', 'P': 'M'}) is True\nassert symmetrical({'M': 'P'}) is False\nassert symmetrical({}) is True\nassert symmetrical({'a': 'a'}) is True"
+  "tests": "assert symmetrical({'M': 'P', 'P': 'M'}) is True\nassert symmetrical({'M': 'P'}) is False\nassert symmetrical({}) is True\nassert symmetrical({'a': 'a'}) is True",
+  "explain": "For each key k with value v, check that d maps v back to k. Use d.get(v) (or guard with `v in d`) so a value that isn't a key returns False instead of crashing."
  },
  {
   "id": "fa25_acceptable",
@@ -180,7 +193,8 @@ window.PROBLEMS = [
   "setup": "def symmetrical(d):\n    return all([d.get(v) == k for k, v in d.items()])",
   "starter": "def acceptable(pizza, disallow):\n    \"\"\"Return whether no adjacent slices form a disallowed pair (wrapping around).\n    >>> no_mp = {'M': 'P', 'P': 'M'}\n    >>> acceptable('MM_P', no_mp)   # last P wraps next to first M\n    False\n    >>> acceptable('M_P_', no_mp)\n    True\n    >>> acceptable('MPM', no_mp)\n    False\n    \"\"\"\n    assert symmetrical(disallow)\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def acceptable(pizza, disallow):\n    assert symmetrical(disallow)\n    n = len(pizza)\n    for i in range(n):\n        a, b = pizza[i], pizza[(i + 1) % n]\n        if disallow.get(a) == b:\n            return False\n    return True",
-  "tests": "no_mp = {'M': 'P', 'P': 'M'}\nassert acceptable('MM_P', no_mp) is False\nassert acceptable('M_P_', no_mp) is True\nassert acceptable('MPM', no_mp) is False\nassert acceptable('____', no_mp) is True"
+  "tests": "no_mp = {'M': 'P', 'P': 'M'}\nassert acceptable('MM_P', no_mp) is False\nassert acceptable('M_P_', no_mp) is True\nassert acceptable('MPM', no_mp) is False\nassert acceptable('____', no_mp) is True",
+  "explain": "Check every adjacent pair INCLUDING the wrap-around (last next to first) with pizza[(i+1)%n]. Guard the disallow lookup so a slice not in the dict doesn't crash."
  },
  {
   "id": "sp24_is_strip",
@@ -193,7 +207,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def is_strip(s):\n    \"\"\"Return whether s is a run of consecutive increasing integers.\n    >>> is_strip([3, 4, 5, 6])\n    True\n    >>> is_strip([3, 3, 3])\n    False\n    >>> is_strip([5])\n    True\n    \"\"\"\n    assert type(s) == list\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def is_strip(s):\n    assert type(s) == list\n    return s == [] or s == list(range(s[0], s[0] + len(s)))",
-  "tests": "assert is_strip([3, 4, 5, 6]) is True\nassert is_strip([3, 3, 3]) is False\nassert is_strip([5]) is True\nassert is_strip([]) is True\nassert is_strip([4, 5, 7]) is False"
+  "tests": "assert is_strip([3, 4, 5, 6]) is True\nassert is_strip([3, 3, 3]) is False\nassert is_strip([5]) is True\nassert is_strip([]) is True\nassert is_strip([4, 5, 7]) is False",
+  "explain": "True exactly when s == list(range(s[0], s[0]+len(s))). Empty and single-element lists count as strips."
  },
  {
   "id": "sp24_drip",
@@ -206,7 +221,8 @@ window.PROBLEMS = [
   "setup": "def is_strip(s):\n    assert type(s) == list\n    return s == [] or s == list(range(s[0], s[0] + len(s)))",
   "starter": "def drip(s, t):\n    \"\"\"Return whether s and t interleave into one consecutive strip from s[0].\n    >>> drip([1, 3, 5], [2, 4, 6])   # 1 2 3 4 5 6\n    True\n    >>> drip([2, 4, 5], [1, 3, 6])\n    False\n    >>> drip([1], [2, 3, 5])         # would need a 4\n    False\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def drip(s, t):\n    i = j = 0\n    expected = s[0]\n    while i < len(s) or j < len(t):\n        if i < len(s) and s[i] == expected:\n            i += 1\n        elif j < len(t) and t[j] == expected:\n            j += 1\n        else:\n            return False\n        expected += 1\n    return True",
-  "tests": "assert drip([1, 3, 5], [2, 4, 6]) is True\nassert drip([2, 4, 5], [1, 3, 6]) is False\nassert drip([1], [2, 3, 5]) is False\nassert drip([1, 2, 3], [4, 5, 6]) is True"
+  "tests": "assert drip([1, 3, 5], [2, 4, 6]) is True\nassert drip([2, 4, 5], [1, 3, 6]) is False\nassert drip([1], [2, 3, 5]) is False\nassert drip([1, 2, 3], [4, 5, 6]) is True",
+  "explain": "Walk both lists with a while loop, always taking whichever front equals the next expected value (starting at s[0]); fail if neither matches."
  },
  {
   "id": "sp23_prefix",
@@ -219,7 +235,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def prefix(s):\n    \"\"\"Return the prefix sums of s.\n    >>> prefix([1, 2, 3, 0, 4, 5])\n    [1, 3, 6, 6, 10, 15]\n    >>> prefix([2, 2, 2, 0, -5, 5])\n    [2, 4, 6, 6, 1, 6]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def prefix(s):\n    return [sum(s[:i + 1]) for i in range(len(s))]",
-  "tests": "assert prefix([1, 2, 3, 0, 4, 5]) == [1, 3, 6, 6, 10, 15]\nassert prefix([2, 2, 2, 0, -5, 5]) == [2, 4, 6, 6, 1, 6]\nassert prefix([7]) == [7]\nassert prefix([]) == []"
+  "tests": "assert prefix([1, 2, 3, 0, 4, 5]) == [1, 3, 6, 6, 10, 15]\nassert prefix([2, 2, 2, 0, -5, 5]) == [2, 4, 6, 6, 1, 6]\nassert prefix([7]) == [7]\nassert prefix([]) == []",
+  "explain": "Comprehension with slicing: for each index i, sum(s[:i+1]). Each output element is the running total up to and including i."
  },
  {
   "id": "fa21_amounts",
@@ -232,7 +249,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def amounts(coins):\n    \"\"\"Sorted unique subset sums of coins, including 0.\n    >>> amounts([4])\n    [0, 4]\n    >>> amounts([])\n    [0]\n    >>> amounts([2, 2])\n    [0, 2, 4]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def amounts(coins):\n    if len(coins) == 0:\n        return [0]\n    rest = amounts(coins[1:])\n    return sorted(set(rest + [coins[0] + r for r in rest]))",
-  "tests": "assert amounts([4]) == [0, 4]\nassert amounts([]) == [0]\nassert amounts([2, 2]) == [0, 2, 4]\nassert amounts([1, 2, 4]) == [0, 1, 2, 3, 4, 5, 6, 7]"
+  "tests": "assert amounts([4]) == [0, 4]\nassert amounts([]) == [0]\nassert amounts([2, 2]) == [0, 2, 4]\nassert amounts([1, 2, 4]) == [0, 1, 2, 3, 4, 5, 6, 7]",
+  "explain": "Recurse on coins: all subset sums using coins[0] PLUS all without it; union them and return sorted(set(...))."
  },
  {
   "id": "fa21_max_diff",
@@ -245,7 +263,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def max_diff_fast(s, f):\n    \"\"\"Return (v, w) from s maximizing f(v) - f(w).\n    >>> max_diff_fast(range(-7, 4), lambda x: x * x)\n    (-7, 0)\n    >>> max_diff_fast(['what', 'a', 'great', 'film'], len)\n    ('great', 'a')\n    >>> max_diff_fast([1, 2, 3], lambda x: x)\n    (3, 1)\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def max_diff_fast(s, f):\n    s = list(s)\n    return (max(s, key=f), min(s, key=f))",
-  "tests": "assert max_diff_fast(range(-7, 4), lambda x: x * x) == (-7, 0)\nassert max_diff_fast(['what', 'a', 'great', 'film'], len) == ('great', 'a')\nassert max_diff_fast([1, 2, 3], lambda x: x) == (3, 1)"
+  "tests": "assert max_diff_fast(range(-7, 4), lambda x: x * x) == (-7, 0)\nassert max_diff_fast(['what', 'a', 'great', 'film'], len) == ('great', 'a')\nassert max_diff_fast([1, 2, 3], lambda x: x) == (3, 1)",
+  "explain": "Return (max(s, key=f), min(s, key=f)): the element with the largest f minus the one with the smallest. No nested loops needed."
  },
  {
   "id": "fa19_stable",
@@ -258,7 +277,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def stable(s, k, n):\n    \"\"\"Return whether nearby elements stay close in value.\n    >>> stable([1, 2, 3, 5, 6], 1, 2)\n    True\n    >>> stable([1, 2, 3, 5, 6], 2, 2)\n    False\n    >>> stable([1, 5, 1, 5, 1], 2, 2)\n    False\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def stable(s, k, n):\n    return all(abs(s[i] - s[j]) <= n\n               for i in range(len(s))\n               for j in range(max(0, i - k), i))",
-  "tests": "assert stable([1, 2, 3, 5, 6], 1, 2) is True\nassert stable([1, 2, 3, 5, 6], 2, 2) is False\nassert stable([1, 5, 1, 5, 1], 2, 2) is False\nassert stable([10], 3, 0) is True"
+  "tests": "assert stable([1, 2, 3, 5, 6], 1, 2) is True\nassert stable([1, 2, 3, 5, 6], 2, 2) is False\nassert stable([1, 5, 1, 5, 1], 2, 2) is False\nassert stable([10], 3, 0) is True",
+  "explain": "Check that every pair within index distance k differs in value by at most n, using all(... for i ... for j in the earlier window)."
  },
  {
   "id": "fa18_lowest",
@@ -271,7 +291,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def lowest(s):\n    \"\"\"Elements of s tied for smallest absolute value.\n    >>> lowest([3, -2, 2, -3, -4, 2, 3, 4])\n    [-2, 2, 2]\n    >>> lowest(range(-5, 5))\n    [0]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def lowest(s):\n    s = list(s)\n    m = abs(min(s, key=abs))\n    return [x for x in s if abs(x) == m]",
-  "tests": "assert lowest([3, -2, 2, -3, -4, 2, 3, 4]) == [-2, 2, 2]\nassert lowest(list(range(-5, 5))) == [0]\nassert lowest([-1, 1, -3]) == [-1, 1]"
+  "tests": "assert lowest([3, -2, 2, -3, -4, 2, 3, 4]) == [-2, 2, 2]\nassert lowest(list(range(-5, 5))) == [0]\nassert lowest([-1, 1, -3]) == [-1, 1]",
+  "explain": "m = abs(min(s, key=abs)) is the smallest magnitude; keep every element whose abs equals m. Remember min(key) returns the ELEMENT, so wrap it in abs."
  },
  {
   "id": "fa17_splice",
@@ -284,7 +305,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def splice(a, b, k):\n    \"\"\"Insert all of b into a at index k.\n    >>> splice([2, 3, 4, 5], [6, 7], 2)\n    [2, 3, 6, 7, 4, 5]\n    >>> splice([1, 2], [], 0)\n    [1, 2]\n    >>> splice([1], [5, 6], 0)\n    [5, 6, 1]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def splice(a, b, k):\n    return a[:k] + list(b) + a[k:]",
-  "tests": "assert splice([2, 3, 4, 5], [6, 7], 2) == [2, 3, 6, 7, 4, 5]\nassert splice([1, 2], [], 0) == [1, 2]\nassert splice([1], [5, 6], 0) == [5, 6, 1]\nassert splice([1, 2], [9], 2) == [1, 2, 9]"
+  "tests": "assert splice([2, 3, 4, 5], [6, 7], 2) == [2, 3, 6, 7, 4, 5]\nassert splice([1, 2], [], 0) == [1, 2]\nassert splice([1], [5, 6], 0) == [5, 6, 1]\nassert splice([1, 2], [9], 2) == [1, 2, 9]",
+  "explain": "Return a[:k] + list(b) + a[k:]. Build a new list; don't mutate a or b."
  },
  {
   "id": "fa17_all_splice",
@@ -297,7 +319,8 @@ window.PROBLEMS = [
   "setup": "def splice(a, b, k):\n    return a[:k] + list(b) + a[k:]",
   "starter": "def all_splice(a, b, c):\n    \"\"\"All k where splicing b into a at k gives c.\n    >>> all_splice([1, 2], [3, 4], [1, 3, 4, 2])\n    [1]\n    >>> all_splice([1, 2, 1, 2], [1, 2], [1, 2, 1, 2, 1, 2])\n    [0, 2, 4]\n    >>> all_splice([1], [2], [3])\n    []\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def all_splice(a, b, c):\n    return [k for k in range(len(a) + 1) if splice(a, b, k) == c]",
-  "tests": "assert all_splice([1, 2], [3, 4], [1, 3, 4, 2]) == [1]\nassert all_splice([1, 2, 1, 2], [1, 2], [1, 2, 1, 2, 1, 2]) == [0, 2, 4]\nassert all_splice([1], [2], [3]) == []"
+  "tests": "assert all_splice([1, 2], [3, 4], [1, 3, 4, 2]) == [1]\nassert all_splice([1, 2, 1, 2], [1, 2], [1, 2, 1, 2, 1, 2]) == [0, 2, 4]\nassert all_splice([1], [2], [3]) == []",
+  "explain": "Comprehension over range(len(a)+1): keep each k where splice(a,b,k)==c. Reuse splice."
  },
  {
   "id": "fa15_int_set",
@@ -310,7 +333,8 @@ window.PROBLEMS = [
   "setup": "def bits(nums):\n    def branch(b):\n        if b == 'entry':\n            return 0 in nums\n        return bits([k >> 1 for k in nums if k & 1 == b])\n    return branch",
   "starter": "def int_set(contents):\n    \"\"\"Return a membership function for the integers in contents.\n    >>> int_set([1, 2])(1)\n    True\n    >>> int_set([1, 2])(3)\n    False\n    >>> s = int_set([1, 3, 4, 7, 9])\n    >>> [s(k) for k in range(10)]\n    [False, True, False, True, True, False, False, True, False, True]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def int_set(contents):\n    def contains(n):\n        index = bits(contents)\n        while n > 0:\n            index = index(n & 1)\n            n = n >> 1\n        return index('entry')\n    return contains",
-  "tests": "assert int_set([1, 2])(1) is True\nassert int_set([1, 2])(3) is False\ns = int_set([1, 3, 4, 7, 9])\nassert [s(k) for k in range(10)] == [False, True, False, True, True, False, False, True, False, True]"
+  "tests": "assert int_set([1, 2])(1) is True\nassert int_set([1, 2])(3) is False\ns = int_set([1, 3, 4, 7, 9])\nassert [s(k) for k in range(10)] == [False, True, False, True, True, False, False, True, False, True]",
+  "explain": "CHALLENGE. bits builds a binary trie of functions; contains descends n's binary digits (n&1, then n>>1 each level) and reads 'entry' at the end."
  },
  {
   "id": "fa25_exclude_link",
@@ -323,7 +347,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def exclude_link(s, x):\n    \"\"\"Return a new Link of the elements of s not equal to x.\n    >>> exclude_link(Link(1, Link(2, Link(3, Link(2)))), 2)\n    Link(1, Link(3))\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def exclude_link(s, x):\n    if not isinstance(s, Link):\n        return ()\n    if s.first == x:\n        return exclude_link(s.rest, x)\n    return Link(s.first, exclude_link(s.rest, x))",
-  "tests": "assert to_list(exclude_link(make_link([1, 2, 3, 2]), 2)) == [1, 3]\nassert to_list(exclude_link(make_link([]), 2)) == []\nassert to_list(exclude_link(make_link([2, 2, 2]), 2)) == []\n_s = make_link([1, 2, 3])\nexclude_link(_s, 2)\nassert to_list(_s) == [1, 2, 3]  # input unchanged"
+  "tests": "assert to_list(exclude_link(make_link([1, 2, 3, 2]), 2)) == [1, 3]\nassert to_list(exclude_link(make_link([]), 2)) == []\nassert to_list(exclude_link(make_link([2, 2, 2]), 2)) == []\n_s = make_link([1, 2, 3])\nexclude_link(_s, 2)\nassert to_list(_s) == [1, 2, 3]  # input unchanged",
+  "explain": "Recursive rebuild. Base (): return (). If first==x, skip it (return recurse on rest). Else Link(first, recurse on rest)."
  },
  {
   "id": "sp25_muladd",
@@ -336,7 +361,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def muladd(s):\n    \"\"\"Evaluate the alternating * + * ... expression over s.\n    >>> muladd(Link(9, Link(4, Link(7, Link(2, Link(0))))))  # 9*4 + 7*2 + 0\n    50\n    >>> muladd(Link(2, Link(9, Link(4, Link(7, Link(2, Link(0)))))))  # 2*9 + 4*7 + 2*0\n    46\n    >>> muladd(Link(2))\n    2\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def muladd(s):\n    if not isinstance(s, Link):\n        return 0\n    if not isinstance(s.rest, Link):\n        return s.first\n    return s.first * s.rest.first + muladd(s.rest.rest)",
-  "tests": "assert muladd(make_link([9, 4, 7, 2, 0])) == 50\nassert muladd(make_link([2, 9, 4, 7, 2, 0])) == 46\nassert muladd(make_link([2])) == 2\nassert muladd(()) == 0"
+  "tests": "assert muladd(make_link([9, 4, 7, 2, 0])) == 50\nassert muladd(make_link([2, 9, 4, 7, 2, 0])) == 46\nassert muladd(make_link([2])) == 2\nassert muladd(()) == 0",
+  "explain": "Three cases: empty returns 0; a single element returns itself; otherwise first*second + muladd(rest.rest). The one-element base catches the odd leftover."
  },
  {
   "id": "fa24_longest",
@@ -349,7 +375,8 @@ window.PROBLEMS = [
   "setup": "def _len(x):\n    n = 0\n    while isinstance(x, Link):\n        n += 1\n        x = x.rest\n    return n\ndef longer(s, t):\n    return s if _len(s) >= _len(t) else t",
   "starter": "def longest(s, n):\n    \"\"\"Return a longest sublist of s that sums to at most n.\n    longer(s, t) is provided: it returns whichever list is longer (s if tied).\n    >>> longest(Link(5, Link(1, Link(3, Link(4, Link(2, Link(7)))))), 7)\n    Link(1, Link(3, Link(2)))\n    >>> longest(Link(3, Link(4, Link(5))), 2)\n    ()\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def longest(s, n):\n    if not isinstance(s, Link):\n        return ()\n    without = longest(s.rest, n)\n    if s.first <= n:\n        with_it = Link(s.first, longest(s.rest, n - s.first))\n        return longer(with_it, without)\n    return without",
-  "tests": "r = longest(make_link([5, 1, 3, 4, 2, 7]), 7)\nassert sum(to_list(r)) <= 7 and len(to_list(r)) == 3\nfull = longest(make_link([5, 1, 3, 4, 2, 7]), 70)\nassert to_list(full) == [5, 1, 3, 4, 2, 7]\nassert to_list(longest(make_link([3, 4, 5]), 2)) == []"
+  "tests": "r = longest(make_link([5, 1, 3, 4, 2, 7]), 7)\nassert sum(to_list(r)) <= 7 and len(to_list(r)) == 3\nfull = longest(make_link([5, 1, 3, 4, 2, 7]), 70)\nassert to_list(full) == [5, 1, 3, 4, 2, 7]\nassert to_list(longest(make_link([3, 4, 5]), 2)) == []",
+  "explain": "Carry the remaining budget (room). For each node: best WITHOUT it (recurse on rest), and if it fits, Link(it, recurse on rest with room-it). Return whichever is longer via longer()."
  },
  {
   "id": "fa23_after",
@@ -362,7 +389,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def after(s, a, b):\n    \"\"\"Return whether a b appears after an a in s.\n    >>> t = Link(3, Link(6, Link(5, Link(4))))\n    >>> after(t, 6, 4)\n    True\n    >>> after(t, 4, 6)\n    False\n    >>> after(t, 6, 6)\n    False\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def after(s, a, b):\n    found = False\n    while isinstance(s, Link):\n        if found and s.first == b:\n            return True\n        if s.first == a:\n            found = True\n        s = s.rest\n    return False",
-  "tests": "t = make_link([3, 6, 5, 4])\nassert after(t, 6, 4) is True\nassert after(t, 4, 6) is False\nassert after(t, 6, 6) is False\nassert after(make_link([1, 2, 1, 2]), 1, 2) is True"
+  "tests": "t = make_link([3, 6, 5, 4])\nassert after(t, 6, 4) is True\nassert after(t, 4, 6) is False\nassert after(t, 6, 6) is False\nassert after(make_link([1, 2, 1, 2]), 1, 2) is True",
+  "explain": "Walk with a flag. Check for b FIRST (so a node can't match itself), then set the flag when you see a. Return True if b appears while the flag is up."
  },
  {
   "id": "sp23_tens",
@@ -375,7 +403,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def tens(s):\n    \"\"\"Print the prefix sums of s that are multiples of 10.\n    >>> tens(Link(3, Link(9, Link(8, Link(10, Link(0, Link(14, Link(6))))))))\n    20\n    30\n    30\n    50\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def tens(s):\n    def f(suffix, total):\n        if not isinstance(suffix, Link):\n            return\n        total += suffix.first\n        if total % 10 == 0:\n            print(total)\n        f(suffix.rest, total)\n    f(s, 0)",
-  "tests": "out = _caught_out(lambda: tens(make_link([3, 9, 8, 10, 0, 14, 6])))\nassert out == \"20\\n30\\n30\\n50\\n\"\nout2 = _caught_out(lambda: tens(make_link([1, 2])))\nassert out2 == \"\"\nout3 = _caught_out(lambda: tens(make_link([10])))\nassert out3 == \"10\\n\""
+  "tests": "out = _caught_out(lambda: tens(make_link([3, 9, 8, 10, 0, 14, 6])))\nassert out == \"20\\n30\\n30\\n50\\n\"\nout2 = _caught_out(lambda: tens(make_link([1, 2])))\nassert out2 == \"\"\nout3 = _caught_out(lambda: tens(make_link([10])))\nassert out3 == \"10\\n\"",
+  "explain": "Helper f(suffix, total): add each first to total, print when total%10==0, recurse on the rest. It prints, so it returns nothing."
  },
  {
   "id": "fa20_filter_index",
@@ -388,7 +417,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def filter_index(f, s):\n    \"\"\"Keep elements of s whose index satisfies f.\n    >>> powers = Link(1, Link(2, Link(4, Link(8, Link(16, Link(32))))))\n    >>> filter_index(lambda i: i < 4, powers)\n    Link(1, Link(2, Link(4, Link(8))))\n    >>> filter_index(lambda i: i % 2 == 1, powers)\n    Link(2, Link(8, Link(32)))\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def filter_index(f, s):\n    def go(s, i):\n        if not isinstance(s, Link):\n            return ()\n        if f(i):\n            return Link(s.first, go(s.rest, i + 1))\n        return go(s.rest, i + 1)\n    return go(s, 0)",
-  "tests": "powers = make_link([1, 2, 4, 8, 16, 32])\nassert to_list(filter_index(lambda i: i < 4, powers)) == [1, 2, 4, 8]\nassert to_list(filter_index(lambda i: i % 2 == 1, powers)) == [2, 8, 32]\nassert to_list(filter_index(lambda i: False, powers)) == []"
+  "tests": "powers = make_link([1, 2, 4, 8, 16, 32])\nassert to_list(filter_index(lambda i: i < 4, powers)) == [1, 2, 4, 8]\nassert to_list(filter_index(lambda i: i % 2 == 1, powers)) == [2, 8, 32]\nassert to_list(filter_index(lambda i: False, powers)) == []",
+  "explain": "Walk with an index i. Keep s.first when f(i) is true, always recurse on the rest with i+1, building a new Link."
  },
  {
   "id": "fa17_splink",
@@ -401,7 +431,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def splink(a, b, k):\n    \"\"\"Splice linked list b into a at position k.\n    >>> splink(Link(2, Link(3, Link(4))), Link(6, Link(7)), 2)\n    Link(2, Link(3, Link(6, Link(7, Link(4)))))\n    >>> splink(Link(1), Link(2), 0)\n    Link(2, Link(1))\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def splink(a, b, k):\n    if not isinstance(b, Link):\n        return a\n    if k == 0:\n        return Link(b.first, splink(a, b.rest, 0))\n    return Link(a.first, splink(a.rest, b, k - 1))",
-  "tests": "assert to_list(splink(make_link([2, 3, 4]), make_link([6, 7]), 2)) == [2, 3, 6, 7, 4]\nassert to_list(splink(make_link([1, 2]), (), 1)) == [1, 2]\nassert to_list(splink(make_link([1]), make_link([2]), 0)) == [2, 1]"
+  "tests": "assert to_list(splink(make_link([2, 3, 4]), make_link([6, 7]), 2)) == [2, 3, 6, 7, 4]\nassert to_list(splink(make_link([1, 2]), (), 1)) == [1, 2]\nassert to_list(splink(make_link([1]), make_link([2]), 0)) == [2, 1]",
+  "explain": "Phased rebuild: copy the first k elements of a, then all of b, then attach the rest of a. A counter tracks the phase; the first phase runs while i < k."
  },
  {
   "id": "fa17_both",
@@ -414,7 +445,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def both(a, b):\n    \"\"\"Return whether sorted linked lists a and b share a value.\n    >>> both(Link(1, Link(3, Link(5, Link(7)))), Link(2, Link(4, Link(6))))\n    False\n    >>> both(Link(1, Link(3, Link(5, Link(7)))), Link(2, Link(7, Link(9))))\n    True\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def both(a, b):\n    if not isinstance(a, Link) or not isinstance(b, Link):\n        return False\n    if a.first > b.first:\n        a, b = b, a\n    if a.first == b.first:\n        return True\n    return both(a.rest, b)",
-  "tests": "assert both(make_link([1, 3, 5, 7]), make_link([2, 4, 6])) is False\nassert both(make_link([1, 3, 5, 7]), make_link([2, 7, 9])) is True\nassert both((), make_link([2])) is False\nassert both(make_link([4]), make_link([4])) is True"
+  "tests": "assert both(make_link([1, 3, 5, 7]), make_link([2, 4, 6])) is False\nassert both(make_link([1, 3, 5, 7]), make_link([2, 7, 9])) is True\nassert both((), make_link([2])) is False\nassert both(make_link([4]), make_link([4])) is True",
+  "explain": "Both lists are sorted: compare the fronts. Equal -> True. Otherwise advance whichever is smaller. Empty -> False."
  },
  {
   "id": "fa14_sixty_ones",
@@ -427,7 +459,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def sixty_ones(s):\n    \"\"\"Count the number of times 1 directly follows 6 in s.\n    >>> sixty_ones(Link(6, Link(1)))\n    1\n    >>> sixty_ones(Link(6, Link(1, Link(6, Link(1)))))\n    2\n    >>> sixty_ones(Link(1, Link(6, Link(6, Link(1)))))\n    1\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def sixty_ones(s):\n    if not isinstance(s, Link) or not isinstance(s.rest, Link):\n        return 0\n    extra = 1 if s.first == 6 and s.rest.first == 1 else 0\n    return extra + sixty_ones(s.rest)",
-  "tests": "assert sixty_ones(()) == 0\nassert sixty_ones(make_link([6, 1])) == 1\nassert sixty_ones(make_link([6, 1, 6, 1])) == 2\nassert sixty_ones(make_link([1, 6, 6, 1])) == 1"
+  "tests": "assert sixty_ones(()) == 0\nassert sixty_ones(make_link([6, 1])) == 1\nassert sixty_ones(make_link([6, 1, 6, 1])) == 2\nassert sixty_ones(make_link([1, 6, 6, 1])) == 1",
+  "explain": "Count positions where first==6 and rest.first==1; base case when fewer than two nodes remain."
  },
  {
   "id": "tree_sum",
@@ -440,7 +473,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def tree_sum(t):\n    \"\"\"Sum of all labels in t.\n    >>> tree_sum(Tree(3, [Tree(1), Tree(2, [Tree(4)])]))\n    10\n    >>> tree_sum(Tree(5))\n    5\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def tree_sum(t):\n    return t.label + sum([tree_sum(b) for b in t.branches])",
-  "tests": "assert tree_sum(Tree(3, [Tree(1), Tree(2, [Tree(4)])])) == 10\nassert tree_sum(Tree(5)) == 5\nassert tree_sum(Tree(0, [Tree(-1), Tree(1)])) == 0"
+  "tests": "assert tree_sum(Tree(3, [Tree(1), Tree(2, [Tree(4)])])) == 10\nassert tree_sum(Tree(5)) == 5\nassert tree_sum(Tree(0, [Tree(-1), Tree(1)])) == 0",
+  "explain": "t.label + sum of tree_sum over each branch. sum([]) handles the leaf for free, so no explicit leaf base case is needed."
  },
  {
   "id": "count_leaves",
@@ -453,7 +487,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def count_leaves(t):\n    \"\"\"Number of leaves in t.\n    >>> count_leaves(Tree(1, [Tree(2), Tree(3, [Tree(4), Tree(5)])]))\n    3\n    >>> count_leaves(Tree(1))\n    1\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def count_leaves(t):\n    if is_leaf(t):\n        return 1\n    return sum([count_leaves(b) for b in t.branches])",
-  "tests": "assert count_leaves(Tree(1, [Tree(2), Tree(3, [Tree(4), Tree(5)])])) == 3\nassert count_leaves(Tree(1)) == 1\nassert count_leaves(Tree(1, [Tree(2, [Tree(3)])])) == 1"
+  "tests": "assert count_leaves(Tree(1, [Tree(2), Tree(3, [Tree(4), Tree(5)])])) == 3\nassert count_leaves(Tree(1)) == 1\nassert count_leaves(Tree(1, [Tree(2, [Tree(3)])])) == 1",
+  "explain": "A leaf returns 1; otherwise return the sum of count_leaves over the branches."
  },
  {
   "id": "height",
@@ -466,7 +501,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def height(t):\n    \"\"\"Height of t (edges in longest root-to-leaf path; leaf is 0).\n    >>> height(Tree(1))\n    0\n    >>> height(Tree(1, [Tree(2), Tree(3, [Tree(4)])]))\n    2\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def height(t):\n    if is_leaf(t):\n        return 0\n    return 1 + max([height(b) for b in t.branches])",
-  "tests": "assert height(Tree(1)) == 0\nassert height(Tree(1, [Tree(2), Tree(3, [Tree(4)])])) == 2\nassert height(Tree(1, [Tree(2, [Tree(3, [Tree(4)])])])) == 3"
+  "tests": "assert height(Tree(1)) == 0\nassert height(Tree(1, [Tree(2), Tree(3, [Tree(4)])])) == 2\nassert height(Tree(1, [Tree(2, [Tree(3, [Tree(4)])])])) == 3",
+  "explain": "A leaf returns 0; otherwise 1 + max of height over the branches."
  },
  {
   "id": "double_labels",
@@ -479,7 +515,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def double_labels(t):\n    \"\"\"New tree, same shape, every label doubled.\n    >>> double_labels(Tree(1, [Tree(2), Tree(3)]))\n    Tree(2, [Tree(4), Tree(6)])\n    >>> double_labels(Tree(5))\n    Tree(10)\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def double_labels(t):\n    return Tree(t.label * 2, [double_labels(b) for b in t.branches])",
-  "tests": "assert double_labels(Tree(1, [Tree(2), Tree(3)])) == Tree(2, [Tree(4), Tree(6)])\nassert double_labels(Tree(5)) == Tree(10)\n_o = Tree(1, [Tree(2)])\ndouble_labels(_o)\nassert _o == Tree(1, [Tree(2)])  # original unchanged"
+  "tests": "assert double_labels(Tree(1, [Tree(2), Tree(3)])) == Tree(2, [Tree(4), Tree(6)])\nassert double_labels(Tree(5)) == Tree(10)\n_o = Tree(1, [Tree(2)])\ndouble_labels(_o)\nassert _o == Tree(1, [Tree(2)])  # original unchanged",
+  "explain": "Build a NEW tree: Tree(t.label*2, [double_labels(b) for b in t.branches]). Don't mutate the original."
  },
  {
   "id": "max_path_sum",
@@ -492,7 +529,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def max_path_sum(t):\n    \"\"\"Largest root-to-leaf label sum.\n    >>> max_path_sum(Tree(1, [Tree(2), Tree(3, [Tree(4)])]))\n    8\n    >>> max_path_sum(Tree(5))\n    5\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def max_path_sum(t):\n    if is_leaf(t):\n        return t.label\n    return t.label + max([max_path_sum(b) for b in t.branches])",
-  "tests": "assert max_path_sum(Tree(1, [Tree(2), Tree(3, [Tree(4)])])) == 8\nassert max_path_sum(Tree(5)) == 5\nassert max_path_sum(Tree(1, [Tree(20), Tree(3, [Tree(4)])])) == 21"
+  "tests": "assert max_path_sum(Tree(1, [Tree(2), Tree(3, [Tree(4)])])) == 8\nassert max_path_sum(Tree(5)) == 5\nassert max_path_sum(Tree(1, [Tree(20), Tree(3, [Tree(4)])])) == 21",
+  "explain": "A leaf returns its label; otherwise t.label + max of max_path_sum over the branches."
  },
  {
   "id": "only_paths",
@@ -505,7 +543,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def only_paths(t, n):\n    \"\"\"New tree of nodes on root-to-leaf paths summing to n, else None.\n    >>> t = Tree(5, [Tree(2), Tree(1, [Tree(2)]), Tree(1, [Tree(1)])])\n    >>> only_paths(t, 7) == Tree(5, [Tree(2), Tree(1, [Tree(1)])])\n    True\n    >>> only_paths(Tree(3, [Tree(4)]), 3) is None\n    True\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def only_paths(t, n):\n    if is_leaf(t):\n        return t if t.label == n else None\n    kept = []\n    for b in t.branches:\n        r = only_paths(b, n - t.label)\n        if r is not None:\n            kept.append(r)\n    if kept:\n        return Tree(t.label, kept)\n    return None",
-  "tests": "t = Tree(5, [Tree(2), Tree(1, [Tree(2)]), Tree(1, [Tree(1)])])\nassert only_paths(t, 7) == Tree(5, [Tree(2), Tree(1, [Tree(1)])])\nassert only_paths(Tree(3, [Tree(4)]), 3) is None\nassert only_paths(Tree(3), 3) == Tree(3)\nassert only_paths(Tree(3), 4) is None"
+  "tests": "t = Tree(5, [Tree(2), Tree(1, [Tree(2)]), Tree(1, [Tree(1)])])\nassert only_paths(t, 7) == Tree(5, [Tree(2), Tree(1, [Tree(1)])])\nassert only_paths(Tree(3, [Tree(4)]), 3) is None\nassert only_paths(Tree(3), 3) == Tree(3)\nassert only_paths(Tree(3), 4) is None",
+  "explain": "Carry the remaining target n. Leaf: keep it if label==n, else None. Otherwise recurse each branch with n-label, keep the non-None results, and return Tree(label, kept) if any survived, else None."
  },
  {
   "id": "insert_after",
@@ -518,7 +557,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def insert_after(s, x, y):\n    \"\"\"Insert y after each occurrence of x in s, in place.\n    >>> a = [1, 2, 1, 3]\n    >>> insert_after(a, 1, 9)\n    >>> a\n    [1, 9, 2, 1, 9, 3]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def insert_after(s, x, y):\n    i = 0\n    while i < len(s):\n        if s[i] == x:\n            s.insert(i + 1, y)\n            i += 1\n        i += 1",
-  "tests": "a = [1, 2, 1, 3]\nassert insert_after(a, 1, 9) is None\nassert a == [1, 9, 2, 1, 9, 3]\nb = [5, 5]\ninsert_after(b, 5, 0)\nassert b == [5, 0, 5, 0]"
+  "tests": "a = [1, 2, 1, 3]\nassert insert_after(a, 1, 9) is None\nassert a == [1, 9, 2, 1, 9, 3]\nb = [5, 5]\ninsert_after(b, 5, 0)\nassert b == [5, 0, 5, 0]",
+  "explain": "Loop by index. When s[i]==x, insert y at i+1 and step past it (extra i+=1) so you don't loop on the value you just inserted. Mutates in place, returns None."
  },
  {
   "id": "group_by",
@@ -531,7 +571,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def group_by(s, f):\n    \"\"\"Group elements of s by f(x).\n    >>> group_by([1, 2, 3, 4, 5], lambda x: x % 2)\n    {1: [1, 3, 5], 0: [2, 4]}\n    >>> group_by([12, 23, 14, 45], lambda x: x // 10)\n    {1: [12, 14], 2: [23], 4: [45]}\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def group_by(s, f):\n    result = {}\n    for x in s:\n        key = f(x)\n        if key not in result:\n            result[key] = []\n        result[key].append(x)\n    return result",
-  "tests": "assert group_by([1, 2, 3, 4, 5], lambda x: x % 2) == {1: [1, 3, 5], 0: [2, 4]}\nassert group_by([12, 23, 14, 45], lambda x: x // 10) == {1: [12, 14], 2: [23], 4: [45]}\nassert group_by([], lambda x: x) == {}"
+  "tests": "assert group_by([1, 2, 3, 4, 5], lambda x: x % 2) == {1: [1, 3, 5], 0: [2, 4]}\nassert group_by([12, 23, 14, 45], lambda x: x // 10) == {1: [12, 14], 2: [23], 4: [45]}\nassert group_by([], lambda x: x) == {}",
+  "explain": "Build a dict: for each x, append x to result[f(x)], creating the empty list first when the key is new."
  },
  {
   "id": "take",
@@ -544,7 +585,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def take(it, n):\n    \"\"\"First n values from iterator it, as a list.\n    >>> take(iter([3, 1, 4, 1, 5]), 3)\n    [3, 1, 4]\n    >>> take(iter(range(10)), 4)\n    [0, 1, 2, 3]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def take(it, n):\n    result = []\n    for _ in range(n):\n        result.append(next(it))\n    return result",
-  "tests": "assert take(iter([3, 1, 4, 1, 5]), 3) == [3, 1, 4]\nassert take(iter(range(10)), 4) == [0, 1, 2, 3]\nassert take(iter([9]), 1) == [9]"
+  "tests": "assert take(iter([3, 1, 4, 1, 5]), 3) == [3, 1, 4]\nassert take(iter(range(10)), 4) == [0, 1, 2, 3]\nassert take(iter([9]), 1) == [9]",
+  "explain": "Pull n values with next(it) into a list."
  },
  {
   "id": "evens",
@@ -557,7 +599,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def evens(n):\n    \"\"\"Yield evens in [0, n).\n    >>> list(evens(10))\n    [0, 2, 4, 6, 8]\n    >>> list(evens(1))\n    [0]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def evens(n):\n    i = 0\n    while i < n:\n        yield i\n        i += 2",
-  "tests": "assert list(evens(10)) == [0, 2, 4, 6, 8]\nassert list(evens(1)) == [0]\nassert list(evens(0)) == []"
+  "tests": "assert list(evens(10)) == [0, 2, 4, 6, 8]\nassert list(evens(1)) == [0]\nassert list(evens(0)) == []",
+  "explain": "Yield i starting at 0, stepping by 2, while i < n."
  },
  {
   "id": "prefixes",
@@ -570,7 +613,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def prefixes(s):\n    \"\"\"Yield prefixes of s, shortest first.\n    >>> list(prefixes([1, 2, 3]))\n    [[], [1], [1, 2], [1, 2, 3]]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def prefixes(s):\n    yield []\n    for i in range(1, len(s) + 1):\n        yield list(s[:i])",
-  "tests": "assert list(prefixes([1, 2, 3])) == [[], [1], [1, 2], [1, 2, 3]]\nassert list(prefixes([])) == [[]]"
+  "tests": "assert list(prefixes([1, 2, 3])) == [[], [1], [1, 2], [1, 2, 3]]\nassert list(prefixes([])) == [[]]",
+  "explain": "Yield [] first, then for i in 1..len(s) yield list(s[:i])."
  },
  {
   "id": "tree_labels",
@@ -583,7 +627,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def tree_labels(t):\n    \"\"\"Yield all labels of t, root first (preorder).\n    >>> list(tree_labels(Tree(1, [Tree(2), Tree(3, [Tree(4)])])))\n    [1, 2, 3, 4]\n    >>> list(tree_labels(Tree(5)))\n    [5]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def tree_labels(t):\n    yield t.label\n    for b in t.branches:\n        yield from tree_labels(b)",
-  "tests": "assert list(tree_labels(Tree(1, [Tree(2), Tree(3, [Tree(4)])]))) == [1, 2, 3, 4]\nassert list(tree_labels(Tree(5))) == [5]"
+  "tests": "assert list(tree_labels(Tree(1, [Tree(2), Tree(3, [Tree(4)])]))) == [1, 2, 3, 4]\nassert list(tree_labels(Tree(5))) == [5]",
+  "explain": "Yield t.label, then `yield from tree_labels(b)` for each branch (preorder)."
  },
  {
   "id": "squares_gen",
@@ -596,7 +641,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "def squares(total, k):\n    \"\"\"Yield non-decreasing lists of squares (of ints >= k) summing to total.\n    >>> list(squares(10, 1))\n    [[1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 4], [1, 1, 4, 4], [1, 9]]\n    >>> list(squares(20, 2))\n    [[4, 4, 4, 4, 4], [4, 16]]\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def squares(total, k):\n    if total == 0:\n        yield []\n        return\n    i = k\n    while i * i <= total:\n        for rest in squares(total - i * i, i):\n            yield [i * i] + rest\n        i += 1",
-  "tests": "assert list(squares(10, 1)) == [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,4],[1,1,4,4],[1,9]]\nassert list(squares(20, 2)) == [[4,4,4,4,4],[4,16]]\nassert list(squares(0, 1)) == [[]]"
+  "tests": "assert list(squares(10, 1)) == [[1,1,1,1,1,1,1,1,1,1],[1,1,1,1,1,1,4],[1,1,4,4],[1,9]]\nassert list(squares(20, 2)) == [[4,4,4,4,4],[4,16]]\nassert list(squares(0, 1)) == [[]]",
+  "explain": "Recursive generator. Try each base i>=k with i*i<=total; for each way the remainder (total-i*i, still base i) can be made, yield [i*i]+rest. Base: total 0 yields []."
  },
  {
   "id": "account_oop",
@@ -609,7 +655,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "class Account:\n    \"\"\"A bank account.\n    >>> a = Account('Sam')\n    >>> a.deposit(100)\n    100\n    >>> a.withdraw(40)\n    60\n    >>> a.withdraw(1000)\n    'Insufficient funds'\n    >>> c = CheckingAccount('Sam')\n    >>> c.deposit(100)\n    100\n    >>> c.withdraw(40)   # 40 + 1 fee\n    59\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n\nclass CheckingAccount(Account):\n    \"*** YOUR CODE HERE ***\"",
   "solution": "class Account:\n    def __init__(self, holder):\n        self.holder = holder\n        self.balance = 0\n    def deposit(self, amount):\n        self.balance += amount\n        return self.balance\n    def withdraw(self, amount):\n        if amount > self.balance:\n            return 'Insufficient funds'\n        self.balance -= amount\n        return self.balance\n\nclass CheckingAccount(Account):\n    withdraw_fee = 1\n    def withdraw(self, amount):\n        return super().withdraw(amount + self.withdraw_fee)",
-  "tests": "a = Account('Sam')\nassert a.deposit(100) == 100\nassert a.withdraw(40) == 60\nassert a.withdraw(1000) == 'Insufficient funds'\nassert a.balance == 60\nc = CheckingAccount('Sam')\nassert c.deposit(100) == 100\nassert c.withdraw(40) == 59\nassert c.withdraw(1000) == 'Insufficient funds' "
+  "tests": "a = Account('Sam')\nassert a.deposit(100) == 100\nassert a.withdraw(40) == 60\nassert a.withdraw(1000) == 'Insufficient funds'\nassert a.balance == 60\nc = CheckingAccount('Sam')\nassert c.deposit(100) == 100\nassert c.withdraw(40) == 59\nassert c.withdraw(1000) == 'Insufficient funds' ",
+  "explain": "Account: __init__ sets balance 0; deposit/withdraw update self.balance. CheckingAccount(Account) overrides withdraw to add the $1 fee, then calls super().withdraw."
  },
  {
   "id": "vending_oop",
@@ -622,7 +669,8 @@ window.PROBLEMS = [
   "setup": "",
   "starter": "class VendingMachine:\n    \"\"\"A vending machine for one product.\n    >>> v = VendingMachine('soda', 2)\n    >>> v.vend()\n    'Out of stock'\n    >>> v.restock(2)\n    'Current soda stock: 2'\n    >>> v.deposit(1)\n    'Current balance: 1'\n    >>> v.vend()\n    'You must deposit 1 more'\n    >>> v.deposit(1)\n    'Current balance: 2'\n    >>> v.vend()\n    'Here is your soda'\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "class VendingMachine:\n    def __init__(self, product, price):\n        self.product = product\n        self.price = price\n        self.stock = 0\n        self.balance = 0\n    def restock(self, n):\n        self.stock += n\n        return 'Current ' + self.product + ' stock: ' + str(self.stock)\n    def deposit(self, n):\n        self.balance += n\n        return 'Current balance: ' + str(self.balance)\n    def vend(self):\n        if self.stock == 0:\n            return 'Out of stock'\n        if self.balance < self.price:\n            return 'You must deposit ' + str(self.price - self.balance) + ' more'\n        self.balance -= self.price\n        self.stock -= 1\n        return 'Here is your ' + self.product",
-  "tests": "v = VendingMachine('soda', 2)\nassert v.vend() == 'Out of stock'\nassert v.restock(2) == 'Current soda stock: 2'\nassert v.deposit(1) == 'Current balance: 1'\nassert v.vend() == 'You must deposit 1 more'\nassert v.deposit(1) == 'Current balance: 2'\nassert v.vend() == 'Here is your soda'\nassert v.stock == 1"
+  "tests": "v = VendingMachine('soda', 2)\nassert v.vend() == 'Out of stock'\nassert v.restock(2) == 'Current soda stock: 2'\nassert v.deposit(1) == 'Current balance: 1'\nassert v.vend() == 'You must deposit 1 more'\nassert v.deposit(1) == 'Current balance: 2'\nassert v.vend() == 'Here is your soda'\nassert v.stock == 1",
+  "explain": "Model state with instance attrs (stock, balance). Each method updates the right attr and returns the exact message; vend checks stock first, then balance."
  },
  {
   "id": "memoize",
@@ -635,6 +683,7 @@ window.PROBLEMS = [
   "setup": "calls = []\ndef slow_square(x):\n    calls.append(x)\n    return x * x",
   "starter": "def memo(f):\n    \"\"\"Return a memoized version of one-argument function f.\n    >>> g = memo(slow_square)\n    >>> g(4)\n    16\n    >>> g(4)    # cached, f not called again\n    16\n    >>> g(5)\n    25\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"",
   "solution": "def memo(f):\n    cache = {}\n    def memoized(x):\n        if x not in cache:\n            cache[x] = f(x)\n        return cache[x]\n    return memoized",
-  "tests": "calls.clear()\ng = memo(slow_square)\nassert g(4) == 16\nassert g(4) == 16\nassert g(5) == 25\nassert calls == [4, 5]  # 4 computed once, not twice"
+  "tests": "calls.clear()\ng = memo(slow_square)\nassert g(4) == 16\nassert g(4) == 16\nassert g(5) == 25\nassert calls == [4, 5]  # 4 computed once, not twice",
+  "explain": "Return an inner function that caches results in a dict captured by closure; call f only when the argument is new."
  }
 ];

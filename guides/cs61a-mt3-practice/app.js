@@ -124,9 +124,10 @@
   }
   function updateSubs() { byId("subs").textContent = subsOf(current.id) + " submission" + (subsOf(current.id) === 1 ? "" : "s"); }
   function updateRevealBtn() {
-    var n = subsOf(current.id), btn = byId("btn-reveal");
-    if (n >= REVEAL_AFTER) { btn.disabled = false; btn.textContent = "Reveal solution"; btn.title = ""; }
-    else { btn.disabled = true; btn.textContent = "Reveal solution (" + (REVEAL_AFTER - n) + " more tries)"; btn.title = "Unlocks after " + REVEAL_AFTER + " submissions"; }
+    var btn = byId("btn-reveal");
+    btn.disabled = false;
+    btn.textContent = "Reveal answer";
+    btn.title = "Show the solution with a short explanation";
   }
 
   function banner(kind, text) { return '<div class="banner ' + kind + '">' + text + "</div>"; }
@@ -198,8 +199,9 @@
     editor.setValue(current.starter); store.set("code_" + current.id, current.starter);
   }
   function onReveal() {
-    if (!current || subsOf(current.id) < REVEAL_AFTER) return;
-    if (byId("solution").hidden && !confirm("Show the reference solution? Try to finish on your own first; you learn the pattern by writing it.")) return;
+    if (!current) return;
+    var ex = byId("sol-explain");
+    if (ex) { ex.textContent = current.explain || ""; ex.hidden = !current.explain; }
     byId("sol-code").textContent = current.solution;
     byId("sol-exam").href = current.exam; byId("sol-pdf").href = current.sol;
     byId("solution").hidden = false;
