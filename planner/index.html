@@ -237,6 +237,36 @@ label.ab-out{cursor:pointer}
 .mbtn.ghost{background:transparent; color:var(--ink); border-color:var(--line)}
 .mbtn:disabled{opacity:.6}
 footer{padding:36px 0 56px; color:var(--muted); font-size:13.5px; border-top:1.5px solid var(--line); margin-top:36px}
+/* grad plan tab */
+main:not(.view-grad) #gradplan{display:none}
+main.view-grad .layout, main.view-grad #tracker{display:none}
+.terms .tab-grad{border-style:dashed}
+.terms .tab-grad[aria-selected="true"]{border-style:solid}
+#gradplan{margin:24px 0 0}
+.g-lead{max-width:72ch; margin:0 0 16px; font-size:15px}
+.g-plans{display:grid; gap:16px; grid-template-columns:repeat(auto-fit,minmax(min(100%,440px),1fr))}
+.g-plan{background:var(--surface); border:1.5px solid var(--line); border-radius:16px; padding:18px}
+.g-head{display:flex; justify-content:space-between; align-items:flex-start; gap:10px}
+.g-plan h2{font:600 20px/1.2 var(--display); margin:0}
+.g-grad{font:500 12px var(--mono); color:var(--saffron-ink)}
+.g-blurb{font-size:14px; color:var(--muted); margin:8px 0 0}
+.g-terms{list-style:none; margin:14px 0 0; padding:0; display:grid; gap:6px}
+.g-term{background:var(--surface-2); border-left:3px solid var(--saffron); border-radius:10px; padding:9px 12px}
+.g-term.g-fixed{border-left-color:var(--ok); opacity:.8}
+.g-tname{display:flex; justify-content:space-between; align-items:baseline; gap:8px}
+.g-tname b{font:600 14px var(--display)}
+.g-cs{display:flex; flex-wrap:wrap; gap:5px; margin:6px 0 0}
+.g-c{font:600 12px/1 var(--mono); background:var(--surface); border:1.5px solid var(--line); border-radius:999px; padding:5px 9px}
+.g-c.g-heavy{border-color:var(--bad); color:var(--bad)}
+.g-term small{display:block; font-size:12px; color:var(--muted); margin-top:5px}
+.legend .lg-heavy{background:var(--bad)}
+.g-two{display:grid; gap:12px; margin:16px 0 0; grid-template-columns:repeat(auto-fit,minmax(min(100%,420px),1fr))}
+.g-tbl{width:100%; border-collapse:collapse; font-size:13.5px}
+.g-tbl th, .g-tbl td{text-align:left; vertical-align:top; padding:7px 8px; border-top:1px solid var(--line)}
+.g-tbl thead th{border-top:0; font:500 11px var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:.05em}
+.g-tbl tbody th{font-weight:600; width:42%}
+.g-tbl em{display:block; font:500 11px var(--mono); color:var(--muted); font-style:normal}
+.g-q{margin:12px 0 0}
 </style>
 </head>
 <body>
@@ -287,6 +317,7 @@ footer{padding:36px 0 56px; color:var(--muted); font-size:13.5px; border-top:1.5
   </div>
 
   <section id="tracker" aria-label="Degree tracker" data-planner hidden></section>
+  <section id="gradplan" aria-label="Graduation plan" data-planner hidden></section>
 
   <footer>
     Schedules from the EECS and Berkeley class schedules, pulled October 2026. Always confirm on classes.berkeley.edu before enrolling.
@@ -305,8 +336,9 @@ footer{padding:36px 0 56px; color:var(--muted); font-size:13.5px; border-top:1.5
 <script src="data/terms/spring-2028.js?v=15"></script>
 <script src="data/terms/summer-2028.js?v=15"></script>
 <script src="data/terms/fall-2028.js?v=15"></script>
+<script src="data/gradplan.js?v=16"></script>
 <script src="data/live.js?v=15" onerror="window.PLANNER_LIVE=null"></script>
-<script src="planner.js?v=15"></script>
+<script src="planner.js?v=16"></script>
 <script src="sync.js?v=15"></script>
 <script src="../assets/js/theme.js?v=1"></script>
 </body>
