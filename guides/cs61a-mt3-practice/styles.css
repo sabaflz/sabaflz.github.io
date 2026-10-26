@@ -90,6 +90,7 @@ pre code{font-family:var(--mono);font-size:12.8px;line-height:1.5;white-space:pr
 .err code{color:#ffb3b3}
 
 #solution{margin-top:22px;border-top:1px solid var(--line);padding-top:16px}
+.sol-explain{background:var(--green-bg);border:1px solid #1d6b48;border-left:3px solid var(--green);border-radius:11px;padding:12px 15px;margin:4px 0 12px;color:#cfe9db;font-size:14px;line-height:1.5}
 .sol-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
 .sol-head h3{margin:0 0 8px}
 .sol-links{display:flex;gap:14px}
