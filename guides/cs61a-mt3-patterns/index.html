@@ -1,0 +1,382 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CS 61A Midterm 3 Pattern Playbook</title>
+<meta name="description" content="A by-pattern playbook built from all 49 MT3 practice problems: for each family (recursion, lists and dicts, linked lists, trees, mutation and iterators, generators, OOP) how to recognize it, the move, a minimal code shape, and the traps, plus an exam-day checklist.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='40' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>61A</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.6 var(--body);
+  -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron); outline-offset:3px; border-radius:3px}
+
+#topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--bg); border-bottom:1.5px solid var(--line)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:16px; max-width:1180px; margin:0 auto; padding:14px clamp(16px,4vw,40px)}
+.nav .mark{font:800 20px/1 var(--display); text-decoration:none; letter-spacing:-.02em}
+.crumbs{font:500 14px var(--body); color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.crumbs a{text-decoration:none} .crumbs a:hover{color:var(--saffron-ink)} .crumbs b{color:var(--ink)}
+.crumbs span{margin:0 6px; color:var(--line)}
+.t-btn{font:500 13px/1 var(--mono); background:var(--surface); color:var(--ink);
+  border:1.5px solid var(--line); border-radius:999px; padding:8px 13px; cursor:pointer; white-space:nowrap}
+.t-btn:hover{border-color:var(--saffron)}
+
+#exam-strip{background:var(--saffron-soft); border-bottom:1.5px solid var(--line); color:var(--saffron-ink);
+  font:500 13.5px/1.4 var(--mono); text-align:center; padding:9px 16px}
+#exam-strip b{font-weight:700}
+
+#layout{display:grid; grid-template-columns:260px minmax(0,1fr); gap:0; max-width:1180px; margin:0 auto}
+#sidebar{position:sticky; top:96px; align-self:start; height:calc(100vh - 110px); overflow-y:auto;
+  padding:28px 10px 28px clamp(16px,4vw,40px)}
+.side-head{font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 12px}
+#toc{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px}
+#toc a{display:block; text-decoration:none; color:var(--muted); font-size:14.5px; padding:7px 12px; border-radius:9px; border-left:2.5px solid transparent}
+#toc a:hover{background:var(--surface-2); color:var(--ink)}
+#toc a.active{color:var(--saffron-ink); border-left-color:var(--saffron); background:var(--surface-2); font-weight:600}
+
+#main{padding:30px clamp(16px,4vw,40px) 80px; min-width:0}
+header.page{padding:14px 0 10px}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--saffron-ink); margin:0 0 10px}
+h1{font:600 clamp(2rem,6vw,2.8rem)/1.05 var(--display); margin:0 0 12px; letter-spacing:-.01em; text-wrap:balance}
+.lede{color:var(--muted); max-width:66ch; margin:0 0 8px}
+.cta-row{display:flex; flex-wrap:wrap; gap:10px; margin:18px 0 6px}
+.cta{display:inline-flex; align-items:center; gap:7px; text-decoration:none; font:600 14.5px var(--body);
+  background:var(--saffron); color:var(--on-saffron); border:1.5px solid var(--saffron); border-radius:999px; padding:10px 18px}
+.cta.ghost{background:transparent; color:var(--ink); border-color:var(--line)}
+.cta.ghost:hover{border-color:var(--saffron)}
+
+section.topic{padding:30px 0; border-top:1.5px solid var(--line); scroll-margin-top:150px}
+section.topic:first-of-type{border-top:none}
+h2{font:600 clamp(1.4rem,3.5vw,1.9rem)/1.1 var(--display); margin:0 0 14px; letter-spacing:-.01em}
+h3{font:600 17px/1.2 var(--mono); color:var(--saffron-ink); margin:26px 0 8px; letter-spacing:.01em}
+p{margin:0 0 14px; max-width:72ch}
+ul,ol{margin:0 0 14px; padding-left:22px; max-width:72ch} li{margin:5px 0}
+strong{font-weight:600}
+code{font:500 14px var(--mono); background:var(--surface-2); border:1px solid var(--line); border-radius:5px; padding:1px 5px}
+pre{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; overflow:auto; margin:0 0 16px}
+pre code{background:none; border:none; padding:0; font-size:13.5px; line-height:1.55; color:var(--ink); white-space:pre}
+.tell{font-weight:600}
+.callout{background:var(--surface-2); border:1.5px solid var(--line); border-left:3px solid var(--saffron); border-radius:12px; padding:14px 18px; margin:0 0 16px}
+.callout.warn{border-left-color:#C64545}
+.callout p:last-child{margin-bottom:0}
+
+footer{border-top:1.5px solid var(--line); padding:28px 0 10px; color:var(--muted); font-size:14px; margin-top:10px}
+
+@media (max-width:860px){
+  #layout{grid-template-columns:1fr}
+  #sidebar{display:none}
+  #main{padding-top:22px}
+}
+</style>
+</head>
+<body>
+<header id="topbar">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="../../" aria-label="Back to site">SF</a>
+    <div class="crumbs"><a href="../">Study Guides</a> <span>/</span> <b>CS 61A MT3 Pattern Playbook</b></div>
+    <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+  </nav>
+</header>
+
+<div id="exam-strip">
+  <b>Midterm 3</b> · Tuesday Oct 27, 8:00–10:00pm · 110 minutes · on paper · study guides + 2 note sheets allowed
+</div>
+
+<div id="layout">
+  <aside id="sidebar" aria-label="Sections">
+    <div class="side-head">On this page</div>
+    <ul id="toc">
+      <li><a href="#move">The one move</a></li>
+      <li><a href="#recursion">Recursion</a></li>
+      <li><a href="#lists">Lists &amp; dicts</a></li>
+      <li><a href="#linked">Linked lists</a></li>
+      <li><a href="#trees">Trees</a></li>
+      <li><a href="#mutation">Mutation &amp; iterators</a></li>
+      <li><a href="#generators">Generators</a></li>
+      <li><a href="#oop">OOP</a></li>
+      <li><a href="#checklist">Exam-day checklist</a></li>
+    </ul>
+  </aside>
+
+  <main id="main">
+    <header class="page">
+      <p class="eyebrow">CS 61A · Fall 2026</p>
+      <h1>MT3 Problem Pattern Playbook</h1>
+      <p class="lede">A by-pattern reference built from all 49 practice problems. For each family: how to recognize it, the move, a minimal code shape, and the traps that slip past weak tests.</p>
+      <div class="cta-row">
+        <a class="cta" href="../cs61a-mt3-practice/">Practice app</a>
+        <a class="cta ghost" href="../cs61a-mt3/">Full guide</a>
+        <a class="cta ghost" href="../cs61a-mt3-review/">Walkthrough</a>
+      </div>
+    </header>
+
+    <section class="topic" id="move">
+      <h2>The one move behind every problem</h2>
+      <p>Before writing any code, answer one question: <strong>what do I carry down the recursion?</strong> Almost every MT3 problem is "process a structure, one piece at a time, while remembering something as you go." That something is the state you thread through the recursive call. Name it first and the code writes itself.</p>
+      <p>What the state turned out to be, across the problems you drilled:</p>
+      <ul>
+        <li>A <strong>remaining budget</strong> that shrinks (<code>longest</code>: <code>n - s.first</code>; <code>only_paths</code>: <code>n - t.label</code>).</li>
+        <li>A <strong>running total</strong> you accumulate (prefix sums; the <code>(total, cur)</code> pair in <code>close</code>).</li>
+        <li><strong>Two positions</strong> into two sequences (<code>drip</code>: <code>i</code>, <code>j</code>, plus the expected value <code>k</code>).</li>
+        <li><strong>Nothing extra</strong> at all, when the structure itself carries the state (most tree and list recursions).</li>
+      </ul>
+      <p>The universal skeleton for any recursion:</p>
+      <pre><code>def f(structure, carried_state):
+    if base_case(structure):      # smallest input: empty list, leaf, 0
+        return base_answer        # [], 0, True, None, the element itself
+    # combine THIS piece with the recursive answer on the REST
+    return combine(this_piece, f(rest, updated_state))</code></pre>
+      <p>Three checks before you trust a recursion: (1) the base case returns the right type, (2) every recursive call moves strictly toward the base case, (3) you actually use the recursive result rather than recomputing it. If you can state the subproblem in one English sentence ("the best I can do from here with budget k"), you have it.</p>
+    </section>
+
+    <section class="topic" id="recursion">
+      <h2>Recursion &amp; tree recursion</h2>
+      <p><span class="tell">Tell:</span> "count the ways," "is it possible to reach n," "longest/best subset," any problem where each element is independently in or out. Tree recursion means two or more recursive calls per step.</p>
+      <h3>Move: the with/without branch</h3>
+      <p>For each element, either use it or skip it, and recurse on the rest.</p>
+      <pre><code>def count_ways(s, n):
+    if n == 0:
+        return 1          # hit the target exactly: one valid way
+    if n &lt; 0 or not s:
+        return 0          # overshot, or ran out of elements
+    use  = count_ways(s[1:], n - s[0])   # take s[0]
+    skip = count_ways(s[1:], n)          # leave s[0]
+    return use + skip</code></pre>
+      <p>Swap the combine step for the flavor of question:</p>
+      <ul>
+        <li><strong>Count ways to hit a target</strong> (<code>Aim for 100</code>, <code>Parking</code>, <code>ways</code>): <code>return use + skip</code>.</li>
+        <li><strong>Does any subset work</strong> (<code>A Perfect Question</code>, <code>semiperfect</code>): <code>return use or skip</code> with <code>True</code>/<code>False</code> base cases.</li>
+        <li><strong>Best/longest subset</strong> (<code>Best of Both</code>, <code>longest</code>): <code>return max(use, skip, key=...)</code> or the provided <code>longer(use, skip)</code>.</li>
+        <li><strong>Collect all subset results</strong> (<code>Doctor Change</code>): <code>return sorted(set(skip + [s[0] + x for x in skip]))</code>.</li>
+      </ul>
+      <div class="callout warn">
+        <p><strong>Traps that passed weak tests but were wrong:</strong> <code>Almost a Perfect Question</code> used <code>d % n == 0</code> instead of <code>n % d == 0</code> (the setup line killed a correct recursion). In <code>close</code>, trying to collapse the tail to one number and multiply breaks precedence; carry <code>(total, cur)</code> and fold into <code>cur</code>, never the whole tail.</p>
+      </div>
+      <p><strong>Pitfall:</strong> put the <code>n &lt; 0</code> (overshoot) and <code>not s</code> (empty) checks before any <code>s[0]</code> access, or you index an empty list.</p>
+    </section>
+
+    <section class="topic" id="lists">
+      <h2>Lists &amp; dicts</h2>
+      <p><span class="tell">Tell:</span> work with indices, slices, build a result list, count/group items, or compare two sequences position by position.</p>
+      <h3>Index iteration &amp; prefix sums</h3>
+      <p>To include element <code>i</code>, slice to <code>i + 1</code> because the right end is exclusive (<code>Prefixes (list)</code>).</p>
+      <pre><code>[sum(s[:i + 1]) for i in range(len(s))]   # prefix sums</code></pre>
+      <h3>Try every position</h3>
+      <p>Loop <code>k</code> over <code>range(len(s) + 1)</code> and collect the hits (<code>all_splice</code>, <code>Seek Once</code>). The <code>+ 1</code> matters when the end position is legal.</p>
+      <pre><code>return [k for k in range(len(a) + 1) if splice(a, b, k) == c]</code></pre>
+      <h3>Two-pointer / merge</h3>
+      <p>Walk two sequences with separate indices, advancing whichever front matches what you need (<code>drip</code>). Guard each access with its bound so a finished list just forces picks from the other.</p>
+      <pre><code>k, i, j = s[0], 0, 0
+while i &lt; n or j &lt; m:
+    if i &lt; n and s[i] == k:
+        i += 1; k += 1
+    elif j &lt; m and t[j] == k:
+        j += 1; k += 1
+    else:
+        return False
+return True</code></pre>
+      <h3>Dict accumulation</h3>
+      <p>Build a dict in one pass (<code>Group By</code>, <code>Lowest</code>): <code>d[key] = d.get(key, default)</code> or check <code>if key not in d</code> first.</p>
+      <p><strong>Pitfalls:</strong> slicing off-by-one (<code>s[:i]</code> excludes <code>s[i]</code>); assuming <code>s</code> and <code>t</code> strictly alternate in a merge (any order within each list is allowed); trusting a green checkmark as proof (<code>symmetrical</code> passed a wrong solution against a weak test, so re-read your own logic).</p>
+    </section>
+
+    <section class="topic" id="linked">
+      <h2>Linked lists</h2>
+      <p><span class="tell">Tell:</span> the input is a <code>Link</code>. You access <code>s.first</code> and <code>s.rest</code>, and the base case is <code>s is Link.empty</code> (which is <code>()</code>).</p>
+      <h3>Move: recurse on s.rest, build new Links going back up</h3>
+      <p>"Do not mutate" is automatic if you only ever construct new nodes and never assign to an existing <code>.first</code> or <code>.rest</code>.</p>
+      <pre><code>def keep(s, n):                 # non-mutating rebuild
+    if s is Link.empty:
+        return s                # return the empty list unchanged
+    rest = keep(s.rest, n)      # solve the rest first
+    if should_keep(s.first, n):
+        return Link(s.first, rest)   # new node in front
+    return rest                 # drop s.first, splice past it</code></pre>
+      <h3>Thread a budget when there is a running constraint</h3>
+      <p>Pass <code>n - s.first</code> into the rest, and use the provided combiner to pick the better branch (<code>How Long is this Exam?</code> / <code>longest</code>).</p>
+      <pre><code>def longest(s, n):
+    if s is Link.empty:
+        return s
+    skip = longest(s.rest, n)
+    if s.first &lt;= n:
+        take = Link(s.first, longest(s.rest, n - s.first))
+        return longer(take, skip)
+    return skip</code></pre>
+      <p><strong>Pitfalls:</strong> the base case is <code>s is Link.empty</code>, not <code>s.rest is Link.empty</code> (checking <code>.rest</code> skips the last node or crashes on empty); build <code>Link(s.first, recursive_call)</code>, never <code>s.rest = ...</code>; the reduced budget goes only into the <em>take</em> branch, while <em>skip</em> keeps <code>n</code>.</p>
+    </section>
+
+    <section class="topic" id="trees">
+      <h2>Trees</h2>
+      <p><span class="tell">Tell:</span> the input is a <code>Tree</code> with <code>t.label</code> and <code>t.branches</code> (a list of <code>Tree</code>s). <code>is_leaf(t)</code> is <code>not t.branches</code>. The recursion almost always loops over <code>t.branches</code>.</p>
+      <h3>Move A: aggregate a value</h3>
+      <p>Combine this label with the recursive results from every branch (<code>Sum Labels</code>, <code>Count Leaves</code>, <code>Tree Height</code>, <code>Max Path Sum</code>).</p>
+      <pre><code>def tree_sum(t):
+    return t.label + sum(tree_sum(b) for b in t.branches)
+
+def height(t):
+    if is_leaf(t):
+        return 0
+    return 1 + max(height(b) for b in t.branches)</code></pre>
+      <h3>Move B: build a new tree</h3>
+      <p>Recurse on branches, wrap results in a fresh <code>Tree</code>, never mutate <code>t</code> (<code>Double Every Label</code>).</p>
+      <pre><code>def double(t):
+    return Tree(t.label * 2, [double(b) for b in t.branches])</code></pre>
+      <h3>Move C: prune to valid paths</h3>
+      <p>Carry a remaining budget, keep a node only if a qualifying path runs through it (<code>Only Paths</code>).</p>
+      <pre><code>def only_paths(t, n):
+    if is_leaf(t):
+        return Tree(t.label) if t.label == n else None
+    kept = [only_paths(b, n - t.label) for b in t.branches]
+    kept = [b for b in kept if b is not None]
+    return Tree(t.label, kept) if kept else None</code></pre>
+      <p><strong>Pitfalls:</strong> a leaf has height 0 and holds a value, so handle it before <code>max(...)</code> over empty <code>branches</code>; for prune problems keep a node if <em>any</em> branch survives (filter out <code>None</code> first); pass <code>n - t.label</code> to branches, not <code>n</code>.</p>
+    </section>
+
+    <section class="topic" id="mutation">
+      <h2>Mutation &amp; iterators</h2>
+      <p><span class="tell">Tell:</span> the problem says to change a list <em>in place</em> (<code>Insert After</code>), build/update a dict, or pull values from an iterator with <code>next</code>.</p>
+      <h3>In-place list mutation</h3>
+      <p>Inserting or deleting while iterating by index shifts everything after it. Walk <strong>backwards</strong>, or use a <code>while</code> loop with your own index and step past what you inserted.</p>
+      <pre><code>def insert_after(s, x, y):      # insert y after every x, in place
+    i = 0
+    while i &lt; len(s):
+        if s[i] == x:
+            s.insert(i + 1, y)
+            i += 2              # step over x AND the new y
+        else:
+            i += 1</code></pre>
+      <p>Why a plain <code>for i in range(len(s))</code> fails: <code>range(len(s))</code> freezes the length, and <code>i += 1</code> inside a <code>for</code> does nothing (the loop reassigns <code>i</code> each pass), so you reprocess the inserted element and fall out of sync.</p>
+      <h3>Consuming an iterator</h3>
+      <p><code>next(it)</code> pulls one value and advances; it is gone after. <code>next(it, default)</code> avoids <code>StopIteration</code> at the end (<code>Take From Iterator</code>).</p>
+      <pre><code>def take(it, n):
+    return [next(it) for _ in range(n)]   # first n values</code></pre>
+      <p><strong>Pitfalls:</strong> an iterator is one-directional and consumed (no indexing, no re-looping); mutating methods (<code>.append</code>, <code>.insert</code>, <code>.pop</code>) return <code>None</code>, so never <code>s = s.append(x)</code>; <code>dict</code> iteration is insertion order, which matters when the output must be ordered.</p>
+    </section>
+
+    <section class="topic" id="generators">
+      <h2>Generators</h2>
+      <p><span class="tell">Tell:</span> the problem says "yield," "generator," or "lazily produce." A function with any <code>yield</code> in it returns a generator; calling it runs no code until you iterate.</p>
+      <h3>Move: yield one value; yield from relays a whole sub-generator</h3>
+      <p><code>yield from gen</code> is shorthand for <code>for x in gen: yield x</code>.</p>
+      <pre><code>def evens(s):
+    for x in s:
+        if x % 2 == 0:
+            yield x            # emit, then pause here until asked again</code></pre>
+      <h3>Recursive generator</h3>
+      <p>Recurse with <code>yield from</code>, then yield the current piece. The order of the two lines sets output order (<code>Prefixes</code>, <code>Tree Labels Generator</code>).</p>
+      <pre><code>def prefixes(s):
+    if len(s) == 0:
+        yield s                # the single empty prefix
+    else:
+        yield from prefixes(s[:-1])   # all shorter prefixes FIRST
+        yield s                       # then the whole thing
+
+def tree_labels(t):
+    yield t.label
+    for b in t.branches:
+        yield from tree_labels(b)     # relay each branch's labels</code></pre>
+      <p><strong>Pitfalls:</strong> in <code>prefixes</code>, <code>yield from</code> must come <em>before</em> <code>yield s</code> for shortest-to-longest (flip them and you get longest-first); <code>yield from gen</code> relays values while <code>yield gen</code> emits the generator object itself; a generator runs nothing until iterated and uses <code>yield</code>, not <code>return</code>, for output.</p>
+    </section>
+
+    <section class="topic" id="oop">
+      <h2>OOP</h2>
+      <p><span class="tell">Tell:</span> define a <code>class</code>, model state with instance attributes, or subclass with <code>super()</code>.</p>
+      <h3>Move: __init__ sets state; methods read and update self</h3>
+      <pre><code>class Account:
+    def __init__(self, name):
+        self.name = name
+        self.balance = 0
+    def deposit(self, amount):
+        self.balance += amount
+        return self.balance
+    def withdraw(self, amount):
+        if self.balance &gt;= amount:
+            self.balance -= amount
+            return self.balance
+        return 'Insufficient funds'</code></pre>
+      <h3>Inheritance</h3>
+      <p>Subclass reuses the parent through <code>super()</code>, which already binds <code>self</code>, so you pass only the real arguments (<code>Checking Account</code>).</p>
+      <pre><code>class CheckingAccount(Account):
+    fee = 1
+    def withdraw(self, amount):
+        return super().withdraw(amount + self.fee)   # no self passed</code></pre>
+      <h3>Memoization</h3>
+      <p>A closure holds a private cache; check before computing (<code>Memoize</code>).</p>
+      <pre><code>def memo(f):
+    cache = {}                 # lives across calls via the closure
+    def memoized(x):
+        if x not in cache:
+            cache[x] = f(x)
+        return cache[x]
+    return memoized</code></pre>
+      <p><strong>Pitfalls:</strong> <code>super().method(args)</code> takes no <code>self</code> (<code>super().__init__(self, name)</code> passes it twice and raises <code>TypeError</code>); a state-changing method must actually assign to <code>self</code> (the Vending Machine bug returned the message but never decremented stock or spent the balance); compute dynamic messages instead of hardcoding; the memo <code>cache</code> must live in the outer function, not inside <code>memoized</code>, or it resets every call.</p>
+    </section>
+
+    <section class="topic" id="checklist">
+      <h2>Exam-day checklist</h2>
+      <p>Read these right before you walk in.</p>
+      <ol>
+        <li><strong>Name the carried state first.</strong> Budget, running total, two pointers, or nothing. Write it down before any code.</li>
+        <li><strong>Base case returns the right type.</strong> Empty list returns <code>[]</code> or <code>()</code>, a count returns <code>0</code>, a search returns <code>None</code>/<code>False</code>, a tree returns a <code>Tree</code> or <code>None</code>.</li>
+        <li><strong>Every recursive call shrinks the input.</strong> <code>s[1:]</code>, <code>s.rest</code>, <code>t.branches</code>, <code>n - something</code>. If nothing shrinks, it loops forever.</li>
+        <li><strong>Check bounds before indexing.</strong> <code>if i &lt; len(s)</code> and <code>if s</code> guard every <code>s[i]</code> and <code>s[0]</code>.</li>
+        <li><strong>Do not mutate when told not to.</strong> Build new <code>Link(...)</code> / <code>Tree(...)</code> nodes; never assign to an existing <code>.rest</code> or <code>.branches</code>.</li>
+        <li><strong>super().m(args) takes no self.</strong> And a state-changing method must actually assign to <code>self</code>.</li>
+        <li><strong>yield from before yield self</strong> for shortest-first order; a generator uses <code>yield</code>, not <code>return</code>.</li>
+        <li><strong>Trace one small case by hand</strong> before moving on. Passing the given doctest is not proof; weak tests hide real bugs.</li>
+      </ol>
+      <div class="callout">
+        <p><strong>Time discipline:</strong> about 2.5 minutes per point. Start with the WWPD/tracing question for fast points, then your strongest data-structure topic, recursion in the middle, weakest last. If any part runs past ~1.5x its budget, write your best partial and move on. Partial credit across all five questions beats a perfect answer on three.</p>
+      </div>
+    </section>
+
+    <footer>
+      Built by Saba Feilizadeh from all 49 practice problems. Pair it with the <a href="../cs61a-mt3-practice/">practice app</a> and the <a href="../cs61a-mt3/">full guide</a>. Not affiliated with the CS 61A course staff.
+    </footer>
+  </main>
+</div>
+
+<script>
+// scrollspy: highlight the section currently in view
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var map = {};
+  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+  var secs = Array.prototype.slice.call(document.querySelectorAll('section.topic'));
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        links.forEach(function (l) { l.classList.remove('active'); });
+        if (map[e.target.id]) map[e.target.id].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-140px 0px -70% 0px', threshold: 0 });
+  secs.forEach(function (s) { obs.observe(s); });
+})();
+</script>
+<script src="../../assets/js/theme.js?v=1"></script>
+<script src="../../assets/js/sidebar-collapse.js?v=1"></script>
+</body>
+</html>
