@@ -10,6 +10,7 @@
   dates: "Schedule not published yet",
   intro: "Summer schedule not published yet. In Summer 2026 the minor courses ran in Sessions A and D, with 112 and 116 online, which makes them the easiest to fit around an internship.",
   courses: [
+    { id: "CS 168", meet: [], location: "If offered this summer" },
     { id: "CC POLI", meet: [], location: "Online at De Anza or Foothill" },
     { id: "CC HIST", meet: [], location: "Online at De Anza or Foothill" },
     { id: "COGSCI C100", meet: [], location: "Schedule TBA" },
