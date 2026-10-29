@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASAMST 128AC Reflection 2 Guide</title>
+<meta name="description" content="Study guide for the ASAMST 128AC (Muslims in America) second reflection: Said's Orientalism and the institutionalization of Islamic learning, with GhaneaBassiri Chapters 4 and 7, Hatem's lecture framework, the TA's likely question, a quote bank, and full model essays.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='68' font-size='34' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>R2</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --ok:#1C7C54; --ok-soft:#E3F3EA; --warn:#B4531A; --warn-soft:#FBEADF;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#54C78C; --ok-soft:#163026; --warn:#E89156; --warn-soft:#2E2016; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#54C78C; --ok-soft:#163026; --warn:#E89156; --warn-soft:#2E2016; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.62 var(--body); -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron); outline-offset:3px; border-radius:3px}
+
+#topbar{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1.5px solid var(--line)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:14px; max-width:1180px; margin:0 auto; padding:14px clamp(16px,4vw,34px)}
+.nav .mark{font:800 20px/1 var(--display); text-decoration:none; letter-spacing:-.02em}
+.crumbs{font:500 14px var(--body); color:var(--muted); display:flex; gap:8px; align-items:center; min-width:0}
+.crumbs a{text-decoration:none} .crumbs a:hover{color:var(--saffron-ink)} .crumbs b{color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.crumbs span{color:var(--line)}
+.t-btn{font:500 13px/1 var(--mono); background:var(--surface); color:var(--ink); border:1.5px solid var(--line); border-radius:999px; padding:8px 13px; cursor:pointer; white-space:nowrap}
+.t-btn:hover{border-color:var(--saffron)}
+
+#exam-strip{background:#16193A; color:#fff; font:500 13.5px/1.4 var(--body); text-align:center; padding:9px 16px}
+:root[data-theme="dark"] #exam-strip{background:#000}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #exam-strip{background:#000}}
+#exam-strip b{color:var(--saffron)}
+
+#layout{display:flex; gap:28px; max-width:1180px; margin:0 auto; padding:0 clamp(16px,4vw,34px); align-items:flex-start}
+#sidebar{position:sticky; top:72px; width:232px; flex:none; padding:26px 0 40px; max-height:calc(100vh - 80px); overflow:auto}
+.side-head{font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 10px}
+.prog-wrap{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:14px; margin-bottom:18px}
+.prog-bar{height:8px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin:8px 0 6px}
+.prog-fill{height:100%; width:0%; background:var(--saffron); transition:width .3s}
+.prog-label{font:500 12.5px var(--mono); color:var(--muted)}
+#toc{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+#toc a{display:flex; align-items:center; gap:9px; text-decoration:none; font-size:14px; color:var(--muted); padding:7px 11px; border-radius:9px; border-left:2.5px solid transparent}
+#toc a:hover{color:var(--ink); background:var(--surface-2)}
+#toc a.active{color:var(--ink); background:var(--saffron-soft); border-left-color:var(--saffron); font-weight:600}
+#toc a .tdot{flex:none; width:13px; height:13px; border-radius:999px; border:2px solid var(--line); box-sizing:border-box; position:relative; transition:background .2s, border-color .2s}
+#toc a.done .tdot{background:var(--saffron); border-color:var(--saffron)}
+#toc a.done .tdot::after{content:"\2713"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font:700 8px/1 var(--body); color:var(--on-saffron)}
+#toc a.done{color:var(--ink)}
+
+#main{flex:1; min-width:0; padding:26px 0 90px}
+header.page{padding:12px 0 8px}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--saffron-ink); margin:0 0 10px}
+h1{font:600 clamp(1.9rem,5vw,2.7rem)/1.04 var(--display); margin:0 0 12px; letter-spacing:-.01em; text-wrap:balance}
+.lede{color:var(--muted); max-width:66ch; margin:0 0 6px}
+
+section.block{scroll-margin-top:118px; padding:30px 0 6px; border-top:1.5px solid var(--line); margin-top:30px}
+section.block:first-of-type{border-top:none; margin-top:14px}
+h2{font:600 clamp(1.4rem,3.4vw,1.9rem)/1.1 var(--display); margin:0 0 6px; letter-spacing:-.01em}
+h2 .num{font:500 14px var(--mono); color:var(--saffron-ink); display:block; margin-bottom:4px; letter-spacing:.05em}
+h3{font:600 18.5px/1.25 var(--display); margin:24px 0 8px}
+h4{font:600 15px/1.3 var(--body); margin:16px 0 4px; color:var(--ink)}
+p{margin:10px 0} .muted{color:var(--muted)}
+ul,ol{margin:10px 0; padding-left:22px} li{margin:6px 0}
+strong{font-weight:600}
+em{font-style:italic}
+code,.k{font:500 14.5px var(--mono); background:var(--surface-2); padding:1px 6px; border-radius:6px; color:var(--saffron-ink)}
+.lead-term{font-weight:600; color:var(--ink)}
+.cite{font:500 12.5px var(--mono); color:var(--muted); white-space:nowrap}
+
+.card{background:var(--surface); border:1.5px solid var(--line); border-radius:16px; padding:20px 22px; margin:16px 0}
+.card.tint{background:var(--saffron-soft); border-color:transparent}
+.card.dark{background:#16193A; color:#EDEEF6; border:1.5px solid transparent}
+:root[data-theme="dark"] .card.dark{background:#20244D; border-color:#343A6B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card.dark{background:#20244D; border-color:#343A6B}}
+.card.dark .cite, .card.dark .muted{color:#AEB3CC}
+.card.dark strong{color:var(--saffron)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.mini{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:16px 18px}
+.mini h4{margin-top:0}
+
+.pill{display:inline-block; font:500 11.5px/1 var(--mono); padding:5px 9px; border-radius:999px; border:1.5px solid var(--line); color:var(--muted); margin:0 6px 6px 0}
+.pill.said{color:#1F6FB2; border-color:#1F6FB2}
+.pill.ch4{color:#A05A1C; border-color:#A05A1C}
+.pill.ch7{color:#2C7A4B; border-color:#2C7A4B}
+.pill.lec{color:#8A4FB0; border-color:#8A4FB0}
+:root[data-theme="dark"] .pill.said{color:#6DB8EC;border-color:#3A6E95}
+:root[data-theme="dark"] .pill.ch4{color:#E39B5C;border-color:#8A5E33}
+:root[data-theme="dark"] .pill.ch7{color:#6FD39A;border-color:#366B4D}
+:root[data-theme="dark"] .pill.lec{color:#C79AE6;border-color:#6A4F84}
+
+details.q{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; margin:12px 0; overflow:hidden}
+details.q[open]{border-color:var(--saffron)}
+details.q>summary{list-style:none; cursor:pointer; padding:15px 18px; font-weight:500; display:flex; gap:12px; align-items:flex-start; user-select:none}
+details.q>summary::-webkit-details-marker{display:none}
+details.q>summary::before{content:"?"; flex:none; width:24px; height:24px; border-radius:50%; background:var(--surface-2); color:var(--muted); font:700 13px/24px var(--mono); text-align:center; margin-top:1px}
+details.q[open]>summary::before{content:"\2713"; background:var(--saffron); color:var(--on-saffron)}
+.qnum{font:600 13px var(--mono); color:var(--saffron-ink); flex:none; margin-top:2px}
+.ans{padding:2px 18px 18px 54px; color:var(--ink); border-top:1px dashed var(--line); margin-top:2px}
+.ans p:first-child{margin-top:12px}
+.correct{display:inline-block; font:600 13px var(--mono); color:var(--ok); background:var(--ok-soft); border-radius:7px; padding:3px 9px; margin-bottom:4px}
+
+.model{background:var(--surface-2); border-left:4px solid var(--saffron); border-radius:0 10px 10px 0; padding:12px 16px; margin:10px 0; font-size:15.5px; line-height:1.56}
+.model p{margin:0 0 10px} .model p:last-child{margin-bottom:0}
+.model .wc{float:right; font:500 11.5px var(--mono); color:var(--muted)}
+table.match{width:100%; border-collapse:collapse; margin:10px 0; font-size:14.5px}
+.match td{padding:8px 10px; border-bottom:1px solid var(--line); vertical-align:top}
+.match td:first-child{font:600 13px var(--mono); color:var(--saffron-ink); white-space:nowrap; width:1%}
+.rev-all{font:500 13px var(--mono); background:var(--surface); border:1.5px solid var(--line); border-radius:999px; padding:8px 14px; cursor:pointer; margin:4px 0 2px}
+.rev-all:hover{border-color:var(--saffron)}
+
+.review-row{display:flex; align-items:center; gap:10px; margin:18px 0 2px; padding-top:14px; border-top:1px dashed var(--line)}
+.review-row label{font:500 14px var(--body); color:var(--muted); display:flex; align-items:center; gap:9px; cursor:pointer}
+.review-row input{appearance:none; -webkit-appearance:none; margin:0; width:21px; height:21px; border:2px solid var(--line); border-radius:999px; background:var(--surface); cursor:pointer; position:relative; transition:background .2s, border-color .2s}
+.review-row input:hover{border-color:var(--saffron)}
+.review-row input:checked{background:var(--saffron); border-color:var(--saffron)}
+.review-row input:checked::after{content:"\2713"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font:700 12px/1 var(--body); color:var(--on-saffron)}
+.review-row input:focus-visible{outline:3px solid var(--saffron); outline-offset:2px}
+.sec-done{display:none; width:22px; height:22px; border-radius:999px; background:var(--saffron); margin-left:11px; vertical-align:middle; position:relative}
+.sec-done::after{content:"\2713"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font:700 12px/1 var(--body); color:var(--on-saffron)}
+section.block.done .sec-done{display:inline-block}
+.flag{display:inline-block; font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--warn); background:var(--warn-soft); border-radius:6px; padding:3px 8px; margin-left:6px}
+.tl{list-style:none; margin:14px 0; padding:0; display:flex; flex-wrap:wrap; gap:8px}
+.tl li{margin:0; flex:1 1 120px; min-width:120px; background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:10px 12px; font-size:13px}
+.tl li b{display:block; font:600 14px var(--mono); color:var(--saffron-ink)}
+
+footer{max-width:1180px; margin:0 auto; padding:30px clamp(16px,4vw,34px) 70px; color:var(--muted); font-size:14px; border-top:1.5px solid var(--line)}
+#menuBtn{display:none}
+@media(max-width:860px){
+  #sidebar{display:none}
+  #menuBtn{display:block; position:fixed; right:16px; bottom:16px; z-index:30; background:var(--saffron); color:var(--on-saffron); border:none; border-radius:999px; padding:13px 18px; font:600 14px var(--body); box-shadow:0 6px 20px rgba(0,0,0,.18); cursor:pointer}
+  #sidebar.open{display:block; position:fixed; inset:60px 10px 10px auto; width:min(80vw,300px); background:var(--bg); border:1.5px solid var(--line); border-radius:16px; padding:18px; z-index:29; box-shadow:0 10px 40px rgba(0,0,0,.25); max-height:80vh}
+}
+
+/* ---------- read aloud (text to speech) ---------- */
+.nav-actions{display:flex; gap:8px; align-items:center}
+.sec-listen{margin-left:12px; vertical-align:middle; font:600 11px/1 var(--mono); letter-spacing:.02em;
+  background:var(--surface-2); color:var(--saffron-ink); border:1.5px solid var(--line);
+  border-radius:999px; padding:6px 11px; cursor:pointer; white-space:nowrap}
+.sec-listen:hover{border-color:var(--saffron)}
+.tts-active{background:var(--saffron-soft); border-radius:8px; box-shadow:0 0 0 7px var(--saffron-soft); scroll-margin-top:96px}
+#tts-bar{position:fixed; left:50%; transform:translateX(-50%); bottom:16px; z-index:40; display:none;
+  align-items:center; gap:8px; background:var(--surface); border:1.5px solid var(--line);
+  border-radius:999px; padding:7px 9px 7px 16px; box-shadow:0 12px 36px rgba(0,0,0,.24); max-width:calc(100vw - 20px)}
+#tts-bar.on{display:flex}
+#tts-bar .lbl{font:600 13px var(--body); color:var(--ink); max-width:34vw; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap}
+#tts-bar button{border:none; background:var(--surface-2); color:var(--ink); min-width:38px; height:38px;
+  border-radius:999px; cursor:pointer; font-size:15px; line-height:1; display:grid; place-items:center; padding:0}
+#tts-bar button:hover{background:var(--saffron-soft)}
+#tts-bar .rate{font:600 12px var(--mono); padding:0 13px}
+#tts-bar .stop{background:var(--ink); color:var(--surface)}
+#tts-bar .stop:hover{background:var(--saffron); color:var(--on-saffron)}
+body.tts-on #menuBtn{bottom:74px}
+@media (max-width:620px){ #tts-bar .lbl{display:none} .sec-listen{margin-left:8px} }
+
+/* ---------- cheat sheet ---------- */
+.cheat-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0 4px}
+@media(max-width:720px){.cheat-grid{grid-template-columns:1fr}}
+.cheat-card{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px}
+.cheat-card h4{margin:0 0 9px; font:700 12px/1 var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--saffron-ink)}
+.cheat-card ul{margin:0; padding-left:18px}
+.cheat-card li{margin:0 0 7px; font-size:13.5px; line-height:1.45}
+.cheat-card li:last-child{margin-bottom:0}
+.cheat-print{font:600 12px/1 var(--mono); background:var(--saffron); color:var(--on-saffron); border:none;
+  border-radius:999px; padding:7px 13px; cursor:pointer; margin-left:8px; vertical-align:middle}
+.cheat-print:hover{filter:brightness(1.06)}
+@media print{
+  :root{--bg:#fff; --surface:#fff; --surface-2:#f3f3f3; --ink:#000; --muted:#333; --line:#b9b9b9;
+    --saffron-soft:#FBF0D6; --saffron-ink:#7E5600; --saffron:#B9810A}
+  body *{visibility:hidden}
+  #cheatsheet, #cheatsheet *{visibility:visible}
+  #cheatsheet{position:absolute; left:0; top:0; width:100%; margin:0}
+  #cheatsheet .review-row, #cheatsheet .sec-listen, #cheatsheet .cheat-print{display:none !important}
+  #cheatsheet h2 .num{color:#7E5600}
+  .cheat-grid{gap:8px}
+  .cheat-card{break-inside:avoid; border:1px solid #b9b9b9}
+  #tts-bar, #menuBtn{display:none !important}
+  @page{margin:12mm}
+}
+</style>
+</head>
+<body>
+<header id="topbar">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="../../" aria-label="Back to site">SF</a>
+    <div class="crumbs"><a href="../">Study Guides</a> <span>/</span> <b>ASAMST 128AC Reflection 2</b></div>
+    <div class="nav-actions">
+      <button type="button" id="ttsTop" class="t-btn" aria-label="Read the guide aloud" aria-pressed="false">&#9654; Listen</button>
+      <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+    </div>
+  </nav>
+</header>
+
+<div id="exam-strip">
+  <b>Reflection 2 &middot; In discussion section</b> &nbsp;&middot;&nbsp; Handwritten, ~30 min &nbsp;&middot;&nbsp; 400 to 500 words &nbsp;&middot;&nbsp; Prompt released on the spot &nbsp;&middot;&nbsp; ONE sustained argument
+</div>
+
+<div id="layout">
+  <aside id="sidebar" aria-label="Contents">
+    <div class="prog-wrap">
+      <div class="side-head">Your review progress</div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+      <div class="prog-label"><span id="progNow">0</span> / <span id="progTot">0</span> sections reviewed</div>
+    </div>
+    <div class="side-head">Jump to</div>
+    <nav><ul id="toc"></ul></nav>
+  </aside>
+
+  <main id="main">
+    <header class="page">
+      <p class="eyebrow">ASAMST 128AC &middot; Muslims in America &middot; Fall 2026</p>
+      <h1>Reflection 2 Study Guide</h1>
+      <p class="lede">Everything for the second reflection in one place: Said's <em>Orientalism</em> and the institutionalization of Islamic learning, built from GhaneaBassiri Chapters 4 and 7, Hatem's lecture, and the section slides. It leads with the question your TA flagged as likely, then the readings, a quote bank, and full model essays. Lecturer: Hatem Bazian &middot; GSI: Abed Togas.</p>
+      <p class="muted" style="font-size:14.5px">Check off each section as you review it; the bar on the left remembers your progress in this browser.</p>
+    </header>
+
+    <!-- ===================== FORMAT ===================== -->
+    <section class="block" id="format" data-rev>
+      <h2><span class="num">00 &middot; Start here</span>What this reflection is</h2>
+      <p>Written in discussion during the week of Oct 26. Handwritten, about 30 minutes, 400 to 500 words. The prompt is handed out on the spot, so you learn the argument, not a script. The whole game is <strong>one argument carried all the way through</strong>.</p>
+      <div class="card tint">
+        <strong>What the GSI wants, in his words:</strong> "a sustained elaboration of what you argue, rather than multiple arguments at once. Commit to a point and flesh out your thinking from there." So do not list three ideas. Pick one claim and dig.
+      </div>
+      <h4>The frame to answer</h4>
+      <p>What to make of <strong>institutionalizing Islam in a time where assimilation is still a primary factor of survival</strong> in the US. The two processes to hold in your head:</p>
+      <ul>
+        <li><span class="pill said">Said</span> <strong>Orientalism's impact on Western and US knowledge production</strong>, how the West produces authoritative knowledge about Muslims.</li>
+        <li><span class="pill ch7">GhaneaBassiri</span> <strong>the institutionalization of Islamic learning in the US</strong>, how Muslims built mosques, schools, and organizations to define themselves.</li>
+      </ul>
+      <p>His real question: do these run at the same time? (Yes.) And what does it mean to build Islamic institutions when assimilation is still the price of acceptance?</p>
+      <div class="card">
+        <strong>Primary sources:</strong> GhaneaBassiri <strong>Ch 7</strong> (primary), <strong>Ch 4</strong> (helps), Said's <em>Orientalism</em> Introduction, this week's Hatem lecture, and the section slides. Read ahead for Ch 8, not required here.
+        <p style="margin:8px 0 0"><strong>Example prompt from the slides:</strong> "How might Islamic education engage with broader efforts to celebrate religious diversity while navigating existing social and institutional inequalities?"</p>
+      </div>
+      <h4>The A rubric, one line each</h4>
+      <ul>
+        <li><strong>Argument:</strong> specific, convincing, insightful, original. One claim, not a survey.</li>
+        <li><strong>Evidence:</strong> well chosen and specific from the course materials. Name the reading.</li>
+        <li><strong>Analysis:</strong> sustained and revealing. Do not just drop a quote, break it down.</li>
+      </ul>
+    </section>
+
+    <!-- ===================== LIKELY QUESTION ===================== -->
+    <section class="block" id="likely" data-rev>
+      <h2><span class="num">01 &middot; Your TA flagged this</span>The likely question</h2>
+      <div class="card dark">
+        <strong>Likely prompt (your TA said this is probably very important, maybe the question or close to it):</strong>
+        <p style="margin:8px 0 0">"In what ways was institutionalization a <em>different strategy</em>, away from assimilation?"</p>
+      </div>
+      <p>The move is to define the two against each other and then commit to the contrast.</p>
+      <div class="grid2">
+        <div class="mini"><h4>Assimilation</h4><p style="margin:0">Adapting to the dominant society, reducing religious or cultural difference to gain acceptance. Belonging bought by becoming <em>less</em> visibly Muslim.</p></div>
+        <div class="mini"><h4>Institutionalization</h4><p style="margin:0">Building mosques, schools, and organizations that let Muslims participate in American society <em>while maintaining and passing on</em> their religious identity.</p></div>
+      </div>
+      <div class="card tint">
+        <strong>The one-line answer:</strong> institutionalization offered Muslims a way to establish belonging <strong>without making the disappearance of their religious difference the price of acceptance</strong>. Where earlier Muslims survived by hiding Islam (Ch 4), post-1965 Muslims survived by building it into durable institutions (Ch 7).
+      </div>
+      <button class="rev-all" type="button" data-scope="likely">Reveal the model answer</button>
+      <details class="q"><summary><span class="qnum">MODEL</span><span>Full model answer for the likely prompt (about 450 words, in a handwriting voice). Adapt the opening to the real wording on the day.</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~450 words</span>
+          <p>Assimilation and institutionalization both answer the same problem, how to survive as a Muslim in America, but they answer it in opposite directions, and that is the whole point. Assimilation buys acceptance by shrinking difference. Institution building buys belonging by preserving it. My argument is that institutionalization was a different strategy because it refused to make the disappearance of Islam the price of being American.</p>
+          <p>You see the contrast most clearly by setting GhaneaBassiri's two chapters side by side. In Chapter 4, the Muslims who arrived between 1890 and 1924 survived mostly by erasing themselves. A. Joseph Howar was told that a Muslim name would keep him out, so he passed (around 141). The courts were the real institution deciding who belonged, and in In re Ahmed Hassan a judge ruled that "a wide gulf separates their culture from that of the predominantly Christian peoples of Europe" (158), so Arabs were not white and not admissible. The lesson immigrants drew was to lead with ethnicity and let Islam go quiet. GhaneaBassiri writes that "religious identities became secondary," and that ethnicity "played a greater role than did Islam in shaping their sense of national belonging" (162, 164). That is assimilation as survival, and in practice it meant building Syrian and ethnic clubs, not mosques.</p>
+          <p>Chapter 7 is the reversal. After the 1965 Hart-Celler Act, the Muslims who came were post-colonial and confident, "unlikely to willingly change their names" (around 297). Instead of hiding, they built. Mosques multiplied to five times their earlier number, Sunday schools opened, and groups like the MSA set out to produce "Islamic knowledge in its original purity" (305). This is the key difference. The earlier generation survived by becoming less visibly Muslim. This generation survived by turning Islam into something you could teach, fund, and pass to your kids. Institution building let them join American life while keeping, not trading away, their religious identity.</p>
+          <p>I want to be honest about the catch, because GhaneaBassiri is. He warns that "greater social and political engagement with American society leads to greater assimilation" (317), and Qureishi feared the system would "assimilate you, and then adopt you, and then change you" (314). So institutions did not escape assimilation completely. But that is a risk inside the strategy, not the strategy itself. The design was different. Assimilation asked Muslims to dissolve into America. Institutionalization asked America to make room for a community that intended to stay itself. That is what makes it a different survival strategy, and a braver one.</p>
+        </div></div></details>
+      <p class="muted" style="font-size:14px">Two more full essays, for the "do they work at the same time" angle and the slide's example prompt, are in <a href="#models">section 08</a>.</p>
+    </section>
+
+    <!-- ===================== CHEAT SHEET ===================== -->
+    <section class="block" id="cheatsheet" data-rev>
+      <h2><span class="num">Cheat sheet</span>Everything on one screen</h2>
+      <p class="muted" style="font-size:14px">The whole guide compressed to a last-ten-minutes skim, or print and glance before you walk in. <button type="button" class="cheat-print" onclick="window.print()">&#9113; Print just this</button></p>
+      <div class="card dark" style="text-align:center">
+        <strong>The tension in one line:</strong> Muslims won the right to teach Islam, but not the power to decide how America reads it.
+      </div>
+      <div class="cheat-grid">
+        <div class="cheat-card">
+          <h4>The question and the answer</h4>
+          <ul>
+            <li><strong>Q:</strong> was institutionalization different from assimilation?</li>
+            <li><strong>A:</strong> yes. Assimilation = belong by erasing Islam. Institutionalization = belong by building and keeping it.</li>
+            <li>One-move line: belonging without making religious difference the price of acceptance.</li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>Said, Orientalism (1978)</h4>
+          <ul>
+            <li>Knowledge about the "East" is a <strong>system of power</strong>, not neutral description (Foucault's discourse).</li>
+            <li>"The Orient is an idea that has a history and a tradition of thought" (12).</li>
+            <li>Core question: <strong>who has the authority to describe a people</strong> and decide what counts as knowledge.</li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>The arc, 1890s to now</h4>
+          <ul>
+            <li><strong>Ch 4 (1890 to 1924):</strong> survival = erasure. Pass as white, lead with ethnicity, Islam "secondary."</li>
+            <li><strong>Ch 7 (1960s to 80s):</strong> survival = institutions. Mosques x5, MSA, ISNA, keep your name.</li>
+            <li><strong>The pull:</strong> engagement still bends toward assimilation (317).</li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>Hatem and the slides</h4>
+          <ul>
+            <li><strong>Eurocentric epistemology:</strong> European experience made the universal standard of valid knowledge.</li>
+            <li><strong>Neoliberal multiculturalism:</strong> celebrate diversity, leave power intact = inclusion without structural change.</li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>Quotes to memorize</h4>
+          <ul>
+            <li>"an accepted grid for filtering through the Orient into Western consciousness" (Said 14).</li>
+            <li>"religious identities became secondary" (GB 162).</li>
+            <li>"Islamic knowledge in its original purity" (MSA 1975, GB 305).</li>
+            <li>Qureishi: "assimilate you, and then adopt you, and then change you" (314).</li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>Pick ONE thesis</h4>
+          <ul>
+            <li><strong>A Different strategy:</strong> institutions = belong by keeping Islam, not erasing it (the TA's prompt).</li>
+            <li><strong>B Double-edged:</strong> institutions answer Orientalism but still get read through it.</li>
+            <li><strong>C Visible = targetable:</strong> the same visibility that built belonging made Muslims knowable to power.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== THESIS OPTIONS ===================== -->
+    <section class="block" id="thesis" data-rev>
+      <h2><span class="num">02 &middot; Commit to a point</span>Pick one thesis</h2>
+      <p>The prompt may be worded several ways. Each thesis below commits to one point and still reaches both readings. <strong>A</strong> is the direct answer to your TA's likely question; keep <strong>B</strong> and <strong>C</strong> as backups.</p>
+      <div class="card">
+        <strong>A &middot; Different strategy (the headline).</strong> Institutionalization pursued belonging through the <em>preservation and transmission</em> of Islamic identity, where assimilation pursued it through erasure. Earlier Muslims survived by hiding Islam; post-1965 Muslims survived by building it. <span class="cite">Use: Howar, Hassan 158, "secondary" 162, mosques x5, MSA priority 305, Qureishi 314.</span>
+      </div>
+      <div class="card">
+        <strong>B &middot; Double-edged / packaging.</strong> Institution building and Orientalism run at the same time. Building institutions answers Orientalism by letting Muslims produce their own knowledge, but to be legible to American institutions they had to package one "pure" Islam, which repeats Orientalism's habit of reducing many Muslims to one essence. <span class="cite">Use: Said 14, "pure" Islam 316, representation 274, neoliberal multiculturalism.</span>
+      </div>
+      <div class="card">
+        <strong>C &middot; Visible means targetable.</strong> The 1980s made Islam both institutionally visible and a security threat at once; the same visibility that built belonging made Muslims knowable to power. <span class="cite">Use: "Arab" to "Islamic terrorism" 307, ABSCAM, Afghanistan Day 1983, Muslim Ban.</span>
+      </div>
+      <p class="muted" style="font-size:14px">Whatever you pick, the paragraph shape stays the same: <strong>claim, then named evidence, then analysis, then a link back to the thesis.</strong></p>
+    </section>
+
+    <!-- ===================== SAID ===================== -->
+    <section class="block" id="said" data-rev>
+      <h2><span class="num">03 &middot; Orientalism</span>Edward Said (1978)</h2>
+      <p class="muted">Palestinian-American literary critic at Columbia, born in Jerusalem (1935), exiled in the 1948 Nakba, helped found post-colonial studies. Written after decolonization, the 1973 Arab-Israeli war, and the 1970s oil crises, as US involvement in the Middle East and media hostility to Muslims grew.</p>
+      <div class="card tint"><strong>The core quote:</strong> "The Orient is an idea that has a history and a tradition of thought, imagery, and vocabulary that have given it reality and presence in and for the West" (12).</div>
+      <h3>Said's three moves</h3>
+      <ul>
+        <li><strong>The Orient is a Western construction.</strong> It says more about the West than the East. East = irrational, backward, exotic, threatening; West = rational, modern, authoritative.</li>
+        <li><strong>Knowledge is power (Foucault's discourse).</strong> Systems of knowledge decide what can be said and accepted as truth. Orientalism becomes "an accepted grid for filtering through the Orient into Western consciousness" (14).</li>
+        <li><strong>Many meanings, one hegemony.</strong> "institutions, vocabulary, scholarship, imagery, doctrines, even colonial bureaucracies and colonial styles" (9). "The relationship between Occident and Orient is a relationship of power, of domination, of varying degrees of a complex hegemony" (13, Gramsci).</li>
+      </ul>
+      <div class="card"><strong>Core question (memorize this framing):</strong> who has the authority to describe another people, define their culture, and decide what counts as legitimate knowledge?</div>
+      <h3>Six forms of Orientalism and its afterlives (slides)</h3>
+      <div class="grid2">
+        <div class="mini"><h4>1 Scholarly</h4><p style="margin:0">The West as the authoritative interpreter of an East made "fundamentally different."</p></div>
+        <div class="mini"><h4>2 Aesthetic / cultural</h4><p style="margin:0">Exotic, sensual, timeless fantasy (Gerome's <em>Snake Charmer</em>, Rosati's <em>Harem Dance</em>, <em>Arabian Nights</em>).</p></div>
+        <div class="mini"><h4>3 Political / institutional</h4><p style="margin:0">"Incapable of self-government" justifies colonial rule, intervention, surveillance.</p></div>
+        <div class="mini"><h4>4 Security / threat</h4><p style="margin:0">Muslims tied to terrorism; blurs religion, ethnicity, nationality, ideology.</p></div>
+        <div class="mini"><h4>5 Gendered / rescue</h4><p style="margin:0">Muslim women as voiceless, oppressed, needing Western saving (Abu-Lughod, <em>Do Muslim Women Need Saving?</em>).</p></div>
+        <div class="mini"><h4>6 Everyday / popular</h4><p style="margin:0">Headlines, jokes, classrooms. Muslims as perpetual foreigners who must prove loyalty and represent all of Islam.</p></div>
+      </div>
+      <p class="muted" style="font-size:14px"><strong>Why it matters for Muslims in America:</strong> in the US imagination Islam is "not just a religion," it is framed through geopolitical conflict, racial difference, and assumptions about belonging. Representations have material consequences: attitudes, media, immigration debates, security policy.</p>
+    </section>
+
+    <!-- ===================== HATEM ===================== -->
+    <section class="block" id="hatem" data-rev>
+      <h2><span class="num">04 &middot; Lecture framework</span>Hatem Bazian</h2>
+      <h3>The seven features of modern colonization ("Erasing the Human")</h3>
+      <p class="muted">Hatem's frame for how colonial power remade the world. It is the structure behind Said: Orientalism is the knowledge arm of this larger project.</p>
+      <div class="grid2">
+        <div class="mini"><h4>1 Eurocentric epistemology</h4><p style="margin:0">European experience made the <strong>universal standard</strong> of valid knowledge (scientific method, Cartesian individualism, the Western canon, "universal" rights). Other ways of knowing (oral, communal) dismissed.</p></div>
+        <div class="mini"><h4>2 to 7, the rest of the project</h4><p style="margin:0">Global project (85% of the world's surface) &middot; racial project (the line between human and "sub-human," Grosfoguel, Fanon) &middot; capitalism + technology &middot; genocides &middot; demand-driven slavery &middot; Christianity as colonial handmaiden.</p></div>
+      </div>
+      <ul>
+        <li><strong>Said on empire:</strong> every empire claims "a mission to enlighten, civilize, bring order and democracy," and says it uses force only as a last resort.</li>
+        <li><strong>Dabashi:</strong> inventing "Europe" meant inventing "the white people" as the normative measure of humanity; Europe as white and Christian required expelling Muslims and Jews (Spain, the Inquisition).</li>
+        <li><strong>The link to religion:</strong> "the problematic colonial history of the very category of 'religion' challenges the idea that religion exists somehow separately from culture." So Ch 7's "pure vs cultural" Islam is itself a colonial sorting.</li>
+      </ul>
+      <h3>Neoliberal multiculturalism (the bridge concept)</h3>
+      <div class="card tint">
+        Institutions <strong>celebrate diversity while leaving the underlying structures of inequality and power intact</strong>, so you get <strong>inclusion without structural change</strong>. Muslim visibility is praised through interfaith events, diversity initiatives, and "successful Muslim American" stories, "while Islamophobia, surveillance, and unequal access to institutional power persist." This is how institution building and Orientalism can both be true at once.
+      </div>
+      <p class="muted" style="font-size:14px">Immigration lecture today: assimilation gets "recoded as a security threat," with "Western values" tests and the Muslim Ban. Exclusion is a <em>structure</em>, not an event: push (war, empire) + pull (capital recruits labor) + limit (the state closes the door by race and religion).</p>
+    </section>
+
+    <!-- ===================== CH 4 ===================== -->
+    <section class="block" id="ch4" data-rev>
+      <h2><span class="num">05 &middot; GhaneaBassiri Ch 4</span>Before 1965: survival = erasure</h2>
+      <p class="muted">"Race, Ethnicity, Religion, and Citizenship: Muslim Immigration at the Turn of the Twentieth Century" (c. 1890 to 1924). The chapter that shows the <em>assimilation</em> strategy institutionalization later broke from.</p>
+      <div class="card"><strong>Core idea:</strong> the conflation of <span class="k">race, religion, and progress</span> defined American identity and restricted entry and citizenship. To belong, immigrants had to copy it, so Muslims claimed belonging through <strong>ethnicity, not Islam</strong> (137). "ethnicity played a greater role than did Islam in shaping their sense of national belonging" (164).</div>
+      <h3>How Muslims survived by disappearing</h3>
+      <ul>
+        <li><strong>Numbers:</strong> roughly 10 to 15% of immigrants from Muslim regions 1890 to 1924 were Muslim (about 60,000). Hard to count because of passing and "Turkey in Asia" labels (136). <span class="flag">confirm page w/ notes</span></li>
+        <li><strong>A. Joseph Howar</strong> (born Mohammed Asa Abu-Howah): told on the boat that a Muslim name would bar him; took his cousins' names, Abraham and Joseph; naturalized 1908 (141). The textbook case of passing.</li>
+        <li><strong>"De-Islamicization" (141):</strong> Ottoman law forbade Muslim emigration, so Muslims passed as Christians or bribed officials, taking Christian names to avoid the stigma of "Turk."</li>
+        <li><strong>Muhammad Sadiq (1920, Ahmadiyya):</strong> detained for a faith that allows polygamy; argued it is a permission, not a command, and that he would obey the law of the land (152).</li>
+      </ul>
+      <h3>The court was the institution that mattered</h3>
+      <ul>
+        <li>Naturalization was for "free white persons" (1790), plus "aliens of African nativity" (1870). Courts decided who was white: Najour 1909 white &middot; Dow 1915 white on appeal &middot; Thind 1923 denied &middot; Hassan 1942 denied &middot; Mohriez 1944 granted.</li>
+        <li><strong>In re Ahmed Hassan (1942), Judge Tuttle:</strong> Arabs are "a part of the Mohammedan world and a wide gulf separates their culture from that of the predominantly Christian peoples of Europe" (158). This is <strong>Orientalism written into law</strong>.</li>
+        <li><strong>Ex parte Mohriez (1944), Judge Wyzanski:</strong> "as every schoolboy knows" Arabs carried Greek learning (Avicenna, Averroes, algebra); exclusion is "false to our profession of democratic liberalism" (159).</li>
+        <li><strong>Ethnicity over religion (162):</strong> Muslims and Christians united in the Association for Syrian Unity; Christians led, partly because Muslim identity was stigmatized, so "religious identities became secondary."</li>
+      </ul>
+      <div class="card tint"><strong>Takeaway:</strong> before 1965 the institution that produced knowledge about Muslims was the court, and the survival strategy was erasure. Muslims built <strong>ethnic</strong>, not Islamic, institutions. Institutionalization is what changed after 1965.</div>
+    </section>
+
+    <!-- ===================== CH 7 ===================== -->
+    <section class="block" id="ch7" data-rev>
+      <h2><span class="num">06 &middot; GhaneaBassiri Ch 7</span>1960s to 1980s: survival = institutions</h2>
+      <p class="muted">"A New Religious America and a Post-Colonial Muslim World: American Muslim Institution Building and Activism, 1960s to 1980s." The primary reading, and the reversal of Ch 4.</p>
+      <div class="card"><strong>Foreign born from Muslim-majority countries:</strong> <span class="k">134,615 (1960)</span> &rarr; <span class="k">871,582 (1990)</span>. The 1965 Hart-Celler Act abolished the 1924 quotas; Congress did not expect it to "upset the ethnic mix." Diana Eck calls the result "a new religious America."</div>
+      <h3>The legal and cultural shift</h3>
+      <ul>
+        <li>The melting pot gave way to <strong>pluralism</strong> and "identity politics," plus a "white ethnic revival" and "new conservatives" who preferred meritocracy to affirmative action (272 to 281).</li>
+        <li>LBJ, Howard University 1965: "freedom is not enough... you do not take a person who, for years, has been hobbled by chains... and then say, 'you are free to compete'" (279). The logic behind affirmative action.</li>
+      </ul>
+      <h3>The Nation of Islam goes mainstream</h3>
+      <ul>
+        <li>Once separatism looked like ethnic self-help, the NOI was "no longer seen as a threat"; cities declared Elijah Muhammad days (1973 to 75).</li>
+        <li><strong>Warith Deen Mohammed</strong> succeeded Elijah Muhammad (d. 1975), de-mythologized the NOI, dissolved the Fruit of Islam, gave mosques local control, and led followers toward Sunni practice. He called it "reverting," not converting (286). Renamed the movement (World Community of al-Islam in the West, 1976), ran <strong>Ethnic Survival Week</strong> and New World Patriotism Day, aiming to make Black Muslims "yet another American ethnic community" (288).</li>
+        <li><strong>Farrakhan</strong> left in 1977 and rebuilt the old NOI in 1978.</li>
+      </ul>
+      <h3>Institution building (the heart of the reading)</h3>
+      <ul>
+        <li>Post-1965 immigrants were professionals, post-colonial, with firm identities, "unlikely to willingly change their names" (297). The opposite of Howar.</li>
+        <li><strong>Mosques founded in the 1970s were five times the number of the 1950s or 60s</strong> (297); pattern was home &rarr; rented or bought house &rarr; mosque &rarr; Sunday school. A 1994 study found 75% had no paid full-time staff.</li>
+        <li>National groups: MSA, then <strong>ISNA (incorporated 1981)</strong>, NAIT (holds mosque titles, 1973), the Islamic Medical and Social Science associations. They "made themselves available as a resource," they did not impose.</li>
+        <li><strong>MSA's five priorities (1975, 305):</strong> "production and dissemination of Islamic knowledge... in its original purity," schools and community centers, daily needs (prayer, Hajj, zakat, marriage, funerals), recruitment, and a unity of Muslim conscience.</li>
+      </ul>
+      <h3>The assimilation debate (direct hit on the prompt)</h3>
+      <ul>
+        <li>Activists made the Qur'an and Hadith the only "pure" sources to unify a diverse population; GhaneaBassiri notes "there is of course no religion outside of a cultural or social context" (318). Multiculturalism "generally reduced diversity to ethnicity or cultural practices" (316).</li>
+        <li>Enter politics? ISNA ran voter education (1986). <strong>Qureishi (NAIT) warned:</strong> "The process will assimilate you, and then adopt you, and then change you to its own objective... you will have to make compromises" (314). Note: nobody questioned the fairness of the system itself.</li>
+        <li><strong>Hathout (ICSC):</strong> "To be American is not to blindly accept America as it is, but to strive to make it cleaner and better" (317).</li>
+        <li>GhaneaBassiri's own line: "greater social and political engagement with American society leads to greater assimilation" (317).</li>
+      </ul>
+      <h3>Orientalism, live, in the same decades</h3>
+      <ul>
+        <li>After the 1979 Iranian Revolution and hostage crisis, US discourse shifted from "Arab terrorism" to "Islamic terrorism" (McAlister, 307). "Fundamentalism" (a term from American Protestantism) got pinned on Islam. Neither "Islam" nor "terrorism" was ever defined.</li>
+        <li><strong>ABSCAM:</strong> FBI agents posed as rich Arab sheikhs to bribe Congress; FBI surveillance of Muslim and Arab activists since the late 1960s.</li>
+        <li><strong>Double standard:</strong> Afghan Islamists backed as "freedom fighters" (Reagan's Afghanistan Day, 1983) while Palestinians were "terrorists." Those fighters later formed al-Qaeda and the Taliban: "categories bent to US interest."</li>
+        <li>End of chapter: "No single national Muslim organization was able to unite Muslims under a single cause or a single understanding of Islam" (326).</li>
+      </ul>
+      <p class="muted" style="font-size:14px"><span class="flag">confirm pages w/ notes</span> Many of the page numbers above come from the class study sheet. The argument holds regardless, but check exact pages in your own copy before you cite them.</p>
+    </section>
+
+    <!-- ===================== TOGETHER ===================== -->
+    <section class="block" id="together" data-rev>
+      <h2><span class="num">07 &middot; Both at once</span>How the two processes run together</h2>
+      <p>The honest answer to "do they work at the same time" is yes. Orientalism did not end when Muslims started defining themselves; it changed shape and ran through the very institutions meant to resist it.</p>
+      <ul class="tl">
+        <li><b>1908</b> Howar passes, renamed</li>
+        <li><b>1942</b> Hassan denied ("wide gulf")</li>
+        <li><b>1965</b> Hart-Celler opens the door</li>
+        <li><b>1975</b> MSA "pure" knowledge</li>
+        <li><b>1976</b> W.D. Mohammed, WCIW</li>
+        <li><b>1979</b> Iran; "Islamic terrorism"</li>
+        <li><b>1981</b> ISNA incorporated</li>
+        <li><b>2017</b> Muslim Ban</li>
+      </ul>
+      <table class="match">
+        <tr><td>1890 to 1940s</td><td>Courts define whiteness; Hassan's "wide gulf"; "Turk" = enemy &nbsp;/&nbsp; Muslims hide Islam, build <em>ethnic</em> associations, religion "secondary."</td></tr>
+        <tr><td>1950s to 70s</td><td>Melting pot gives way to pluralism; media images of oil sheikhs; Said writes (1978) &nbsp;/&nbsp; Hart-Celler; mosques x5; MSA's "pure" knowledge; AAUG counter-scholarship; NOI to ethnic community.</td></tr>
+        <tr><td>1979 to 80s</td><td>"Arab" to "Islamic terrorism"; ABSCAM; FBI surveillance; Afghan "freedom fighters" &nbsp;/&nbsp; ISNA 1981; sunday schools; activism for causes abroad bending toward assimilation (317).</td></tr>
+        <tr><td>2001 to now</td><td>Security Orientalism: NSEERS, Muslim Ban, "Western values" vetting &nbsp;/&nbsp; community research to "counter misrepresentation"; interfaith inclusion = neoliberal multiculturalism.</td></tr>
+      </table>
+      <div class="card dark" style="text-align:center"><strong>The tension in one line:</strong> Muslims won the right to teach Islam, but not the power to decide how America reads it.</div>
+    </section>
+
+    <!-- ===================== MODELS ===================== -->
+    <section class="block" id="models" data-rev>
+      <h2><span class="num">08 &middot; Model essays</span>Two more worked answers</h2>
+      <p>The headline model (institutionalization vs assimilation) is in <a href="#likely">section 01</a>. These cover the other two likely angles. Each commits to one argument and stays in a handwriting voice.</p>
+      <button class="rev-all" type="button" data-scope="models">Reveal all model answers</button>
+
+      <details class="q"><summary><span class="qnum">B</span><span>"Do Orientalism and the institutionalization of Islamic learning work at the same time?" (about 440 words)</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~440 words</span>
+          <p>Edward Said says the real question behind Orientalism is who has the authority to describe another people and decide what counts as legitimate knowledge. American Muslims tried to answer that question by building institutions. My argument is that institution building and Orientalism are not two separate stories, one about empowerment and one about prejudice. They happen at the same time, and institution building is best understood as a double-edged strategy that answers Orientalism while still being shaped by it.</p>
+          <p>GhaneaBassiri shows that after 1965, Muslims built mosques, Sunday schools, and national groups like the MSA and ISNA, mostly through local effort (273 to 274). On its face this reverses Said. Instead of being described by Western scholars, Muslims were producing their own authoritative knowledge about who they were. That is real and it matters. But GhaneaBassiri adds that these loud national organizations "do not represent the majority of the American Muslim population as a whole" (274). That line is where the two processes meet. To become legible to American institutions, a diverse community had to speak in one recognizable voice, and the MSA's goal of teaching Islam "in its original purity" (305) is exactly that move. Said warns that Orientalism works as "an accepted grid for filtering through the Orient into Western consciousness" (14). Producing one "pure" Islam can quietly reproduce that grid from the inside, flattening a plural community into a single essence.</p>
+          <p>This is why assimilation is the key. The lecture calls it neoliberal multiculturalism, where diversity is celebrated as an asset but the structures of power stay intact. A thriving MSA or a famous Muslim American gets held up as proof of inclusion, while surveillance and the security-threat image keep running underneath. In the same decades Muslims were building, US discourse shifted to "Islamic terrorism" after 1979 (307), and the FBI ran ABSCAM. Visibility and suspicion grew together.</p>
+          <p>So the two processes are not a before and after. Orientalism changed shape and worked through the very institutions meant to resist it. GhaneaBassiri even concedes that "greater social and political engagement with American society leads to greater assimilation" (317). Building Islamic knowledge gave Muslims a voice, but the power to decide how that knowledge gets read stayed with the dominant culture. That is what makes institution building both genuinely powerful and genuinely risky, and it is why the honest answer to whether these processes run together is yes.</p>
+        </div></div></details>
+
+      <details class="q"><summary><span class="qnum">C</span><span>Slide example prompt: "How might Islamic education engage with broader efforts to celebrate religious diversity while navigating existing social and institutional inequalities?" (about 420 words)</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~420 words</span>
+          <p>Islamic education can absolutely join America's celebration of religious diversity, and GhaneaBassiri's Chapter 7 shows Muslims doing exactly that after 1965, building mosques, Sunday schools, and interfaith-friendly national organizations. My argument is that this engagement is worth it, but under what the lecture calls neoliberal multiculturalism it stays symbolic unless it changes who holds power. Islamic education has to decide whether to be the kind of "diversity" institutions want to display, or to keep teaching an Islam that does not fit the grid.</p>
+          <p>Neoliberal multiculturalism celebrates difference as an asset while leaving inequality intact. You get inclusion without structural change. So a Muslim Students Association or a "successful Muslim American" becomes proof that the system is open, even as surveillance and unequal access continue. GhaneaBassiri captures the trap when Qureishi warns that political engagement will "assimilate you, and then adopt you, and then change you to its own objective" (314). The danger is that Islamic education gets invited to the interfaith table precisely because it has already been made legible and unthreatening.</p>
+          <p>Said explains why this is more than hurt feelings. Orientalism is "an accepted grid for filtering through the Orient into Western consciousness" (14), so even welcoming institutions read Islam through categories Muslims did not set. When the MSA framed its mission as teaching Islam "in its original purity" (305), it was partly answering that grid and partly reproducing it, by implying one authentic Islam that a university or a diversity office can recognize.</p>
+          <p>The way through is to treat Islamic education as more than representation. Hathout's line is the model: "to be American is not to blindly accept America as it is, but to strive to make it cleaner and better" (317). Islamic education engages with diversity most honestly when it does not just supply a comfortable, consumable Islam, but keeps teaching the parts that challenge the structure, including a critique of how knowledge about Muslims gets produced in the first place. Celebrating diversity and naming inequality are not opposites; the first becomes real only when it is willing to do the second.</p>
+        </div></div></details>
+    </section>
+
+    <!-- ===================== QUOTE BANK ===================== -->
+    <section class="block" id="quotes" data-rev>
+      <h2><span class="num">09 &middot; Quote bank</span>Memorize five or six</h2>
+      <table class="match">
+        <tr><td>Said 14</td><td>"an accepted grid for filtering through the Orient into Western consciousness."</td></tr>
+        <tr><td>Said 12</td><td>"The Orient is an idea that has a history and a tradition of thought, imagery, and vocabulary."</td></tr>
+        <tr><td>Said 13</td><td>"a relationship of power, of domination, of varying degrees of a complex hegemony."</td></tr>
+        <tr><td>GB 158</td><td>"a wide gulf separates their culture from that of the predominantly Christian peoples of Europe" (In re Ahmed Hassan).</td></tr>
+        <tr><td>GB 162</td><td>"religious identities became secondary."</td></tr>
+        <tr><td>GB 297</td><td>post-1965 immigrants were "unlikely to willingly change their names."</td></tr>
+        <tr><td>GB 305</td><td>MSA aim: "production and dissemination of Islamic knowledge... in its original purity."</td></tr>
+        <tr><td>GB 314</td><td>Qureishi: "assimilate you, and then adopt you, and then change you to its own objective."</td></tr>
+        <tr><td>GB 317</td><td>"greater social and political engagement with American society leads to greater assimilation."</td></tr>
+        <tr><td>GB 318</td><td>"there is of course no religion outside of a cultural or social context."</td></tr>
+        <tr><td>GB 274</td><td>national organizations "do not represent the majority of the American Muslim population as a whole."</td></tr>
+      </table>
+      <p class="muted" style="font-size:14px">You do not need all of these. Pick the three that fit your thesis plus one or two Said lines, and you have more than enough for 450 words.</p>
+    </section>
+
+    <!-- ===================== PLAN ===================== -->
+    <section class="block" id="plan" data-rev>
+      <h2><span class="num">10 &middot; On the day</span>Writing plan and honest flags</h2>
+      <div class="grid2">
+        <div class="mini"><h4>25 to 30 minute plan</h4><ul style="margin-bottom:0">
+          <li><strong>0 to 3:</strong> underline the prompt's verbs; write your one-sentence thesis; jot three evidence anchors in the margin.</li>
+          <li><strong>3 to 6:</strong> intro, a hook or fact, define assimilation and institutionalization, state the thesis.</li>
+          <li><strong>6 to 14:</strong> body 1, the Ch 4 baseline (how survival used to work).</li>
+          <li><strong>14 to 21:</strong> body 2, the heart, Ch 7 evidence plus Said, explain <em>why</em> it supports the thesis.</li>
+          <li><strong>21 to 24:</strong> turn and conclusion, the complication, then "so what" for today.</li>
+          <li><strong>24 to 25:</strong> reread, check names and that the thesis word is in every paragraph.</li>
+        </ul></div>
+        <div class="mini"><h4>Do and avoid</h4><ul style="margin-bottom:0">
+          <li><strong>Do:</strong> one argument; name a page or date; define your terms; connect lecture plus section plus reading.</li>
+          <li><strong>Do:</strong> every time you want a new idea, deepen the one you have instead. That is "sustained."</li>
+          <li><strong>Avoid:</strong> listing several arguments; summarizing the chapter; "Muslims faced discrimination" with no specifics.</li>
+          <li><strong>Avoid:</strong> calling 1960s immigrants "racialized at home," GhaneaBassiri says most did not feel that (275).</li>
+        </ul></div>
+      </div>
+      <p class="muted" style="font-size:14px"><span class="flag">confirm against your notes</span> The Said quotes and the Ch 7 pages 272 to 285 are pulled straight from the readings. Some Ch 4 pages and the later Ch 7 pages (305, 314, 316, 317) come from the class study sheet, so double-check the exact page in your own copy if you want to cite it. The argument stands either way, and page numbers are a bonus, not the grade.</p>
+    </section>
+
+  </main>
+</div>
+
+<button id="menuBtn" type="button" aria-label="Open contents">Contents</button>
+
+<div id="tts-bar" role="region" aria-label="Read aloud player">
+  <span class="lbl" id="ttsLbl">Reading</span>
+  <button type="button" id="ttsPrev" aria-label="Previous section" title="Previous section">&#9198;</button>
+  <button type="button" id="ttsPause" aria-label="Pause" title="Pause or resume">&#9208;</button>
+  <button type="button" id="ttsNext" aria-label="Next section" title="Next section">&#9197;</button>
+  <button type="button" id="ttsRate" class="rate" aria-label="Playback speed" title="Playback speed">1&times;</button>
+  <button type="button" id="ttsStop" class="stop" aria-label="Stop reading" title="Stop">&times;</button>
+</div>
+
+<footer>
+  Built by Saba Feilizadeh for her own ASAMST 128AC reflection. Review progress saves in your own browser. Not affiliated with the course staff; verify anything marked "confirm w/ notes" against your lecture notes and your copy of the readings.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  // ---------- theme ----------
+  var root=document.documentElement, TK="sf_theme";
+  try{var t=localStorage.getItem(TK); if(t) root.setAttribute("data-theme",t);}catch(e){}
+  var tb=document.getElementById("themeBtn");
+  if(tb) tb.onclick=function(){
+    var cur=root.getAttribute("data-theme");
+    var dark=cur?cur==="dark":window.matchMedia("(prefers-color-scheme:dark)").matches;
+    var next=dark?"light":"dark"; root.setAttribute("data-theme",next);
+    try{localStorage.setItem(TK,next);}catch(e){}
+  };
+
+  // ---------- build TOC ----------
+  var secs=[].slice.call(document.querySelectorAll("section.block"));
+  var toc=document.getElementById("toc");
+  var labels={format:"What this is",likely:"Likely question",cheatsheet:"Cheat sheet",thesis:"Pick one thesis",said:"Said: Orientalism",hatem:"Hatem's framework",ch4:"GhaneaBassiri Ch 4",ch7:"GhaneaBassiri Ch 7",together:"How they run together",models:"Model essays",quotes:"Quote bank",plan:"Writing plan"};
+  var tocById={};
+  secs.forEach(function(s){
+    var a=document.createElement("a"); a.href="#"+s.id; a.dataset.id=s.id;
+    a.innerHTML='<span class="tdot" aria-hidden="true"></span><span class="tlabel"></span>';
+    a.querySelector(".tlabel").textContent=labels[s.id]||s.id;
+    toc.appendChild(a); tocById[s.id]=a;
+  });
+  var tocLinks=[].slice.call(toc.querySelectorAll("a"));
+
+  // ---------- progress (mark reviewed) ----------
+  var PK="sf_asamst_r2_rev";
+  var state={}; try{state=JSON.parse(localStorage.getItem(PK)||"{}");}catch(e){state={};}
+  var revSecs=secs.filter(function(s){return s.hasAttribute("data-rev");});
+  var totEl=document.getElementById("progTot"), nowEl=document.getElementById("progNow"), fill=document.getElementById("progFill");
+  totEl.textContent=revSecs.length;
+  function paint(){
+    var n=revSecs.filter(function(s){return state[s.id];}).length;
+    nowEl.textContent=n; fill.style.width=(revSecs.length?Math.round(n/revSecs.length*100):0)+"%";
+  }
+  function setDone(id, done){
+    var a=tocById[id]; if(a) a.classList.toggle("done", done);
+    var sec=document.getElementById(id); if(sec) sec.classList.toggle("done", done);
+  }
+  revSecs.forEach(function(s){
+    var h=s.querySelector("h2");
+    if(h && !h.querySelector(".sec-done")){
+      var bd=document.createElement("span"); bd.className="sec-done"; bd.setAttribute("aria-hidden","true"); h.appendChild(bd);
+    }
+    var row=document.createElement("div"); row.className="review-row";
+    var id="rev_"+s.id;
+    row.innerHTML='<label for="'+id+'"><input type="checkbox" id="'+id+'"> Mark this section reviewed</label>';
+    s.appendChild(row);
+    var cb=row.querySelector("input");
+    cb.checked=!!state[s.id];
+    setDone(s.id, !!state[s.id]);
+    cb.addEventListener("change",function(){
+      state[s.id]=cb.checked; try{localStorage.setItem(PK,JSON.stringify(state));}catch(e){}
+      setDone(s.id, cb.checked);
+      paint();
+    });
+  });
+  paint();
+
+  // ---------- scrollspy ----------
+  var byId={}; tocLinks.forEach(function(a){byId[a.dataset.id]=a;});
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){
+        if(en.isIntersecting){
+          tocLinks.forEach(function(a){a.classList.remove("active");});
+          var a=byId[en.target.id]; if(a) a.classList.add("active");
+        }
+      });
+    },{rootMargin:"-120px 0px -70% 0px",threshold:0});
+    secs.forEach(function(s){io.observe(s);});
+  }
+
+  // ---------- reveal all ----------
+  [].slice.call(document.querySelectorAll(".rev-all")).forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var sec=document.getElementById(btn.dataset.scope);
+      if(!sec) return;
+      var ds=[].slice.call(sec.querySelectorAll("details.q"));
+      var anyClosed=ds.some(function(d){return !d.open;});
+      ds.forEach(function(d){d.open=anyClosed;});
+      btn.textContent=anyClosed?"Hide answers in this section":(btn.dataset.scope==="likely"?"Reveal the model answer":"Reveal all model answers");
+    });
+  });
+
+  // ---------- mobile contents ----------
+  var mb=document.getElementById("menuBtn"), sb=document.getElementById("sidebar");
+  if(mb) mb.onclick=function(){ sb.classList.toggle("open"); };
+  toc.addEventListener("click",function(){ if(sb.classList.contains("open")) sb.classList.remove("open"); });
+
+  // ---------- read aloud (text to speech) ----------
+  (function(){
+    var synth = window.speechSynthesis;
+    var ttsTop = document.getElementById("ttsTop");
+    var bar = document.getElementById("tts-bar");
+    var supported = !!synth && typeof window.SpeechSynthesisUtterance !== "undefined";
+    if(!supported){ if(ttsTop) ttsTop.style.display="none"; return; }
+
+    var barLbl = document.getElementById("ttsLbl");
+    var pauseBtn = document.getElementById("ttsPause");
+    var prevBtn = document.getElementById("ttsPrev");
+    var nextBtn = document.getElementById("ttsNext");
+    var rateBtn = document.getElementById("ttsRate");
+    var stopBtn = document.getElementById("ttsStop");
+
+    var CHUNK_SEL = "h2,h3,h4,p,li,summary,td,th,.model,blockquote";
+    var STRIP_SEL = ".num, button, .review-row, .sec-listen, .sec-done";
+
+    function chunkText(el){
+      var c = el.cloneNode(true);
+      [].slice.call(c.querySelectorAll(CHUNK_SEL)).forEach(function(n){ n.parentNode && n.parentNode.removeChild(n); });
+      [].slice.call(c.querySelectorAll(STRIP_SEL)).forEach(function(n){ n.parentNode && n.parentNode.removeChild(n); });
+      return c.textContent.replace(/[\u00B7\u2022]/g, ", ").replace(/[\u2013\u2014]/g, ", ").replace(/\s+/g, " ").trim();
+    }
+    function splitLong(t){
+      if(t.length <= 220) return [t];
+      var sentences = [], cur = "", i;
+      for(i=0;i<t.length;i++){ cur += t.charAt(i);
+        if(/[.!?]/.test(t.charAt(i)) && (t.charAt(i+1)===" " || i===t.length-1)){ sentences.push(cur); cur=""; } }
+      if(cur) sentences.push(cur);
+      var out = [], buf = "";
+      sentences.forEach(function(p){ p = p.trim(); if(!p) return;
+        if(buf && (buf+" "+p).length > 220){ out.push(buf.trim()); buf = p; }
+        else buf = buf ? buf+" "+p : p; });
+      if(buf.trim()) out.push(buf.trim());
+      return out;
+    }
+
+    var queue = [];
+    secs.forEach(function(s){
+      [].slice.call(s.querySelectorAll(CHUNK_SEL)).forEach(function(el){
+        if(el.closest(".review-row")) return;
+        var t = chunkText(el); if(!t) return;
+        splitLong(t).forEach(function(part){ queue.push({ el: el, sec: s.id, text: part }); });
+      });
+    });
+
+    secs.forEach(function(s){
+      var h = s.querySelector("h2"); if(!h) return;
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "sec-listen"; b.innerHTML = "&#9654; Listen";
+      b.setAttribute("aria-label", "Listen to this section");
+      b.addEventListener("click", function(){ start(sectionStart(s.id)); });
+      h.appendChild(b);
+    });
+
+    var order = secs.map(function(s){ return s.id; });
+    var RK = "sf_tts_rate", rates = [0.8, 1, 1.2, 1.5], rate = 1;
+    try{ var sr = parseFloat(localStorage.getItem(RK)); if(sr && rates.indexOf(sr)!==-1) rate = sr; }catch(e){}
+    rateBtn.textContent = (rate % 1 === 0 ? rate : rate) + "×";
+
+    var voice = null;
+    function pickVoice(){
+      var vs = synth.getVoices() || []; if(!vs.length) return;
+      voice = vs.filter(function(v){ return v.lang === "en-US"; })[0]
+           || vs.filter(function(v){ return /^en/i.test(v.lang); })[0] || vs[0];
+    }
+    pickVoice();
+    if(typeof synth.onvoiceschanged !== "undefined") synth.onvoiceschanged = pickVoice;
+
+    var idx = -1, playing = false, paused = false, gen = 0;
+
+    function clearHi(){ var p = document.querySelector(".tts-active"); if(p) p.classList.remove("tts-active"); }
+    function sectionStart(id){ for(var i=0;i<queue.length;i++){ if(queue[i].sec===id) return i; } return 0; }
+    function curSec(){ return (idx>=0 && idx<queue.length) ? queue[idx].sec : order[0]; }
+    function inViewSec(){ var best = order[0]; secs.forEach(function(s){ if(s.getBoundingClientRect().top <= 150) best = s.id; }); return best; }
+    function setPauseIcon(){ pauseBtn.innerHTML = paused ? "&#9654;" : "&#9208;"; pauseBtn.setAttribute("aria-label", paused ? "Resume" : "Pause"); }
+    function setTop(active){ ttsTop.innerHTML = active ? "&#9632; Stop" : "&#9654; Listen"; ttsTop.setAttribute("aria-pressed", active ? "true" : "false"); }
+
+    function speak(myGen){
+      if(myGen !== gen || !playing) return;
+      if(idx >= queue.length){ stopAll(); return; }
+      var item = queue[idx];
+      clearHi();
+      var det = item.el.closest("details"); if(det && !det.open) det.open = true;
+      item.el.classList.add("tts-active");
+      var r = item.el.getBoundingClientRect();
+      if(r.top < 96 || r.bottom > window.innerHeight - 96) item.el.scrollIntoView({ block: "center", behavior: "smooth" });
+      barLbl.textContent = "Reading: " + (labels[item.sec] || item.sec);
+      var u = new SpeechSynthesisUtterance(item.text);
+      if(voice) u.voice = voice;
+      u.rate = rate; u.pitch = 1;
+      u.onend = function(){ if(myGen !== gen || !playing || paused) return; idx++; speak(myGen); };
+      u.onerror = function(){ if(myGen !== gen || !playing) return; idx++; speak(myGen); };
+      synth.speak(u);
+    }
+
+    function start(from){
+      gen++; var myGen = gen;
+      try{ synth.cancel(); }catch(e){}
+      idx = from; playing = true; paused = false;
+      bar.classList.add("on"); document.body.classList.add("tts-on");
+      setPauseIcon(); setTop(true);
+      setTimeout(function(){ speak(myGen); }, 70);
+    }
+    function stopAll(){
+      gen++; playing = false; paused = false;
+      try{ synth.cancel(); }catch(e){}
+      clearHi(); bar.classList.remove("on"); document.body.classList.remove("tts-on"); setTop(false);
+    }
+    function togglePause(){
+      if(!playing) return;
+      if(paused){ synth.resume(); paused = false; } else { synth.pause(); paused = true; }
+      setPauseIcon();
+    }
+    function jump(dir){
+      var ci = order.indexOf(curSec());
+      var ni = Math.max(0, Math.min(order.length - 1, ci + dir));
+      start(sectionStart(order[ni]));
+    }
+
+    ttsTop.addEventListener("click", function(){ if(playing) stopAll(); else start(sectionStart(inViewSec())); });
+    stopBtn.addEventListener("click", stopAll);
+    pauseBtn.addEventListener("click", togglePause);
+    prevBtn.addEventListener("click", function(){ jump(-1); });
+    nextBtn.addEventListener("click", function(){ jump(1); });
+    rateBtn.addEventListener("click", function(){
+      rate = rates[(rates.indexOf(rate) + 1) % rates.length];
+      rateBtn.textContent = rate + "×";
+      try{ localStorage.setItem(RK, rate); }catch(e){}
+      if(playing) start(idx);
+    });
+    window.addEventListener("beforeunload", function(){ try{ synth.cancel(); }catch(e){} });
+  })();
+})();
+</script>
+</body>
+</html>
