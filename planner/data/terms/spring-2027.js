@@ -37,6 +37,7 @@
     { id: "CS 164", instructor: "Sarah Chasins", meet: [{ days: "TuTh", start: "14:00", end: "15:29" }], location: "Gateway 1220" },
     { id: "CS 169L", instructor: "Armando Fox, Michael Ball", meet: [{ days: "MF", start: "15:30", end: "17:00" }], location: "Gateway B1015",
       note: "Needs 169A, which isn't on the Spring 2027 schedule." },
+    { id: "CS 182", meet: [], location: "Not offered this term (fall only)" },
     { id: "CS 185", instructor: "Sergey Levine", meet: [{ days: "WF", start: "08:00", end: "09:29" }], location: "Gateway 1210" },
     { id: "CS C176", instructor: "Allon Wagner", meet: [{ days: "TuTh", start: "15:30", end: "16:59" }], location: "Gateway B1023" },
     { id: "CS 172", instructor: "Alistair Sinclair", meet: [{ days: "TuTh", start: "11:00", end: "12:29" }], location: "Lewis 9" },
