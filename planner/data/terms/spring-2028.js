@@ -17,6 +17,7 @@
     { id: "CS 186", meet: [], location: "Schedule TBA" },
     { id: "CS 161", meet: [], location: "Schedule TBA" },
     { id: "CS 184", meet: [], location: "Schedule TBA" },
+    { id: "CS 168", meet: [], location: "Schedule TBA" },
     { id: "CS 162", meet: [], location: "Schedule TBA" },
     { id: "CS 164", meet: [], location: "Schedule TBA" },
     { id: "CS C176", meet: [], location: "Schedule TBA" },

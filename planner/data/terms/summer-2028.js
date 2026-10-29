@@ -10,6 +10,7 @@
   dates: "Schedule not published yet",
   intro: "Schedule not published yet. On the 4-semester route this is where the last minor courses go, so confirm with CDSS and CogSci that a summer degree term works for you.",
   courses: [
+    { id: "CS 168", meet: [], location: "If offered this summer" },
     { id: "CC POLI", meet: [], location: "Online at De Anza or Foothill" },
     { id: "CC HIST", meet: [], location: "Online at De Anza or Foothill" },
     { id: "COGSCI C100", meet: [], location: "Schedule TBA" },
