@@ -34,6 +34,29 @@ window.PlannerApp = { start: function (D, OPTS) {
       return c;
     });
   });
+  // every catalog course shows on every fall/spring planning tab, even in terms it doesn't run,
+  // so nothing seems missing; those get the red "not this term" label and sort to the bottom.
+  // Summer tabs only auto-list courses that run in summer.
+  TERMS.forEach(function (t) {
+    if (t.enrolled) return;
+    var have = {}; t.courses.forEach(function (c) { have[c.id] = true; });
+    var sea = { 1: "S", 2: "U", 3: "F" }[t.order % 10];
+    Object.keys(CATALOG).forEach(function (id) {
+      var b = CATALOG[id]; if (have[id] || b.pastOnly || !b.offered || b.offered === "A" || b.offered === "?") return;
+      if (sea === "U" && b.offered.indexOf("U") === -1) return;
+      var c = {}; for (var k in b) c[k] = b[k];
+      c.id = id; c.meet = []; c.auto = true;
+      c.location = b.offered.indexOf(sea) === -1 ? "Not offered this term" : "Schedule TBA";
+      t.courses.push(c);
+    });
+    // offered-this-term first, then the rest; original order otherwise
+    t.courses = t.courses.map(function (c, i) { return { c: c, i: i }; }).sort(function (x, y) {
+      var ox = x.c.offered && x.c.offered !== "?" && x.c.offered !== "A" && x.c.offered.indexOf(sea) === -1 ? 1 : 0;
+      var oy = y.c.offered && y.c.offered !== "?" && y.c.offered !== "A" && y.c.offered.indexOf(sea) === -1 ? 1 : 0;
+      return ox - oy || x.i - y.i;
+    }).map(function (x) { return x.c; });
+  });
+
   // live schedule data (scripts/update_schedule.py, refreshed daily) beats hand-written TBA
   var LIVE = window.PLANNER_LIVE || { terms: {} };
   TERMS.forEach(function (t) {

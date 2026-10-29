@@ -11,15 +11,15 @@
 */
 window.PLANNER_CATALOG = {
   /* ---------- Already taken (Fall 2026) ---------- */
-  "CS 61A": { offered: "FS", load: 4, title: "The Structure and Interpretation of Computer Programs", units: 4, cat: ["core"], prereq: [],
+  "CS 61A": { pastOnly: true, offered: "FS", load: 4, title: "The Structure and Interpretation of Computer Programs", units: 4, cat: ["core"], prereq: [],
     note: "Taken Fall 2026.", link: "https://cs61a.org/" },
-  "CS 70": { offered: "FS", load: 4, title: "Discrete Mathematics and Probability Theory", units: 4, cat: ["core"], prereq: [],
+  "CS 70": { pastOnly: true, offered: "FS", load: 4, title: "Discrete Mathematics and Probability Theory", units: 4, cat: ["core"], prereq: [],
     note: "Taken Fall 2026.", link: "https://www.eecs70.org/" },
-  "ASAMST 128AC": { offered: "?", load: 2, title: "Muslims in America", units: 4, cat: ["small"], prereq: [],
+  "ASAMST 128AC": { pastOnly: true, offered: "?", load: 2, title: "Muslims in America", units: 4, cat: ["small"], prereq: [],
     note: "Taken Fall 2026. Covers American Cultures." },
-  "CS 198": { offered: "FS", load: 1, title: "Directed Group Study (student-led)", units: 2, cat: ["small"], prereq: [], verify: true,
+  "CS 198": { pastOnly: true, offered: "FS", load: 1, title: "Directed Group Study (student-led)", units: 2, cat: ["small"], prereq: [], verify: true,
     note: "Taken Fall 2026. P/NP. Units are a placeholder; tell me the real number to fix it." },
-  "FUNG 188": { offered: "?", load: 2.5, title: "Fung Fellows: health-tech project course", units: 3, cat: ["small"], prereq: [], verify: true,
+  "FUNG 188": { pastOnly: true, offered: "?", load: 2.5, title: "Fung Fellows: health-tech project course", units: 3, cat: ["small"], prereq: [], verify: true,
     note: "Taken Fall 2026. Course number and units are placeholders; tell me the real ones to fix them." },
 
   /* ---------- Core ---------- */
@@ -85,8 +85,8 @@ window.PLANNER_CATALOG = {
     link: "https://www2.eecs.berkeley.edu/Courses/CS182/" },
   "CS 171": { offered: "F", profs: {"fall": "Sanjam Garg"}, profNote: "Fall only, taught by Sanjam Garg.", load: 3.5, title: "Cryptography", units: 4, cat: ["ud"], ud: ["cs", "cseecs"], prereq: [["CS 70"]],
     note: "Security theory. Only needs CS 70. Fall-only lately.", link: "https://www2.eecs.berkeley.edu/Courses/CS171/" },
-  "CS 152": { offered: "F", profs: {"fall": "Christopher Fletcher"}, profNote: "Fall only, taught by Christopher Fletcher.", load: 4.5, title: "Computer Architecture and Engineering", units: 4, cat: ["ud", "design"], ud: ["design", "cs", "cseecs"], prereq: [["CS 61C"]],
-    note: "Systems/hardware design course, heavy. Fall-only lately.", link: "https://www2.eecs.berkeley.edu/Courses/CS152/" },
+  "CS 152": { offered: "FS", profs: {"fall": "Christopher Fletcher"}, load: 4.5, title: "Computer Architecture and Engineering", units: 4, cat: ["ud", "design"], ud: ["design", "cs", "cseecs"], prereq: [["CS 61C"]],
+    note: "Systems/hardware design course, heavy. On both the Fall 2026 and Spring 2027 schedules.", link: "https://www2.eecs.berkeley.edu/Courses/CS152/" },
   "CS 174": { offered: "X", profNote: "Not on the 2026-27 schedule at all.", load: 3.5, title: "Combinatorics and Discrete Probability", units: 4, cat: ["ud"], ud: ["cs", "cseecs"], prereq: [["CS 170"]],
     note: "Theory. Not on the 2026-27 schedule, so it may not run before you graduate.", link: "https://www2.eecs.berkeley.edu/Courses/CS174/" },
   "CS C176": { offered: "S", profs: {"spring": "Allon Wagner"}, profNote: "Spring only, taught by Allon Wagner.", load: 3.5, title: "Algorithms for Computational Biology", units: 4, cat: ["ud"], ud: ["cs", "cseecs"],
