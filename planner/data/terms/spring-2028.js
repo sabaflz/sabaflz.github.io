@@ -31,6 +31,7 @@
     { id: "CC POLI", meet: [], location: "Online at De Anza or Foothill" },
     { id: "CC HIST", meet: [], location: "Online at De Anza or Foothill" },
     { id: "HISTORY 7B", meet: [], location: "Schedule TBA" },
+    { id: "CS 182", meet: [], location: "Not offered this term (fall only)" },
     { id: "CS 185", meet: [], location: "Schedule TBA" },
     { id: "CS 172", meet: [], location: "Schedule TBA" },
     { id: "CS 174", meet: [], location: "Schedule TBA" },
