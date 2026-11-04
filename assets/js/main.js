@@ -188,7 +188,7 @@
     if(c === 'clear'){ out.innerHTML = ''; return; }
     if(c === 'exit'){ closeTerm(); return; }
     if(c === 'matrix'){ rain(); print(reduce ? 'Reduced motion is on, so the rain stays off.' : 'For old times\' sake.'); return; }
-    print(cmds[c] ? cmds[c]() : 'Command not found: ' + esc(c) + '. Try <b>help</b>.');
+    print(Object.prototype.hasOwnProperty.call(cmds, c) ? cmds[c]() : 'Command not found: ' + esc(c) + '. Try <b>help</b>.');
   });
 
   function rain(){

@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.github.com; base-uri 'none'; form-action 'none'; object-src 'none'">
+<meta name="referrer" content="no-referrer">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Course Planner</title>
 <meta name="description" content="Saba Feilizadeh's semester course planner for the UC Berkeley CS BA.">
@@ -337,7 +339,7 @@ main.view-grad .layout, main.view-grad #tracker{display:none}
 <script src="data/terms/summer-2028.js?v=17"></script>
 <script src="data/terms/fall-2028.js?v=17"></script>
 <script src="data/gradplan.js?v=17"></script>
-<script src="data/live.js?v=17" onerror="window.PLANNER_LIVE=null"></script>
+<script src="data/live.js?v=17"></script>
 <script src="planner.js?v=17"></script>
 <script src="sync.js?v=17"></script>
 <script src="../assets/js/theme.js?v=1"></script>
