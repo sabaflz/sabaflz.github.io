@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Lab · Saba Feilizadeh</title>
+<meta name="description" content="Side projects and experiments by Saba Feilizadeh: small tools built to answer a question or scratch an itch.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='44' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>SF</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/main.css?v=4">
+<style>
+  .lab-intro{padding:24px 0 8px}
+  .lab-intro .eyebrow{font:500 14px/1 var(--mono);color:var(--saffron-ink);letter-spacing:.04em;text-transform:uppercase;margin:0 0 14px}
+  .lab-intro h1{font:700 clamp(2.2rem,6vw,3.6rem)/1.02 var(--display);letter-spacing:-.025em;margin:0}
+  .lab-intro .lede{font:500 clamp(1.15rem,2.2vw,1.5rem)/1.4 var(--display);color:var(--muted);max-width:40ch;margin:18px 0 0;letter-spacing:-.01em}
+  .lab-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(18px,3vw,28px);margin:48px 0 24px}
+  .lab-card{position:relative;background:var(--surface);border:1.5px solid var(--line);border-radius:18px;padding:26px 24px;display:flex;flex-direction:column;gap:10px;transition:border-color .2s,transform .2s}
+  .lab-card::before,.lab-card::after{content:"";position:absolute;width:16px;height:16px;border:2.5px solid var(--saffron);opacity:0;transition:opacity .2s}
+  .lab-card::before{top:12px;left:12px;border-right:0;border-bottom:0}
+  .lab-card::after{bottom:12px;right:12px;border-left:0;border-top:0}
+  .lab-card:hover{border-color:var(--saffron);transform:translateY(-2px)}
+  .lab-card:hover::before,.lab-card:hover::after{opacity:1}
+  .lab-card .tag{align-self:flex-start;font:500 12px/1 var(--mono);text-transform:uppercase;letter-spacing:.05em;padding:6px 10px;border-radius:999px;border:1.5px solid var(--line);color:var(--muted)}
+  .lab-card .tag.building{border-color:var(--saffron);color:var(--saffron-ink)}
+  .lab-card h2{font:700 1.5rem/1.1 var(--display);letter-spacing:-.02em;margin:4px 0 0}
+  .lab-card p{margin:0;color:var(--muted);max-width:40ch}
+  .lab-card .go{margin-top:auto;padding-top:10px;font-weight:600;font-size:15px;color:var(--saffron-ink)}
+  .lab-card .go[aria-disabled="true"]{color:var(--muted);font-weight:500}
+  .lab-note{color:var(--muted);font-size:15px;max-width:60ch;border-top:1.5px solid var(--line);padding-top:22px;margin:16px 0 72px}
+  @media (max-width:720px){.lab-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="topbar" id="topbar">
+  <nav class="nav wrap" aria-label="Main">
+    <a class="mark" href="../">SF</a>
+    <ul>
+      <li><a href="../#work">Work</a></li>
+      <li><a href="../#leadership">Leadership</a></li>
+      <li><a href="../#skills">Skills</a></li>
+      <li><a href="../guides/">Study Guides</a></li>
+      <li><a href="../planner/">Planner</a></li>
+      <li><a href="./" aria-current="page">Lab</a></li>
+      <li><a href="../resume/">Resume</a></li>
+      <li><a href="../#contact">Contact</a></li>
+    </ul>
+  </nav>
+</header>
+
+<main class="wrap">
+  <section class="lab-intro">
+    <p class="eyebrow">The lab</p>
+    <h1>Things I build for fun.</h1>
+    <p class="lede">Small tools and experiments outside of coursework, each one started by a question I wanted answered.</p>
+  </section>
+
+  <div class="lab-grid">
+    <article class="lab-card">
+      <span class="tag building">In progress</span>
+      <h2>Recipe keeper</h2>
+      <p>A clean place to save recipes and scale servings on the fly, without ten paragraphs of story before the ingredients.</p>
+      <span class="go" aria-disabled="true">Coming soon</span>
+    </article>
+
+    <article class="lab-card">
+      <span class="tag">Planned</span>
+      <h2>Favorite picker</h2>
+      <p>A tiny bracket tool for settling a favorite anything by head to head choices instead of an impossible ranked list.</p>
+      <span class="go" aria-disabled="true">Coming soon</span>
+    </article>
+  </div>
+
+  <p class="lab-note">More experiments land here as I finish them. Each ships as its own page under this tab, so the menu stays short while the shelf grows.</p>
+
+  <footer>
+    <span>Built and maintained by Saba Feilizadeh.</span>
+    <span><a href="../">Back to home</a></span>
+  </footer>
+</main>
+
+<script src="../assets/js/nav.js?v=1"></script>
+<script src="../assets/js/tts.js?v=1"></script>
+<script src="../assets/js/theme.js?v=1"></script>
+</body>
+</html>
