@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CS 61A Midterm 2 Retake Guide</title>
+<meta name="description" content="A focused CS 61A Midterm 2 retake guide: list mutation and aliasing, higher-order functions and lambdas, sequences and comprehensions, the Tree ADT, recursion and tree recursion, environment diagrams, and linked lists, with the traps that lose points and how to avoid them.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='40' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>61A</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.6 var(--body);
+  -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron); outline-offset:3px; border-radius:3px}
+
+#topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--bg); border-bottom:1.5px solid var(--line)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:16px; max-width:1180px; margin:0 auto; padding:14px clamp(16px,4vw,40px)}
+.nav .mark{font:800 20px/1 var(--display); text-decoration:none; letter-spacing:-.02em}
+.crumbs{font:500 14px var(--body); color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.crumbs a{text-decoration:none} .crumbs a:hover{color:var(--saffron-ink)} .crumbs b{color:var(--ink)}
+.crumbs span{margin:0 6px; color:var(--line)}
+.t-btn{font:500 13px/1 var(--mono); background:var(--surface); color:var(--ink);
+  border:1.5px solid var(--line); border-radius:999px; padding:8px 13px; cursor:pointer; white-space:nowrap}
+.t-btn:hover{border-color:var(--saffron)}
+
+#exam-strip{background:var(--saffron-soft); border-bottom:1.5px solid var(--line); color:var(--saffron-ink);
+  font:500 13.5px/1.4 var(--mono); text-align:center; padding:9px 16px}
+#exam-strip b{font-weight:700}
+
+#layout{display:grid; grid-template-columns:260px minmax(0,1fr); gap:0; max-width:1180px; margin:0 auto}
+#sidebar{position:sticky; top:96px; align-self:start; height:calc(100vh - 110px); overflow-y:auto;
+  padding:28px 10px 28px clamp(16px,4vw,40px)}
+.side-head{font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 12px}
+#toc{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px}
+#toc a{display:block; text-decoration:none; color:var(--muted); font-size:14.5px; padding:7px 12px; border-radius:9px; border-left:2.5px solid transparent}
+#toc a:hover{background:var(--surface-2); color:var(--ink)}
+#toc a.active{color:var(--saffron-ink); border-left-color:var(--saffron); background:var(--surface-2); font-weight:600}
+.toc-tag{font:500 9.5px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--saffron-ink); border:1px solid var(--saffron); border-radius:4px; padding:2px 4px; margin-left:6px; vertical-align:middle}
+
+#main{padding:30px clamp(16px,4vw,40px) 80px; min-width:0}
+header.page{padding:14px 0 10px}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--saffron-ink); margin:0 0 10px}
+h1{font:600 clamp(2rem,6vw,2.8rem)/1.05 var(--display); margin:0 0 12px; letter-spacing:-.01em; text-wrap:balance}
+.lede{color:var(--muted); max-width:66ch; margin:0 0 8px}
+.cta-row{display:flex; flex-wrap:wrap; gap:10px; margin:18px 0 6px}
+.cta{display:inline-flex; align-items:center; gap:7px; text-decoration:none; font:600 14.5px var(--body);
+  background:var(--saffron); color:var(--on-saffron); border:1.5px solid var(--saffron); border-radius:999px; padding:10px 18px}
+.cta.ghost{background:transparent; color:var(--ink); border-color:var(--line)}
+.cta.ghost:hover{border-color:var(--saffron)}
+
+section.topic{padding:30px 0; border-top:1.5px solid var(--line); scroll-margin-top:150px}
+section.topic:first-of-type{border-top:none}
+h2{font:600 clamp(1.4rem,3.5vw,1.9rem)/1.1 var(--display); margin:0 0 6px; letter-spacing:-.01em}
+.focus{display:inline-block; font:600 11px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--on-saffron); background:var(--saffron); border-radius:5px; padding:4px 7px; margin:0 0 12px}
+h3{font:600 17px/1.2 var(--mono); color:var(--saffron-ink); margin:26px 0 8px; letter-spacing:.01em}
+p{margin:0 0 14px; max-width:72ch}
+ul,ol{margin:0 0 14px; padding-left:22px; max-width:72ch} li{margin:5px 0}
+strong{font-weight:600}
+code{font:500 14px var(--mono); background:var(--surface-2); border:1px solid var(--line); border-radius:5px; padding:1px 5px}
+pre{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; overflow:auto; margin:0 0 16px}
+pre code{background:none; border:none; padding:0; font-size:13.5px; line-height:1.55; color:var(--ink); white-space:pre}
+.callout{background:var(--surface-2); border:1.5px solid var(--line); border-left:3px solid var(--saffron); border-radius:12px; padding:14px 18px; margin:0 0 16px}
+.callout.warn{border-left-color:#C64545}
+.callout p:last-child{margin-bottom:0}
+table{border-collapse:collapse; width:100%; margin:0 0 16px; font-size:14.5px; display:block; overflow-x:auto}
+th,td{border:1.5px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top}
+th{background:var(--surface-2); font:600 13px var(--mono); letter-spacing:.02em}
+td code{font-size:13px}
+footer{border-top:1.5px solid var(--line); padding:28px 0 10px; color:var(--muted); font-size:14px; margin-top:10px}
+
+@media (max-width:860px){
+  #layout{grid-template-columns:1fr}
+  #sidebar{display:none}
+  #main{padding-top:22px}
+}
+</style>
+</head>
+<body>
+<header id="topbar">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="../../" aria-label="Back to site">SF</a>
+    <div class="crumbs"><a href="../">Study Guides</a> <span>/</span> <b>CS 61A Midterm 2 Retake</b></div>
+    <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+  </nav>
+</header>
+
+<div id="exam-strip">
+  <b>Midterm 2 Retake</b> &middot; same scope as the original, harder problems &middot; built around a diagnostic, deepest on the four topics that cost the most points
+</div>
+
+<div id="layout">
+  <aside id="sidebar" aria-label="Sections">
+    <div class="side-head">On this page</div>
+    <ul id="toc">
+      <li><a href="#how">How to use this</a></li>
+      <li><a href="#mutation">Mutation &amp; aliasing<span class="toc-tag">focus</span></a></li>
+      <li><a href="#hof">HOFs &amp; lambdas<span class="toc-tag">focus</span></a></li>
+      <li><a href="#seq">Sequences &amp; comprehensions<span class="toc-tag">focus</span></a></li>
+      <li><a href="#trees">Trees (the ADT)<span class="toc-tag">focus</span></a></li>
+      <li><a href="#recursion">Recursion &amp; tree recursion</a></li>
+      <li><a href="#env">Environment diagrams</a></li>
+      <li><a href="#linked">Linked lists</a></li>
+      <li><a href="#checklist">Exam-day checklist</a></li>
+    </ul>
+  </aside>
+
+  <main id="main">
+    <header class="page">
+      <p class="eyebrow">CS 61A &middot; Fall 2026 &middot; Retake prep</p>
+      <h1>Midterm 2 Retake Guide</h1>
+      <p class="lede">Same topics as the first MT2, harder problems. This guide goes deepest on the four areas a diagnostic flagged as point-losers, and keeps the topics you already have down to quick refreshers. The goal is understanding, not memorizing.</p>
+      <div class="cta-row">
+        <a class="cta" href="../cs61a-mt2/">Practice app</a>
+        <a class="cta ghost" href="#mutation">Jump to focus areas</a>
+      </div>
+    </header>
+
+    <section class="topic" id="how">
+      <h2>How to use this</h2>
+      <p>Four sections are marked <b>focus</b>: mutation and aliasing, higher-order functions, sequences and comprehensions, and tree navigation. Those are where points actually leak, so read them slowly and do the practice problems in each. The remaining sections (recursion, environment diagrams, linked lists) are refreshers for things you already handle well, there to keep them sharp.</p>
+      <p>The habit that matters most on a paper exam: <strong>trace by hand, one tiny step at a time.</strong> Most lost points on MT2 are not from not knowing the idea; they are from doing two steps in your head at once and skipping the one that mattered.</p>
+    </section>
+
+    <section class="topic" id="mutation">
+      <span class="focus">Focus area</span>
+      <h2>Mutation &amp; aliasing</h2>
+      <p>This is the single biggest source of lost points on MT2. The whole topic is one question: <b>are these two names the same list object, or two different lists?</b></p>
+      <h3>The one rule</h3>
+      <p><code>=</code> never copies a list. It just gives the same object another name. To get a <b>new</b> list you must slice it, call <code>list()</code>, or build one with a comprehension.</p>
+      <pre><code>a = [1, 2, 3]
+b = a          # SAME list. a and b are two names for it.
+c = a[:]       # NEW list (a copy). c is independent.
+d = list(a)    # NEW list (a copy).
+e = [x for x in a]   # NEW list (a copy).</code></pre>
+      <p>So mutating through one name is seen by every <b>alias</b>, but never by a <b>copy</b>:</p>
+      <pre><code>a = [1, 2, 3]
+b = a
+c = a[:]
+b.append(4)    # changes the one shared list
+# a is [1, 2, 3, 4]   (b is the same object)
+# c is [1, 2, 3]      (c was a copy, untouched)</code></pre>
+      <div class="callout warn">
+        <p><b>The trap you hit:</b> treating <code>a[:]</code> like <code>b = a</code>. They are opposites. <code>b = a</code> aliases; <code>a[:]</code> copies. If a question slices a list, a new list is born on that line.</p>
+      </div>
+      <h3>Which operations mutate, which build new</h3>
+      <table>
+        <tr><th>Mutates in place (returns None)</th><th>Builds a new list (returns it)</th></tr>
+        <tr><td><code>lst.append(x)</code>, <code>lst.extend(xs)</code></td><td><code>lst + [x]</code> (concatenation)</td></tr>
+        <tr><td><code>lst.pop()</code>, <code>lst.remove(x)</code></td><td><code>lst[1:]</code>, <code>lst[:]</code> (slicing)</td></tr>
+        <tr><td><code>lst.insert(i, x)</code></td><td><code>list(lst)</code>, <code>[f(x) for x in lst]</code></td></tr>
+        <tr><td><code>lst[0] = x</code> (item assignment)</td><td><code>sorted(lst)</code></td></tr>
+      </table>
+      <div class="callout">
+        <p><b>Because mutating methods return <code>None</code>:</b> never write <code>a = a.append(4)</code>. That sets <code>a</code> to <code>None</code>. Just write <code>a.append(4)</code> on its own line.</p>
+      </div>
+      <h3>How to answer a box-and-pointer question</h3>
+      <p>Draw one box per <b>list object</b>, not one per name. An arrow is a name pointing at an object. When a line says <code>b = a</code>, draw a second arrow to the same box. When a line slices or builds, draw a new box. Then apply each mutation to the box its name points at.</p>
+      <pre><code>s = [1, 2, 3]
+t = s[1:]      # NEW box [2, 3]
+t.append(4)    # t's box becomes [2, 3, 4]
+s[0] = t       # s's first slot now points at t's box
+# s displays [[2, 3, 4], 2, 3] ; t displays [2, 3, 4]</code></pre>
+      <p>The reason <code>s</code> shows <code>[2, 3, 4]</code> inside it is that <code>s[0]</code> and <code>t</code> point at the <b>same</b> box, so printing <code>s</code> shows whatever that box currently holds.</p>
+    </section>
+
+    <section class="topic" id="hof">
+      <span class="focus">Focus area</span>
+      <h2>Higher-order functions &amp; lambdas</h2>
+      <p>A higher-order function is just a function that either takes a function as an argument or returns a function. You already know it returns a function; the gap is <b>tracing what happens when you then apply it</b>.</p>
+      <h3>A function value vs. calling it</h3>
+      <pre><code>def make_adder(n):
+    def adder(k):
+        return k + n
+    return adder
+
+make_adder(3)        # a FUNCTION (adder, which remembers n = 3)
+make_adder(3)(4)     # 7  (now we call that function with k = 4)</code></pre>
+      <p><code>make_adder(3)</code> hands back a function. The second pair of parentheses is a <b>separate call</b> on that returned function. Two sets of parentheses means two calls, left to right.</p>
+      <h3>Applying a function twice: evaluate inside-out</h3>
+      <p><code>f(f(x))</code> means: first compute <code>f(x)</code>, then feed that result back into <code>f</code>. Innermost parentheses first, always.</p>
+      <pre><code>square = lambda x: x * x
+(lambda f, x: f(f(x)))(square, 2)
+# step 1: f(2) = square(2) = 4
+# step 2: f(4) = square(4) = 16
+# result: 16   (NOT 8)</code></pre>
+      <div class="callout warn">
+        <p><b>The trap you hit:</b> collapsing <code>f(f(2))</code> into one operation. Do it in two steps on paper: write down <code>f(2)</code>'s value, then apply <code>f</code> to that. Same for <code>g(g(3))</code> with <code>g = lambda n: n + 1</code>: <code>g(3) = 4</code>, then <code>g(4) = 5</code>.</p>
+      </div>
+      <h3>Lambdas are just functions</h3>
+      <p><code>lambda x: x * x</code> is the same as <code>def _(x): return x * x</code>, but as an expression with no name. It can be passed around, returned, and called like any function. A lambda has exactly one expression as its body, no statements.</p>
+      <pre><code>compose = lambda f, g: lambda x: f(g(x))   # returns a new function
+h = compose(lambda x: x + 1, lambda x: x * 2)
+h(5)   # f(g(5)) = (5*2) + 1 = 11</code></pre>
+      <p>Read a returned lambda the same way as a returned <code>def</code>: it remembers the variables from where it was created (here <code>f</code> and <code>g</code>).</p>
+    </section>
+
+    <section class="topic" id="seq">
+      <span class="focus">Focus area</span>
+      <h2>Sequences &amp; comprehensions</h2>
+      <h3>Slicing</h3>
+      <p><code>s[start:stop]</code> includes <code>start</code>, excludes <code>stop</code>, and always returns a <b>new</b> list. Omit an end to go to the edge; a negative index counts from the right.</p>
+      <pre><code>s = [10, 20, 30, 40, 50]
+s[1:3]    # [20, 30]      (index 1 and 2, not 3)
+s[:2]     # [10, 20]
+s[2:]     # [30, 40, 50]
+s[-1]     # 50            (last element)
+s[::-1]   # [50, 40, 30, 20, 10]  (reversed copy)</code></pre>
+      <h3>Comprehensions: filter first, then transform</h3>
+      <p>Read <code>[EXPR for x in SEQ if COND]</code> as two steps: keep each <code>x</code> where <code>COND</code> is true, then compute <code>EXPR</code> on the survivors.</p>
+      <pre><code>[x * 2 for x in [1, 2, 3, 4] if x % 2 == 0]
+# step 1 (filter): keep evens -> 2, 4
+# step 2 (transform): x * 2 -> 4, 8
+# result: [4, 8]</code></pre>
+      <div class="callout warn">
+        <p><b>The trap you hit:</b> misreading the expression. <code>x * 2</code> doubles (4, 8); <code>x ** 2</code> or <code>x * x</code> squares (4, 16). The exam puts these near each other on purpose. Read the operator, then the filter, out loud if you have to.</p>
+      </div>
+      <h3>Common sequence operations</h3>
+      <table>
+        <tr><th>Expression</th><th>Result for <code>s = [3, 1, 2]</code></th></tr>
+        <tr><td><code>len(s)</code></td><td><code>3</code></td></tr>
+        <tr><td><code>sum(s)</code></td><td><code>6</code></td></tr>
+        <tr><td><code>max(s)</code>, <code>min(s)</code></td><td><code>3</code>, <code>1</code></td></tr>
+        <tr><td><code>sorted(s)</code></td><td><code>[1, 2, 3]</code> (new list)</td></tr>
+        <tr><td><code>2 in s</code></td><td><code>True</code></td></tr>
+        <tr><td><code>[x for x in s if x &gt; 1]</code></td><td><code>[3, 2]</code></td></tr>
+      </table>
+      <p>For a dictionary, <code>d[k]</code> looks up a key (error if missing), <code>d.get(k, default)</code> is safe, <code>k in d</code> tests keys, and <code>for k in d</code> iterates keys in insertion order.</p>
+    </section>
+
+    <section class="topic" id="trees">
+      <span class="focus">Focus area</span>
+      <h2>Trees (the ADT)</h2>
+      <p>A <code>Tree</code> has a <code>label</code> and a list of <code>branches</code>, each of which is itself a <code>Tree</code>. A leaf is a tree with no branches: <code>is_leaf(t)</code> is <code>not t.branches</code>.</p>
+      <pre><code>t = Tree(1, [Tree(2), Tree(3, [Tree(4)])])
+t.label          # 1
+t.branches       # [Tree(2), Tree(3, [Tree(4)])]
+t.branches[0]    # Tree(2)        (the FIRST branch)
+t.branches[1]    # Tree(3, [Tree(4)])   (the SECOND branch)</code></pre>
+      <h3>Navigating: indexing is 0-based</h3>
+      <p><code>branches[0]</code> is the first branch, <code>branches[1]</code> is the second. Walk a chain one attribute at a time and write down what each step evaluates to.</p>
+      <pre><code>t.branches[1].branches[0].label
+# t.branches[1]            -> Tree(3, [Tree(4)])
+# .branches[0]            -> Tree(4)
+# .label                  -> 4</code></pre>
+      <div class="callout warn">
+        <p><b>The trap you hit:</b> reading <code>branches[1]</code> as the first branch. Index 0 is first, 1 is second. On a chain like this, never evaluate two links in your head at once; write the intermediate tree down, then take the next step.</p>
+      </div>
+      <h3>Recursion on trees</h3>
+      <p>Almost every tree function loops over <code>t.branches</code> and recurses on each branch, combining the results with the current label.</p>
+      <pre><code>def tree_sum(t):
+    return t.label + sum(tree_sum(b) for b in t.branches)
+
+def count_leaves(t):
+    if is_leaf(t):
+        return 1
+    return sum(count_leaves(b) for b in t.branches)
+
+def height(t):
+    if is_leaf(t):
+        return 0
+    return 1 + max(height(b) for b in t.branches)</code></pre>
+      <p>To build a <b>new</b> tree, wrap the recursive results in a fresh <code>Tree</code>, never mutate the input: <code>Tree(t.label * 2, [double(b) for b in t.branches])</code>.</p>
+    </section>
+
+    <section class="topic" id="recursion">
+      <h2>Recursion &amp; tree recursion</h2>
+      <p>You have this down, so this is a refresher plus the harder patterns to expect on a retake.</p>
+      <h3>The three-step contract</h3>
+      <ol>
+        <li><b>Base case:</b> the smallest input, answered directly, returning the right type.</li>
+        <li><b>Recursive call:</b> on a strictly smaller input, which you trust to be correct.</li>
+        <li><b>Combine:</b> use that result with the current piece to build the answer.</li>
+      </ol>
+      <h3>Tree recursion (two or more calls)</h3>
+      <p>When each step branches into several calls, you are enumerating choices. The with/without pattern covers most of it:</p>
+      <pre><code>def count_ways(s, n):
+    if n == 0:
+        return 1          # one valid way: used up the target exactly
+    if n < 0 or not s:
+        return 0          # overshot, or ran out of items
+    use  = count_ways(s[1:], n - s[0])   # take s[0]
+    skip = count_ways(s[1:], n)          # leave s[0]
+    return use + skip</code></pre>
+      <p>Swap the combine step for the question: <code>use + skip</code> to count, <code>use or skip</code> for yes/no, <code>max(use, skip)</code> for best. Put the <code>n &lt; 0</code> and empty checks before any <code>s[0]</code>.</p>
+      <div class="callout">
+        <p><b>Harder retake twist:</b> expect a second parameter you carry down (a remaining budget, a running total, or a "minimum allowed" value). Decide what to carry before you write the body, then the base case and the recursive calls follow.</p>
+      </div>
+    </section>
+
+    <section class="topic" id="env">
+      <h2>Environment diagrams</h2>
+      <p>You handled scope correctly on the diagnostic, so just hold the one rule that decides every hard case: <strong>a function looks up names in the frame where it was defined, not where it is called.</strong></p>
+      <pre><code>x = 1
+def f():
+    x = 2
+    def g():
+        return x     # no local x -> look in g's PARENT (f's frame) -> 2
+    return g()
+f()   # 2</code></pre>
+      <p>Each call makes a new frame. A name not found locally is looked up in the parent frame (the frame where the function was defined), then the global frame. When you draw a function value, note its parent; that is the chain its body will search.</p>
+    </section>
+
+    <section class="topic" id="linked">
+      <h2>Linked lists</h2>
+      <p>A <code>Link</code> has <code>first</code> (its value) and <code>rest</code> (the rest of the list, another <code>Link</code> or <code>Link.empty</code>). Recurse on <code>s.rest</code>, build new <code>Link</code>s going back up.</p>
+      <pre><code>def link_sum(s):
+    if s is Link.empty:
+        return 0
+    return s.first + link_sum(s.rest)
+
+def keep_even(s):
+    if s is Link.empty:
+        return s
+    rest = keep_even(s.rest)
+    if s.first % 2 == 0:
+        return Link(s.first, rest)   # new node in front
+    return rest                      # drop s.first</code></pre>
+      <p>The base case is <code>s is Link.empty</code>, not <code>s.rest is Link.empty</code>. Access a chain one step at a time: <code>s.rest.rest.first</code> is the third value.</p>
+    </section>
+
+    <section class="topic" id="checklist">
+      <h2>Exam-day checklist</h2>
+      <p>Tuned to the things that cost you points on the diagnostic.</p>
+      <ol>
+        <li><b>On any list line, ask "new list or same list?"</b> <code>=</code> shares; slicing, <code>list()</code>, and comprehensions copy.</li>
+        <li><b>A mutating method returns <code>None</code>.</b> Never <code>a = a.append(x)</code>.</li>
+        <li><b>Evaluate nested calls inside-out.</b> <code>f(f(x))</code> is two steps; write the inner value down first.</li>
+        <li><b>Two sets of parentheses means two calls.</b> <code>make(3)(4)</code> calls the returned function.</li>
+        <li><b>Read the comprehension operator exactly.</b> <code>* 2</code> doubles, <code>** 2</code> squares. Filter first, then transform.</li>
+        <li><b>Indexing is 0-based.</b> <code>branches[1]</code> is the second branch. Walk chains one attribute at a time.</li>
+        <li><b>Recursion:</b> base case returns the right type, every call shrinks the input, and you carry down whatever state the problem needs.</li>
+        <li><b>Trace by hand, one small step at a time.</b> Most of your lost points are skipped steps, not missing knowledge.</li>
+      </ol>
+      <p>Then put it to work in the <a href="../cs61a-mt2/">practice app</a>: redo the mutation, higher-order, and tree problems cold until the traps above feel automatic.</p>
+    </section>
+
+    <footer>
+      Built by Saba Feilizadeh for the MT2 retake, weighted to a personal diagnostic. Pair it with the <a href="../cs61a-mt2/">practice app</a>. Not affiliated with the CS 61A course staff.
+    </footer>
+  </main>
+</div>
+
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var map = {};
+  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+  var secs = Array.prototype.slice.call(document.querySelectorAll('section.topic'));
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        links.forEach(function (l) { l.classList.remove('active'); });
+        if (map[e.target.id]) map[e.target.id].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-140px 0px -70% 0px', threshold: 0 });
+  secs.forEach(function (s) { obs.observe(s); });
+})();
+</script>
+<script src="../../assets/js/theme.js?v=1"></script>
+<script src="../../assets/js/sidebar-collapse.js?v=1"></script>
+</body>
+</html>
