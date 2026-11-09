@@ -1,0 +1,385 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CS 61A Final Exam Guide</title>
+<meta name="description" content="A complete CS 61A Fall 2026 final exam guide: the new units taught in depth (Gleam, tail calls, interpreters, SQL, mutable trees) plus a mapped review of every Python unit from MT1 to MT3. Built to drive toward full mastery.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='40' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>61A</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.6 var(--body); -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron); outline-offset:3px; border-radius:3px}
+#topbar{position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--bg); border-bottom:1.5px solid var(--line)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:16px; max-width:1180px; margin:0 auto; padding:14px clamp(16px,4vw,40px)}
+.nav .mark{font:800 20px/1 var(--display); text-decoration:none; letter-spacing:-.02em}
+.crumbs{font:500 14px var(--body); color:var(--muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.crumbs a{text-decoration:none} .crumbs a:hover{color:var(--saffron-ink)} .crumbs b{color:var(--ink)}
+.crumbs span{margin:0 6px; color:var(--line)}
+.t-btn{font:500 13px/1 var(--mono); background:var(--surface); color:var(--ink); border:1.5px solid var(--line); border-radius:999px; padding:8px 13px; cursor:pointer; white-space:nowrap}
+.t-btn:hover{border-color:var(--saffron)}
+#exam-strip{background:var(--saffron-soft); border-bottom:1.5px solid var(--line); color:var(--saffron-ink); font:500 13.5px/1.4 var(--mono); text-align:center; padding:9px 16px}
+#exam-strip b{font-weight:700}
+#layout{display:grid; grid-template-columns:260px minmax(0,1fr); gap:0; max-width:1180px; margin:0 auto}
+#sidebar{position:sticky; top:96px; align-self:start; height:calc(100vh - 110px); overflow-y:auto; padding:28px 10px 28px clamp(16px,4vw,40px)}
+.side-head{font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 12px}
+#toc{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px}
+#toc a{display:block; text-decoration:none; color:var(--muted); font-size:14.5px; padding:7px 12px; border-radius:9px; border-left:2.5px solid transparent}
+#toc a:hover{background:var(--surface-2); color:var(--ink)}
+#toc a.active{color:var(--saffron-ink); border-left-color:var(--saffron); background:var(--surface-2); font-weight:600}
+.toc-tag{font:500 9.5px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--saffron-ink); border:1px solid var(--saffron); border-radius:4px; padding:2px 4px; margin-left:6px; vertical-align:middle}
+#main{padding:30px clamp(16px,4vw,40px) 80px; min-width:0}
+header.page{padding:14px 0 10px}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--saffron-ink); margin:0 0 10px}
+h1{font:600 clamp(2rem,6vw,2.8rem)/1.05 var(--display); margin:0 0 12px; letter-spacing:-.01em; text-wrap:balance}
+.lede{color:var(--muted); max-width:66ch; margin:0 0 8px}
+.cta-row{display:flex; flex-wrap:wrap; gap:10px; margin:18px 0 6px}
+.cta{display:inline-flex; align-items:center; gap:7px; text-decoration:none; font:600 14.5px var(--body); background:var(--saffron); color:var(--on-saffron); border:1.5px solid var(--saffron); border-radius:999px; padding:10px 18px}
+.cta.ghost{background:transparent; color:var(--ink); border-color:var(--line)}
+.cta.ghost:hover{border-color:var(--saffron)}
+section.topic{padding:30px 0; border-top:1.5px solid var(--line); scroll-margin-top:150px}
+section.topic:first-of-type{border-top:none}
+h2{font:600 clamp(1.4rem,3.5vw,1.9rem)/1.1 var(--display); margin:0 0 6px; letter-spacing:-.01em}
+.focus{display:inline-block; font:600 11px/1 var(--mono); letter-spacing:.08em; text-transform:uppercase; color:var(--on-saffron); background:var(--saffron); border-radius:5px; padding:4px 7px; margin:0 0 12px}
+h3{font:600 17px/1.2 var(--mono); color:var(--saffron-ink); margin:26px 0 8px; letter-spacing:.01em}
+p{margin:0 0 14px; max-width:72ch}
+ul,ol{margin:0 0 14px; padding-left:22px; max-width:72ch} li{margin:5px 0}
+strong{font-weight:600}
+code{font:500 14px var(--mono); background:var(--surface-2); border:1px solid var(--line); border-radius:5px; padding:1px 5px}
+pre{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px; overflow:auto; margin:0 0 16px}
+pre code{background:none; border:none; padding:0; font-size:13.5px; line-height:1.55; color:var(--ink); white-space:pre}
+.callout{background:var(--surface-2); border:1.5px solid var(--line); border-left:3px solid var(--saffron); border-radius:12px; padding:14px 18px; margin:0 0 16px}
+.callout.warn{border-left-color:#C64545}
+.callout p:last-child{margin-bottom:0}
+table{border-collapse:collapse; width:100%; margin:0 0 16px; font-size:14.5px; display:block; overflow-x:auto}
+th,td{border:1.5px solid var(--line); padding:9px 12px; text-align:left; vertical-align:top}
+th{background:var(--surface-2); font:600 13px var(--mono); letter-spacing:.02em}
+td code{font-size:13px}
+footer{border-top:1.5px solid var(--line); padding:28px 0 10px; color:var(--muted); font-size:14px; margin-top:10px}
+@media (max-width:860px){#layout{grid-template-columns:1fr} #sidebar{display:none} #main{padding-top:22px}}
+</style>
+</head>
+<body>
+<header id="topbar">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="../../" aria-label="Back to site">SF</a>
+    <div class="crumbs"><a href="../">Study Guides</a> <span>/</span> <b>CS 61A Final</b></div>
+    <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+  </nav>
+</header>
+
+<div id="exam-strip">
+  <b>Final Exam</b> &middot; cumulative: all of MT1&ndash;MT3 plus Gleam, tail calls, interpreters, SQL, and mutable trees &middot; Fall 2026 uses Gleam, not Scheme
+</div>
+
+<div id="layout">
+  <aside id="sidebar" aria-label="Sections">
+    <div class="side-head">On this page</div>
+    <ul id="toc">
+      <li><a href="#how">How to use this</a></li>
+      <li><a href="#review">Python review map</a></li>
+      <li><a href="#gleam">Gleam: the language<span class="toc-tag">new</span></a></li>
+      <li><a href="#gleam-rec">Gleam: recursion &amp; lists<span class="toc-tag">new</span></a></li>
+      <li><a href="#tail">Tail calls<span class="toc-tag">new</span></a></li>
+      <li><a href="#interp">Interpreters<span class="toc-tag">new</span></a></li>
+      <li><a href="#sql">SQL<span class="toc-tag">new</span></a></li>
+      <li><a href="#mtrees">Mutable trees<span class="toc-tag">new</span></a></li>
+      <li><a href="#plan">Study plan</a></li>
+      <li><a href="#checklist">Exam-day checklist</a></li>
+    </ul>
+  </aside>
+
+  <main id="main">
+    <header class="page">
+      <p class="eyebrow">CS 61A &middot; Fall 2026 &middot; Final</p>
+      <h1>Final Exam Guide</h1>
+      <p class="lede">The final is cumulative. The Python half you have already built guides for, so this page links those as a review map and spends its depth on the new units: Gleam, tail calls, interpreters, SQL, and mutable trees. Aim for understanding you can reproduce cold, not recognition.</p>
+      <div class="cta-row">
+        <a class="cta" href="#gleam">Start with Gleam</a>
+        <a class="cta ghost" href="#plan">See the plan</a>
+      </div>
+    </header>
+
+    <section class="topic" id="how">
+      <h2>How to use this</h2>
+      <p>Six sections are tagged <b>new</b>: the material taught after Midterm 3. Those get the most depth here because they are the least practiced. The Python units are not re-taught; they are mapped below to the guides and practice apps you already have, which is where you review them.</p>
+      <p>One honest note on Gleam: the syntax and examples here are the real Gleam language, checked against its documentation, so they are correct Gleam. What I cannot see is exactly which subset and which problem styles your section used on homework and past exams. So treat the Gleam and interpreter sections as a solid foundation, and if you send me your lecture notes or a past final, I will tune them to match your course exactly.</p>
+    </section>
+
+    <section class="topic" id="review">
+      <h2>Python review map</h2>
+      <p>Everything from the first three units is fair game. Review each here, deepest on anything that bit you before. The diagnostic showed mutation and aliasing, function application, comprehensions, and tree navigation as your weak spots, so weight those.</p>
+      <table>
+        <tr><th>Unit</th><th>Where to review</th></tr>
+        <tr><td>Recursion &amp; tree recursion</td><td><a href="../cs61a-mt3-patterns/">MT3 Pattern Playbook</a>, <a href="../cs61a-mt2-retake/">MT2 Retake Guide</a></td></tr>
+        <tr><td>Higher-order functions, lambdas, environments</td><td><a href="../cs61a-mt2-retake/#hof">MT2 Retake: HOFs</a></td></tr>
+        <tr><td>Mutation, aliasing, sequences, comprehensions</td><td><a href="../cs61a-mt2-retake/#mutation">MT2 Retake: mutation</a> (your top weak spot)</td></tr>
+        <tr><td>Trees &amp; linked lists</td><td><a href="../cs61a-mt3/">MT3 Guide</a>, <a href="../cs61a-mt3-patterns/">Pattern Playbook</a></td></tr>
+        <tr><td>Iterators, generators, OOP, memoization</td><td><a href="../cs61a-mt3/">MT3 Guide</a>, <a href="../cs61a-mt3-review/">MT3 Walkthrough</a></td></tr>
+        <tr><td>Practice (type and run real Python)</td><td><a href="../cs61a-mt2/">MT2 Practice</a>, <a href="../cs61a-mt3-practice/">MT3 Practice</a></td></tr>
+      </table>
+    </section>
+
+    <section class="topic" id="gleam">
+      <span class="focus">New unit</span>
+      <h2>Gleam: the language</h2>
+      <p>Gleam is a statically typed functional language with C-style syntax. Three things make it feel different from Python: values are immutable, there are no loops (you recurse), and you branch by pattern matching with <code>case</code> instead of long if-chains.</p>
+      <h3>Functions, let, and anonymous functions</h3>
+      <p>Functions use <code>fn</code> (add <code>pub</code> to make one public). The <b>last expression is the return value</b>, with no <code>return</code> keyword. Types are annotated with <code>: Type</code>.</p>
+      <pre><code>pub fn add(a: Int, b: Int) -> Int {
+  a + b        // last expression is returned
+}
+
+let name = "Gleam"      // immutable binding
+let x = 5
+let x = x + 1           // rebinding (shadowing) is allowed; x is now 6
+
+let double = fn(n) { n * 2 }   // anonymous function
+double(5)                       // 10</code></pre>
+      <h3>The pipe operator</h3>
+      <p><code>|&gt;</code> feeds the value on its left in as the <b>first argument</b> of the call on its right. It reads top to bottom instead of inside-out.</p>
+      <pre><code>[1, 2, 3]
+|> list.map(fn(x) { x * 2 })   // [2, 4, 6]
+|> list.filter(fn(x) { x > 2 }) // [4, 6]
+
+// same as: list.filter(list.map([1,2,3], fn...), fn...)</code></pre>
+      <h3>case: pattern matching</h3>
+      <p><code>case</code> checks a value against patterns, top to bottom, and runs the first that matches. The compiler forces you to cover every shape, which is why a missing base case is a compile error, not a silent bug.</p>
+      <pre><code>case n {
+  0 -> "zero"
+  1 -> "one"
+  _ -> "many"        // _ matches anything (the catch-all)
+}</code></pre>
+      <h3>Custom types</h3>
+      <p>A <code>type</code> lists its constructors. One constructor with named fields is a record; several bare constructors form an enum you match on.</p>
+      <pre><code>pub type Shape {
+  Circle(Float)
+  Rectangle(Float, Float)
+}
+
+pub fn area(s: Shape) -> Float {
+  case s {
+    Circle(r) -> 3.14 *. r *. r
+    Rectangle(w, h) -> w *. h
+  }
+}</code></pre>
+      <div class="callout">
+        <p><b>Two small gotchas:</b> booleans are capitalized (<code>True</code>, <code>False</code>), and Gleam keeps Int and Float math separate. Int uses <code>+ - * /</code>; Float uses <code>+. -. *. /.</code> (with the dot). Mixing them is a type error.</p>
+      </div>
+    </section>
+
+    <section class="topic" id="gleam-rec">
+      <span class="focus">New unit</span>
+      <h2>Gleam: recursion &amp; lists</h2>
+      <p>Lists are the workhorse. A list is <code>[1, 2, 3]</code>; you build a longer one by prepending with the spread operator: <code>[0, ..xs]</code>. You take one apart by pattern matching: <code>[]</code> is empty, <code>[first, ..rest]</code> splits off the head.</p>
+      <pre><code>let xs: List(Int) = [1, 2, 3]
+let ys = [0, ..xs]      // [0, 1, 2, 3]</code></pre>
+      <h3>The standard list recursion</h3>
+      <p>Every list function has the same shape: a <code>case</code> with an empty-list base and a <code>[first, ..rest]</code> recursive step. This is exactly the <code>Link</code> recursion from Python, with <code>first</code>/<code>rest</code> built into the pattern.</p>
+      <pre><code>pub fn sum(xs: List(Int)) -> Int {
+  case xs {
+    [] -> 0
+    [first, ..rest] -> first + sum(rest)
+  }
+}
+
+pub fn length(xs: List(a)) -> Int {
+  case xs {
+    [] -> 0
+    [_, ..rest] -> 1 + length(rest)
+  }
+}
+
+pub fn double_all(xs: List(Int)) -> List(Int) {
+  case xs {
+    [] -> []
+    [first, ..rest] -> [first * 2, ..double_all(rest)]
+  }
+}</code></pre>
+      <h3>The three library functions to know</h3>
+      <p>From <code>gleam/list</code>: <code>map</code> transforms each element, <code>filter</code> keeps some, <code>fold</code> collapses to one value. Note the list comes first.</p>
+      <pre><code>list.map([1, 2, 3], fn(x) { x * 2 })            // [2, 4, 6]
+list.filter([1, 2, 3], fn(x) { x > 1 })        // [2, 3]
+list.fold([1, 2, 3], 0, fn(acc, x) { acc + x }) // 6</code></pre>
+      <p><code>fold</code> is the general one: it carries an accumulator (<code>acc</code>) across the list, combining it with each element. <code>map</code> and <code>filter</code> are both special cases of <code>fold</code>.</p>
+    </section>
+
+    <section class="topic" id="tail">
+      <span class="focus">New unit</span>
+      <h2>Tail calls</h2>
+      <p>A function call is in <b>tail position</b> if it is the very last thing a function does, with no work left to do on its result. When every recursive call is a tail call, the language can reuse one stack frame instead of stacking up a new one per call, so the recursion runs in constant space and never overflows.</p>
+      <h3>Not tail recursive vs. tail recursive</h3>
+      <pre><code>// NOT tail recursive: after sum(rest) returns, we still add first.
+pub fn sum(xs: List(Int)) -> Int {
+  case xs {
+    [] -> 0
+    [first, ..rest] -> first + sum(rest)   // the + is pending work
+  }
+}
+
+// Tail recursive: the recursive call IS the whole answer.
+pub fn sum(xs: List(Int)) -> Int {
+  sum_acc(xs, 0)
+}
+fn sum_acc(xs: List(Int), acc: Int) -> Int {
+  case xs {
+    [] -> acc
+    [first, ..rest] -> sum_acc(rest, acc + first)   // nothing pending
+  }
+}</code></pre>
+      <div class="callout">
+        <p><b>The trick is the accumulator.</b> Move the pending work (the <code>+ first</code>) into an extra parameter that you update <b>before</b> recursing, so the recursive call is the last action. The base case then returns the accumulator instead of a fixed value. Ask of any recursive call: is anything still waiting to happen after it returns? If yes, it is not a tail call.</p>
+      </div>
+    </section>
+
+    <section class="topic" id="interp">
+      <span class="focus">New unit</span>
+      <h2>Interpreters</h2>
+      <p>An interpreter is a program that runs other programs. It takes source code, turns it into a data structure (parsing), then evaluates that structure. The core is two functions that call each other: <b>eval</b> and <b>apply</b>.</p>
+      <h3>The read, eval, print loop</h3>
+      <ol>
+        <li><b>Read:</b> turn the text of an expression into a data structure (a tree of the expression's parts).</li>
+        <li><b>Eval:</b> compute the value of that expression in an environment.</li>
+        <li><b>Print:</b> display the result. Then loop.</li>
+      </ol>
+      <h3>eval and apply</h3>
+      <p><b>eval(expression, environment)</b> looks at what kind of expression it is and acts accordingly:</p>
+      <ul>
+        <li>A <b>literal</b> (a number) evaluates to itself.</li>
+        <li>A <b>name</b> is looked up in the environment.</li>
+        <li>A <b>call</b> evaluates the operator and the operands, then hands them to apply.</li>
+        <li>A <b>special form</b> (like an if or a definition) has its own rule and does not evaluate all its parts first.</li>
+      </ul>
+      <p><b>apply(function, arguments)</b> runs a function on already-evaluated arguments: it makes a new environment binding the parameters to the arguments, then evaluates the function body in that environment. That body evaluation calls eval again, which is the mutual recursion at the heart of every interpreter.</p>
+      <div class="callout">
+        <p><b>Why special forms are special:</b> a normal call evaluates all its operands first. But <code>if</code> must not evaluate both branches, and a definition must not evaluate the name being defined. So special forms are handled by eval directly, before the evaluate-all-operands step. Knowing which forms are special, and why, is a classic exam question.</p>
+      </div>
+    </section>
+
+    <section class="topic" id="sql">
+      <span class="focus">New unit</span>
+      <h2>SQL (declarative programming)</h2>
+      <p>SQL is declarative: you describe <b>what</b> you want, not how to compute it. A query selects columns from tables, filters rows, groups them, and aggregates.</p>
+      <h3>The shape of a SELECT</h3>
+      <pre><code>SELECT columns
+  FROM table
+  WHERE condition          -- filter individual rows
+  GROUP BY column          -- make groups
+  HAVING group_condition   -- filter groups
+  ORDER BY column          -- sort
+  LIMIT n;                 -- cap the rows</code></pre>
+      <p>Clause order matters, and the mental order is: <code>FROM</code> picks the rows, <code>WHERE</code> filters them, <code>GROUP BY</code> buckets them, <code>HAVING</code> filters buckets, <code>SELECT</code> chooses the output columns, then <code>ORDER BY</code> and <code>LIMIT</code>.</p>
+      <h3>Aggregation</h3>
+      <p><code>COUNT(*)</code>, <code>SUM(col)</code>, <code>MAX</code>, <code>MIN</code>, <code>AVG</code> collapse a group into one number. Use <code>WHERE</code> to filter rows before grouping and <code>HAVING</code> to filter after.</p>
+      <pre><code>SELECT breed, COUNT(*) FROM dogs
+  GROUP BY breed
+  HAVING COUNT(*) > 1;     -- only breeds with more than one dog</code></pre>
+      <h3>Joins</h3>
+      <p>Put two tables in the <code>FROM</code> (aliased), and match their rows in the <code>WHERE</code>. A self-join lists a table twice to compare its own rows.</p>
+      <pre><code>SELECT a.name, b.name
+  FROM dogs AS a, dogs AS b
+  WHERE a.breed = b.breed AND a.name < b.name;</code></pre>
+      <h3>Recursive queries</h3>
+      <p>A <code>WITH</code> clause defines a temporary table that can refer to itself: a base case <code>UNION</code> a recursive case. This is how SQL does what recursion does in Python.</p>
+      <pre><code>WITH ints(n) AS (
+    SELECT 1
+    UNION
+    SELECT n + 1 FROM ints WHERE n < 5
+  )
+SELECT n FROM ints;        -- 1, 2, 3, 4, 5</code></pre>
+    </section>
+
+    <section class="topic" id="mtrees">
+      <span class="focus">New unit</span>
+      <h2>Mutable trees</h2>
+      <p>Back in Python. A mutable tree is the same <code>Tree</code> ADT, but now you change it in place by assigning to <code>t.label</code> or <code>t.branches</code> instead of building a new tree. This was out of scope for MT3 but is fair game on the final.</p>
+      <pre><code>def double_all(t):
+    """Double every label in place; returns None."""
+    t.label = t.label * 2
+    for b in t.branches:
+        double_all(b)
+
+def prune(t, x):
+    """Remove branches whose label is x, in place."""
+    t.branches = [b for b in t.branches if b.label != x]
+    for b in t.branches:
+        prune(b, x)</code></pre>
+      <div class="callout warn">
+        <p><b>Mutating vs. building, the distinction that loses points:</b> a mutating function changes <code>t</code> itself and usually returns <code>None</code>; a building function leaves <code>t</code> alone and returns a new <code>Tree</code>. Read the problem: does it say "in place" or does it say "return a new tree"? Never assign to <code>t.branches</code> in a build problem, and never forget to recurse into the branches in a mutate problem.</p>
+      </div>
+    </section>
+
+    <section class="topic" id="plan">
+      <h2>Study plan</h2>
+      <p>A plan paces mastery instead of cramming. Tell me your final date and I will pin this to a calendar; the shape, from furthest-out to exam day:</p>
+      <ol>
+        <li><b>New units first, while there is time to practice them</b> (Gleam, tail calls, interpreters, SQL, mutable trees). These are the least rehearsed, so they carry the most risk and the most upside.</li>
+        <li><b>Python review by weakness</b>, using the map above. Deepest on mutation and aliasing, function application, comprehensions, and tree navigation.</li>
+        <li><b>Mixed timed practice</b> on past finals, on paper, one full exam in one sitting to rehearse pacing.</li>
+        <li><b>Re-solve cold</b>, not re-read. Cover the solution and reproduce it from scratch. Reading creates recognition; writing creates recall, and the exam tests recall.</li>
+        <li><b>Taper the last day.</b> Light review of your weak-spot sheet, then rest. A rested brain outscores a crammed one.</li>
+      </ol>
+    </section>
+
+    <section class="topic" id="checklist">
+      <h2>Exam-day checklist</h2>
+      <ol>
+        <li><b>Gleam:</b> last expression is the return; cover every <code>case</code> shape; Int math vs Float math (the dotted operators); build lists with <code>[x, ..rest]</code>.</li>
+        <li><b>Tail calls:</b> ask "is anything pending after the recursive call?" If yes, move it into an accumulator.</li>
+        <li><b>Interpreters:</b> eval dispatches on expression type; apply makes a new frame and evals the body; special forms skip the evaluate-all-operands step.</li>
+        <li><b>SQL:</b> <code>WHERE</code> filters rows, <code>HAVING</code> filters groups; aggregate with <code>GROUP BY</code>; self-join by listing a table twice.</li>
+        <li><b>Mutable trees:</b> "in place" means assign to <code>t.label</code> / <code>t.branches</code> and return <code>None</code>; still recurse into branches.</li>
+        <li><b>Python carryover:</b> new list vs same list (<code>=</code> shares, slicing copies); evaluate nested calls inside-out; 0-based indexing; base case returns the right type.</li>
+        <li><b>Always:</b> trace one small case by hand before trusting a function. Passing the example is not proving it correct.</li>
+      </ol>
+      <p>Put it to work in the <a href="../cs61a-mt2/">MT2</a> and <a href="../cs61a-mt3-practice/">MT3</a> practice apps for the Python half, and ask me for Gleam, SQL, and interpreter drills for the new half.</p>
+    </section>
+
+    <footer>
+      Built by Saba Feilizadeh for the CS 61A final. Gleam syntax checked against the language docs; send your lecture notes or a past final to tune the new-unit sections to your section. Not affiliated with the CS 61A course staff.
+    </footer>
+  </main>
+</div>
+
+<script>
+(function () {
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  var map = {};
+  links.forEach(function (a) { map[a.getAttribute('href').slice(1)] = a; });
+  var secs = Array.prototype.slice.call(document.querySelectorAll('section.topic'));
+  var obs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        links.forEach(function (l) { l.classList.remove('active'); });
+        if (map[e.target.id]) map[e.target.id].classList.add('active');
+      }
+    });
+  }, { rootMargin: '-140px 0px -70% 0px', threshold: 0 });
+  secs.forEach(function (s) { obs.observe(s); });
+})();
+</script>
+<script src="../../assets/js/theme.js?v=1"></script>
+<script src="../../assets/js/sidebar-collapse.js?v=1"></script>
+</body>
+</html>
