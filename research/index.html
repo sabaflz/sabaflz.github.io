@@ -21,6 +21,13 @@
     <p class="lede">The questions I'm working on with mentors and teammates. Each project keeps its weekly meetings, what we've learned, and what's next, so you can follow the work as it happens.</p>
   </header>
 
+  <nav class="tabs" aria-label="Research sections">
+    <ul>
+      <li><a href="./" aria-current="page">Projects <span class="n" data-count="projects">0</span></a></li>
+      <li><a href="blogs/">Blogs <span class="n" data-count="blogs">0</span></a></li>
+    </ul>
+  </nav>
+
   <div id="list" class="panel"></div>
 
   <footer class="foot">Built and maintained by Saba Feilizadeh.</footer>
@@ -59,8 +66,14 @@ var PROJECTS = [
     html += "</div>";
   });
   document.getElementById("list").innerHTML = html || '<p class="empty">No projects yet.</p>';
+
+  // Tab counts. Blogs is filled by blogs.js once blogs/data.js has loaded.
+  var pc = document.querySelector('[data-count="projects"]');
+  if (pc) pc.textContent = PROJECTS.length;
 })();
 </script>
+<script src="blogs/data.js?v=1"></script>
+<script src="../assets/js/blogs.js?v=1"></script>
 <script src="../assets/js/nav.js?v=2"></script>
 <script src="../assets/js/tts.js?v=2"></script>
 <script src="../assets/js/theme.js?v=1"></script>
