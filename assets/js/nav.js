@@ -27,6 +27,7 @@
         '<button type="button" class="navtop" aria-haspopup="true" aria-expanded="false">' +
           "Academics<span class=\"caret\" aria-hidden=\"true\"></span></button>" +
       "</li>" +
+      link("research/", "Research") +
       link("lab/", "Lab") +
       link("resume/", "Resume") +
       link("#contact", "Contact") +
@@ -72,7 +73,8 @@
 
     /* active tab for the current page (landing uses scroll-spy instead) */
     var navtop = nav.querySelector(".navtop");
-    if (here === "resume") markCurrent(nav, "resume/");
+    if (seg[0] === "research") markCurrent(nav, "research/");
+    else if (here === "resume") markCurrent(nav, "resume/");
     else if (here === "lab") markCurrent(nav, "lab/");
     else if (here === "guides" || here === "planner") navtop.classList.add("active");
 

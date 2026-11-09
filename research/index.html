@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Research · Saba Feilizadeh</title>
+<meta name="description" content="Saba Feilizadeh's research projects at UC Berkeley: questions, weekly meetings, and what we learn along the way.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='44' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>SF</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/css/research.css?v=1">
+</head>
+<body>
+<header class="topbar"><nav class="nav wrap" aria-label="Main"></nav></header>
+
+<main class="wrap">
+  <header class="page">
+    <p class="eyebrow">Research</p>
+    <h1>Research</h1>
+    <p class="lede">The questions I'm working on with mentors and teammates. Each project keeps its weekly meetings, what we've learned, and what's next, so you can follow the work as it happens.</p>
+  </header>
+
+  <div id="list" class="panel"></div>
+
+  <footer class="foot">Built and maintained by Saba Feilizadeh.</footer>
+</main>
+
+<script>
+// Project registry. Add a research project by appending an object here and
+// creating research/<id>/ (copy research-001/ and edit its data.js).
+var PROJECTS = [
+  {
+    id: "research-001",
+    program: "CDSS Research 001",
+    term: "Fall 2026",
+    termOrder: 20262,
+    status: "Private",
+    title: "Research 001",
+    desc: "A genomics and machine learning project. The project page is private to the team.",
+    tags: ["Genomics", "Machine learning"]
+  }
+];
+
+(function () {
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  var groups = {};
+  PROJECTS.forEach(function (p) { (groups[p.term] = groups[p.term] || { o: p.termOrder, items: [] }).items.push(p); });
+  var html = "";
+  Object.keys(groups).sort(function (a, b) { return groups[b].o - groups[a].o; }).forEach(function (term) {
+    html += '<h2 class="sec">' + esc(term) + '</h2><div class="cards">';
+    groups[term].items.forEach(function (p) {
+      html += '<a class="card" href="' + esc(p.id) + '/">' +
+        '<div class="ctop"><span class="tag">' + esc(p.program) + '</span><span class="pill' + (p.status === "Active" ? "" : p.status === "Private" ? " lock" : " muted") + '">' + esc(p.status) + "</span></div>" +
+        "<h3>" + esc(p.title) + "</h3><p>" + esc(p.desc) + "</p>" +
+        '<div class="chips">' + p.tags.map(function (t) { return '<span class="pill muted">' + esc(t) + "</span>"; }).join("") + "</div>" +
+        '<span class="go">Open project →</span></a>';
+    });
+    html += "</div>";
+  });
+  document.getElementById("list").innerHTML = html || '<p class="empty">No projects yet.</p>';
+})();
+</script>
+<script src="../assets/js/nav.js?v=2"></script>
+<script src="../assets/js/tts.js?v=1"></script>
+<script src="../assets/js/theme.js?v=1"></script>
+</body>
+</html>

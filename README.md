@@ -16,6 +16,9 @@ My personal site. Plain HTML, CSS, and JavaScript, no build step.
 | A semester's course options | `planner/data/terms/<term>.js` |
 | Course facts reused across terms | `planner/data/catalog.js` |
 | My plans, check-offs, to-dos | `planner/data/state.json`, edited on the page in admin mode |
+| List of research projects | the `PROJECTS` list in `research/index.html` |
+| A research project's overview, meetings, learning log, reading, to-dos | `research/<project>/data.js` (public) or `data.enc.json` (private, encrypted) |
+| Research meeting transcripts (encrypted) | `research/<project>/private/transcripts.json`, added on the meeting's page |
 
 ## Common edits
 
@@ -26,6 +29,18 @@ My personal site. Plain HTML, CSS, and JavaScript, no build step.
 **Plan a new semester:** copy `planner/data/terms/_template.js` to e.g. `fall-2027.js`, list what's offered (times, rooms; course facts come from `catalog.js`), and add its `<script>` tag in `planner/index.html` above `planner.js`. At the end of each term, move the courses you passed into `done` in `planner/data/degree.js`.
 
 **Hide something without deleting it:** add `hidden: true` to that object in `content.js`.
+
+**Research 001 is private.** Its content is encrypted in `research/research-001/data.enc.json`, and the page asks for the team passphrase. To edit it, decrypt to a local file, change it, and encrypt again (the plain file is git-ignored):
+
+```
+RESEARCH_PASS='team passphrase' node tools/research-crypt.mjs decrypt research/research-001
+# edit research/research-001/data.local.json (copy an existing meeting to add one)
+RESEARCH_PASS='team passphrase' node tools/research-crypt.mjs encrypt research/research-001
+```
+
+**Add a transcript:** `RESEARCH_PASS='...' node tools/research-crypt.mjs transcript research/research-001 <meeting-id> transcript.txt`, or on the site: open the meeting, choose Add transcript, and paste it (that route also asks for your planner admin password, since it saves through the planner's GitHub token).
+
+**Start a new research project:** copy `research/research-001/` to a new folder, empty its `data.js` and `private/transcripts.json` (back to `"check": null, "items": {}`), and add the project to `PROJECTS` in `research/index.html`.
 
 ## Preview locally
 
