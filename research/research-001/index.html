@@ -10,21 +10,26 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="../../assets/css/research.css?v=1">
+<link rel="stylesheet" href="../../assets/css/research.css?v=2">
 </head>
 <body>
 <header class="topbar"><nav class="nav wrap" aria-label="Main"></nav></header>
 
-<main class="wrap">
-  <header class="page" id="head"></header>
-  <nav class="tabs" id="tabs" aria-label="Project sections"></nav>
-  <div class="panel" id="app" aria-live="polite"></div>
-  <footer class="foot">Updated after each weekly meeting. Transcripts are encrypted and readable only by the team.</footer>
-</main>
+<div class="rgrid wrap" id="rgrid">
+  <aside class="side" id="side" aria-label="Project contents"></aside>
+  <button type="button" class="srail" id="sideRail" aria-label="Expand the sidebar" aria-expanded="false" title="Expand">»</button>
+  <div class="sscrim" id="sideScrim"></div>
+  <main class="rmain">
+    <header class="page" id="head"></header>
+    <nav class="tabs" id="tabs" aria-label="Project sections"></nav>
+    <div class="panel" id="app" aria-live="polite"></div>
+    <footer class="foot">Updated after each weekly meeting. Transcripts are encrypted and readable only by the team.</footer>
+  </main>
+</div>
 <div class="modal" id="modal" hidden></div>
 
 <script src="data.js?v=2"></script>
-<script src="../../assets/js/research.js?v=2"></script>
+<script src="../../assets/js/research.js?v=3"></script>
 <script src="../../assets/js/nav.js?v=2"></script>
 <script src="../../assets/js/tts.js?v=1"></script>
 <script src="../../assets/js/theme.js?v=1"></script>

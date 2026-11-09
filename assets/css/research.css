@@ -168,3 +168,52 @@ footer.foot{padding:36px 0 56px; color:var(--muted); font-size:14px; border-top:
   .tabs a{padding:12px 10px 10px; font-size:14px}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto} .card{transition:none}}
+
+/* ---------- project sidebar (collapsible; a drawer on phones) ---------- */
+.rgrid{max-width:1280px}
+.rmain{min-width:0}
+.side,.srail,.sscrim{display:none}
+.tabs .tmenu{display:none}
+.rgrid.hasside{display:grid; grid-template-columns:248px minmax(0,1fr); column-gap:44px}
+.rgrid.hasside .side{display:block; position:sticky; top:calc(env(safe-area-inset-top,0px) + var(--navh,67px) + 16px); align-self:start;
+  max-height:calc(100vh - var(--navh,67px) - 32px); overflow:auto; padding:28px 4px 24px 0; overscroll-behavior:contain}
+.rgrid.hasside.folded{grid-template-columns:36px minmax(0,1fr)}
+.rgrid.hasside.folded .side{display:none}
+.rgrid.hasside.folded .srail{display:grid; place-items:center; position:sticky; top:calc(env(safe-area-inset-top,0px) + var(--navh,67px) + 28px); align-self:start;
+  width:36px; height:36px; border-radius:10px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); font:600 18px/1 var(--body); cursor:pointer; margin-top:28px}
+.srail:hover,.sbtn:hover{border-color:var(--saffron); color:var(--saffron-ink)}
+.shead{display:flex; align-items:center; justify-content:space-between; gap:8px; margin:0 0 12px; padding:0 0 10px; border-bottom:1.5px solid var(--line)}
+.stitle{font:600 12px/1 var(--mono); letter-spacing:.12em; text-transform:uppercase; color:var(--muted)}
+.sbtn{width:30px; height:30px; display:grid; place-items:center; border-radius:8px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); font:600 16px/1 var(--body); cursor:pointer}
+.sclose{display:none}
+.stree,.ssub,.ssub3{list-style:none; margin:0; padding:0}
+.sgroup{margin:0 0 2px}
+.srow{display:flex; align-items:center; gap:4px}
+.srow .slink{flex:1}
+.slink{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:7px 10px; border-radius:9px; text-decoration:none; color:var(--muted); font:500 14.5px/1.3 var(--body); border-left:3px solid transparent}
+.slink:hover{background:var(--surface); color:var(--ink)}
+.slink.top{font-weight:600; color:var(--ink)}
+.slink[aria-current]{background:var(--saffron-soft); color:var(--ink); border-left-color:var(--saffron)}
+.slink.on{color:var(--ink); font-weight:600}
+.slink .n{font:500 11.5px var(--mono); color:var(--muted); background:var(--surface-2); border:1px solid var(--line); border-radius:999px; padding:1px 7px; flex:none}
+.ssub{padding:2px 0 8px 12px; margin-left:8px; border-left:1.5px solid var(--line)}
+.ssub3{padding:2px 0 6px 10px; margin-left:8px; border-left:1.5px dashed var(--line)}
+.ssub3 .slink{font-size:13.5px; padding:5px 10px}
+.chev{flex:none; width:28px; height:28px; border:0; background:none; color:var(--muted); font:600 18px/1 var(--body); cursor:pointer; border-radius:8px; transition:transform .15s}
+.chev:hover{background:var(--surface); color:var(--ink)}
+.chev[aria-expanded="true"]{transform:rotate(90deg)}
+h2.sec,.learn{scroll-margin-top:calc(var(--navh,67px) + 72px)}
+
+@media (max-width:900px){
+  .rgrid.hasside,.rgrid.hasside.folded{display:block}
+  .rgrid.hasside .srail{display:none}
+  .tabs .tmenu{display:list-item}
+  .tabs .tmenu button{font:600 14px/1 var(--body); padding:9px 12px; margin:5px 4px 5px 0; border-radius:999px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); cursor:pointer; white-space:nowrap}
+  .rgrid.hasside .side,.rgrid.hasside.folded .side{display:block; position:fixed; top:0; bottom:0; left:0; z-index:60; width:min(86vw,320px); max-height:none;
+    background:var(--bg); padding:calc(env(safe-area-inset-top,0px) + 20px) 16px 24px; box-shadow:0 0 60px rgba(0,0,0,.3);
+    transform:translateX(-105%); transition:transform .2s ease; visibility:hidden}
+  .rgrid.drawer .side,.rgrid.drawer.folded .side{transform:none; visibility:visible}
+  .rgrid.drawer .sscrim{display:block; position:fixed; inset:0; z-index:55; background:rgba(10,12,30,.45)}
+  .sclose{display:grid} #sideFold{display:none}
+}
+@media (prefers-reduced-motion:reduce){.chev,.rgrid.hasside .side{transition:none}}

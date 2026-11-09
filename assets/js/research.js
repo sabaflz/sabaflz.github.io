@@ -97,12 +97,14 @@
       (meta ? '<ul class="meta">' + meta + "</ul>" : "") +
       (LOCKED ? '<p class="small muted" style="margin:14px 0 0">Private to the team · <button type="button" class="linkbtn" id="pageLock">Lock this page</button></p>' : "");
     $("tabs").innerHTML = "<ul>" +
+      '<li class="tmenu"><button type="button" id="sideOpen" aria-label="Open contents">☰ Contents</button></li>' +
       tab("overview", "Overview") +
       tab("meetings", "Meetings", meetings.length) +
       tab("learned", "Learning log", learnedN) +
       tab("reading", "Reading", (D.reading || []).length) +
       tab("todos", "To-dos", open) +
       "</ul>";
+    $("sideOpen").onclick = openDrawer;
     if (LOCKED) $("pageLock").onclick = function () { ss(SS_TEAM, null); location.hash = ""; location.reload(); };
   }
 
@@ -152,28 +154,28 @@
   function renderOverview() {
     var o = D.overview || {};
     var h = "";
-    if (o.question) h += '<h2 class="sec">Research question</h2><div class="box question">' + paras(o.question) + "</div>";
+    if (o.question) h += '<h2 class="sec" id="s-question">Research question</h2><div class="box question">' + paras(o.question) + "</div>";
     if (o.facts && o.facts.length) {
-      h += '<h2 class="sec">At a glance</h2><dl class="facts">' + o.facts.map(function (f) {
+      h += '<h2 class="sec" id="s-glance">At a glance</h2><dl class="facts">' + o.facts.map(function (f) {
         return '<div class="fact"><dt>' + esc(f.label) + "</dt><dd>" + md(f.value) + (f.note ? "<span>" + md(f.note) + "</span>" : "") + "</dd></div>";
       }).join("") + "</dl>";
     }
-    if (o.why) h += '<h2 class="sec">Why it matters</h2><div class="box">' + paras(o.why) + "</div>";
+    if (o.why) h += '<h2 class="sec" id="s-why">Why it matters</h2><div class="box">' + paras(o.why) + "</div>";
     if (o.approach && o.approach.length) {
-      h += '<h2 class="sec">Approach</h2><ol class="steps">' + o.approach.map(function (s) {
+      h += '<h2 class="sec" id="s-approach">Approach</h2><ol class="steps">' + o.approach.map(function (s) {
         return "<li><b>" + md(s.title) + "</b>" + md(s.text) + "</li>";
       }).join("") + "</ol>";
     }
     if (o.milestones && o.milestones.length) {
       var label = { done: '<span class="pill ok st">Done</span>', now: '<span class="pill st">In progress</span>' };
-      h += '<h2 class="sec">Timeline</h2><ul class="timeline">' + o.milestones.map(function (m) {
+      h += '<h2 class="sec" id="s-timeline">Timeline</h2><ul class="timeline">' + o.milestones.map(function (m) {
         return '<li class="' + esc(m.status || "") + '"><div class="when">' + esc(m.when) + "</div>" +
           '<div class="what">' + md(m.what) + (label[m.status] || "") + "</div></li>";
       }).join("") + "</ul>";
     }
     var recent = meetingsDesc[0];
     if (recent) {
-      h += '<h2 class="sec">Latest meeting</h2><div class="cards">' + meetingCard(recent) + "</div>";
+      h += '<h2 class="sec" id="s-latest">Latest meeting</h2><div class="cards">' + meetingCard(recent) + "</div>";
     }
     app.innerHTML = h;
     setActive("overview");
@@ -211,26 +213,26 @@
         (m.attendees ? "<li><b>With:</b> " + esc(m.attendees.join(", ")) + "</li>" : "") +
       "</ul></div>";
 
-    if (m.agenda && m.agenda.length) h += '<h2 class="sec">Agenda</h2><div class="box"><ul class="points">' + m.agenda.map(function (x) { return "<li>" + md(x) + "</li>"; }).join("") + "</ul></div>";
-    if (m.summary) h += '<h2 class="sec">Summary</h2><div class="box">' + paras(m.summary) + "</div>";
-    else if (m.status !== "upcoming") h += '<h2 class="sec">Summary</h2><div class="box"><p class="muted">Notes are coming once the recording is transcribed.</p></div>';
+    if (m.agenda && m.agenda.length) h += '<h2 class="sec" id="s-agenda">Agenda</h2><div class="box"><ul class="points">' + m.agenda.map(function (x) { return "<li>" + md(x) + "</li>"; }).join("") + "</ul></div>";
+    if (m.summary) h += '<h2 class="sec" id="s-summary">Summary</h2><div class="box">' + paras(m.summary) + "</div>";
+    else if (m.status !== "upcoming") h += '<h2 class="sec" id="s-summary">Summary</h2><div class="box"><p class="muted">Notes are coming once the recording is transcribed.</p></div>';
 
     var hasKP = m.keyPoints && m.keyPoints.length, hasDec = m.decisions && m.decisions.length;
     if (hasKP || hasDec) {
       h += '<div class="cols">';
-      if (hasKP) h += '<div><h2 class="sec">Key points</h2><div class="box"><ul class="points">' + m.keyPoints.map(function (x) { return "<li>" + md(x) + "</li>"; }).join("") + "</ul></div></div>";
-      if (hasDec) h += '<div><h2 class="sec">Decisions</h2><div class="box"><ul class="points">' + m.decisions.map(function (x) { return "<li>" + md(x) + "</li>"; }).join("") + "</ul></div></div>";
+      if (hasKP) h += '<div><h2 class="sec" id="s-keypoints">Key points</h2><div class="box"><ul class="points">' + m.keyPoints.map(function (x) { return "<li>" + md(x) + "</li>"; }).join("") + "</ul></div></div>";
+      if (hasDec) h += '<div><h2 class="sec" id="s-decisions">Decisions</h2><div class="box"><ul class="points">' + m.decisions.map(function (x) { return "<li>" + md(x) + "</li>"; }).join("") + "</ul></div></div>";
       h += "</div>";
     }
-    if (m.analysis) h += '<h2 class="sec">Analysis · what this means for us</h2><div class="box">' + paras(m.analysis) + "</div>";
-    if (m.actions && m.actions.length) h += '<h2 class="sec">Action items</h2>' + todoList(m.actions.map(function (a) { return Object.assign({}, a); }), true);
+    if (m.analysis) h += '<h2 class="sec" id="s-analysis">Analysis · what this means for us</h2><div class="box">' + paras(m.analysis) + "</div>";
+    if (m.actions && m.actions.length) h += '<h2 class="sec" id="s-actions">Action items</h2>' + todoList(m.actions.map(function (a) { return Object.assign({}, a); }), true);
     if (m.learned && m.learned.length) {
-      h += '<h2 class="sec">What we learned</h2><div class="box"><ul class="points">' + m.learned.map(function (lid) {
+      h += '<h2 class="sec" id="s-learned">What we learned</h2><div class="box"><ul class="points">' + m.learned.map(function (lid) {
         var L = (D.learned || []).filter(function (x) { return x.id === lid; })[0];
         return L ? '<li><a href="#learned/' + esc(L.id) + '">' + esc(L.title) + "</a></li>" : "";
       }).join("") + "</ul></div>";
     }
-    if (m.status !== "upcoming") h += '<h2 class="sec">Transcript</h2><div id="tx"></div>';
+    if (m.status !== "upcoming") h += '<h2 class="sec" id="s-transcript">Transcript</h2><div id="tx"></div>';
 
     var i = meetings.indexOf(m), prev = meetings[i - 1], next = meetings[i + 1];
     h += '<div class="mnav"><span>' + (prev ? '<a href="#meetings/' + esc(prev.id) + '">← Meeting ' + prev.n + "</a>" : "") + "</span>" +
@@ -238,7 +240,6 @@
     app.innerHTML = h;
     setActive("meetings");
     if (m.status !== "upcoming") renderTranscript(m);
-    window.scrollTo({ top: 0 });
   }
 
   // ---------- to-dos ----------
@@ -260,8 +261,8 @@
     var byDue = function (a, b) { return (a.due || "9999") < (b.due || "9999") ? -1 : 1; };
     var open = all.filter(function (t) { return !t.done; }).sort(byDue);
     var done = all.filter(function (t) { return t.done; });
-    app.innerHTML = '<h2 class="sec">Open · ' + open.length + "</h2>" + todoList(open) +
-      '<h2 class="sec">Done · ' + done.length + "</h2>" + todoList(done);
+    app.innerHTML = '<h2 class="sec" id="s-open">Open · ' + open.length + "</h2>" + todoList(open) +
+      '<h2 class="sec" id="s-done">Done · ' + done.length + "</h2>" + todoList(done);
     setActive("todos");
   }
 
@@ -274,7 +275,7 @@
     order.forEach(function (st) {
       var items = R.filter(function (x) { return (x.status || "to-read") === st; });
       if (!items.length) return;
-      h += '<h2 class="sec">' + RSTATUS[st] + " · " + items.length + '</h2><div class="cards">' + items.map(function (x) {
+      h += '<h2 class="sec" id="s-' + st + '">' + RSTATUS[st] + " · " + items.length + '</h2><div class="cards">' + items.map(function (x) {
         return '<article class="learn"><div class="ctop" style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">' +
           '<span class="tag">' + esc(x.kind || "Paper") + "</span>" +
           '<span class="pill' + (st === "read" ? " ok" : st === "reading" ? "" : " muted") + '">' + RSTATUS[st] + "</span></div>" +
@@ -338,13 +339,116 @@
 
   // ---------- router ----------
   function route() {
-    var h = (location.hash || "#overview").slice(1).split("/");
-    if (h[0] === "meetings" && h[1]) return renderMeeting(decodeURIComponent(h[1]));
-    if (h[0] === "meetings") return renderMeetings();
-    if (h[0] === "learned") return renderLearned(h[1]);
-    if (h[0] === "todos") return renderTodos();
-    if (h[0] === "reading") return renderReading();
-    renderOverview();
+    var h = (location.hash || "#overview").slice(1).split("/").map(decodeURIComponent);
+    var sub = null;
+    if (h[0] === "meetings" && h[1]) { renderMeeting(h[1]); sub = h[2]; }
+    else if (h[0] === "meetings") renderMeetings();
+    else if (h[0] === "learned") {
+      if (h[1] && h[1].indexOf("t:") === 0) { ltopic = h[1].slice(2); renderLearned(); }
+      else { if (!h[1]) ltopic = "all"; renderLearned(h[1]); }
+    }
+    else if (h[0] === "todos") { renderTodos(); sub = h[1]; }
+    else if (h[0] === "reading") { renderReading(); sub = h[1]; }
+    else { renderOverview(); sub = h[1]; }
+    if (sub) {
+      var el = document.getElementById("s-" + sub);
+      if (el) setTimeout(function () { el.scrollIntoView({ block: "start" }); }, 0);
+    } else if (h[0] !== "learned" || !h[1] || h[1].indexOf("t:") === 0) {
+      window.scrollTo({ top: 0 });
+    }
+    renderSide();
+    closeDrawer();
+  }
+
+  // ---------- sidebar: every section, collapsible ----------
+  var SIDE_KEY = "sf_research_side";
+  var sideOpen = {};          // which groups are expanded
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  function sideLink(href, label, n, cur, cls) {
+    return '<a class="slink' + (cls ? " " + cls : "") + '" href="' + href + '"' + (cur ? ' aria-current="location"' : "") + ">" +
+      '<span class="sl">' + esc(label) + "</span>" + (n != null ? '<span class="n">' + n + "</span>" : "") + "</a>";
+  }
+  function renderSide() {
+    var side = $("side"); if (!side || !D) return;
+    var hash = location.hash || "#overview";
+    var top = hash.slice(1).split("/")[0] || "overview";
+    var o = D.overview || {};
+    var groups = [];
+    groups.push({ id: "overview", label: "Overview", kids: [
+      o.question && ["#overview/question", "Research question"],
+      o.facts && ["#overview/glance", "At a glance"],
+      o.why && ["#overview/why", "Why it matters"],
+      o.approach && ["#overview/approach", "Approach"],
+      o.milestones && ["#overview/timeline", "Timeline"]
+    ].filter(Boolean) });
+    groups.push({ id: "meetings", label: "Meetings", n: meetings.length, meetingKids: true });
+    var topics = [];
+    (D.learned || []).forEach(function (x) { if (x.topic && topics.indexOf(x.topic) === -1) topics.push(x.topic); });
+    groups.push({ id: "learned", label: "Learning log", n: (D.learned || []).length,
+      kids: topics.map(function (t) { return ["#learned/t:" + encodeURIComponent(t), t, (D.learned || []).filter(function (x) { return x.topic === t; }).length]; }) });
+    var R = D.reading || [];
+    groups.push({ id: "reading", label: "Reading", n: R.length,
+      kids: ["reading", "to-read", "read"].map(function (st) {
+        var c = R.filter(function (x) { return (x.status || "to-read") === st; }).length;
+        return c ? ["#reading/" + st, RSTATUS[st], c] : null;
+      }).filter(Boolean) });
+    var all = allTodos(), open = all.filter(function (t) { return !t.done; }).length;
+    groups.push({ id: "todos", label: "To-dos", n: open, kids: [["#todos/open", "Open", open], ["#todos/done", "Done", all.length - open]] });
+
+    var html = '<div class="shead"><span class="stitle">' + esc(D.short || "Contents") + '</span>' +
+      '<button type="button" class="sbtn" id="sideFold" aria-label="Collapse the sidebar" title="Collapse">«</button>' +
+      '<button type="button" class="sbtn sclose" id="sideClose" aria-label="Close contents">×</button></div><ul class="stree">';
+    groups.forEach(function (g) {
+      if (sideOpen[g.id] === undefined) sideOpen[g.id] = true;   // all open until you fold one
+      var isOpen = sideOpen[g.id];
+      var kids = "";
+      if (g.meetingKids) {
+        kids = meetingsDesc.map(function (m) {
+          var base = "#meetings/" + m.id, here = hash.indexOf(base) === 0;
+          var inner = "";
+          if (here) {
+            var secs = [["agenda", "Agenda", m.agenda && m.agenda.length], ["summary", "Summary", m.status !== "upcoming"],
+              ["keypoints", "Key points", m.keyPoints && m.keyPoints.length], ["decisions", "Decisions", m.decisions && m.decisions.length],
+              ["analysis", "Analysis", m.analysis], ["actions", "Action items", m.actions && m.actions.length],
+              ["learned", "What we learned", m.learned && m.learned.length], ["transcript", "Transcript", m.status !== "upcoming"]];
+            inner = '<ul class="ssub3">' + secs.filter(function (x) { return x[2]; }).map(function (x) {
+              return "<li>" + sideLink(base + "/" + x[0], x[1], null, hash === base + "/" + x[0]) + "</li>";
+            }).join("") + "</ul>";
+          }
+          var label = "Meeting " + m.n + " · " + MONTHS[+m.date.slice(5, 7) - 1] + " " + (+m.date.slice(8, 10));
+          return "<li>" + sideLink(base, label, null, hash === base, here ? "on" : "") + inner + "</li>";
+        }).join("");
+      } else {
+        kids = (g.kids || []).map(function (k) { return "<li>" + sideLink(k[0], k[1], k[2], hash === k[0] || decodeURIComponent(hash) === decodeURIComponent(k[0])) + "</li>"; }).join("");
+      }
+      html += '<li class="sgroup' + (top === g.id ? " on" : "") + '"><div class="srow">' +
+        sideLink("#" + g.id, g.label, g.n, hash === "#" + g.id, "top") +
+        (kids ? '<button type="button" class="chev" data-g="' + g.id + '" aria-expanded="' + isOpen + '" aria-label="' + (isOpen ? "Hide" : "Show") + " " + esc(g.label) + ' sections">›</button>' : "") +
+        "</div>" + (kids ? '<ul class="ssub"' + (isOpen ? "" : " hidden") + ">" + kids + "</ul>" : "") + "</li>";
+    });
+    html += "</ul>";
+    side.innerHTML = html;
+    side.querySelectorAll(".chev").forEach(function (b) {
+      b.onclick = function () { var g = b.getAttribute("data-g"); sideOpen[g] = !sideOpen[g]; renderSide(); };
+    });
+    $("sideFold").onclick = function () { setFolded(true); };
+    $("sideClose").onclick = closeDrawer;
+  }
+  function setFolded(f) {
+    var grid = $("rgrid"); if (!grid) return;
+    grid.classList.toggle("folded", f);
+    store(SIDE_KEY, f ? "folded" : "open");
+    var rail = $("sideRail"); if (rail) rail.setAttribute("aria-expanded", String(!f));
+  }
+  function openDrawer() { var g = $("rgrid"); if (g) { g.classList.add("drawer"); var c = $("sideClose"); if (c) c.focus(); } }
+  function closeDrawer() { var g = $("rgrid"); if (g) g.classList.remove("drawer"); }
+  function setupSide() {
+    var grid = $("rgrid"); if (!grid) return;
+    grid.classList.add("hasside");
+    if (store(SIDE_KEY) === "folded") grid.classList.add("folded");
+    $("sideRail").onclick = function () { setFolded(false); };
+    $("sideScrim").onclick = closeDrawer;
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape") closeDrawer(); });
   }
 
   // =====================================================================
@@ -513,6 +617,7 @@
   var started = false;
   function start() {
     prep();
+    if (!started) setupSide();
     renderShell();
     route();
     if (started) return;
