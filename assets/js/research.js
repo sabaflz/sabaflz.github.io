@@ -266,27 +266,100 @@
     setActive("todos");
   }
 
-  // ---------- reading list ----------
+  // ---------- reading list: a compact, filterable list + one page per paper ----------
   var RSTATUS = { "to-read": "To read", "reading": "Reading now", "read": "Read" };
-  function renderReading() {
-    var R = D.reading || [];
-    var order = ["reading", "to-read", "read"];
-    var h = "";
-    order.forEach(function (st) {
-      var items = R.filter(function (x) { return (x.status || "to-read") === st; });
-      if (!items.length) return;
-      h += '<h2 class="sec" id="s-' + st + '">' + RSTATUS[st] + " · " + items.length + '</h2><div class="cards">' + items.map(function (x) {
-        return '<article class="learn"><div class="ctop" style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap">' +
-          '<span class="tag">' + esc(x.kind || "Paper") + "</span>" +
-          '<span class="pill' + (st === "read" ? " ok" : st === "reading" ? "" : " muted") + '">' + RSTATUS[st] + "</span></div>" +
-          '<h3><a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.title) + "</a></h3>" +
-          (x.venue ? '<p class="small muted">' + md(x.venue) + "</p>" : "") +
-          (x.why ? paras(x.why) : "") +
-          '<div class="lfoot">' + (x.sharedBy ? "<span>Shared by " + esc(x.sharedBy) + "</span>" : "") +
-          (x.from ? "<span>" + fromLabel(x.from) + "</span>" : "") + "</div></article>";
-      }).join("") + "</div>";
+  var rq = "", rstatus = "all", rkind = "all", rsort = "added";
+  function rlist() {
+    var R = (D.reading || []).map(function (x, i) { return Object.assign({ _i: i }, x); });
+    var q = rq.trim().toLowerCase();
+    R = R.filter(function (x) {
+      if (rstatus !== "all" && (x.status || "to-read") !== rstatus) return false;
+      if (rkind !== "all" && x.kind !== rkind) return false;
+      if (!q) return true;
+      return [x.title, x.short, x.authors, x.venue, x.tldr, (x.tags || []).join(" "), (x.summary || []).join(" ")].join(" ").toLowerCase().indexOf(q) !== -1;
     });
-    app.innerHTML = h || '<p class="empty">Nothing on the reading list yet.</p>';
+    var by = {
+      added: function (a, b) { return (a.added || "") === (b.added || "") ? a._i - b._i : (a.added < b.added ? 1 : -1); },
+      year: function (a, b) { return (b.year || 0) - (a.year || 0) || a._i - b._i; },
+      title: function (a, b) { return (a.short || a.title).localeCompare(b.short || b.title); },
+      status: function (a, b) { var o = { "reading": 0, "to-read": 1, "read": 2 }; return (o[a.status] - o[b.status]) || a._i - b._i; }
+    };
+    return R.sort(by[rsort] || by.added);
+  }
+  function renderReading(arg) {
+    if (arg && arg.indexOf("s:") === 0) { rstatus = arg.slice(2); arg = null; }
+    if (arg) return renderPaper(arg);
+    var R = D.reading || [];
+    var count = function (st) { return R.filter(function (x) { return (x.status || "to-read") === st; }).length; };
+    var kinds = [];
+    R.forEach(function (x) { if (x.kind && kinds.indexOf(x.kind) === -1) kinds.push(x.kind); });
+    var chips = [["all", "All", R.length]].concat(["reading", "to-read", "read"].map(function (st) { return [st, RSTATUS[st], count(st)]; }))
+      .filter(function (c) { return c[0] === "all" || c[2]; });
+    app.innerHTML =
+      '<div class="toolbar">' +
+        '<div class="search"><input id="rq" type="search" placeholder="Search titles, authors, tags, summaries" aria-label="Search the reading list" value="' + esc(rq) + '"></div>' +
+        '<div class="rbar"><div class="chiprow" id="rchips">' + chips.map(function (c) {
+          return '<button type="button" class="chip' + (rstatus === c[0] ? " active" : "") + '" data-s="' + c[0] + '">' + esc(c[1]) + " · " + c[2] + "</button>";
+        }).join("") + "</div>" +
+        '<div class="rsel"><label>Type <select id="rkind"><option value="all">All</option>' + kinds.map(function (k) {
+          return '<option' + (rkind === k ? " selected" : "") + ">" + esc(k) + "</option>";
+        }).join("") + '</select></label>' +
+        '<label>Sort <select id="rsort">' + [["added", "Newest added"], ["status", "Status"], ["year", "Year"], ["title", "Title"]].map(function (o) {
+          return '<option value="' + o[0] + '"' + (rsort === o[0] ? " selected" : "") + ">" + o[1] + "</option>";
+        }).join("") + "</select></label></div></div></div>" +
+      '<ul class="plist" id="plist"></ul>';
+    function draw() {
+      var L = rlist();
+      $("plist").innerHTML = L.length ? L.map(function (x) {
+        var st = x.status || "to-read";
+        var meta = [x.authors, x.venue && x.year ? x.venue + " " + x.year : (x.venue || x.year)].filter(Boolean).join(" · ");
+        return '<li><a class="prow" href="#reading/' + esc(x.id) + '">' +
+          '<span class="pdot ' + st + '" role="img" aria-label="' + RSTATUS[st] + '"></span>' +
+          '<span class="pmain"><span class="ptitle">' + esc(x.short || x.title) + '</span>' +
+          (x.short && x.short !== x.title ? '<span class="pfull">' + esc(x.title) + "</span>" : "") +
+          '<span class="pmeta">' + esc(meta) + "</span></span>" +
+          '<span class="pkind">' + esc(x.kind || "") + "</span>" +
+          '<span class="pgo" aria-hidden="true">›</span></a></li>';
+      }).join("") : '<li class="empty">Nothing matches. Try another word or filter.</li>';
+    }
+    draw();
+    $("rq").addEventListener("input", function () { rq = this.value; draw(); });
+    $("rchips").addEventListener("click", function (e) {
+      var b = e.target.closest(".chip"); if (!b) return;
+      rstatus = b.getAttribute("data-s");
+      this.querySelectorAll(".chip").forEach(function (c) { c.classList.toggle("active", c === b); });
+      draw(); renderSide();
+    });
+    $("rkind").onchange = function () { rkind = this.value; draw(); };
+    $("rsort").onchange = function () { rsort = this.value; draw(); };
+    setActive("reading");
+  }
+  function renderPaper(id) {
+    var x = (D.reading || []).filter(function (p) { return p.id === id; })[0];
+    if (!x) { location.hash = "#reading"; return; }
+    var st = x.status || "to-read";
+    var L = rlist(), i = -1;
+    L.forEach(function (p, k) { if (p.id === id) i = k; });
+    var prev = i > 0 ? L[i - 1] : null, next = i >= 0 && i < L.length - 1 ? L[i + 1] : null;
+    var list = function (arr) { return '<ul class="points">' + arr.map(function (t) { return "<li>" + md(t) + "</li>"; }).join("") + "</ul>"; };
+    var h = '<a class="back" href="#reading">← All papers</a>' +
+      '<article class="paper"><p class="eyebrow">' + esc(x.kind || "Paper") + (x.year ? " · " + x.year : "") + "</p>" +
+      '<h2 class="ptitle-lg">' + esc(x.title) + "</h2>" +
+      '<p class="pby">' + esc([x.authors, x.venue].filter(Boolean).join(" · ")) + "</p>" +
+      '<div class="pactions"><a class="btn" href="' + esc(x.url) + '" target="_blank" rel="noopener">Open ' + (x.kind === "Tool" ? "site" : "paper") + " ↗</a>" +
+        (x.links || []).map(function (l) { return '<a class="btn ghost" href="' + esc(l.url) + '" target="_blank" rel="noopener">' + esc(l.label) + " ↗</a>"; }).join("") +
+        '<span class="pill ' + (st === "read" ? "ok" : st === "reading" ? "" : "muted") + '">' + RSTATUS[st] + "</span></div>" +
+      (x.tags && x.tags.length ? '<div class="chips ptags">' + x.tags.map(function (t) { return '<span class="pill muted">' + esc(t) + "</span>"; }).join("") + "</div>" : "") +
+      (x.tldr ? '<div class="box tldr"><span class="tag">In one sentence</span><p>' + md(x.tldr) + "</p></div>" : "") +
+      (x.summary && x.summary.length ? '<h2 class="sec" id="s-summary">Summary</h2><div class="box">' + paras(x.summary) + "</div>" : "") +
+      (x.findings && x.findings.length ? '<h2 class="sec" id="s-findings">Key findings</h2><div class="box">' + list(x.findings) + "</div>" : "") +
+      (x.relevance && x.relevance.length ? '<h2 class="sec" id="s-relevance">Why it matters for us</h2><div class="box">' + list(x.relevance) + "</div>" : "") +
+      (x.notes && x.notes.length ? '<h2 class="sec" id="s-notes">Our notes</h2><div class="box">' + paras(x.notes) + "</div>" : "") +
+      '<p class="pfoot">' + [x.sharedBy ? "Shared by " + esc(x.sharedBy) : "", x.added ? "Added " + esc(fmtDate(x.added)) : "", x.from ? "From " + fromLabel(x.from) : ""].filter(Boolean).join(" · ") + "</p>" +
+      "</article>" +
+      '<div class="mnav"><span>' + (prev ? '<a href="#reading/' + esc(prev.id) + '">← ' + esc(prev.short || prev.title) + "</a>" : "") + "</span>" +
+      "<span>" + (next ? '<a href="#reading/' + esc(next.id) + '">' + esc(next.short || next.title) + " →</a>" : "") + "</span></div>";
+    app.innerHTML = h;
     setActive("reading");
   }
 
@@ -348,7 +421,7 @@
       else { if (!h[1]) ltopic = "all"; renderLearned(h[1]); }
     }
     else if (h[0] === "todos") { renderTodos(); sub = h[1]; }
-    else if (h[0] === "reading") { renderReading(); sub = h[1]; }
+    else if (h[0] === "reading") { renderReading(h[1]); sub = h[2]; }
     else { renderOverview(); sub = h[1]; }
     if (sub) {
       var el = document.getElementById("s-" + sub);
@@ -387,11 +460,16 @@
     groups.push({ id: "learned", label: "Learning log", n: (D.learned || []).length,
       kids: topics.map(function (t) { return ["#learned/t:" + encodeURIComponent(t), t, (D.learned || []).filter(function (x) { return x.topic === t; }).length]; }) });
     var R = D.reading || [];
-    groups.push({ id: "reading", label: "Reading", n: R.length,
-      kids: ["reading", "to-read", "read"].map(function (st) {
-        var c = R.filter(function (x) { return (x.status || "to-read") === st; }).length;
-        return c ? ["#reading/" + st, RSTATUS[st], c] : null;
-      }).filter(Boolean) });
+    var rkids = ["reading", "to-read", "read"].map(function (st) {
+      var c = R.filter(function (x) { return (x.status || "to-read") === st; }).length;
+      return c ? ["#reading/s:" + st, RSTATUS[st], c] : null;
+    }).filter(Boolean);
+    var hp = hash.split("/");
+    if (hp[0] === "#reading" && hp[1] && hp[1].indexOf("s:") !== 0) {
+      var cur = R.filter(function (x) { return x.id === decodeURIComponent(hp[1]); })[0];
+      if (cur) rkids.push(["#reading/" + cur.id, "▸ " + (cur.short || cur.title)]);
+    }
+    groups.push({ id: "reading", label: "Reading", n: R.length, kids: rkids });
     var all = allTodos(), open = all.filter(function (t) { return !t.done; }).length;
     groups.push({ id: "todos", label: "To-dos", n: open, kids: [["#todos/open", "Open", open], ["#todos/done", "Done", all.length - open]] });
 
