@@ -39,9 +39,11 @@
     return '<span class="pill' + cls + '">' + esc(s) + "</span>";
   }
 
-  /* ------------------------------------------------------------------ list */
+  /* ------------------------------------------------------------------ list
+     Note the id is "bloglist", not "list": the Research hub uses "list" for its
+     project cards, and this file is loaded there too (for the tab count). */
   function renderList() {
-    var listEl = document.getElementById("list");
+    var listEl = document.getElementById("bloglist");
     if (!listEl) return;
     var barEl = document.getElementById("bar");
     var all = sorted();
