@@ -159,7 +159,7 @@
       "</header>";
 
     if ((p.body || []).length) {
-      html += '<h2 class="sec">The post</h2><div class="box">' +
+      html += '<h2 class="sec">' + esc(p.bodyLabel || "The post") + '</h2><div class="box">' +
         p.body.map(function (t) { return "<p>" + esc(t) + "</p>"; }).join("") + "</div>";
     }
 
