@@ -68,11 +68,16 @@
   function pageText() {
     var el = document.querySelector("#content") || document.querySelector("main") ||
       document.querySelector('[role="main"]') || document.body;
+    var title = document.querySelector("h1");
     if (!el) return "";
     var clone = el.cloneNode(true);
     clone.querySelectorAll("script,style,nav,header,footer,svg,canvas,input,select,textarea,.listen-btn,#sf-tts,.vid-list,.quiz-nav,.sa-row,.choices,.CodeMirror")
       .forEach(function (n) { n.remove(); });
     var txt = clone.innerText || clone.textContent || "";
+    // the page title often sits in a <header> that's skipped above; read it first
+    if (title && el.contains(title) && title.closest("header") && txt.indexOf(title.textContent.trim()) === -1) {
+      txt = title.textContent.trim() + ". " + txt;
+    }
     return txt.replace(/\s+\n/g, "\n").trim();
   }
 
@@ -108,6 +113,8 @@
 
   btn.addEventListener("click", function () { playing ? stop() : speak(); });
   window.addEventListener("beforeunload", stop);
+  // pages that switch views without reloading (like the research tabs) start fresh
+  window.addEventListener("hashchange", function () { if (playing) stop(); });
   // resync the label if something else (an in-page reader) cancels speech
   setInterval(function () {
     if (playing && !window.speechSynthesis.speaking && !window.speechSynthesis.pending) {

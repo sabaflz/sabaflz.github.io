@@ -42,6 +42,8 @@ RESEARCH_PASS='team passphrase' node tools/research-crypt.mjs encrypt research/r
 
 **Start a new research project:** copy `research/research-001/` to a new folder, empty its `data.js` and `private/transcripts.json` (back to `"check": null, "items": {}`), and add the project to `PROJECTS` in `research/index.html`.
 
+**Every new page gets the Listen button:** include `<script src="…/assets/js/tts.js?v=2"></script>` (with the right number of `../`) before `theme.js`. It reads the page's `main` content aloud with the browser's built-in voice.
+
 ## Preview locally
 
 Opening `index.html` directly works for the home page. The resume viewer needs a local server:
