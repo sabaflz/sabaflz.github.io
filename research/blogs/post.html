@@ -10,22 +10,28 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/research.css?v=3">
+<link rel="stylesheet" href="../../assets/css/pagenav.css?v=1">
 </head>
 <body>
 <header class="topbar"><nav class="nav wrap" aria-label="Main"></nav></header>
 
-<main class="wrap">
+<main class="wrap wide">
   <header class="page" style="padding-bottom:0">
     <p class="crumbs"><a href="../">Research</a> / <a href="./">Blogs</a></p>
   </header>
 
-  <div class="panel" id="post" aria-live="polite"></div>
+  <div class="withnav">
+    <aside class="pagenav" data-pagenav-for="#post" data-pagenav-sel="h2.sec"
+           data-pagenav-min="3" data-pagenav-minh="1800" aria-label="On this page"></aside>
+    <div class="panel" id="post" aria-live="polite"></div>
+  </div>
 
   <footer class="foot">Built and maintained by Saba Feilizadeh.</footer>
 </main>
 
-<script src="data.js?v=1"></script>
-<script src="../../assets/js/blogs.js?v=1"></script>
+<script src="data.js?v=2"></script>
+<script src="../../assets/js/blogs.js?v=2"></script>
+<script src="../../assets/js/pagenav.js?v=1"></script>
 <script src="../../assets/js/nav.js?v=2"></script>
 <script src="../../assets/js/tts.js?v=2"></script>
 <script src="../../assets/js/theme.js?v=1"></script>

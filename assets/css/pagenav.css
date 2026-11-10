@@ -1,0 +1,82 @@
+/* ---------------------------------------------------------------------------
+   pagenav: a sticky left-hand section nav for pages with a lot on them.
+
+   To use on any page:
+     1. <link rel="stylesheet" href="/assets/css/pagenav.css">
+     2. wrap the content:  <div class="withnav">
+                             <aside class="pagenav" data-pagenav-for="#post"></aside>
+                             <div id="post"> ... </div>
+                           </div>
+     3. <script src="/assets/js/pagenav.js"></script>
+
+   The nav builds itself from the h2 headings inside the target, and hides
+   itself when there are fewer than three, so short pages stay uncluttered.
+   Below 1000px it disappears and the content goes back to one column.
+--------------------------------------------------------------------------- */
+
+.wrap.wide { max-width: 1280px; }
+
+.withnav { display: block; }
+
+.pagenav { display: none; }
+
+@media (min-width: 1000px) {
+  .withnav {
+    display: grid;
+    grid-template-columns: 188px minmax(0, 1fr);
+    gap: 40px;
+    align-items: start;
+  }
+
+  .pagenav {
+    display: block;
+    position: sticky;
+    top: calc(var(--navh, 67px) + 24px);
+    max-height: calc(100vh - var(--navh, 67px) - 48px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding: 2px 0 8px;
+  }
+
+  .pagenav-k {
+    display: block;
+    font: 600 11px/1 var(--mono, ui-monospace, monospace);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 0 10px 12px;
+  }
+
+  .pagenav ul { list-style: none; margin: 0; padding: 0; border-left: 2px solid var(--line); }
+
+  .pagenav a {
+    display: block;
+    padding: 7px 10px 7px 12px;
+    margin-left: -2px;
+    border-left: 2px solid transparent;
+    color: var(--muted);
+    text-decoration: none;
+    font-size: 13.5px;
+    line-height: 1.35;
+    transition: color .15s, border-color .15s;
+  }
+
+  .pagenav a:hover { color: var(--ink, var(--fg)); }
+
+  .pagenav a.on {
+    color: var(--ink, var(--fg));
+    font-weight: 600;
+    border-left-color: var(--accent, #E9A400);
+  }
+
+  /* h3-level entries, when a page opts into them */
+  .pagenav a.sub { padding-left: 26px; font-size: 12.5px; }
+
+  /* Anchored jumps shouldn't land under the sticky site header. */
+  .withnav :target,
+  .withnav [id] { scroll-margin-top: calc(var(--navh, 67px) + 20px); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
