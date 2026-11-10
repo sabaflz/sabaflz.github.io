@@ -198,6 +198,9 @@
       "</nav>";
 
     el.innerHTML = html;
+
+    // The section nav builds itself from the headings we just rendered.
+    if (window.PageNav) window.PageNav.refresh();
   }
 
   /* ----------------------------------------------------- tab counts, both */
