@@ -26,10 +26,10 @@ window.BLOG_POSTS = [
     id: "agents-reading-untrusted-text",
     title: "Can an agent read untrusted text and still act for you?",
     date: "2026-11-09",
-    status: "Draft",
+    status: "Published",
     topics: ["AI security", "Prompt injection", "Agents", "Human-centered AI"],
     summary:
-      "A nine-source review of prompt injection, agent permissions, and who ends up doing the security work. Not published anywhere yet, kept here for the source log.",
+      "A nine-source review of prompt injection, agent permissions, and who ends up doing the security work. The full source log, with what each paper does not establish.",
     bodyLabel: "Where this landed",
     body: [
       "Prompt injection stops being a model problem and becomes a security problem the moment text an agent reads can redirect actions that carry the user's authority. Preventing that means looking at the surrounding system, not just at whether the model gives good answers.",
@@ -167,7 +167,7 @@ window.BLOG_POSTS = [
     id: "when-assistive-ai-should-stay-quiet",
     title: "When an assistive tool should stay quiet",
     date: "2026-11-10",
-    status: "Draft",
+    status: "Published",
     where: "LinkedIn",
     url: "",
     topics: ["Accessibility", "Human-centered AI", "Assistive technology"],
