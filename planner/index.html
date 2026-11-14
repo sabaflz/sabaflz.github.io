@@ -269,6 +269,11 @@ main.view-grad .layout, main.view-grad #tracker{display:none}
 .g-tbl tbody th{font-weight:600; width:42%}
 .g-tbl em{display:block; font:500 11px var(--mono); color:var(--muted); font-style:normal}
 .g-q{margin:12px 0 0}
+/* subtabs: Semesters | Study (same block on both planner pages) */
+.subtabs{display:inline-flex; gap:4px; padding:4px; margin:0 0 18px; background:var(--surface); border:1.5px solid var(--line); border-radius:12px}
+.subtabs a{font:600 14px/1 var(--display); text-decoration:none; padding:9px 16px; border-radius:9px; color:var(--muted)}
+.subtabs a:hover{color:var(--ink)}
+.subtabs a[aria-current="page"]{background:var(--saffron-soft); color:var(--saffron-ink)}
 </style>
 </head>
 <body>
@@ -290,6 +295,10 @@ main.view-grad .layout, main.view-grad #tracker{display:none}
 
 <main class="wrap">
   <header class="page">
+    <nav class="subtabs" aria-label="Planner sections">
+      <a href="./" aria-current="page">Semesters</a>
+      <a href="study/">Study</a>
+    </nav>
     <p class="eyebrow">CS BA · CDSS</p>
     <h1>Course Planner</h1>
     <p class="lede">Every course that matters for my CS degree and CogSci minor, checked against what I've finished. Plan each term, then track what's left below: units, tech electives, the minor, AH&I, and to-dos.</p>
@@ -344,8 +353,8 @@ main.view-grad .layout, main.view-grad #tracker{display:none}
 <script src="data/gradplan.js?v=17"></script>
 <script src="data/live.js?v=17"></script>
 <script src="planner.js?v=17"></script>
-<script src="sync.js?v=17"></script>
-<script src="../assets/js/nav.js?v=2"></script>
+<script src="sync.js?v=18"></script>
+<script src="../assets/js/nav.js?v=3"></script>
 <script src="../assets/js/tts.js?v=2"></script>
 <script src="../assets/js/theme.js?v=1"></script>
 </body>

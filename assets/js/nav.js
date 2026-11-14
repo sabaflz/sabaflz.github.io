@@ -8,7 +8,8 @@
 
   /* ---- where am I, and how deep ---------------------------------------- */
   var seg = location.pathname.replace(/index\.html?$/, "").split("/").filter(Boolean);
-  var here = seg[seg.length - 1] || "";           // "", "resume", "guides", "planner", "lab"
+  var here = seg[seg.length - 1] || "";
+  if (seg[0] === "planner") here = "planner";       // planner subtabs (planner/study/) count as Planner           // "", "resume", "guides", "planner", "lab"
   var base = seg.length ? "../".repeat(seg.length) : "";
 
   /* The canonical menu. One short bar; new work lives inside the hubs.

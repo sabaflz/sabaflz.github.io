@@ -16,6 +16,7 @@ My personal site. Plain HTML, CSS, and JavaScript, no build step.
 | A semester's course options | `planner/data/terms/<term>.js` |
 | Course facts reused across terms | `planner/data/catalog.js` |
 | My plans, check-offs, to-dos | `planner/data/state.json`, edited on the page in admin mode |
+| Finals study plan (Planner → Study tab) | `planner/data/study.json`, encrypted when set to "Only me"; page code in `planner/study/` |
 | List of research projects | the `PROJECTS` list in `research/index.html` |
 | A research project's overview, meetings, learning log, reading, to-dos | `research/<project>/data.js` (public) or `data.enc.json` (private, encrypted) |
 | Research meeting transcripts (encrypted) | `research/<project>/private/transcripts.json`, added on the meeting's page |
@@ -53,6 +54,8 @@ python3 -m http.server 8000
 ```
 
 Then visit http://localhost:8000.
+
+**Study tab:** Planner has two subtabs, Semesters and Study. Study shows the finals study calendar (month and week views, check-offs, light days). It has its own "Only me / Everyone" switch and uses the same admin password. The plan itself lives only inside `planner/data/study.json`, never in a public file. To load a new semester's plan, log in on the Study tab and use Restore with the plan file (a `sf-study-backup` JSON); restoring replaces what's there, so download a backup first if you want to keep old check-offs.
 
 ## Planner admin
 

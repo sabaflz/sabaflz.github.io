@@ -16,11 +16,20 @@
 (function () {
   "use strict";
 
+  // Pages other than the course planner (like planner/study/) reuse this file by setting
+  // window.PLANNER_CONFIG first: { statePath, stateUrl, adminUrl, seedUrl, app, label,
+  // backupType, isBackup(data), empty }. Login, password and token are shared across them.
+  var PC = window.PLANNER_CONFIG || {};
+  var LABEL = PC.label || "Planner";
+  var BACKUP_TYPE = PC.backupType || "sf-planner-backup";
+  var isBackup = PC.isBackup || function (d) { return !!d.plans; };
   var CFG = { owner: "sabaflz", repo: "sabaflz.github.io", branch: "main",
-              state: "planner/data/state.json", admin: "planner/data/admin.json", seed: "planner/data/seed.js" };
+              state: PC.statePath || "planner/data/state.json", admin: "planner/data/admin.json",
+              seed: PC.statePath ? (PC.seedPath || null) : "planner/data/seed.js" };
   var API = window.PLANNER_API || "https://api.github.com";
-  var STATE_URL = window.PLANNER_STATE_URL || "data/state.json";
-  var ADMIN_URL = window.PLANNER_ADMIN_URL || "data/admin.json";
+  var STATE_URL = PC.stateUrl || window.PLANNER_STATE_URL || "data/state.json";
+  var ADMIN_URL = PC.adminUrl || window.PLANNER_ADMIN_URL || "data/admin.json";
+  function app() { return window[PC.app || "PlannerApp"]; }
   var SS_TOKEN = "sf_planner_tok", SS_PASS = "sf_planner_pw";
   var ITER = 600000;
 
@@ -96,10 +105,11 @@
     return (await r.json()).content.sha;
   }
   async function deleteSeed() {
+    if (!CFG.seed) return;
     try {
       var r = await gh("GET", cpath(CFG.seed) + "?ref=" + CFG.branch); if (!r.ok) return;
       var j = await r.json();
-      await gh("DELETE", cpath(CFG.seed), { message: "Planner: remove seed data (now in state.json)", sha: j.sha, branch: CFG.branch });
+      await gh("DELETE", cpath(CFG.seed), { message: LABEL + ": remove seed data (now in state.json)", sha: j.sha, branch: CFG.branch });
     } catch (e) {}
   }
 
@@ -127,7 +137,7 @@
     if (saving) { pending = true; return; }
     saving = true; setStatus("Saving…", "mid");
     try {
-      sha = await writeRepoFile(CFG.state, await buildState(), sha, "Planner: update (" + (visibility === "private" ? "only me" : "everyone") + ")");
+      sha = await writeRepoFile(CFG.state, await buildState(), sha, LABEL + ": update (" + (visibility === "private" ? "only me" : "everyone") + ")");
       setStatus("Saved", "good");
     } catch (e) { setStatus("Not saved: " + e.message, "bad"); }
     saving = false;
@@ -144,11 +154,11 @@
     return d <= 0 ? "today" : d === 1 ? "yesterday" : d + " days ago";
   }
   function downloadBackup() {
-    var file = { type: "sf-planner-backup", v: 1, exported: new Date().toISOString(), visibility: visibility, data: data };
+    var file = { type: BACKUP_TYPE, v: 1, exported: new Date().toISOString(), visibility: visibility, data: data };
     var blob = new Blob([JSON.stringify(file, null, 2)], { type: "application/json" });
     var a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "planner-backup-" + new Date().toISOString().slice(0, 10) + ".json";
+    a.download = LABEL.toLowerCase().replace(/\W+/g, "-") + "-backup-" + new Date().toISOString().slice(0, 10) + ".json";
     document.body.appendChild(a); a.click(); a.remove();
     setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
     try { localStorage.setItem(LS_BACKUP, String(Date.now())); } catch (e) {}
@@ -160,10 +170,10 @@
       r.onload = function () {
         try {
           var j = JSON.parse(r.result);
-          var d = j && j.type === "sf-planner-backup" ? j.data : null;
-          if (!d || typeof d !== "object" || !d.plans) throw 0;
+          var d = j && j.type === BACKUP_TYPE ? j.data : null;
+          if (!d || typeof d !== "object" || !isBackup(d)) throw 0;
           resolve(d);
-        } catch (e) { reject(new Error("That file isn't a planner backup.")); }
+        } catch (e) { reject(new Error("That file isn't a " + LABEL.toLowerCase() + " backup.")); }
       };
       r.onerror = function () { reject(new Error("Couldn't read that file.")); };
       r.readAsText(fileObj);
@@ -179,7 +189,7 @@
   function showPlanner(editable) {
     $("locked").hidden = true; closeModal();
     document.querySelectorAll("[data-planner]").forEach(function (el) { el.hidden = false; });
-    window.PlannerApp.start(data, { editable: editable, onChange: editable ? function (d) { data = d; scheduleSave(); } : null });
+    app().start(data, { editable: editable, onChange: editable ? function (d) { data = d; scheduleSave(); } : null });
   }
   function showLocked(msg) {
     document.querySelectorAll("[data-planner]").forEach(function (el) { el.hidden = true; });
@@ -203,7 +213,7 @@
     var v = e.target.closest && e.target.closest("[data-vis]");
     if (v && token && data) {
       var want = v.getAttribute("data-vis"); if (want === visibility) return;
-      if (want === "public" && !confirm("Make the planner visible to everyone? Your plans, check-offs, and to-do list will be readable by anyone with the link. They still can't change anything.")) return;
+      if (want === "public" && !confirm(PC.publicWarning || "Make the planner visible to everyone? Your plans, check-offs, and to-do list will be readable by anyone with the link. They still can't change anything.")) return;
       visibility = want; renderAdminBar(); saveNow(); return;
     }
     if (e.target.id === "logoutBtn") {
@@ -219,7 +229,7 @@
     if (e.target.id !== "restoreIn" || !e.target.files[0] || !token) return;
     try {
       var d = await readBackupFile(e.target.files[0]);
-      if (!confirm("Replace your current planner with this backup? Download a backup of the current one first if you might want it.")) return;
+      if (!confirm("Replace your current " + LABEL.toLowerCase() + " with this backup? Download a backup of the current one first if you might want it.")) return;
       await restoreInto(d);
     } catch (err) { alert(err.message); }
     e.target.value = "";
@@ -318,7 +328,7 @@
   function askVisibility() {
     return new Promise(function (resolve) {
       var restored = null;
-      var m = modal('<h2>Who can see your planner?</h2><p>You can switch this any time from the admin bar.</p>' +
+      var m = modal('<h2>Who can see your ' + esc(LABEL.toLowerCase()) + '?</h2><p>You can switch this any time from the admin bar.</p>' +
         '<div class="mrow col"><button type="button" class="mbtn" data-first="private">Only me (encrypted)</button>' +
         '<button type="button" class="mbtn ghost" data-first="public">Everyone (read-only for visitors)</button></div>' +
         '<div class="mrestore"><b>Starting over after a reset?</b> <label class="mlink">Restore from a backup file<input type="file" id="firstRestore" accept="application/json,.json" hidden></label>' +
@@ -355,8 +365,8 @@
     }
   }
   async function firstRun() {
-    await loadScript("data/seed.js");
-    data = window.PLANNER_SEED ? clone(window.PLANNER_SEED) : { done: [], plans: {}, manual: {}, todos: [], paths: [] };
+    if (!PC.statePath) await loadScript("data/seed.js");
+    data = window.PLANNER_SEED ? clone(window.PLANNER_SEED) : clone(PC.empty || { done: [], plans: {}, manual: {}, todos: [], paths: [] });
     var choice = await askVisibility();
     visibility = choice.vis;
     if (choice.data) data = choice.data;
