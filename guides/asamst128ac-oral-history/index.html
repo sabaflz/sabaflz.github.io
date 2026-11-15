@@ -1,0 +1,703 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASAMST 128AC Oral History Project</title>
+<meta name="description" content="Project kit for the ASAMST 128AC (Muslims in America) Oral History Project: the rubric decoded, a work-back timeline, consent and ethics, a chronological interview script built from Abed's question set and the UCLA method, how to connect the interview to course readings, a paper outline, and the appendix requirements.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='68' font-size='34' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>OH</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --ok:#1C7C54; --ok-soft:#E3F3EA; --warn:#B4531A; --warn-soft:#FBEADF;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#54C78C; --ok-soft:#163026; --warn:#E89156; --warn-soft:#2E2016; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#54C78C; --ok-soft:#163026; --warn:#E89156; --warn-soft:#2E2016; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.62 var(--body); -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron); outline-offset:3px; border-radius:3px}
+
+#topbar{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1.5px solid var(--line)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:14px; max-width:1180px; margin:0 auto; padding:14px clamp(16px,4vw,34px)}
+.nav .mark{font:800 20px/1 var(--display); text-decoration:none; letter-spacing:-.02em}
+.crumbs{font:500 14px var(--body); color:var(--muted); display:flex; gap:8px; align-items:center; min-width:0}
+.crumbs a{text-decoration:none} .crumbs a:hover{color:var(--saffron-ink)} .crumbs b{color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.crumbs span{color:var(--line)}
+.t-btn{font:500 13px/1 var(--mono); background:var(--surface); color:var(--ink); border:1.5px solid var(--line); border-radius:999px; padding:8px 13px; cursor:pointer; white-space:nowrap}
+.t-btn:hover{border-color:var(--saffron)}
+
+#exam-strip{background:#16193A; color:#fff; font:500 13.5px/1.4 var(--body); text-align:center; padding:9px 16px}
+:root[data-theme="dark"] #exam-strip{background:#000}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #exam-strip{background:#000}}
+#exam-strip b{color:var(--saffron)}
+
+#layout{display:flex; gap:28px; max-width:1180px; margin:0 auto; padding:0 clamp(16px,4vw,34px); align-items:flex-start}
+#sidebar{position:sticky; top:72px; width:232px; flex:none; padding:26px 0 40px; max-height:calc(100vh - 80px); overflow:auto}
+.side-head{font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 10px}
+.prog-wrap{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:14px; margin-bottom:18px}
+.prog-bar{height:8px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin:8px 0 6px}
+.prog-fill{height:100%; width:0%; background:var(--saffron); transition:width .3s}
+.prog-label{font:500 12.5px var(--mono); color:var(--muted)}
+#toc{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+#toc a{display:flex; align-items:center; gap:9px; text-decoration:none; font-size:14px; color:var(--muted); padding:7px 11px; border-radius:9px; border-left:2.5px solid transparent}
+#toc a:hover{color:var(--ink); background:var(--surface-2)}
+#toc a.active{color:var(--ink); background:var(--saffron-soft); border-left-color:var(--saffron); font-weight:600}
+#toc a .tdot{flex:none; width:13px; height:13px; border-radius:999px; border:2px solid var(--line); box-sizing:border-box; position:relative; transition:background .2s, border-color .2s}
+#toc a.done .tdot{background:var(--saffron); border-color:var(--saffron)}
+#toc a.done .tdot::after{content:"\2713"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font:700 8px/1 var(--body); color:var(--on-saffron)}
+#toc a.done{color:var(--ink)}
+
+#main{flex:1; min-width:0; padding:26px 0 90px}
+header.page{padding:12px 0 8px}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--saffron-ink); margin:0 0 10px}
+h1{font:600 clamp(1.9rem,5vw,2.7rem)/1.04 var(--display); margin:0 0 12px; letter-spacing:-.01em; text-wrap:balance}
+.lede{color:var(--muted); max-width:66ch; margin:0 0 6px}
+
+section.block{scroll-margin-top:118px; padding:30px 0 6px; border-top:1.5px solid var(--line); margin-top:30px}
+section.block:first-of-type{border-top:none; margin-top:14px}
+h2{font:600 clamp(1.4rem,3.4vw,1.9rem)/1.1 var(--display); margin:0 0 6px; letter-spacing:-.01em}
+h2 .num{font:500 14px var(--mono); color:var(--saffron-ink); display:block; margin-bottom:4px; letter-spacing:.05em}
+h3{font:600 18.5px/1.25 var(--display); margin:24px 0 8px}
+h4{font:600 15px/1.3 var(--body); margin:16px 0 4px; color:var(--ink)}
+p{margin:10px 0} .muted{color:var(--muted)}
+ul,ol{margin:10px 0; padding-left:22px} li{margin:6px 0}
+strong{font-weight:600}
+em{font-style:italic}
+code,.k{font:500 14.5px var(--mono); background:var(--surface-2); padding:1px 6px; border-radius:6px; color:var(--saffron-ink)}
+.lead-term{font-weight:600; color:var(--ink)}
+.cite{font:500 12.5px var(--mono); color:var(--muted)}
+
+.card{background:var(--surface); border:1.5px solid var(--line); border-radius:16px; padding:20px 22px; margin:16px 0}
+.card.tint{background:var(--saffron-soft); border-color:transparent}
+.card.dark{background:#16193A; color:#EDEEF6; border:1.5px solid transparent}
+:root[data-theme="dark"] .card.dark{background:#20244D; border-color:#343A6B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card.dark{background:#20244D; border-color:#343A6B}}
+.card.dark .cite, .card.dark .muted{color:#AEB3CC}
+.card.dark strong{color:var(--saffron)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.mini{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:16px 18px}
+.mini h4{margin-top:0}
+
+.pill{display:inline-block; font:500 11.5px/1 var(--mono); padding:5px 9px; border-radius:999px; border:1.5px solid var(--line); color:var(--muted); margin:0 6px 6px 0}
+.pill.said{color:#1F6FB2; border-color:#1F6FB2}
+.pill.gb{color:#2C7A4B; border-color:#2C7A4B}
+.pill.hatem{color:#8A4FB0; border-color:#8A4FB0}
+.pill.diouf{color:#A05A1C; border-color:#A05A1C}
+:root[data-theme="dark"] .pill.said{color:#6DB8EC;border-color:#3A6E95}
+:root[data-theme="dark"] .pill.gb{color:#6FD39A;border-color:#366B4D}
+:root[data-theme="dark"] .pill.hatem{color:#C79AE6;border-color:#6A4F84}
+:root[data-theme="dark"] .pill.diouf{color:#E39B5C;border-color:#8A5E33}
+
+.step{display:flex; gap:14px; margin:12px 0; align-items:flex-start}
+.step .n{flex:none; width:30px; height:30px; border-radius:999px; background:var(--saffron); color:var(--on-saffron); font:700 14px/30px var(--mono); text-align:center}
+.step .b{flex:1; min-width:0}
+.step .b h4{margin:2px 0 2px}
+.when{font:600 12px var(--mono); color:var(--saffron-ink)}
+
+.q-list{counter-reset:qq; list-style:none; padding:0}
+.q-list>li{counter-increment:qq; background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:12px 14px 12px 44px; position:relative; margin:9px 0}
+.q-list>li::before{content:counter(qq); position:absolute; left:12px; top:12px; width:22px; height:22px; border-radius:999px; background:var(--surface-2); color:var(--saffron-ink); font:700 11px/22px var(--mono); text-align:center}
+.q-list .fu{display:block; margin-top:5px; font-size:14px; color:var(--muted)}
+.q-list .fu b{color:var(--ink); font-weight:600}
+
+table.match{width:100%; border-collapse:collapse; margin:10px 0; font-size:14.5px}
+.match td,.match th{padding:9px 11px; border-bottom:1px solid var(--line); vertical-align:top; text-align:left}
+.match th{font:600 12px var(--mono); color:var(--saffron-ink); text-transform:uppercase; letter-spacing:.04em}
+.match td:first-child{font-weight:600}
+
+details.q{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; margin:12px 0; overflow:hidden}
+details.q[open]{border-color:var(--saffron)}
+details.q>summary{list-style:none; cursor:pointer; padding:15px 18px; font-weight:500; display:flex; gap:12px; align-items:flex-start; user-select:none}
+details.q>summary::-webkit-details-marker{display:none}
+details.q>summary::before{content:"+"; flex:none; width:24px; height:24px; border-radius:50%; background:var(--surface-2); color:var(--muted); font:700 15px/24px var(--mono); text-align:center; margin-top:1px}
+details.q[open]>summary::before{content:"\2013"; background:var(--saffron); color:var(--on-saffron)}
+.ans{padding:2px 18px 18px 54px; color:var(--ink); border-top:1px dashed var(--line); margin-top:2px}
+.ans p:first-child{margin-top:12px}
+
+.review-row{display:flex; align-items:center; gap:10px; margin:18px 0 2px; padding-top:14px; border-top:1px dashed var(--line)}
+.review-row label{font:500 14px var(--body); color:var(--muted); display:flex; align-items:center; gap:9px; cursor:pointer}
+.review-row input{appearance:none; -webkit-appearance:none; margin:0; width:21px; height:21px; border:2px solid var(--line); border-radius:999px; background:var(--surface); cursor:pointer; position:relative; transition:background .2s, border-color .2s}
+.review-row input:hover{border-color:var(--saffron)}
+.review-row input:checked{background:var(--saffron); border-color:var(--saffron)}
+.review-row input:checked::after{content:"\2713"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font:700 12px/1 var(--body); color:var(--on-saffron)}
+.review-row input:focus-visible{outline:3px solid var(--saffron); outline-offset:2px}
+.sec-done{display:none; width:22px; height:22px; border-radius:999px; background:var(--saffron); margin-left:11px; vertical-align:middle; position:relative}
+.sec-done::after{content:"\2713"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font:700 12px/1 var(--body); color:var(--on-saffron)}
+section.block.done .sec-done{display:inline-block}
+.flag{display:inline-block; font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--warn); background:var(--warn-soft); border-radius:6px; padding:3px 8px; margin-left:6px}
+.pts{display:inline-block; font:600 11px var(--mono); color:var(--ok); background:var(--ok-soft); border-radius:6px; padding:3px 8px; margin-left:6px}
+
+footer{max-width:1180px; margin:0 auto; padding:30px clamp(16px,4vw,34px) 70px; color:var(--muted); font-size:14px; border-top:1.5px solid var(--line)}
+#menuBtn{display:none}
+@media(max-width:860px){
+  #sidebar{display:none}
+  #menuBtn{display:block; position:fixed; right:16px; bottom:16px; z-index:30; background:var(--saffron); color:var(--on-saffron); border:none; border-radius:999px; padding:13px 18px; font:600 14px var(--body); box-shadow:0 6px 20px rgba(0,0,0,.18); cursor:pointer}
+  #sidebar.open{display:block; position:fixed; inset:60px 10px 10px auto; width:min(80vw,300px); background:var(--bg); border:1.5px solid var(--line); border-radius:16px; padding:18px; z-index:29; box-shadow:0 10px 40px rgba(0,0,0,.25); max-height:80vh}
+}
+
+.nav-actions{display:flex; gap:8px; align-items:center}
+.sec-listen{margin-left:12px; vertical-align:middle; font:600 11px/1 var(--mono); letter-spacing:.02em;
+  background:var(--surface-2); color:var(--saffron-ink); border:1.5px solid var(--line);
+  border-radius:999px; padding:6px 11px; cursor:pointer; white-space:nowrap}
+.sec-listen:hover{border-color:var(--saffron)}
+.tts-active{background:var(--saffron-soft); border-radius:8px; box-shadow:0 0 0 7px var(--saffron-soft); scroll-margin-top:96px}
+#tts-bar{position:fixed; left:50%; transform:translateX(-50%); bottom:16px; z-index:40; display:none;
+  align-items:center; gap:8px; background:var(--surface); border:1.5px solid var(--line);
+  border-radius:999px; padding:7px 9px 7px 16px; box-shadow:0 12px 36px rgba(0,0,0,.24); max-width:calc(100vw - 20px)}
+#tts-bar.on{display:flex}
+#tts-bar .lbl{font:600 13px var(--body); color:var(--ink); max-width:34vw; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap}
+#tts-bar button{border:none; background:var(--surface-2); color:var(--ink); min-width:38px; height:38px;
+  border-radius:999px; cursor:pointer; font-size:15px; line-height:1; display:grid; place-items:center; padding:0}
+#tts-bar button:hover{background:var(--saffron-soft)}
+#tts-bar .rate{font:600 12px var(--mono); padding:0 13px}
+#tts-bar .stop{background:var(--ink); color:var(--surface)}
+#tts-bar .stop:hover{background:var(--saffron); color:var(--on-saffron)}
+body.tts-on #menuBtn{bottom:74px}
+@media (max-width:620px){ #tts-bar .lbl{display:none} .sec-listen{margin-left:8px} }
+
+.print-btn{font:600 12px/1 var(--mono); background:var(--saffron); color:var(--on-saffron); border:none;
+  border-radius:999px; padding:7px 13px; cursor:pointer; margin-left:8px; vertical-align:middle}
+.print-btn:hover{filter:brightness(1.06)}
+@media print{
+  :root{--bg:#fff; --surface:#fff; --surface-2:#f3f3f3; --ink:#000; --muted:#333; --line:#b9b9b9;
+    --saffron-soft:#FBF0D6; --saffron-ink:#7E5600; --saffron:#B9810A}
+  body *{visibility:hidden}
+  #bring, #bring *{visibility:visible}
+  #bring{position:absolute; left:0; top:0; width:100%; margin:0}
+  #bring .review-row, #bring .sec-listen, #bring .print-btn{display:none !important}
+  #bring h2 .num{color:#7E5600}
+  .q-list>li{break-inside:avoid; border:1px solid #b9b9b9}
+  #tts-bar, #menuBtn{display:none !important}
+  @page{margin:14mm}
+}
+</style>
+</head>
+<body>
+<header id="topbar">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="../../" aria-label="Back to site">SF</a>
+    <div class="crumbs"><a href="../">Study Guides</a> <span>/</span> <b>ASAMST 128AC Oral History</b></div>
+    <div class="nav-actions">
+      <button type="button" id="ttsTop" class="t-btn" aria-label="Read the guide aloud" aria-pressed="false">&#9654; Listen</button>
+      <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+    </div>
+  </nav>
+</header>
+
+<div id="exam-strip">
+  <b>Oral History Project &middot; due Sun, Dec 6, 11:59pm PT</b> &nbsp;&middot;&nbsp; 20% of the grade &nbsp;&middot;&nbsp; one interview + a 4-page paper + recording and transcript
+</div>
+
+<div id="layout">
+  <aside id="sidebar" aria-label="Contents">
+    <div class="prog-wrap">
+      <div class="side-head">Your progress</div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+      <div class="prog-label"><span id="progNow">0</span> / <span id="progTot">0</span> steps done</div>
+    </div>
+    <div class="side-head">Jump to</div>
+    <nav><ul id="toc"></ul></nav>
+  </aside>
+
+  <main id="main">
+    <header class="page">
+      <p class="eyebrow">ASAMST 128AC &middot; Muslims in America &middot; Fall 2026</p>
+      <h1>Oral History Project kit</h1>
+      <p class="lede">The full plan for the final project: interview one person who identifies as Muslim, then write a paper that tells their story and argues what this one life reveals about Muslim lives in America. This kit decodes the rubric, hands you a ready interview script built from Abed's questions and the UCLA method, maps the interview to course readings, and lays out the paper and appendix. Lecturer: Hatem Bazian &middot; GSI: Abed Togas.</p>
+      <p class="muted" style="font-size:14.5px">Check off each step as you finish it; the bar on the left remembers your progress in this browser.</p>
+    </header>
+
+    <!-- ===================== OVERVIEW ===================== -->
+    <section class="block" id="overview" data-rev>
+      <h2><span class="num">00 &middot; Start here</span>What the project is</h2>
+      <p>You interview <strong>one person who identifies as Muslim</strong>, record it, then write a paper of <strong>at least 4 full double-spaced pages</strong> (title page, works cited, and appendix do not count). The paper has to do three things, and the rubric scores each of them:</p>
+      <ul>
+        <li><strong>Document</strong> what your interviewee shared, in their own voice, with real quotes.</li>
+        <li><strong>Connect</strong> it to the course, at least three distinct readings, lectures, or videos, each tied to a specific moment in the interview.</li>
+        <li><strong>Argue</strong> what this one life reveals about Muslim lives and communities, with a clear thesis.</li>
+      </ul>
+      <div class="card dark">
+        <strong>The one thing this kit cannot do for you, and why that is fine.</strong> This paper runs on a real interview with a real person. The quotes, the recording, and the transcript all have to be genuine, and the rubric fails a fictional interviewee outright. So I am not writing you an essay here. I am setting up everything around the interview so that once you have it recorded, the paper comes together fast. When you have your transcript, bring it back and we will build the paper from your person's actual words.
+      </div>
+      <p class="muted" style="font-size:14px">Available after Nov 2, due Sunday Dec 6 at 11:59pm PT. Submit a website URL or a file upload. Makeups only for excused absences.</p>
+    </section>
+
+    <!-- ===================== TIMELINE ===================== -->
+    <section class="block" id="timeline" data-rev>
+      <h2><span class="num">01 &middot; Timeline</span>Work back from Dec 6</h2>
+      <p>It is Nov 15 now, so you have about three weeks. The interview is the long pole, because it depends on someone else's calendar. Lock that first.</p>
+      <div class="step"><div class="n">1</div><div class="b"><span class="when">By Thu Nov 20</span><h4>Ask your person and schedule</h4><p style="margin:2px 0 0">Confirm they identify as Muslim, tell them roughly what it is for, and book 45 to 60 minutes. Having it on a calendar is the whole battle.</p></div></div>
+      <div class="step"><div class="n">2</div><div class="b"><span class="when">By Tue Nov 25</span><h4>Do the interview and record it</h4><p style="margin:2px 0 0">Phone voice memo or a Zoom recording both work. Get spoken consent on the recording at the very start. Keep the file safe in two places.</p></div></div>
+      <div class="step"><div class="n">3</div><div class="b"><span class="when">Nov 26 to 29</span><h4>Transcribe your excerpts and pull quotes</h4><p style="margin:2px 0 0">You do not transcribe the whole thing, only the 1 to 2 pages you will quote or draw on. Mark your three or more best quotes with timestamps.</p></div></div>
+      <div class="step"><div class="n">4</div><div class="b"><span class="when">Nov 30 to Dec 3</span><h4>Find the thesis and draft</h4><p style="margin:2px 0 0">What does this one life reveal? Write the 4-plus pages around that, organized by argument, with three course sources slotted into specific moments.</p></div></div>
+      <div class="step"><div class="n">5</div><div class="b"><span class="when">Dec 4 to 5</span><h4>Revise, cite, assemble the appendix</h4><p style="margin:2px 0 0">Reorder so it reads as an argument, not a Q and A. Pick one citation style, build the works cited, attach the log, recording, and transcript.</p></div></div>
+      <div class="step"><div class="n">6</div><div class="b"><span class="when">Sun Dec 6</span><h4>Submit before 11:59pm PT</h4><p style="margin:2px 0 0">Give yourself the morning as a buffer, not the last hour.</p></div></div>
+    </section>
+
+    <!-- ===================== RUBRIC ===================== -->
+    <section class="block" id="rubric" data-rev>
+      <h2><span class="num">02 &middot; The scoring map</span>The rubric, decoded</h2>
+      <p>100 points across seven criteria. Here is what "Exemplary" actually asks for, and the move that gets you there.</p>
+      <table class="match">
+        <tr><th>Criterion</th><th>What the top score needs, and how to hit it</th></tr>
+        <tr><td>Interview process and ethics <span class="pts">10</span></td><td>Consent and any anonymity request documented; a line or two on the setting, the length, and how you chose this person; and evidence you asked <strong>thoughtful follow-up questions</strong> live, not just read off a list. Covered by sections 03 and 04.</td></tr>
+        <tr><td>Interviewee's story and findings <span class="pts">20</span></td><td>A vivid, specific portrait drawn from the themes <em>they</em> raised, with <strong>three or more direct quotes</strong>, each introduced, explained, and cited. Their voice comes through, not your paraphrase.</td></tr>
+        <tr><td>Connection to course material <span class="pts">20</span></td><td><strong>Three or more distinct course sources</strong>, cited by author or title and page or timestamp, each tied to a specific moment in the interview, explaining how they confirm, complicate, or challenge each other. Covered by section 05.</td></tr>
+        <tr><td>Analysis and argument <span class="pts">20</span></td><td>A clear <strong>thesis</strong> about what this story reveals. Treats your interviewee as <strong>one voice, not a stand-in for all Muslims</strong>. Reflects on what oral history shows that texts alone cannot. Covered by section 06.</td></tr>
+        <tr><td>Organization and clarity <span class="pts">10</span></td><td>Intro sets up the interviewee and the thesis, every paragraph has one point, conclusion returns to the argument. <strong>Do not follow the interview's question order</strong>, that is explicitly a lower score.</td></tr>
+        <tr><td>Citations and mechanics <span class="pts">10</span></td><td>One consistent style (MLA is simplest), the interview cited in the text, a complete works cited, few errors, correct font and spacing. Covered by section 07.</td></tr>
+        <tr><td>Appendix <span class="pts">10</span></td><td>The recording (audio or video) <strong>and</strong> 1 to 2 pages of accurately transcribed excerpts. Both, or you lose half. Covered by section 07.</td></tr>
+      </table>
+      <p class="muted" style="font-size:14px">The easy points are ethics, citations, and the appendix, 30 points for doing the process correctly. Do not leave those on the table.</p>
+    </section>
+
+    <!-- ===================== WHO + CONSENT ===================== -->
+    <section class="block" id="who" data-rev>
+      <h2><span class="num">03 &middot; Before the interview</span>Who to ask, and consent</h2>
+      <h3>Choosing your person</h3>
+      <ul>
+        <li>They must <strong>identify as Muslim</strong>. A classmate, a friend, a relative, someone from the MSA or a local mosque, a neighbor, a coworker. One person only.</li>
+        <li>Pick someone who will <strong>talk openly and has some texture to their story</strong>: a migration or conversion arc, a relationship to a community, or a clear experience of belonging or exclusion. That gives you something to argue about.</li>
+        <li>Practical beats perfect. Someone who will actually sit down with you this week is worth more than the ideal person who keeps rescheduling.</li>
+      </ul>
+      <h3>Consent, anonymity, and the log</h3>
+      <p>This is 10 easy points and it protects your interviewee. Do all of it.</p>
+      <ul>
+        <li><strong>Tell them plainly</strong> what it is for: a class paper, it will be recorded, you will transcribe and quote parts of it, and it goes to your instructor.</li>
+        <li><strong>Offer anonymity.</strong> Ask if they want a pseudonym. If yes, use a fake name everywhere in the paper and note that you did.</li>
+        <li><strong>Record the consent.</strong> At the very start of the recording, say the date and have them say out loud that they agree to be recorded and quoted. That recorded "yes" is your documentation.</li>
+        <li><strong>Keep an interview log</strong> for the appendix: date, location or platform, length, how consent was given, and one line on how you chose them.</li>
+      </ul>
+      <p class="muted" style="font-size:14px">The exact spoken consent script is in the printable <a href="#bring">Bring to the interview</a> section, so you can read it straight off your phone.</p>
+    </section>
+
+    <!-- ===================== METHOD ===================== -->
+    <section class="block" id="method" data-rev>
+      <h2><span class="num">04 &middot; In the room</span>How to run a good interview</h2>
+      <p class="muted">Straight from the UCLA Center for Oral History guidelines Abed attached. The whole art is this: it is about the narrator, not you, so you listen and they talk.</p>
+      <div class="grid2">
+        <div class="mini"><h4>The core stance</h4><ul style="margin-bottom:0">
+          <li>Sustained listening. The narrator does almost all the talking; you guide.</li>
+          <li>Structure it <strong>chronologically</strong>, it gives their story depth and keeps it from rambling.</li>
+          <li>Ask for their <strong>own experience before their analysis</strong>. Story first, opinions second.</li>
+        </ul></div>
+        <div class="mini"><h4>How to ask</h4><ul style="margin-bottom:0">
+          <li>Open each topic wide: "Tell me about...", "Can you walk me through...", "What was that like?"</li>
+          <li>Use yes/no questions only to clarify a detail, sparingly.</li>
+          <li>No leading or either/or questions, they foreclose their real answer.</li>
+          <li>One concise question at a time.</li>
+        </ul></div>
+      </div>
+      <h4>The things that quietly raise your grade</h4>
+      <ul>
+        <li><strong>Follow-ups are graded.</strong> When something is interesting, stay there: "Can you say more about that?", "Do you have a specific memory of it?", "How did that feel at the time?" That is the difference between Exemplary and Developing on the first criterion.</li>
+        <li><strong>Do not interrupt, and do not fear silence.</strong> If they pause to think, let them. The best material comes after the pause.</li>
+        <li><strong>Signal turns</strong> so it does not feel choppy: "We have been talking about your childhood, I would love to move to when you came to the US."</li>
+        <li><strong>Save the heavy questions.</strong> Start light, build trust, and ask about harder experiences once they are warmed up.</li>
+        <li><strong>Challenge gently</strong> only if needed, and never as yourself: "Some critics have argued..., how do you see it?"</li>
+      </ul>
+    </section>
+
+    <!-- ===================== BRING TO THE INTERVIEW (printable) ===================== -->
+    <section class="block" id="bring" data-rev>
+      <h2><span class="num">Bring this</span>The interview script</h2>
+      <p class="muted" style="font-size:14px">Everything to read off your phone during the interview: the consent script, then the questions in order. Abed's question set, resequenced chronologically with warm questions first and open-ended phrasing. You will not ask all of these, follow the person. <button type="button" class="print-btn" onclick="window.print()">&#9113; Print just this</button></p>
+
+      <div class="card tint">
+        <strong>Consent script, read this first, with the recording already running:</strong>
+        <p style="margin:8px 0 0">"Today is [date]. Thanks again for doing this. This is for a class paper on Muslim life in America. I am recording us, and I will transcribe and quote parts of it for my instructor. You can skip any question or stop anytime, and if you would like, I can use a different name for you in the paper. Is it okay with you that I record this and quote you?" <em>(Wait for a clear spoken "yes.")</em></p>
+      </div>
+
+      <h3>Warm-up and background</h3>
+      <ol class="q-list">
+        <li>To start, where were you born, and where do you call home now? <span class="fu"><b>Follow-up:</b> Can you tell me about the places you have called home over your life?</span></li>
+        <li>How would you describe the community and the environment you grew up in?</li>
+        <li>What does the idea of home mean to you, and has that meaning changed over time?</li>
+      </ol>
+
+      <h3>Migration and family journey</h3>
+      <ol class="q-list">
+        <li>If it applies, can you share the story of how you or your family came to the United States? <span class="fu"><b>Follow-up:</b> What circumstances shaped that journey?</span></li>
+        <li>How have your family, your cultural background, or that migration history shaped your relationship with Islam?</li>
+      </ol>
+
+      <h3>Coming to Islam and religious identity</h3>
+      <ol class="q-list">
+        <li>Is there a story about how you came to Islam? Were you born into a Muslim family, or did you come to it later? <span class="fu"><b>Follow-up:</b> What was that like for you?</span></li>
+        <li>What are some of your earliest memories of Islam? How was religion practiced or expressed in your household?</li>
+        <li>How has your relationship with Islam changed throughout your life?</li>
+        <li>Are there particular traditions or practices that hold personal significance for you? <span class="fu"><b>Follow-up:</b> Can you walk me through one of them?</span></li>
+      </ol>
+
+      <h3>Community and belonging</h3>
+      <ol class="q-list">
+        <li>Have you found a sense of community or belonging within Muslim spaces in America? What have those spaces looked like for you?</li>
+        <li>How would you describe the diversity of the Muslim community where you live? <span class="fu"><b>Follow-up:</b> Do you feel a shared sense of identity across different racial, ethnic, and national backgrounds?</span></li>
+      </ol>
+
+      <h3>Being Muslim in America (the heavier questions, ask once warmed up)</h3>
+      <ol class="q-list">
+        <li>What has your experience been like being Muslim in the United States? <span class="fu"><b>Follow-up:</b> In your experience, how have race, ethnicity, and culture intersected with your Muslim identity?</span></li>
+        <li>Have there been moments when you felt particularly conscious of your Muslim identity? <span class="fu"><b>Follow-up:</b> Can you tell me about a specific one?</span></li>
+        <li>How have broader political or historical events shaped your experience of being Muslim in America?</li>
+        <li>Do you feel that mainstream representations of Muslims reflect your own experience? What do you think is missing?</li>
+      </ol>
+
+      <h3>Reflection and close</h3>
+      <ol class="q-list">
+        <li>What do you wish more people understood about Muslims and Muslim life in America?</li>
+        <li>Is there anything about your life, faith, or experience I have not asked about that you would like to share?</li>
+      </ol>
+      <p class="muted" style="font-size:13px">Close by thanking them, confirming the pseudonym choice, and asking if there is anything they said that they would rather you not quote.</p>
+    </section>
+
+    <!-- ===================== CONNECT ===================== -->
+    <section class="block" id="connect" data-rev>
+      <h2><span class="num">05 &middot; 20 points</span>Connecting to the course</h2>
+      <p>The rubric wants <strong>three or more distinct course sources</strong>, each tied to a <strong>specific moment</strong> in your interview, with a page number or timestamp, and a sentence on whether the source <strong>confirms, complicates, or challenges</strong> what your person said. Here is a map, so whatever themes come up, you have a reading ready. Pick the three that actually fit your interview.</p>
+      <table class="match">
+        <tr><th>If your person talks about...</th><th>Reach for this source, and the link to make</th></tr>
+        <tr><td>Their family's migration, citizenship, fitting in, or changing a name</td><td><span class="pill gb">GhaneaBassiri Ch 4</span> race, religion, and citizenship around 1900; "religious identities became secondary." Does your person's story confirm that belonging still runs through ethnicity, or challenge it?</td></tr>
+        <tr><td>Mosques, Sunday school, MSA, building Muslim community</td><td><span class="pill gb">GhaneaBassiri Ch 7</span> post-1965 institution building, the local mosque as the central institution. Is their community one of these institutions in action?</td></tr>
+        <tr><td>Feeling stereotyped, misrepresented, "what is missing" in the media</td><td><span class="pill said">Said, Orientalism</span> the "accepted grid for filtering" Muslims into Western consciousness, and the everyday, security, and gendered forms. Your person naming what is missing is them pushing back on the grid.</td></tr>
+        <tr><td>Surveillance, policing, post-9/11, feeling watched or unsafe, anti-Blackness</td><td><span class="pill hatem">Bazian, "I Can't Breathe"</span> Islamophobia, policing, and the securitized Muslim body. Pair with GhaneaBassiri's "process of rendition" if it fits. <span class="flag">pull exact page from the chapter</span></td></tr>
+        <tr><td>Palestine, solidarity, feeling their politics shape how they are seen</td><td><span class="pill hatem">Bazian, "Palestine and Settler Colonialism"</span> how Palestine and settler-colonial framing shape Muslim and Arab belonging in the US. <span class="flag">pull exact page from the chapter</span></td></tr>
+        <tr><td>Daily faith practice, prayer, the pillars, keeping faith under pressure</td><td><span class="pill diouf">Diouf, Servants of Allah</span> the long continuity of Muslim practice in America, or Ch 7's "pure" vs "cultural" Islam debate.</td></tr>
+        <tr><td>Conversion, Black Muslim identity, the Nation of Islam</td><td><span class="pill hatem">Malcolm X</span> "Make It Plain" and the Letter from Mecca, plus Ch 7 on Warith Deen Mohammed. How does their path echo or differ from that arc?</td></tr>
+      </table>
+      <div class="card">
+        <strong>The pattern for each connection, in three sentences:</strong>
+        <p style="margin:8px 0 0">1. Quote the interview moment. 2. Bring in the source: "This echoes GhaneaBassiri, who argues... (page)." 3. Say what the pairing does: "Her story confirms his point, but complicates it, because..." That third sentence, the confirm/complicate/challenge move, is what separates a 20 from a 14.</p>
+      </div>
+    </section>
+
+    <!-- ===================== THE PAPER ===================== -->
+    <section class="block" id="paper" data-rev>
+      <h2><span class="num">06 &middot; 40 points</span>Writing the paper</h2>
+      <p>Four full pages, double-spaced, organized as an <strong>argument</strong>, not a transcript walkthrough. The single biggest trap, named right in the rubric, is letting the paper follow your interview question order. Build it around your thesis instead.</p>
+      <h3>Finding your thesis</h3>
+      <p>After you transcribe, read your quotes and ask: <em>what does this one life show about Muslim life in America that a textbook alone would miss?</em> Your thesis is the answer. It should be specific to your person and make a claim, not just a topic. Three shapes that tend to work (fill them with your real material):</p>
+      <ul>
+        <li>"[Name]'s story shows that belonging for Muslims in America is <strong>built through [community / everyday practice / institutions]</strong> rather than granted, which [confirms / complicates] GhaneaBassiri's account of..."</li>
+        <li>"[Name]'s frustration with how Muslims are represented reveals that Said's Orientalist 'grid' still operates in daily life, but also that [he/she] <strong>resists it by...</strong>"</li>
+        <li>"The diversity [Name] describes in [his/her] own community <strong>challenges the idea of a single 'Muslim American' experience</strong>, and shows why one voice cannot stand in for all."</li>
+      </ul>
+      <h3>A structure that fits 4-plus pages</h3>
+      <div class="grid2">
+        <div class="mini"><h4>Intro (half a page)</h4><p style="margin:0">Introduce your interviewee in a sentence or two (pseudonym if they asked), name the setting briefly, and state your thesis.</p></div>
+        <div class="mini"><h4>Body (about 3 pages)</h4><p style="margin:0">Three or four paragraphs, each making one point toward the thesis. In each: introduce a quote, give it, explain it, then tie in a course source with the confirm/complicate move.</p></div>
+        <div class="mini"><h4>The analysis move</h4><p style="margin:0">Somewhere in the second half, step back: name that this is <strong>one voice, not all Muslims</strong>, and say what hearing it live showed you that the readings alone could not.</p></div>
+        <div class="mini"><h4>Conclusion (half a page)</h4><p style="margin:0">Return to the thesis with what the story added. No new evidence, just the payoff.</p></div>
+      </div>
+      <h4>Quote handling (worth a lot here)</h4>
+      <p>Every quote gets the same three steps: <strong>introduce</strong> ("When I asked about her first years in Ohio, she said..."), <strong>quote</strong>, then <strong>explain</strong> why it matters. Never drop a quote and move on, that is the "reads like a list of Q and A answers" trap. Use at least three.</p>
+    </section>
+
+    <!-- ===================== APPENDIX + CITATIONS ===================== -->
+    <section class="block" id="appendix" data-rev>
+      <h2><span class="num">07 &middot; 20 points</span>Appendix and citations</h2>
+      <h3>The appendix (do not skip any piece)</h3>
+      <ul>
+        <li><strong>Interview log:</strong> date, location or platform, length, how consent was given, how you chose them. A short block is fine.</li>
+        <li><strong>The recording:</strong> audio or video. A phone voice memo or a Zoom recording both count. Submit the file or a link.</li>
+        <li><strong>Transcript:</strong> 1 to 2 pages of the excerpts you quote or draw on, transcribed accurately, with timestamps. You do not transcribe the whole interview, just these.</li>
+      </ul>
+      <div class="card">
+        <strong>Transcribing faster:</strong> record, then run the audio through a free tool (Otter, the voice-typing in Google Docs, or YouTube auto-captions on an unlisted upload) to get a rough draft, then fix it by ear against the recording for the parts you will quote. Clean up only the excerpts you need.
+      </div>
+      <h3>Citations, pick one style and stay in it</h3>
+      <ul>
+        <li>MLA is the least fuss. Cite the <strong>interview in the text</strong>, for example (Rahman, personal interview, 25 Nov. 2026), and list it in Works Cited.</li>
+        <li>Cite each <strong>reading by author and page</strong>, each <strong>video by title and timestamp</strong>.</li>
+        <li><strong>Works Cited</strong> lists every course text and video you used, any outside source, and the interview itself. Nothing you cited in the body is allowed to be missing from it.</li>
+      </ul>
+      <div class="card tint">
+        <strong>Interview, MLA Works Cited form:</strong> Last, First. Personal interview. Conducted by Saba Feilizadeh, 25 Nov. 2026. <span class="muted">(Use the pseudonym here too if they asked for anonymity.)</span>
+      </div>
+    </section>
+
+    <!-- ===================== CHECKLIST ===================== -->
+    <section class="block" id="checklist" data-rev>
+      <h2><span class="num">08 &middot; Before you submit</span>The checklist</h2>
+      <div class="grid2">
+        <div class="mini"><h4>Before the interview</h4><ul style="margin-bottom:0">
+          <li>Person confirmed, identifies as Muslim, time booked</li>
+          <li>Recording app tested, phone charged, quiet spot</li>
+          <li>Script and consent script open on your phone</li>
+          <li>Notebook for follow-up ideas you hear in the moment</li>
+        </ul></div>
+        <div class="mini"><h4>During</h4><ul style="margin-bottom:0">
+          <li>Recording ON, consent said out loud, date stated</li>
+          <li>Let them talk, follow the interesting threads</li>
+          <li>Jot timestamps of moments you will want to quote</li>
+        </ul></div>
+        <div class="mini"><h4>After</h4><ul style="margin-bottom:0">
+          <li>Back up the recording in two places</li>
+          <li>Transcribe your 1 to 2 pages of excerpts</li>
+          <li>Thank them; confirm anything they want left out</li>
+        </ul></div>
+        <div class="mini"><h4>Before submitting</h4><ul style="margin-bottom:0">
+          <li>4-plus full pages, reads as an argument not a Q and A</li>
+          <li>Thesis stated; one-voice and oral-history reflection in</li>
+          <li>3-plus quotes, each introduced, explained, cited</li>
+          <li>3-plus course sources with pages or timestamps</li>
+          <li>Works cited complete; one citation style</li>
+          <li>Appendix: log + recording + transcript all attached</li>
+        </ul></div>
+      </div>
+      <div class="card dark" style="text-align:center">
+        When your interview is recorded and your excerpts are transcribed, come back with them and we will turn your person's words into the paper.
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<button id="menuBtn" type="button" aria-label="Open contents">Contents</button>
+
+<div id="tts-bar" role="region" aria-label="Read aloud player">
+  <span class="lbl" id="ttsLbl">Reading</span>
+  <button type="button" id="ttsPrev" aria-label="Previous section" title="Previous section">&#9198;</button>
+  <button type="button" id="ttsPause" aria-label="Pause" title="Pause or resume">&#9208;</button>
+  <button type="button" id="ttsNext" aria-label="Next section" title="Next section">&#9197;</button>
+  <button type="button" id="ttsRate" class="rate" aria-label="Playback speed" title="Playback speed">1&times;</button>
+  <button type="button" id="ttsStop" class="stop" aria-label="Stop reading" title="Stop">&times;</button>
+</div>
+
+<footer>
+  Built by Saba Feilizadeh for her own ASAMST 128AC project. Progress saves in your own browser. Not affiliated with the course staff; this is a planning aid, your interview and words are your own.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement, TK="sf_theme";
+  try{var t=localStorage.getItem(TK); if(t) root.setAttribute("data-theme",t);}catch(e){}
+  var tb=document.getElementById("themeBtn");
+  if(tb) tb.onclick=function(){
+    var cur=root.getAttribute("data-theme");
+    var dark=cur?cur==="dark":window.matchMedia("(prefers-color-scheme:dark)").matches;
+    var next=dark?"light":"dark"; root.setAttribute("data-theme",next);
+    try{localStorage.setItem(TK,next);}catch(e){}
+  };
+
+  var secs=[].slice.call(document.querySelectorAll("section.block"));
+  var toc=document.getElementById("toc");
+  var labels={overview:"What it is",timeline:"Timeline",rubric:"Rubric decoded",who:"Who + consent",method:"How to run it",bring:"Bring to interview",connect:"Connect to course",paper:"The paper",appendix:"Appendix + citations",checklist:"Checklist"};
+  var tocById={};
+  secs.forEach(function(s){
+    var a=document.createElement("a"); a.href="#"+s.id; a.dataset.id=s.id;
+    a.innerHTML='<span class="tdot" aria-hidden="true"></span><span class="tlabel"></span>';
+    a.querySelector(".tlabel").textContent=labels[s.id]||s.id;
+    toc.appendChild(a); tocById[s.id]=a;
+  });
+  var tocLinks=[].slice.call(toc.querySelectorAll("a"));
+
+  var PK="sf_asamst_oh_rev";
+  var state={}; try{state=JSON.parse(localStorage.getItem(PK)||"{}");}catch(e){state={};}
+  var revSecs=secs.filter(function(s){return s.hasAttribute("data-rev");});
+  var totEl=document.getElementById("progTot"), nowEl=document.getElementById("progNow"), fill=document.getElementById("progFill");
+  totEl.textContent=revSecs.length;
+  function paint(){
+    var n=revSecs.filter(function(s){return state[s.id];}).length;
+    nowEl.textContent=n; fill.style.width=(revSecs.length?Math.round(n/revSecs.length*100):0)+"%";
+  }
+  function setDone(id, done){
+    var a=tocById[id]; if(a) a.classList.toggle("done", done);
+    var sec=document.getElementById(id); if(sec) sec.classList.toggle("done", done);
+  }
+  revSecs.forEach(function(s){
+    var h=s.querySelector("h2");
+    if(h && !h.querySelector(".sec-done")){
+      var bd=document.createElement("span"); bd.className="sec-done"; bd.setAttribute("aria-hidden","true"); h.appendChild(bd);
+    }
+    var row=document.createElement("div"); row.className="review-row";
+    var id="rev_"+s.id;
+    row.innerHTML='<label for="'+id+'"><input type="checkbox" id="'+id+'"> Mark this step done</label>';
+    s.appendChild(row);
+    var cb=row.querySelector("input");
+    cb.checked=!!state[s.id];
+    setDone(s.id, !!state[s.id]);
+    cb.addEventListener("change",function(){
+      state[s.id]=cb.checked; try{localStorage.setItem(PK,JSON.stringify(state));}catch(e){}
+      setDone(s.id, cb.checked);
+      paint();
+    });
+  });
+  paint();
+
+  var byId={}; tocLinks.forEach(function(a){byId[a.dataset.id]=a;});
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){
+        if(en.isIntersecting){
+          tocLinks.forEach(function(a){a.classList.remove("active");});
+          var a=byId[en.target.id]; if(a) a.classList.add("active");
+        }
+      });
+    },{rootMargin:"-120px 0px -70% 0px",threshold:0});
+    secs.forEach(function(s){io.observe(s);});
+  }
+
+  var mb=document.getElementById("menuBtn"), sb=document.getElementById("sidebar");
+  if(mb) mb.onclick=function(){ sb.classList.toggle("open"); };
+  toc.addEventListener("click",function(){ if(sb.classList.contains("open")) sb.classList.remove("open"); });
+
+  // ---------- read aloud ----------
+  (function(){
+    var synth = window.speechSynthesis;
+    var ttsTop = document.getElementById("ttsTop");
+    var bar = document.getElementById("tts-bar");
+    var supported = !!synth && typeof window.SpeechSynthesisUtterance !== "undefined";
+    if(!supported){ if(ttsTop) ttsTop.style.display="none"; return; }
+
+    var barLbl = document.getElementById("ttsLbl");
+    var pauseBtn = document.getElementById("ttsPause");
+    var prevBtn = document.getElementById("ttsPrev");
+    var nextBtn = document.getElementById("ttsNext");
+    var rateBtn = document.getElementById("ttsRate");
+    var stopBtn = document.getElementById("ttsStop");
+
+    var CHUNK_SEL = "h2,h3,h4,p,li,summary,td,th,.model,blockquote";
+    var STRIP_SEL = ".num, button, .review-row, .sec-listen, .sec-done";
+
+    function chunkText(el){
+      var c = el.cloneNode(true);
+      [].slice.call(c.querySelectorAll(CHUNK_SEL)).forEach(function(n){ n.parentNode && n.parentNode.removeChild(n); });
+      [].slice.call(c.querySelectorAll(STRIP_SEL)).forEach(function(n){ n.parentNode && n.parentNode.removeChild(n); });
+      return c.textContent.replace(/[\u00B7\u2022]/g, ", ").replace(/[\u2013\u2014]/g, ", ").replace(/\s+/g, " ").trim();
+    }
+    function splitLong(t){
+      if(t.length <= 220) return [t];
+      var sentences = [], cur = "", i;
+      for(i=0;i<t.length;i++){ cur += t.charAt(i);
+        if(/[.!?]/.test(t.charAt(i)) && (t.charAt(i+1)===" " || i===t.length-1)){ sentences.push(cur); cur=""; } }
+      if(cur) sentences.push(cur);
+      var out = [], buf = "";
+      sentences.forEach(function(p){ p = p.trim(); if(!p) return;
+        if(buf && (buf+" "+p).length > 220){ out.push(buf.trim()); buf = p; }
+        else buf = buf ? buf+" "+p : p; });
+      if(buf.trim()) out.push(buf.trim());
+      return out;
+    }
+
+    var queue = [];
+    secs.forEach(function(s){
+      [].slice.call(s.querySelectorAll(CHUNK_SEL)).forEach(function(el){
+        if(el.closest(".review-row")) return;
+        var t = chunkText(el); if(!t) return;
+        splitLong(t).forEach(function(part){ queue.push({ el: el, sec: s.id, text: part }); });
+      });
+    });
+
+    secs.forEach(function(s){
+      var h = s.querySelector("h2"); if(!h) return;
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "sec-listen"; b.innerHTML = "&#9654; Listen";
+      b.setAttribute("aria-label", "Listen to this section");
+      b.addEventListener("click", function(){ start(sectionStart(s.id)); });
+      h.appendChild(b);
+    });
+
+    var order = secs.map(function(s){ return s.id; });
+    var RK = "sf_tts_rate", rates = [0.8, 1, 1.2, 1.5], rate = 1;
+    try{ var sr = parseFloat(localStorage.getItem(RK)); if(sr && rates.indexOf(sr)!==-1) rate = sr; }catch(e){}
+    rateBtn.textContent = (rate % 1 === 0 ? rate : rate) + "×";
+
+    var voice = null;
+    function pickVoice(){
+      var vs = synth.getVoices() || []; if(!vs.length) return;
+      voice = vs.filter(function(v){ return v.lang === "en-US"; })[0]
+           || vs.filter(function(v){ return /^en/i.test(v.lang); })[0] || vs[0];
+    }
+    pickVoice();
+    if(typeof synth.onvoiceschanged !== "undefined") synth.onvoiceschanged = pickVoice;
+
+    var idx = -1, playing = false, paused = false, gen = 0;
+
+    function clearHi(){ var p = document.querySelector(".tts-active"); if(p) p.classList.remove("tts-active"); }
+    function sectionStart(id){ for(var i=0;i<queue.length;i++){ if(queue[i].sec===id) return i; } return 0; }
+    function curSec(){ return (idx>=0 && idx<queue.length) ? queue[idx].sec : order[0]; }
+    function inViewSec(){ var best = order[0]; secs.forEach(function(s){ if(s.getBoundingClientRect().top <= 150) best = s.id; }); return best; }
+    function setPauseIcon(){ pauseBtn.innerHTML = paused ? "&#9654;" : "&#9208;"; pauseBtn.setAttribute("aria-label", paused ? "Resume" : "Pause"); }
+    function setTop(active){ ttsTop.innerHTML = active ? "&#9632; Stop" : "&#9654; Listen"; ttsTop.setAttribute("aria-pressed", active ? "true" : "false"); }
+
+    function speak(myGen){
+      if(myGen !== gen || !playing) return;
+      if(idx >= queue.length){ stopAll(); return; }
+      var item = queue[idx];
+      clearHi();
+      var det = item.el.closest("details"); if(det && !det.open) det.open = true;
+      item.el.classList.add("tts-active");
+      var r = item.el.getBoundingClientRect();
+      if(r.top < 96 || r.bottom > window.innerHeight - 96) item.el.scrollIntoView({ block: "center", behavior: "smooth" });
+      barLbl.textContent = "Reading: " + (labels[item.sec] || item.sec);
+      var u = new SpeechSynthesisUtterance(item.text);
+      if(voice) u.voice = voice;
+      u.rate = rate; u.pitch = 1;
+      u.onend = function(){ if(myGen !== gen || !playing || paused) return; idx++; speak(myGen); };
+      u.onerror = function(){ if(myGen !== gen || !playing) return; idx++; speak(myGen); };
+      synth.speak(u);
+    }
+
+    function start(from){
+      gen++; var myGen = gen;
+      try{ synth.cancel(); }catch(e){}
+      idx = from; playing = true; paused = false;
+      bar.classList.add("on"); document.body.classList.add("tts-on");
+      setPauseIcon(); setTop(true);
+      setTimeout(function(){ speak(myGen); }, 70);
+    }
+    function stopAll(){
+      gen++; playing = false; paused = false;
+      try{ synth.cancel(); }catch(e){}
+      clearHi(); bar.classList.remove("on"); document.body.classList.remove("tts-on"); setTop(false);
+    }
+    function togglePause(){
+      if(!playing) return;
+      if(paused){ synth.resume(); paused = false; } else { synth.pause(); paused = true; }
+      setPauseIcon();
+    }
+    function jump(dir){
+      var ci = order.indexOf(curSec());
+      var ni = Math.max(0, Math.min(order.length - 1, ci + dir));
+      start(sectionStart(order[ni]));
+    }
+
+    ttsTop.addEventListener("click", function(){ if(playing) stopAll(); else start(sectionStart(inViewSec())); });
+    stopBtn.addEventListener("click", stopAll);
+    pauseBtn.addEventListener("click", togglePause);
+    prevBtn.addEventListener("click", function(){ jump(-1); });
+    nextBtn.addEventListener("click", function(){ jump(1); });
+    rateBtn.addEventListener("click", function(){
+      rate = rates[(rates.indexOf(rate) + 1) % rates.length];
+      rateBtn.textContent = rate + "×";
+      try{ localStorage.setItem(RK, rate); }catch(e){}
+      if(playing) start(idx);
+    });
+    window.addEventListener("beforeunload", function(){ try{ synth.cancel(); }catch(e){} });
+  })();
+})();
+</script>
+</body>
+</html>
