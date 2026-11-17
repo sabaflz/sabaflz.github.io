@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Saba Feilizadeh</title>
 <meta name="description" content="Saba Feilizadeh, computer science at UC Berkeley. Health tech, applied machine learning, and software built around real people.">
@@ -12,25 +13,13 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/css/main.css?v=4">
+<link rel="stylesheet" href="assets/css/main.css?v=5">
 </head>
 <body>
 <div class="det" id="det" aria-hidden="true"><i></i><i></i><i></i><i></i><span id="detLabel"></span></div>
 <canvas id="rain" aria-hidden="true"></canvas>
 <header class="topbar" id="topbar">
-  <nav class="nav wrap" aria-label="Main">
-    <a class="mark" href="#" aria-label="Back to top">SF</a>
-    <ul>
-      <li><a href="#work">Work</a></li>
-      <li><a href="#leadership">Leadership</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="guides/">Study Guides</a></li>
-      <li><a href="planner/">Planner</a></li>
-      <li><a href="lab/">Lab</a></li>
-      <li><a href="resume/">Resume</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-  </nav>
+  <nav class="nav wrap" aria-label="Main"><a class="mark" href="#" aria-label="Back to top">SF</a></nav>
 </header>
 
 <div class="wrap">
@@ -43,14 +32,14 @@
     <div id="work-body"></div>
   </section>
 
-  <section id="leadership" aria-labelledby="lead-h">
-    <div class="shead"><h2 id="lead-h">Leadership and teaching</h2><p>Most of what I've learned about building for people, I learned by explaining things to them first.</p></div>
+  <section id="about" aria-labelledby="about-h">
+    <div class="shead"><h2 id="about-h">About</h2><p>Where I've led and taught, where I've studied, and what I build with.</p></div>
+    <h3 class="subhead">Leadership and teaching</h3>
     <div class="lead" id="lead-body"></div>
-  </section>
-
-  <section id="skills" aria-labelledby="skills-h">
-    <div class="shead"><h2 id="skills-h">Skills and education</h2><p>The toolkit, and where it came from.</p></div>
-    <div class="split" id="skills-body"></div>
+    <div class="split about-split">
+      <div><h3 class="subhead">Education</h3><div id="edu-body"></div></div>
+      <div><h3 class="subhead">Skills</h3><div id="skills-body"></div></div>
+    </div>
   </section>
 
   <section class="contact" id="contact" aria-labelledby="contact-h">
@@ -70,9 +59,9 @@
   <form class="line" id="termForm" autocomplete="off"><b>$</b><input id="termIn" aria-label="Command" spellcheck="false"></form>
 </div>
 
-<script src="assets/js/nav.js?v=3"></script>
+<script src="assets/js/nav.js?v=4"></script>
 <script src="assets/js/content.js?v=4"></script>
-<script src="assets/js/main.js?v=4"></script>
+<script src="assets/js/main.js?v=5"></script>
 <script src="assets/js/tts.js?v=2"></script>
 <script src="assets/js/theme.js?v=1"></script>
 </body>

@@ -2,6 +2,25 @@
 
 My personal site. Plain HTML, CSS, and JavaScript, no build step.
 
+## Public vs. private
+
+Visitors see the portfolio: Home (Work, About), Research, Study Guides, and Resume.
+
+Only you see Planner, Lab, and Blogs. Their content isn't on this site at all: it lives
+in the private repo **sabaflz/site-private**, and the site reads it from GitHub with the
+planner's GitHub token once you log in. To log in anywhere, add `#owner` to the address
+(e.g. `sabaflz.github.io/#owner`) or open the Planner and choose Admin. A **Private** menu
+then appears in the top bar. Logging out (in that menu) or closing the tab ends it.
+
+| Private content | File in sabaflz/site-private |
+|---|---|
+| Lab page | `lab/index.html` (the page body, plain HTML) |
+| Blog posts and source logs | `research/blogs/data.json` |
+| Grad Plan tab in the planner | `planner/gradplan.json` |
+
+The planner's GitHub token must include **both** repos (fine-grained token → Repository
+access → sabaflz.github.io and sabaflz/site-private; Contents: Read and write).
+
 ## Where things live
 
 | What you want to change | File |
@@ -10,7 +29,8 @@ My personal site. Plain HTML, CSS, and JavaScript, no build step.
 | Resume | replace `assets/resume/Saba_Feilizadeh_Resume.pdf` |
 | Profile photo | replace `assets/img/profile.jpg` (square works best) |
 | Colors and fonts | tokens at the top of `assets/css/main.css` |
-| Page layout and section order | `index.html` |
+| Page layout and section order | `index.html` (Work, About, Contact) |
+| Top menu (public pages and the owner-only Private menu) | `assets/js/nav.js` |
 | Interactive behavior (detection box, demo, terminal) | `assets/js/main.js` |
 | Degree requirement structure | `planner/data/degree.js` |
 | A semester's course options | `planner/data/terms/<term>.js` |
@@ -18,6 +38,7 @@ My personal site. Plain HTML, CSS, and JavaScript, no build step.
 | My plans, check-offs, to-dos | `planner/data/state.json`, edited on the page in admin mode |
 | Finals study plan (Planner → Study tab) | `planner/data/study.json`, encrypted when set to "Only me"; page code in `planner/study/` |
 | List of research projects | the `PROJECTS` list in `research/index.html` |
+| Blog posts (private) | `research/blogs/data.json` in sabaflz/site-private |
 | A research project's overview, meetings, learning log, reading, to-dos | `research/<project>/data.js` (public) or `data.enc.json` (private, encrypted) |
 | Research meeting transcripts (encrypted) | `research/<project>/private/transcripts.json`, added on the meeting's page |
 

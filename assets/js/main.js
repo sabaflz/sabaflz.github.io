@@ -65,12 +65,13 @@
     return '<article' + detect(slug(l.role)) + '><h3>' + esc(l.role) + '</h3><p class="org">' + esc(l.org) + '</p><p>' + esc(l.text) + '</p></article>';
   }).join('');
 
-  /* ---------- skills and education ---------- */
-  $('skills-body').innerHTML =
-    '<dl class="skills"' + detect('skills', 98) + '>' + visible(S.skills).map(function(s){ return '<dt>' + esc(s.label) + '</dt><dd>' + esc(s.items) + '</dd>'; }).join('') + '</dl>' +
+  /* ---------- about: education and skills ---------- */
+  $('edu-body').innerHTML =
     '<div class="edu"' + detect('education', 99) + '>' + visible(S.education).map(function(e){
       return '<div class="item"><h3>' + esc(e.school) + '</h3>' + e.lines.map(function(l){ return '<p>' + esc(l) + '</p>'; }).join('') + '</div>';
     }).join('') + '</div>';
+  $('skills-body').innerHTML =
+    '<dl class="skills"' + detect('skills', 98) + '>' + visible(S.skills).map(function(s){ return '<dt>' + esc(s.label) + '</dt><dd>' + esc(s.items) + '</dd>'; }).join('') + '</dl>';
 
   /* ---------- contact and footer ---------- */
   $('contact-links').innerHTML =
@@ -147,7 +148,7 @@
   var bar = $('topbar');
   window.addEventListener('scroll', function(){ bar.classList.toggle('scrolled', window.scrollY > 8); }, {passive:true});
   var navLinks = {};
-  document.querySelectorAll('.nav ul a[href^="#"]').forEach(function(a){ navLinks[a.getAttribute('href').slice(1)] = a; });
+  document.querySelectorAll('.nav ul a[href^="#"]:not(.navcta)').forEach(function(a){ navLinks[a.getAttribute('href').slice(1)] = a; });
   if('IntersectionObserver' in window){
     var spy = new IntersectionObserver(function(entries){
       entries.forEach(function(e){
@@ -156,7 +157,7 @@
         if(navLinks[e.target.id]) navLinks[e.target.id].setAttribute('aria-current', 'true');
       });
     }, {rootMargin:'-40% 0px -55% 0px'});
-    ['hero','work','leadership','skills','contact'].forEach(function(id){ var el = $(id); if(el) spy.observe(el); });
+    ['hero','work','about','contact'].forEach(function(id){ var el = $(id); if(el) spy.observe(el); });
   }
 
   /* ---------- terminal (press /) ---------- */

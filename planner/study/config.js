@@ -2,6 +2,7 @@
    same admin password and GitHub token as the course planner. */
 window.PLANNER_CONFIG = {
   label: "Study plan",
+  gradPlan: false,
   app: "StudyApp",
   statePath: "planner/data/study.json",
   stateUrl: "../data/study.json",
