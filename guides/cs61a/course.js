@@ -54,8 +54,8 @@ window.COURSE = {
     { title: "Mutation and objects", exam: "Midterm 3", topics: [
       { id: "mutation", lecture: 18, title: "Mutation", blurb: "Changing lists and dictionaries in place, is versus ==, and functions with state.", est: 50, pool: ["Mutation & Iterators"] },
       { id: "classes", lecture: 19, title: "Classes", blurb: "The class statement, __init__ and self, methods, and object identity.", est: 45, pool: ["OOP"] },
-      { id: "attributes", lecture: 20, title: "Attributes", blurb: "Instance versus class attributes, and how lookup works.", est: 40, pool: ["OOP"] },
-      { id: "inheritance", lecture: 21, title: "Inheritance", blurb: "Subclasses, overriding, and super.", est: 45, pool: ["OOP"] },
+      { id: "attributes", lecture: 20, title: "Attributes", blurb: "Class attributes, how a dot looks a name up, and assigning to an instance versus a class.", est: 40, pool: ["OOP"] },
+      { id: "inheritance", lecture: 21, title: "Inheritance", blurb: "Subclasses, overriding, reusing the base class, and is-a versus has-a.", est: 45, pool: ["OOP"] },
       { id: "iterators", lecture: 22, title: "Iterators", blurb: "iter, next, and lazy sequences.", est: 40, pool: ["Mutation & Iterators"] },
       { id: "generators", lecture: 23, title: "Generators", blurb: "yield, yield from, recursive generators.", est: 50, pool: ["Generators"] },
       { id: "efficiency", lecture: 24, title: "Efficiency", blurb: "Counting steps and memoization.", est: 40 },
