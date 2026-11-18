@@ -104,6 +104,15 @@ p{margin:0}
 .code .ln.hl{background:rgba(244,183,28,.16); border-left-color:#F4B71C}
 .side{padding:18px; border-left:1.5px solid var(--line); display:flex; flex-direction:column; gap:14px; min-width:0}
 .side h4{font:500 12px/1 var(--mono); text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 8px}
+.envd{display:flex; flex-direction:column; gap:8px}
+.fr{border:1.5px solid var(--line); border-radius:10px; background:var(--surface-2); overflow:hidden}
+.fr.active{border-color:var(--saffron)}
+.fr .frt{font:500 13px/1.3 var(--mono); padding:7px 12px; border-bottom:1.5px solid var(--line); color:var(--muted)}
+.fr.active .frt{background:var(--saffron-soft); color:var(--saffron-ink); border-bottom-color:var(--saffron)}
+.fr .bind{display:flex; justify-content:space-between; gap:14px; padding:5px 12px; font:500 13.5px/1.4 var(--mono)}
+.fr .bind span:last-child{text-align:right; overflow-wrap:anywhere}
+.fr .bind.ret{border-top:1.5px dashed var(--line); color:var(--ok)}
+.fr .bind.none{color:var(--muted)}
 .names{display:flex; flex-direction:column; gap:6px}
 .names .frame small{color:var(--ink)}
 .frames{display:flex; flex-direction:column-reverse; gap:6px}

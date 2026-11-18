@@ -204,9 +204,17 @@
         return '<div class="frame' + (f.done ? " done" : top ? " top" : "") + '"><span>' + esc(f.call) + " &nbsp; " + esc(f.vars) + "</span><small>" + esc(f.state) + "</small></div>";
       }).join("") + "</div></div>";
     }
+    if (st.frames) {
+      h += '<div><h4>Environment diagram</h4><div class="envd">' + st.frames.map(function (f) {
+        return '<div class="fr' + (f.active ? " active" : "") + '"><p class="frt">' + esc(f.title) + "</p>" +
+          f.vars.map(function (p) { return '<p class="bind"><span>' + esc(p[0]) + "</span><span>" + esc(p[1]) + "</span></p>"; }).join("") +
+          (f.ret != null ? '<p class="bind ret"><span>Return value</span><span>' + esc(f.ret) + "</span></p>" : "") +
+          (!f.vars.length && f.ret == null ? '<p class="bind none"><span>(no names yet)</span></p>' : "") + "</div>";
+      }).join("") + "</div></div>";
+    }
     if (st.env) h += '<div><h4>Names</h4><div class="names">' + st.env.map(function (p) { return '<div class="frame"><span>' + esc(p[0]) + "</span><small>" + esc(p[1]) + "</small></div>"; }).join("") + "</div></div>";
     if (st.out) h += '<div><h4>Printed</h4><pre class="out">' + esc(st.out.join("\n")) + "</pre></div>";
-    if (!st.stack && !st.out && !st.env) h += '<p class="muted" style="font-size:15px">Names, calls and printed output show up here as the code runs.</p>';
+    if (!st.stack && !st.out && !st.env && !st.frames) h += '<p class="muted" style="font-size:15px">Names, calls and printed output show up here as the code runs.</p>';
     h += '</div></div><div class="narr"><p class="say">' + esc(st.say) + "</p>";
     if (st.basics && lv === "new") h += '<p class="note"><b>The basics.</b> ' + esc(st.basics) + "</p>";
     if (st.syntax && (lv === "new" || lv === "programmer")) h += '<p class="note">' + esc(st.syntax).replace(/^Python notes:/, "<b>Python notes.</b>") + "</p>";
