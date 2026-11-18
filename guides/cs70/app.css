@@ -284,3 +284,4 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 .typed.final{margin-top:14px; align-items:center}
 .typed.final label{font-weight:600; font-size:15px}
 .tblh{font:600 15px/1.3 var(--display); margin:16px 0 6px}
+@media (max-width:440px){ .appbar .barlink.exit{display:none} .appbar .bar{gap:12px} }
