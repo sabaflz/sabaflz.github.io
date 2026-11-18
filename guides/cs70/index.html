@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>CS 70 · Saba Feilizadeh</title>
+<meta name="description" content="A self-paced learning app for CS 70, Discrete Mathematics and Probability Theory: step-through lessons, quick checks, exam-style problems with worked solutions, and the official discussion and homework problems.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='44' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>SF</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/css/tokens.css?v=1">
+<link rel="stylesheet" href="app.css?v=1">
+</head>
+<body>
+<header class="appbar">
+  <div class="wrap bar">
+    <a class="mark" href="#/" aria-label="CS 70 course map">CS 70</a>
+    <span class="prog" id="prog" aria-live="polite"></span>
+    <span class="spacer"></span>
+    <a class="barlink" id="resume" href="#/" hidden>Resume</a>
+    <a class="barlink" href="#/">Map</a>
+    <a class="barlink" href="#/progress">Progress</a>
+    <button type="button" id="themeBtn" class="iconbtn"></button>
+    <a class="barlink exit" href="../">Exit to site</a>
+  </div>
+</header>
+
+<main class="wrap" id="view" tabindex="-1">
+  <noscript><p class="empty">This app needs JavaScript turned on.</p></noscript>
+</main>
+
+<script src="course.js?v=1"></script>
+<script src="lessons/induction.js?v=1"></script>
+<!--LESSONS-->
+<script src="app.js?v=1"></script>
+<script src="../../assets/js/theme.js?v=1"></script>
+</body>
+</html>
