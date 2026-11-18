@@ -174,7 +174,7 @@
     var desc = {
       learn: l ? "A step-through lesson with questions along the way. " + cap(dur(stageMin(t, "learn"))) + "." : "The lesson for this topic is not written yet.",
       check: has(t, "check") ? items(t, "check").length + " quick questions to see if the lesson stuck. " + cap(dur(stageMin(t, "check"))) + "." : "Quick questions arrive with the lesson.",
-      deepen: has(t, "deepen") ? items(t, "deepen").length + " exam-style problems. Write the code, run it, submit it. " + cap(dur(stageMin(t, "deepen"))) + "." : "Exam-style problems arrive with the lesson.",
+      deepen: has(t, "deepen") ? items(t, "deepen").length + " exam-style problems. " + (items(t, "deepen")[0].norun ? "Write the code, then compare with the solution. " : "Write the code, run it, submit it. ") + cap(dur(stageMin(t, "deepen"))) + "." : "Exam-style problems arrive with the lesson.",
       practice: has(t, "practice") ? items(t, "practice").length + " past exam problems, " + dur(stageMin(t, "practice")) + " each. Keep going until you feel confident." : "No practice problems for this topic yet."
     };
     var first = level() === "review" ? "check" : "learn", suggested = null;
@@ -276,17 +276,20 @@
       }).join("") + '</ul><div class="prob"><h2>' + esc(p.title) + '</h2><p class="src">' + esc(p.source || "") +
       (p.exam ? ' · <a href="' + esc(p.exam) + '" target="_blank" rel="noopener">exam PDF (opens in a new tab)</a>' : "") + "</p><p>" + esc(p.desc) + "</p>" +
       '<textarea class="editor" id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Your Python code">' + esc(S.code[p.id] != null ? S.code[p.id] : p.starter) + "</textarea>" +
-      '<div class="row" style="margin-top:12px"><button class="btn small" type="button" data-act="run">Run the examples</button><button class="btn small primary" type="button" data-act="submit">Submit</button>' +
+      '<div class="row" style="margin-top:12px">' + (p.norun
+        ? '<button class="btn small primary" type="button" data-act="reveal">Compare with the solution</button>'
+        : '<button class="btn small" type="button" data-act="run">Run the examples</button><button class="btn small primary" type="button" data-act="submit">Submit</button>') +
       (p.hints ? '<button class="btn small quiet" type="button" data-act="hint">Hint</button>' : "") +
       '<button class="btn small quiet" type="button" data-act="resetcode">Reset code</button></div><div id="hints">' + hintsHTML(p, s) + '</div><div class="result" id="result" aria-live="polite">' +
       (s.solved[p.id] ? solvedHTML() : "") + "</div>" +
-      '<details class="reveal"><summary>Show the solution</summary>' + codeHTML(p.solution) + (p.explain ? '<p style="margin-top:10px">' + esc(p.explain) + "</p>" : "") + "</details></div></div>";
+      (p.norun ? '<p class="muted" style="font-size:14.5px; margin-top:14px">' + esc(p.lang || "This language") + ' does not run in this app, so this problem is self-checked: write your answer, then compare it with the solution.</p>'
+               : '<details class="reveal"><summary>Show the solution</summary>' + codeHTML(p.solution) + (p.explain ? '<p style="margin-top:10px">' + esc(p.explain) + "</p>" : "") + "</details>") + "</div></div>";
     view.innerHTML = h;
   }
   function hintsHTML(p, s) { return (p.hints || []).slice(0, s.hints[p.id] || 0).map(function (x, i) { return '<p class="hint"><b>Hint ' + (i + 1) + ".</b> " + esc(x) + "</p>"; }).join(""); }
   function solvedHTML() {
     var t = cur.t, s = T(t.id), list = items(t, cur.stage), nxp = list.filter(function (x) { return !s.solved[x.id] && x !== cur.p; })[0], nx = nextTopic(t);
-    return '<p class="banner pass">Correct. All hidden tests passed.</p>' + (cur.p.explain ? '<p style="margin-top:10px">' + esc(cur.p.explain) + "</p>" : "") +
+    return '<p class="banner pass">' + (cur.p.norun ? "Marked as solved." : "Correct. All hidden tests passed.") + "</p>" + (cur.p.norun ? codeHTML(cur.p.solution) : "") + (cur.p.explain ? '<p style="margin-top:10px">' + esc(cur.p.explain) + "</p>" : "") +
       '<div class="row" style="margin-top:12px">' + (nxp ? '<a class="btn small primary" href="#/t/' + t.id + "/" + cur.stage + "/" + nxp.id + '">Next problem</a>' : "") +
       (cur.stage === "deepen" && has(t, "practice") ? '<a class="btn small" href="#/t/' + t.id + '/practice">More practice</a>' : "") +
       (!s.confident ? '<button class="btn small" type="button" data-act="confidentbtn">I feel confident with this topic</button>' : nx ? '<a class="btn small" href="#/t/' + nx.id + '">Next topic</a>' : "") + "</div>";
@@ -401,6 +404,13 @@
     else if (act === "back") stepBy(-1);
     else if (act === "levelopen") { levelOpen = true; render(true); }
     else if (act === "recheck" && t) { T(t.id).check = {}; save(); render(false); }
+    else if (act === "reveal" && cur) {
+      document.getElementById("result").innerHTML = '<p class="banner wait">Compare your answer with this one. It does not have to match word for word, but it should handle the same cases.</p>' + codeHTML(cur.p.solution) +
+        (cur.p.explain ? '<p style="margin-top:10px">' + esc(cur.p.explain) + "</p>" : "") +
+        '<div class="row" style="margin-top:12px"><button class="btn small primary" type="button" data-act="selfsolve">Mine does the same thing</button><button class="btn small quiet" type="button" data-act="selfnot">Not yet, I will try again</button></div>';
+    }
+    else if (act === "selfsolve" && cur) { T(cur.t.id).solved[cur.p.id] = true; save(); progress(); var tk = view.querySelector('.plist a[aria-current] .tick'); if (tk) tk.classList.add("yes"); document.getElementById("result").innerHTML = solvedHTML(); }
+    else if (act === "selfnot" && cur) { document.getElementById("result").innerHTML = ""; document.getElementById("editor").focus(); }
     else if (act === "run") execute("run");
     else if (act === "submit") execute("submit");
     else if (act === "hint" && cur) { var s = T(cur.t.id); s.hints[cur.p.id] = Math.min((s.hints[cur.p.id] || 0) + 1, cur.p.hints.length); save(); document.getElementById("hints").innerHTML = hintsHTML(cur.p, s); }

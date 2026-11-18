@@ -62,10 +62,10 @@ window.COURSE = {
       { id: "object-examples", lecture: 25, title: "Object examples", blurb: "List mutation in detail, and short data problems with comprehensions.", est: 30, pool: ["Lists & Dicts"] }
     ]},
     { title: "Gleam, interpreters and applications", exam: "Final", topics: [
-      { id: "functional-programming", lecture: 27, title: "Functional programming", blurb: "Gleam: functions, let, pipes, and no loops.", est: 50 },
-      { id: "adts", lecture: 28, title: "Algebraic data types", blurb: "Custom types and pattern matching with case.", est: 45 },
-      { id: "immutable-data", lecture: 29, title: "Immutable data", blurb: "Recursion over lists that never change, and tail calls.", est: 45 },
-      { id: "interpreters", lecture: 30, title: "Interpreters", blurb: "eval and apply: programs that run programs.", est: 60 },
+      { id: "functional-programming", lecture: 27, title: "Functional programming", blurb: "Gleam: functions, case, let, lists, and recursion in place of loops.", est: 50 },
+      { id: "adts", lecture: 28, title: "Algebraic data types", blurb: "Types with variants, Result, and data that makes bad states impossible.", est: 45 },
+      { id: "immutable-data", lecture: 29, title: "Immutable data", blurb: "Memoizing without mutation, external functions, and how programs run.", est: 45 },
+      { id: "interpreters", lecture: 30, title: "Interpreters", blurb: "Programs as trees, environments as frames, and eval and apply.", est: 60 },
       { id: "browsers", lecture: 32, title: "Browsers", blurb: "The Document Object Model and how pages are built.", est: 35 },
       { id: "applications", lecture: 33, title: "Applications", blurb: "Structuring a single-page app: model, view, update.", est: 35 }
     ]},

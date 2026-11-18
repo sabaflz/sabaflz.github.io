@@ -172,6 +172,7 @@ p{margin:0}
 .banner.pass{background:var(--ok-soft); color:var(--ok)}
 .banner.fail{background:var(--bad-soft); color:var(--bad)}
 .banner.wait{background:var(--surface-2); color:var(--muted)}
+.result pre.code{background:#16193A; color:#E9EBF3; border:0; padding:12px 0; white-space:normal}
 .result pre{margin:10px 0 0; padding:12px; border-radius:10px; background:var(--surface-2); border:1.5px solid var(--line); font:500 13.5px/1.5 var(--mono); white-space:pre-wrap; overflow-x:auto}
 details.reveal{margin-top:14px; border-top:1.5px solid var(--line); padding-top:12px}
 details.reveal summary{cursor:pointer; font-weight:600; font-size:15px}
