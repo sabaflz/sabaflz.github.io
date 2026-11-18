@@ -326,7 +326,73 @@
       if (wReady) go(); else waiting.push(go);
     });
   }
+  /* ---------- Gleam: compiled and run in the browser by gleam/worker.js ---------- */
+  var gw = null, gReady = false, gErr = null, gWaiting = [], gPending = {};
+  function runGleam(src) {
+    return new Promise(function (resolve) {
+      if (!gw) {
+        gReady = false;
+        try { gw = new Worker("gleam/worker.js?v=2", { type: "module" }); } catch (e) { resolve({ ok: false, error: "This browser cannot run Gleam here." }); return; }
+        gw.onmessage = function (e) {
+          var d = e.data;
+          if (d.ready || d.loadError) { gReady = !!d.ready; gErr = d.loadError || null; gWaiting.splice(0).forEach(function (f) { f(); }); return; }
+          var q = gPending[d.id]; if (!q) return;
+          delete gPending[d.id]; clearTimeout(q.timer); q.resolve(d);
+        };
+        gw.onerror = function () { gErr = "the Gleam compiler failed to start"; gWaiting.splice(0).forEach(function (f) { f(); }); };
+      }
+      var id = ++seq;
+      function go() {
+        if (gErr) { var m = gErr; gw = null; gErr = null; resolve({ ok: false, error: "Gleam could not load (" + m + ")." }); return; }
+        var timer = setTimeout(function () { delete gPending[id]; gw.terminate(); gw = null; resolve({ timeout: true }); }, 8000);
+        gPending[id] = { resolve: resolve, timer: timer };
+        gw.postMessage({ id: id, src: src });
+      }
+      if (gReady) go(); else gWaiting.push(go);
+    });
+  }
+  function revealHTML(p) {
+    return '<p class="banner wait">Compare your answer with this one. It does not have to match word for word, but it should handle the same cases.</p>' + codeHTML(p.solution) +
+      (p.explain ? '<p style="margin-top:10px">' + esc(p.explain) + "</p>" : "") +
+      '<div class="row" style="margin-top:12px"><button class="btn small primary" type="button" data-act="selfsolve">Mine does the same thing</button><button class="btn small quiet" type="button" data-act="selfnot">Not yet, I will try again</button></div>';
+  }
+  function executeGleam(mode) {
+    var job = cur, p = job.p, ed = document.getElementById("editor"), box = document.getElementById("result");
+    if (!ed || !box) return;
+    box.innerHTML = banner("wait", gReady ? "Running..." : "Loading Gleam. The first run takes a few seconds...");
+    var tests = mode === "run" ? p.gleam.tests.slice(0, p.gleam.show || 2) : p.gleam.tests;
+    // setup and the test function go after the student's code, so error line numbers match the editor
+    var src = ed.value + "\n" + (p.gleam.setup || "") + "\nimport gleam/string as sf_inspect\npub fn sf_results() -> List(String) {\n  [" +
+      tests.map(function (t) { return "sf_inspect.inspect(" + t[0] + ")"; }).join(",\n   ") + "]\n}\n";
+    var own = ed.value.split("\n").length;
+    runGleam(src).then(function (d) {
+      if (cur !== job || !document.getElementById("result")) return;
+      box = document.getElementById("result");
+      if (d.timeout) { box.innerHTML = banner("fail", "Your code ran for over 8 seconds. That almost always means the recursion never stops. Check that every call gets closer to the base case."); return; }
+      if (!d.ok) { box.innerHTML = banner("fail", "Could not run") + pre(d.error) + '<p class="muted" style="font-size:14.5px; margin-top:10px">You can still check this one by eye.</p><button class="btn small" type="button" data-act="reveal">Compare with the solution</button>'; return; }
+      var r = d.result;
+      if (r.stage === "compile") {
+        var mine = !/main\.gleam:(\d+):/.test(r.detail) || +/main\.gleam:(\d+):/.exec(r.detail)[1] <= own;
+        box.innerHTML = banner("fail", mine ? "The Gleam compiler rejected your code" : "Your code does not fit how this problem calls it. Check the function names, arguments and types.") + pre(r.detail.replace(/\/src\/main\.gleam/g, "your code"));
+        return;
+      }
+      if (r.stage === "crash") { box.innerHTML = banner("fail", "Your code stopped while running") + pre(r.detail) + pre(r.output); return; }
+      var bad = [], lines = tests.map(function (t, i) { var ok = r.values[i] === t[1]; if (!ok) bad.push(i); return (ok ? "ok    " : "wrong ") + t[0] + "  gives  " + r.values[i] + (ok ? "" : "   (expected " + t[1] + ")"); });
+      if (mode === "run") {
+        box.innerHTML = (bad.length ? banner("fail", bad.length + " of " + tests.length + " examples failed") : banner("pass", "All " + tests.length + " examples passed. Submit to check the hidden tests.")) + pre(lines.join("\n")) + pre(r.output);
+        return;
+      }
+      if (!bad.length) {
+        T(job.t.id).solved[p.id] = true; save(); progress();
+        var a = view.querySelector('.plist a[aria-current] .tick'); if (a) a.classList.add("yes");
+        box.innerHTML = solvedHTML();
+      } else {
+        box.innerHTML = banner("fail", "Not yet. A hidden test did not pass.") + pre(lines[bad[0]]) + pre(r.output);
+      }
+    });
+  }
   function execute(mode) {
+    if (cur && cur.p.gleam) { executeGleam(mode); return; }
     var job = cur, p = job.p, ed = document.getElementById("editor"), box = document.getElementById("result");
     if (!ed || !box) return;
     box.innerHTML = banner("wait", wReady ? "Running..." : "Loading Python. The first run takes a few seconds...");
@@ -405,9 +471,7 @@
     else if (act === "levelopen") { levelOpen = true; render(true); }
     else if (act === "recheck" && t) { T(t.id).check = {}; save(); render(false); }
     else if (act === "reveal" && cur) {
-      document.getElementById("result").innerHTML = '<p class="banner wait">Compare your answer with this one. It does not have to match word for word, but it should handle the same cases.</p>' + codeHTML(cur.p.solution) +
-        (cur.p.explain ? '<p style="margin-top:10px">' + esc(cur.p.explain) + "</p>" : "") +
-        '<div class="row" style="margin-top:12px"><button class="btn small primary" type="button" data-act="selfsolve">Mine does the same thing</button><button class="btn small quiet" type="button" data-act="selfnot">Not yet, I will try again</button></div>';
+      document.getElementById("result").innerHTML = revealHTML(cur.p);
     }
     else if (act === "selfsolve" && cur) { T(cur.t.id).solved[cur.p.id] = true; save(); progress(); var tk = view.querySelector('.plist a[aria-current] .tick'); if (tk) tk.classList.add("yes"); document.getElementById("result").innerHTML = solvedHTML(); }
     else if (act === "selfnot" && cur) { document.getElementById("result").innerHTML = ""; document.getElementById("editor").focus(); }

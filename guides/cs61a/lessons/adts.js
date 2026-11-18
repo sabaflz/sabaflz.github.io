@@ -5,7 +5,7 @@
   Result and value-based error handling, dictionaries, and record update.
 
   Every Gleam snippet and solution here was compiled and run with the Gleam
-  compiler. Deepen problems are self-checked (`norun: true`).
+  compiler. Deepen problems are compiled and run in the browser by gleam/worker.js.
 */
 window.LESSONS["adts"] = {
   minutes: 22,
@@ -98,19 +98,22 @@ window.LESSONS["adts"] = {
   ],
 
   deepen: [
-    { id: "adt_fare", title: "Bus fares", source: "Original question", norun: true, lang: "Gleam",
+    { id: "adt_fare", title: "Bus fares", source: "Original question", lang: "Gleam",
+      gleam: {"tests": [["fare(Student(20))", "240"], ["fare(Child)", "0"], ["fare(Adult)", "300"], ["fare(Student(0))", "300"], ["fare(Student(100))", "0"], ["fare(Student(50))", "150"]], "show": 3},
       desc: "A bus rider is a child, an adult, or a student with a discount percentage. Define a Gleam type Rider with three variants: Child, Adult, and Student with one Int field named discount. Then write fare(r: Rider) -> Int, the price in cents: 0 for a child, 300 for an adult, and for a student 300 reduced by the discount percentage. For example, fare(Student(20)) is 240.",
       starter: "type Rider {\n  // the three variants go here\n}\n\nfn fare(r: Rider) -> Int {\n  // your code here\n}\n",
       solution: "type Rider {\n  Child\n  Adult\n  Student(discount: Int)\n}\n\nfn fare(r: Rider) -> Int {\n  case r {\n    Child -> 0\n    Adult -> 300\n    Student(d) -> 300 - 300 * d / 100\n  }\n}",
       hints: ["Variants without fields are written as just a capitalized name. A variant with a field looks like Student(discount: Int).", "In fare, write case r with one pattern per variant. The Student pattern can name its field: Student(d).", "A discount of d percent takes off 300 * d / 100 cents."],
       explain: "One variant per kind of rider, and only Student carries data. The case must cover all three, and the compiler checks that it does. Any arithmetic that gives the same price is fine." },
-    { id: "adt_safe_div", title: "Division that cannot crash", source: "Original question", norun: true, lang: "Gleam",
+    { id: "adt_safe_div", title: "Division that cannot crash", source: "Original question", lang: "Gleam",
+      gleam: {"tests": [["show(safe_div(12, 4))", "\"3\""], ["show(safe_div(1, 0))", "\"divide by zero\""], ["safe_div(7, 2)", "Ok(3)"], ["safe_div(0, 0)", "Error(\"divide by zero\")"], ["show(Ok(9))", "\"9\""], ["show(Error(\"x\"))", "\"x\""]]},
       desc: "Write a Gleam function safe_div(a: Int, b: Int) -> Result(Int, String). It returns Ok with a divided by b, or Error with the message \"divide by zero\" when b is 0. Then write show(r: Result(Int, String)) -> String, which returns the number as a string for an Ok and the message for an Error. For example, show(safe_div(12, 4)) is \"3\" and show(safe_div(1, 0)) is \"divide by zero\". Use int.to_string.",
       starter: "import gleam/int\n\nfn safe_div(a: Int, b: Int) -> Result(Int, String) {\n  // your code here\n}\n\nfn show(r: Result(Int, String)) -> String {\n  // your code here\n}\n",
       solution: "import gleam/int\n\nfn safe_div(a: Int, b: Int) -> Result(Int, String) {\n  case b {\n    0 -> Error(\"divide by zero\")\n    _ -> Ok(a / b)\n  }\n}\n\nfn show(r: Result(Int, String)) -> String {\n  case r {\n    Ok(n) -> int.to_string(n)\n    Error(message) -> message\n  }\n}",
       hints: ["safe_div needs a case on b: one pattern for 0 and one for everything else.", "Wrap each answer in a variant: Error(\"divide by zero\") or Ok(a / b).", "show is a case on r with the patterns Ok(n) and Error(message)."],
       explain: "safe_div puts the outcome in a Result, and show takes it apart. The caller cannot use the number without also saying what to do about the error." },
-    { id: "adt_count_leaves", title: "Count the leaves", source: "Original question", norun: true, lang: "Gleam",
+    { id: "adt_count_leaves", title: "Count the leaves", source: "Original question", lang: "Gleam",
+      gleam: {"tests": [["count_leaves(Tree(1, [Tree(2, [Tree(3, []), Tree(4, [])]), Tree(5, [])]))", "3"], ["count_leaves(Tree(\"x\", []))", "1"], ["count_leaves(Tree(1, [Tree(2, [Tree(3, [])])]))", "1"], ["count_leaves(Tree(0, [Tree(1, []), Tree(2, []), Tree(3, [Tree(4, []), Tree(5, [])])]))", "4"]]},
       desc: "Using the Tree type from the lesson, write count_leaves(t: Tree(a)) -> Int, the number of leaves in the tree. A leaf is a tree with no branches. For the tree with label 1 whose branches are a tree 2 with leaves 3 and 4, and a leaf 5, the answer is 3. You may use list.map and int.sum.",
       starter: "import gleam/int\nimport gleam/list\n\ntype Tree(a) {\n  Tree(label: a, branches: List(Tree(a)))\n}\n\nfn count_leaves(t: Tree(a)) -> Int {\n  // your code here\n}\n",
       solution: "import gleam/int\nimport gleam/list\n\ntype Tree(a) {\n  Tree(label: a, branches: List(Tree(a)))\n}\n\nfn count_leaves(t: Tree(a)) -> Int {\n  case t.branches {\n    [] -> 1\n    branches -> int.sum(list.map(branches, count_leaves))\n  }\n}",

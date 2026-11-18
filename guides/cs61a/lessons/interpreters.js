@@ -10,7 +10,7 @@
   a small original interpreter, not the course project's code.
 
   Every Gleam snippet and solution here was compiled and run with the Gleam
-  compiler. Deepen problems are self-checked (`norun: true`).
+  compiler. Deepen problems are compiled and run in the browser by gleam/worker.js.
 */
 window.LESSONS["interpreters"] = {
   minutes: 22,
@@ -96,22 +96,25 @@ window.LESSONS["interpreters"] = {
   ],
 
   deepen: [
-    { id: "int_count", title: "Count the numbers", source: "Original question", norun: true, lang: "Gleam",
+    { id: "int_count", title: "Count the numbers", source: "Original question", lang: "Gleam",
+      gleam: {"tests": [["count_nums(Binary(Mul, Var(\"x\"), Binary(Add, Num(2), Num(3))))", "2"], ["count_nums(Var(\"x\"))", "0"], ["count_nums(Num(7))", "1"], ["count_nums(Binary(Div, Binary(Sub, Num(1), Num(2)), Binary(Add, Var(\"y\"), Num(3))))", "3"]]},
       desc: "Using the Expr type from the lesson, write count_nums(e: Expr) -> Int, the number of Num values anywhere inside the expression. For example, the expression for x * (2 + 3) contains 2 numbers, and Var(\"x\") contains 0.",
-      starter: "fn count_nums(e: Expr) -> Int {\n  // your code here\n}\n",
-      solution: "fn count_nums(e: Expr) -> Int {\n  case e {\n    Num(_) -> 1\n    Var(_) -> 0\n    Binary(_, left, right) -> count_nums(left) + count_nums(right)\n  }\n}",
+      starter: "type Expr {\n  Num(Int)\n  Var(String)\n  Binary(op: Op, left: Expr, right: Expr)\n}\n\ntype Op {\n  Add\n  Sub\n  Mul\n  Div\n}\n\nfn count_nums(e: Expr) -> Int {\n  // your code here\n}\n",
+      solution: "type Expr {\n  Num(Int)\n  Var(String)\n  Binary(op: Op, left: Expr, right: Expr)\n}\n\ntype Op {\n  Add\n  Sub\n  Mul\n  Div\n}\n\nfn count_nums(e: Expr) -> Int {\n  case e {\n    Num(_) -> 1\n    Var(_) -> 0\n    Binary(_, left, right) -> count_nums(left) + count_nums(right)\n  }\n}",
       hints: ["Write case e with one pattern per variant of Expr.", "A Num counts as 1 and a Var as 0.", "A Binary has two sub-expressions. Count each with a recursive call and add. The operator is not needed, so match it with an underscore."],
       explain: "Any function over a syntax tree has this shape: one case per variant, with a recursive call for each sub-expression. eval is the same function with different results." },
-    { id: "int_neg", title: "Add a new kind of expression", source: "Original question", norun: true, lang: "Gleam",
+    { id: "int_neg", title: "Add a new kind of expression", source: "Original question", lang: "Gleam",
+      gleam: {"setup": "type Op {\n  Add\n  Sub\n  Mul\n  Div\n}\n\nfn apply(op: Op, a: Int, b: Int) -> Int {\n  case op {\n    Add -> a + b\n    Sub -> a - b\n    Mul -> a * b\n    Div -> a / b\n  }\n}\n", "tests": [["eval(Neg(Binary(Add, Num(2), Num(3))))", "-5"], ["eval(Binary(Sub, Num(1), Neg(Num(4))))", "5"], ["eval(Neg(Neg(Num(3))))", "3"], ["eval(Num(8))", "8"], ["eval(Binary(Mul, Neg(Num(2)), Num(6)))", "-12"]]},
       desc: "Add negation to the arithmetic language. Give the Expr type a fourth variant, Neg, holding one expression. Then update the first eval from the lesson, the one that returns an Int, to handle it: the value of Neg(e) is 0 minus the value of e. For example, eval(Neg(Binary(Add, Num(2), Num(3)))) is -5.",
-      starter: "type Expr {\n  Num(Int)\n  Var(String)\n  Binary(op: Op, left: Expr, right: Expr)\n  // add the new variant\n}\n\nfn eval(e: Expr) -> Int {\n  case e {\n    Num(n) -> n\n    Var(_) -> 0\n    Binary(op, left, right) -> apply(op, eval(left), eval(right))\n    // handle the new variant\n  }\n}\n",
+      starter: "type Expr {\n  Num(Int)\n  Var(String)\n  Binary(op: Op, left: Expr, right: Expr)\n  // add the new variant\n}\n\nfn eval(e: Expr) -> Int {\n  case e {\n    Num(n) -> n\n    Var(_) -> 0\n    Binary(op, left, right) -> apply(op, eval(left), eval(right))\n    // handle the new variant\n  }\n}\n\n// Op and apply from the lesson are already defined for you.\n",
       solution: "type Expr {\n  Num(Int)\n  Var(String)\n  Binary(op: Op, left: Expr, right: Expr)\n  Neg(Expr)\n}\n\nfn eval(e: Expr) -> Int {\n  case e {\n    Num(n) -> n\n    Var(_) -> 0\n    Binary(op, left, right) -> apply(op, eval(left), eval(right))\n    Neg(inner) -> 0 - eval(inner)\n  }\n}",
       hints: ["The new variant holds one Expr: Neg(Expr).", "In eval, add a pattern Neg(inner) that names the expression inside.", "Evaluate the inner expression with a recursive call, then subtract it from 0."],
       explain: "Adding a feature to a language is two steps: a new variant in the expression type, and a new rule in eval. Once the variant exists, the compiler refuses to build until every case over Expr handles it, so nothing is forgotten." },
-    { id: "int_depth", title: "How deep is a name?", source: "Original question", norun: true, lang: "Gleam",
-      desc: "Using the Env type from the lesson, write depth(env: Env, name: String) -> Result(Int, Nil). It returns Ok(0) if the name is bound in the first frame, Ok(1) if it is first found in the parent, and so on. If the name is not bound in any frame, it returns Error(Nil). With the frames f and g from the lesson, depth(f, \"z\") is Ok(0), depth(f, \"y\") is Ok(1) and depth(f, \"w\") is Error(Nil).",
-      starter: "fn depth(env: Env, name: String) -> Result(Int, Nil) {\n  // your code here\n}\n",
-      solution: "fn depth(env: Env, name: String) -> Result(Int, Nil) {\n  case dict.get(env.bindings, name), env {\n    Ok(_), _ -> Ok(0)\n    Error(_), Global(_) -> Error(Nil)\n    Error(_), Local(_, parent) ->\n      case depth(parent, name) {\n        Ok(n) -> Ok(n + 1)\n        Error(_) -> Error(Nil)\n      }\n  }\n}",
+    { id: "int_depth", title: "How deep is a name?", source: "Original question", lang: "Gleam",
+      gleam: {"setup": "fn sf_g() -> Env {\n  Global(dict.from_list([#(\"y\", 3), #(\"z\", 5)]))\n}\n\nfn sf_f() -> Env {\n  Local(dict.from_list([#(\"x\", 2), #(\"z\", 4)]), sf_g())\n}\n", "tests": [["depth(sf_f(), \"z\")", "Ok(0)"], ["depth(sf_f(), \"y\")", "Ok(1)"], ["depth(sf_f(), \"w\")", "Error(Nil)"], ["depth(sf_g(), \"z\")", "Ok(0)"], ["depth(Local(dict.new(), sf_f()), \"y\")", "Ok(2)"], ["depth(sf_g(), \"x\")", "Error(Nil)"]], "show": 3},
+      desc: "Using the Env type from the lesson, write depth(env: Env, name: String) -> Result(Int, Nil). It returns Ok(0) if the name is bound in the first frame, Ok(1) if it is first found in the parent, and so on. If the name is not bound in any frame, it returns Error(Nil). With the frames f and g from the lesson, depth(f, \"z\") is Ok(0), depth(f, \"y\") is Ok(1) and depth(f, \"w\") is Error(Nil). In the examples, sf_f() and sf_g() are those two frames.",
+      starter: "import gleam/dict.{type Dict}\n\ntype Env {\n  Global(bindings: Dict(String, Int))\n  Local(bindings: Dict(String, Int), parent: Env)\n}\n\nfn depth(env: Env, name: String) -> Result(Int, Nil) {\n  // your code here\n}\n",
+      solution: "import gleam/dict.{type Dict}\n\ntype Env {\n  Global(bindings: Dict(String, Int))\n  Local(bindings: Dict(String, Int), parent: Env)\n}\n\nfn depth(env: Env, name: String) -> Result(Int, Nil) {\n  case dict.get(env.bindings, name), env {\n    Ok(_), _ -> Ok(0)\n    Error(_), Global(_) -> Error(Nil)\n    Error(_), Local(_, parent) ->\n      case depth(parent, name) {\n        Ok(n) -> Ok(n + 1)\n        Error(_) -> Error(Nil)\n      }\n  }\n}",
       hints: ["Follow the shape of lookup: first check env.bindings with dict.get.", "If the name is not in this frame and the frame is Global, the answer is Error(Nil).", "If the frame is Local, ask for the depth in the parent. That call returns a Result, so use a case: Ok(n) becomes Ok(n + 1), and an Error stays an Error."],
       explain: "Because the recursive call returns a Result, its value cannot be used as a number directly. The case unwraps it, adds one frame, and wraps it again, and passes an error along unchanged. Nesting the cases as lookup does is equally correct." }
   ]

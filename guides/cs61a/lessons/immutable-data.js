@@ -6,7 +6,7 @@
   analysis, execution; compiling versus interpreting).
 
   Every Gleam snippet and solution here was compiled and run with the Gleam
-  compiler. Deepen problems are self-checked (`norun: true`).
+  compiler. Deepen problems are compiled and run in the browser by gleam/worker.js.
 */
 window.LESSONS["immutable-data"] = {
   minutes: 18,
@@ -87,13 +87,15 @@ window.LESSONS["immutable-data"] = {
   ],
 
   deepen: [
-    { id: "imm_tally", title: "Tally without mutation", source: "Original question", norun: true, lang: "Gleam",
+    { id: "imm_tally", title: "Tally without mutation", source: "Original question", lang: "Gleam",
+      gleam: {"tests": [["dict.get(tally([\"a\", \"b\", \"a\"]), \"a\")", "Ok(2)"], ["dict.get(tally([\"a\", \"b\", \"a\"]), \"b\")", "Ok(1)"], ["dict.size(tally([]))", "0"], ["dict.get(tally([\"a\"]), \"z\")", "Error(Nil)"], ["dict.get(tally([\"q\", \"q\", \"q\", \"r\"]), \"q\")", "Ok(3)"], ["dict.size(tally([\"q\", \"q\", \"q\", \"r\"]))", "2"]]},
       desc: "Write a Gleam function tally that takes a list of words and returns a dictionary from each word to how many times it appears. Nothing can be mutated, so use a helper that carries the dictionary so far and returns a new one at each step. Use dict.get, which returns a Result, and dict.insert. For example, tally([\"a\", \"b\", \"a\"]) maps \"a\" to 2 and \"b\" to 1.",
       starter: "import gleam/dict.{type Dict}\n\nfn tally(words: List(String)) -> Dict(String, Int) {\n  // call your helper with an empty dictionary: dict.new()\n}\n\n// write the helper here\n",
       solution: "import gleam/dict.{type Dict}\n\nfn tally(words: List(String)) -> Dict(String, Int) {\n  tally_from(words, dict.new())\n}\n\nfn tally_from(words: List(String), counts: Dict(String, Int)) -> Dict(String, Int) {\n  case words {\n    [] -> counts\n    [word, ..rest] ->\n      case dict.get(counts, word) {\n        Ok(n) -> tally_from(rest, dict.insert(counts, word, n + 1))\n        Error(_) -> tally_from(rest, dict.insert(counts, word, 1))\n      }\n  }\n}",
       hints: ["The helper takes the remaining words and the counts so far. With no words left, the counts are the answer.", "For the first word, look it up with dict.get. Ok(n) means it has been seen n times. Error means this is the first time.", "Either way, make the recursive call on the rest of the words with dict.insert(counts, word, ...) as the new counts."],
       explain: "The dictionary plays the role of a variable that a Python loop would mutate. Here each step builds a new dictionary and hands it to the next step as an argument. Both recursive calls are tail calls, so this runs like a loop." },
-    { id: "imm_number", title: "Memoize with a travelling cache", source: "Original question", norun: true, lang: "Gleam",
+    { id: "imm_number", title: "Memoize with a travelling cache", source: "Original question", lang: "Gleam",
+      gleam: {"tests": [["ways_memo(5, dict.new()).0", "8"], ["ways_memo(2, dict.new()).0", "2"], ["ways_memo(0, dict.new()).0", "1"], ["ways_memo(1, dict.new()).0", "1"], ["dict.get(ways_memo(5, dict.new()).1, 5)", "Ok(8)"], ["ways_memo(60, dict.new()).0", "2504730781961"]]},
       desc: "Write the Gleam function ways_memo for a different rule: each move goes up 1 stair or 2 stairs. It takes n and a cache and returns a tuple of the number of ways and the updated cache. With fewer than 2 stairs there is 1 way. The cache must be passed from the first recursive call to the second. For example, ways_memo(5, dict.new()).0 is 8.",
       starter: "import gleam/dict.{type Dict}\n\nfn ways_memo(n: Int, cache: Dict(Int, Int)) -> #(Int, Dict(Int, Int)) {\n  // your code here\n}\n",
       solution: "import gleam/dict.{type Dict}\n\nfn ways_memo(n: Int, cache: Dict(Int, Int)) -> #(Int, Dict(Int, Int)) {\n  case dict.get(cache, n) {\n    Ok(answer) -> #(answer, cache)\n    Error(_) ->\n      case n < 2 {\n        True -> #(1, cache)\n        False -> {\n          let #(a, cache) = ways_memo(n - 1, cache)\n          let #(b, cache) = ways_memo(n - 2, cache)\n          #(a + b, dict.insert(cache, n, a + b))\n        }\n      }\n  }\n}",

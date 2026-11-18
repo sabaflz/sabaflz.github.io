@@ -6,9 +6,8 @@
   lists with pattern matching, and tuples.
 
   Every Gleam snippet and solution in this file was compiled and run with the
-  Gleam compiler before it was added. The app itself cannot run Gleam, so the
-  Deepen problems are self-checked (`norun: true`): the student writes an
-  answer and compares it with the solution.
+  Gleam compiler before it was added. The app compiles and runs Gleam in the browser (gleam/worker.js), so the
+  Deepen problems are graded with hidden tests.
   Same shape as lessons/recursion.js, plus `env` and `tree`.
 */
 window.LESSONS["functional-programming"] = {
@@ -128,19 +127,22 @@ window.LESSONS["functional-programming"] = {
   ],
 
   deepen: [
-    { id: "fp_sign", title: "Positive, negative or zero", source: "Original question", norun: true, lang: "Gleam",
+    { id: "fp_sign", title: "Positive, negative or zero", source: "Original question", lang: "Gleam",
+      gleam: {"tests": [["sign(-4)", "\"negative\""], ["sign(0)", "\"zero\""], ["sign(9)", "\"positive\""], ["sign(-1)", "\"negative\""], ["sign(1)", "\"positive\""]], "show": 3},
       desc: "Write a Gleam function sign that takes an Int and returns the String \"negative\", \"zero\" or \"positive\". Use one case expression. For example, sign(-4) is \"negative\", sign(0) is \"zero\" and sign(9) is \"positive\".",
       starter: "fn sign(n: Int) -> String {\n  // your code here\n}\n",
       solution: "fn sign(n: Int) -> String {\n  case n {\n    0 -> \"zero\"\n    _ if n < 0 -> \"negative\"\n    _ -> \"positive\"\n  }\n}",
       hints: ["Write case n and then one pattern for each of the three answers.", "0 can be matched directly. For negative numbers, use an underscore with a guard: _ if n < 0.", "The last pattern should be a plain underscore, so every number is covered and the compiler accepts it."],
       explain: "Three patterns, tried in order. A different order also works, such as guarding for negative first. What matters is that every Int reaches some pattern. Writing case n < 0 and nesting a second case inside is also correct, just longer." },
-    { id: "fp_count_evens", title: "Count the evens", source: "Original question", norun: true, lang: "Gleam",
+    { id: "fp_count_evens", title: "Count the evens", source: "Original question", lang: "Gleam",
+      gleam: {"tests": [["count_evens([2, 5, 8, 8])", "3"], ["count_evens([])", "0"], ["count_evens([1, 3])", "0"], ["count_evens([0])", "1"], ["count_evens([7, 6])", "1"]]},
       desc: "Write a Gleam function count_evens that takes a List(Int) and returns how many of its items are even. Use recursion and list patterns. The remainder operator is %, as in Python. For example, count_evens([2, 5, 8, 8]) is 3 and count_evens([]) is 0.",
       starter: "fn count_evens(s: List(Int)) -> Int {\n  // your code here\n}\n",
       solution: "fn count_evens(s: List(Int)) -> Int {\n  case s {\n    [] -> 0\n    [first, ..rest] if first % 2 == 0 -> 1 + count_evens(rest)\n    [_, ..rest] -> count_evens(rest)\n  }\n}",
       hints: ["Start with case s and the pattern for the empty list, which has no even items.", "For a list with a first item, there are two situations: the first item is even, or it is not. A guard can tell them apart.", "[first, ..rest] if first % 2 == 0 gives 1 + count_evens(rest). Otherwise [_, ..rest] gives count_evens(rest)."],
       explain: "The same shape as count_link in Python, with patterns doing the job of isinstance, first and rest. Using one pattern and a nested case on first % 2 == 0 is equally good." },
-    { id: "fp_product", title: "A product that runs like a loop", source: "Original question", norun: true, lang: "Gleam",
+    { id: "fp_product", title: "A product that runs like a loop", source: "Original question", lang: "Gleam",
+      gleam: {"tests": [["product([2, 3, 4])", "24"], ["product([])", "1"], ["product([5])", "5"], ["product([3, 0, 9])", "0"], ["product([-2, 3])", "-6"]]},
       desc: "Write a Gleam function product that multiplies together all the items of a List(Int). The product of an empty list is 1. Make it tail recursive: write a helper function that carries the result so far as an extra argument, so that the recursive call is the entire result. For example, product([2, 3, 4]) is 24.",
       starter: "fn product(s: List(Int)) -> Int {\n  // call your helper here\n}\n\n// write the helper function here\n",
       solution: "fn product(s: List(Int)) -> Int {\n  product_from(s, 1)\n}\n\nfn product_from(s: List(Int), so_far: Int) -> Int {\n  case s {\n    [] -> so_far\n    [first, ..rest] -> product_from(rest, so_far * first)\n  }\n}",
