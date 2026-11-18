@@ -45,7 +45,7 @@ window.COURSE = {
       { id: "recursion", lecture: 9, title: "Recursion", blurb: "Base cases, recursive calls, and trusting the smaller problem.", est: 45, pool: ["Recursion"] },
       { id: "tree-recursion", lecture: 10, title: "Tree recursion", blurb: "More than one recursive call: counting, partitions, paths.", est: 60, pool: ["Recursion"] },
       { id: "sequences", lecture: 11, title: "Sequences", blurb: "Lists, ranges, slicing and list comprehensions.", est: 45, pool: ["Lists & Dicts"], testOut: ["review"] },
-      { id: "containers", lecture: 12, title: "Containers", blurb: "Dictionaries, strings, and built-in functions over sequences.", est: 40, pool: ["Lists & Dicts"], testOut: ["review"] },
+      { id: "containers", lecture: 12, title: "Containers", blurb: "Slicing, strings, sum, max, all and any, grids, and dictionaries.", est: 40, pool: ["Lists & Dicts"], testOut: ["review"] },
       { id: "objects", lecture: 13, title: "Objects", blurb: "Values that carry their own behavior: methods and attributes.", est: 35 },
       { id: "linked-lists", lecture: 14, title: "Linked lists", blurb: "The Link class and recursion over linked lists.", est: 50, pool: ["Linked Lists"] },
       { id: "trees", lecture: 15, title: "Trees", blurb: "label, branches, and recursion over trees.", est: 55, pool: ["Trees"] },

@@ -90,7 +90,7 @@
   /* ---------- small helpers ---------- */
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-  function norm(s) { return String(s).trim().toLowerCase().replace(/['"]/g, "").replace(/[\s,]+/g, " ").trim(); }
+  function norm(s) { return String(s).trim().toLowerCase().replace(/['"]/g, "").replace(/[\s,]+/g, " ").replace(/ ?([\[\](){}:]) ?/g, "$1").trim(); }
   function codeHTML(src, hl) {
     hl = hl || [];
     return '<pre class="code">' + String(src).split("\n").map(function (line, i) {
