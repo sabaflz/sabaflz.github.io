@@ -7,11 +7,12 @@
   student before their code runs, so the examples can use them.
 */
 window.LESSONS.hof = {
-  minutes: 13,
+  minutes: 15,
   snippets: {
     vals: "def square(x):\n    return x * x\n\nf = square\nf(5)",
     callvs: "def greet():\n    return 'hi'\n\na = greet\nb = greet()",
     describe: "def square(x):\n    \"\"\"Return x times x.\n\n    x is any number. The result is never negative.\n    \"\"\"\n    return x * x",
+    area: "def area(r, shape_constant):\n    assert r > 0, 'A length must be positive'\n    return r * r * shape_constant\n\ndef area_square(r):\n    return area(r, 1)\n\ndef area_circle(r):\n    return area(r, 3.14159)",
     sums: "def sum_naturals(n):\n    total, k = 0, 1\n    while k <= n:\n        total = total + k\n        k = k + 1\n    return total\n\ndef sum_cubes(n):\n    total, k = 0, 1\n    while k <= n:\n        total = total + k * k * k\n        k = k + 1\n    return total",
     summation: "def summation(n, term):\n    total, k = 0, 1\n    while k <= n:\n        total = total + term(k)\n        k = k + 1\n    return total\n\ndef cube(x):\n    return x * x * x\n\nsummation(3, cube)",
     twice: "def square(x):\n    return x * x\n\ndef twice(f, x):\n    return f(f(x))\n\ntwice(square, 3)",
@@ -35,8 +36,14 @@ window.LESSONS.hof = {
     { code: "describe", hl: [2, 3, 4, 5],
       say: "Before passing functions around, it helps to be able to describe one. Three things describe a function. Its domain is the set of inputs it accepts. Its range is the set of outputs it can give back. Its behavior is how the output relates to the input. For square: the domain is any number, the range is numbers that are not negative, and the behavior is that it returns the input times itself.",
       syntax: "Python notes: the text in triple quotes right under the def line is called a docstring. It is where you write down what the function does. Python ignores it when running the code." },
+    { code: "area", hl: [1, 3, 6, 9],
+      say: "Generalizing means finding what several functions share and writing that part once. Start with the simplest kind. The area of a square is r times r. The area of a circle is r times r times pi. The shared part is r times r, and the part that differs is a number. So one general function, area, takes that number as an argument, and the specific functions call it." },
+    { code: "area", hl: [2],
+      say: "Line 2 is a new statement. assert checks that something is true. If it is, nothing happens. If it is not, the program stops with an error showing your message. Because the check is written once inside area, every shape gets it.",
+      ask: { type: "mc", q: "What happens when you call area_square(-2)?", choices: ["It returns 4", "It returns -4", "An AssertionError: A length must be positive"], answer: 2,
+        why: "area_square calls area(-2, 1). The assert on line 2 finds that r > 0 is false and stops the program with the message. Without it, the function would quietly return 4 for a length that makes no sense." } },
     { code: "sums", hl: [4, 11],
-      say: "Now look at these two functions. One adds up the numbers from 1 to n. The other adds up their cubes. They are identical except for one piece: what gets added on each pass. Writing the same loop twice is a signal. A good function does one job, and a process should be written once and reused." },
+      say: "The thing that differs is not always a number. Look at these two functions. One adds up the numbers from 1 to n. The other adds up their cubes. They are identical except for one piece: what gets added on each pass. Writing the same loop twice is a signal. A good function does one job, and a process should be written once and reused." },
     { code: "summation", hl: [1, 4],
       say: "summation is the shared pattern with the changing piece pulled out as a parameter. term is a function. On line 4, term(k) calls whatever function was passed in. A function that takes another function as an argument, or returns one, is called a higher-order function." },
     { code: "summation", hl: [11],

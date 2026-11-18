@@ -5,7 +5,7 @@
   Same shape as lessons/recursion.js, plus `env` and `frames`.
 */
 window.LESSONS["function-examples"] = {
-  minutes: 14,
+  minutes: 17,
   snippets: {
     warm: "x = print(3) or 5",
     falsy: "0 or '' or None",
@@ -14,6 +14,8 @@ window.LESSONS["function-examples"] = {
     bind: "x = 1\n\ndef f(y):\n    return x + y\n\nf(2)",
     template: "def nearest_multiple(n, m):\n    \"\"\"Return the multiple of m closest to n.\n    If two are equally close, return the larger.\n    >>> nearest_multiple(8, 3)\n    9\n    >>> nearest_multiple(21, 5)\n    20\n    >>> nearest_multiple(10, 4)\n    12\n    \"\"\"\n    k = 0\n    while True:\n        if ______:\n            return n + k\n        if ______:\n            return n - k\n        k = ______",
     solved: "def nearest_multiple(n, m):\n    k = 0\n    while True:\n        if (n + k) % m == 0:\n            return n + k\n        if (n - k) % m == 0:\n            return n - k\n        k = k + 1",
+    errors: "def h(z):\n    z * z\n\ndef g(y):\n    return h(y) - h(1)\n\ng(3)",
+    deco: "def trace1(fn):\n    def traced(x):\n        print('Calling', fn.__name__, 'on', x)\n        return fn(x)\n    return traced\n\n@trace1\ndef square(x):\n    return x * x\n\nsquare(12)",
     twice: "twice = lambda f: lambda x: f(f(x))\n\ndef twice(f):\n    def g(x):\n        return f(f(x))\n    return g"
   },
   steps: [
@@ -59,6 +61,18 @@ window.LESSONS["function-examples"] = {
         why: "When k is 2, the first test checks 12, which is a multiple of 4, so line 5 returns 12 before the 8 is ever looked at." } },
     { code: "twice", hl: [1, 3, 4, 5, 6],
       say: "One more tool for tracing. If a lambda is hard to read, rewrite it as a def. Line 1 and lines 3 to 6 define the same function. Each lambda becomes a def, and each inner lambda becomes a def inside it followed by a return. Do this on scratch paper whenever nested lambdas show up in a diagram question." },
+    { code: "errors", hl: [5, 7],
+      say: "When your code breaks, the kind of error tells you where to look. A syntax error means the code is not formed correctly, and Python refuses to run any of it. A runtime error happens while the code is running, and comes with a traceback: a list of the calls that were in progress, ending with the line where Python noticed the problem. A logic error gives no message at all. The code runs and the answer is wrong, which is why you test.",
+      ask: { type: "mc", q: "Running this gives a TypeError on line 5: you cannot subtract None from None. Where is the actual mistake?",
+        choices: ["Line 5, the subtraction", "Line 2, where h forgets to return", "Line 7, the call"], answer: 1,
+        why: "The traceback points at line 5 because that is where Python noticed something was wrong. But the cause is earlier: h has no return, so both calls to h gave None. The line in the traceback is where to start looking, not always the line to fix." } },
+    { code: "deco", hl: [1, 2, 3, 4, 5],
+      say: "One more piece of Python that is built from higher-order functions: decorators. trace1 takes a function and returns a new function that does the same thing, but first prints a line saying it was called. It is make_adder's shape again: a def inside a def, returning the inner function." },
+    { code: "deco", hl: [7, 8, 9, 11], out: ["Calling square on 12"],
+      say: "The at sign on line 7 applies trace1 to the function defined just below it. From then on, the name square refers to the traced version. So line 11 displays the message and then returns 144.",
+      ask: { type: "mc", q: "Writing @trace1 above def square is the same as defining square normally and then adding which line?",
+        choices: ["square = trace1(square)", "trace1(square)", "square = trace1"], answer: 0,
+        why: "A decorator passes the new function to trace1 and rebinds the function's name to whatever comes back. Calling trace1(square) without assigning the result would throw the traced version away." } },
     { code: "solved",
       say: "The method again: read and check the examples. Describe the process in plain words. Name the extra things you kept track of. Read the template. Write the code. Run one example through it. The advice from the lecture is the right one to end on: do more practice problems. Your score is decided by how many of these you have worked through, not by how long you have been programming." }
   ],

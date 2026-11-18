@@ -5,7 +5,7 @@
   for the environment diagram (see lessons/environments.js).
 */
 window.LESSONS.abstraction = {
-  minutes: 13,
+  minutes: 16,
   snippets: {
     lam: "square = lambda x: x * x\n\nsquare(4)",
     both: "def square(x):\n    return x * x\n\nsquare = lambda x: x * x",
@@ -14,6 +14,8 @@ window.LESSONS.abstraction = {
     curry: "def add(x, y):\n    return x + y\n\ndef curried_add(x):\n    return lambda y: x + y\n\nadd(2, 3)\ncurried_add(2)(3)",
     nested: "twice = lambda f: lambda x: f(f(x))\n\nsquare = lambda x: x * x\ntwice(square)(3)",
     nesteddef: "def twice(f):\n    def g(x):\n        return f(f(x))\n    return g\n\ndef square(x):\n    return x * x\n\ntwice(square)(3)",
+    search: "def search(f):\n    x = 0\n    while True:\n        if f(x):\n            return x\n        x = x + 1\n\nsearch(lambda x: x * x > 50)",
+    know: "def square(x):\n    return x * x\n\ndef sum_squares(x, y):\n    return square(x) + square(y)",
     zero: "def roll():\n    print('rolling')\n    return 4\n\na = roll\nb = roll()\nc = lambda: roll()"
   },
   steps: [
@@ -67,8 +69,17 @@ window.LESSONS.abstraction = {
         why: "Only line 6 calls roll. Line 5 just gives the function a second name. Line 7 creates a new function whose body would call roll, but that body has not run." } },
     { code: "zero", hl: [7],
       say: "Line 7 is the useful trick. Wrapping a call in a zero-argument lambda postpones it. Nothing happens until someone calls c(). This is how you hand a piece of work to another function and let it decide when, or whether, to do it." },
+    { code: "search", hl: [3, 4, 5],
+      say: "Two ideas from the videos round this lecture off. First, return. A return statement ends the call right there, wherever it is, and nothing after it runs. That makes while True safe to write: the loop on line 3 would run forever, but the return on line 5 ends the whole function the moment f(x) is a true value. search tries 0, 1, 2 and so on, and gives back the first number that passes.",
+      ask: { type: "type", q: "What does search(lambda x: x * x > 50) return?", answer: "8",
+        why: "7 * 7 is 49, which is not more than 50. 8 * 8 is 64, which is. So 8 is the first x for which the function gives a true value, and the return ends the loop." } },
+    { code: "know", hl: [4, 5],
+      say: "Second, the idea the lecture is named after. sum_squares uses square without caring how square works. That is functional abstraction: giving a process a name and then using it as a whole. Ask what sum_squares actually depends on.",
+      ask: { type: "mc", q: "Which change to square would NOT break sum_squares?",
+        choices: ["Making square take two arguments", "Changing its body to return pow(x, 2)", "Making it return the square root"], answer: 1,
+        why: "sum_squares depends on how many arguments square takes and on what it returns. It does not depend on how the answer is computed. Any body that returns the square of x is as good as any other." } },
     { code: "zero",
-      say: "To sum up: lambda makes a function from a single expression, and it can always be rewritten as a def. A lambda's parent is the frame it was created in, and its names are looked up when it is called. Currying turns one call with several arguments into a chain of calls with one each. A function with no arguments still needs parentheses to run." }
+      say: "To sum up: lambda makes a function from a single expression, and it can always be rewritten as a def. A lambda's parent is the frame it was created in, and its names are looked up when it is called. Currying turns one call with several arguments into a chain of calls with one each. A function with no arguments still needs parentheses to run. return ends a call immediately. And a function can be used knowing only what it takes and what it gives back." }
   ],
 
   check: [

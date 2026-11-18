@@ -3,7 +3,7 @@
   Same shape as lessons/recursion.js, plus `env` for the names panel.
 */
 window.LESSONS.control = {
-  minutes: 14,
+  minutes: 17,
   snippets: {
     ifs: "def sign(x):\n    if x > 0:\n        return 'positive'\n    elif x == 0:\n        return 'zero'\n    else:\n        return 'negative'",
     twoifs: "def describe(x):\n    words = ''\n    if x > 0:\n        words = words + 'positive '\n    if x > 10:\n        words = words + 'big'\n    return words",
@@ -11,13 +11,15 @@ window.LESSONS.control = {
     truth: "bool(0)        # False\nbool('')       # False\nbool(None)     # False\nbool(7)        # True\nbool('hi')     # True",
     andor: "True and 5\n0 and 1 / 0\n0 or 'x'\n3 or 1 / 0",
     loop: "def sum_to(n):\n    total, k = 0, 1\n    while k <= n:\n        total = total + k\n        k = k + 1\n    return total",
+    fib: "def fib(n):\n    pred, curr = 0, 1\n    k = 1\n    while k < n:\n        pred, curr = curr, pred + curr\n        k = k + 1\n    return curr",
+    iffn: "def if_(c, t, f):\n    if c:\n        return t\n    else:\n        return f\n\nx = 0\nif_(x != 0, 1 / x, 0)",
     digits: "def count_digits(n):\n    count = 0\n    while n > 0:\n        count = count + 1\n        n = n // 10\n    return count",
     stuck: "def stuck(n):\n    while n > 0:\n        print(n)\n    return n"
   },
   steps: [
     { code: "ifs", hl: [2, 4, 6],
       say: "So far every line of a function ran, top to bottom. Control statements let a program choose which lines run and how many times. The first one is the conditional: if, elif, else.",
-      syntax: "Python notes: elif is short for else if. Each test ends with a colon, and the lines that belong to it are indented underneath. There are no braces and no parentheses around the test." },
+      syntax: "Python notes: elif is short for else if. Each test ends with a colon, and the lines that belong to it are indented underneath. There are no braces and no parentheses around the test. The line with the test is called a header, the indented lines under it are its suite, and the two together are a clause." },
     { code: "ifs", hl: [2, 3],
       say: "Python checks the tests in order and runs the body of the first one that is true. Every clause after that is skipped, even if its test would also be true.",
       ask: { type: "mc", q: "For sign(0), which line returns?", choices: ["Line 3", "Line 5", "Line 7"], answer: 1,
@@ -54,6 +56,12 @@ window.LESSONS.control = {
         why: "The third pass makes total 6 and k 4. Then the test 4 <= 3 is false, so the loop ends. The loop variable always finishes one step past the last value that passed the test." } },
     { code: "loop", hl: [6], env: [["n", "3"], ["total", "6"], ["k", "4"]],
       say: "The test fails, the loop ends, and line 6 returns 6. When you trace a loop on an exam, write the names in a small table like this one and update it once per pass. It is slower than guessing and it is almost never wrong." },
+    { code: "fib", hl: [2, 3], env: [["n", "5"], ["pred", "0"], ["curr", "1"], ["k", "1"]],
+      say: "A classic loop: the Fibonacci numbers 0, 1, 1, 2, 3, 5, 8, where each one is the sum of the two before it. When you design a loop, the first question is what you need to keep track of. Here it is three things: the current number, the one before it, and k, which says which Fibonacci number curr is." },
+    { code: "fib", hl: [5, 6], env: [["n", "5"], ["pred", "1"], ["curr", "1"], ["k", "2"]],
+      say: "Each pass moves both names one step along the sequence. Line 5 relies on the rule that the right side is evaluated before anything is bound: the new pred is the old curr, and the new curr is the old pred plus the old curr. Then k goes up by 1 so that it still describes curr.",
+      ask: { type: "type", q: "What does fib(5) return?", answer: "5",
+        why: "curr goes 1, 1, 2, 3, 5 as k goes 1, 2, 3, 4, 5. When k reaches 5 the test k < 5 fails, and curr is 5." } },
     { code: "digits", hl: [3, 4, 5],
       say: "Many 61A problems loop over the digits of a number. The pattern is always the same: n % 10 looks at the last digit, and n // 10 throws it away. The loop ends when no digits are left.",
       syntax: "Python notes: // is division that drops the remainder, so 2026 // 10 is 202. % gives the remainder, so 2026 % 10 is 6.",
@@ -67,6 +75,12 @@ window.LESSONS.control = {
       say: "Here is a loop with an if inside it, and it does something useful: it prints the prime factors of n. It tries a divisor k. If k divides n, it prints k and divides n by it, keeping the same k. If not, it moves on to the next k. The loop ends when n has been divided down to 1.",
       ask: { type: "mc", q: "What does prime_factors(12) print, top to bottom?", choices: ["2, 3", "2, 2, 3", "2, 6"], answer: 1,
         why: "12 is divisible by 2, so it prints 2 and n becomes 6. 6 is divisible by 2 again, so it prints 2 and n becomes 3. 3 is not divisible by 2, so k becomes 3. Then it prints 3 and n becomes 1." } },
+    { code: "iffn", hl: [1, 2, 3, 4, 5],
+      say: "Why does Python need if statements at all? Could a function do the same job? Here is an attempt. if_ takes a condition and two values, and returns the first value when the condition is true and the second when it is false." },
+    { code: "iffn", hl: [7, 8],
+      say: "Now use it to avoid dividing by zero. Remember how a call expression is evaluated: every argument is worked out before the function is called.",
+      ask: { type: "mc", q: "What happens on line 8?", choices: ["It returns 0", "A ZeroDivisionError", "It returns 1"], answer: 1,
+        why: "All three arguments are evaluated before if_ runs, including 1 / x with x equal to 0. A function cannot skip evaluating one of its arguments. An if statement can skip a whole clause, and that is exactly why control statements exist." } },
     { code: "stuck", hl: [2, 3],
       say: "Finally, the bug every loop can have. Look at what changes inside this loop.",
       ask: { type: "mc", q: "What happens when you call stuck(2)?", choices: ["It prints 2 once and returns 2", "It prints 2 forever", "It returns 0"], answer: 1,
