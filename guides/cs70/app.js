@@ -72,7 +72,7 @@
   function confBar(t, where) {
     var cv = confOf(t.id), s = T(t.id);
     return '<div class="confbar" data-where="' + (where || "topic") + '"><span class="cq">How sure do you feel about ' + esc(t.title) + '?</span><span class="cbtns" role="group" aria-label="Your confidence">' +
-      CONF.map(function (c) { return '<button type="button" class="cbtn c' + c.v + '" data-act="conf" data-v="' + c.v + '" aria-pressed="' + (cv === c.v) + '" title="' + c.l + '">' + icon(c.v) + "<small>" + c.l + "</small></button>"; }).join("") +
+      CONF.map(function (c) { return '<button type="button" class="cbtn c' + c.v + '" data-act="conf" data-v="' + c.v + '" aria-pressed="' + (cv === c.v) + '" aria-label="' + c.l + '">' + icon(c.v) + '<small class="ctip" aria-hidden="true">' + c.l + "</small></button>"; }).join("") +
       '</span><button type="button" class="cbtn flagbtn" data-act="flagt" aria-pressed="' + !!s.flag + '">' + FLAG + "<small>" + (s.flag ? "Flagged for review" : "Flag for review") + "</small></button></div>";
   }
   function confHistory(t) {

@@ -307,7 +307,7 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 .chist{margin:-6px 0 0}
 .chist span{white-space:nowrap}
 .stages + .confbar{margin-top:24px}
-@media (max-width:560px){ .confbar .cq{width:100%} .cbtn small{display:none} .cbtn.flagbtn small{display:inline} }
+@media (max-width:560px){ .confbar .cq{width:100%} }
 
 /* ---------- read aloud: the sentence being read is highlighted ---------- */
 .narr .say .sent.now{background:var(--saffron-soft); box-shadow:0 0 0 3px var(--saffron-soft); border-radius:4px}
@@ -335,3 +335,10 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 .chist .arrow{color:var(--muted)}
 .btn .face{width:18px; height:18px; margin-right:2px}
 @media (prefers-reduced-motion:reduce){ .cbtn[aria-pressed="true"] .face{transition:none} }
+
+/* the level names show only as a tooltip, on hover or keyboard focus */
+.cbtns .cbtn{position:relative; padding:6px 8px}
+.cbtn .ctip{position:absolute; bottom:calc(100% + 7px); left:50%; transform:translate(-50%,3px); padding:5px 9px; border-radius:8px; background:var(--ink); color:var(--bg); font:600 12.5px/1 var(--body); white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .12s, transform .12s; z-index:5}
+.cbtn .ctip::after{content:""; position:absolute; top:100%; left:50%; margin-left:-5px; border:5px solid transparent; border-top-color:var(--ink)}
+.cbtn:hover .ctip,.cbtn:focus-visible .ctip{opacity:1; transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){ .cbtn .ctip{transition:none} }
