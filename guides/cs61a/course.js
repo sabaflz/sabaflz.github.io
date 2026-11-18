@@ -38,7 +38,7 @@ window.COURSE = {
       { id: "control", lecture: 3, title: "Control", blurb: "if, while, boolean operators and short-circuiting.", est: 40, testOut: ["python", "review"] },
       { id: "hof", lecture: 4, title: "Higher-order functions", blurb: "Functions as arguments and return values, lambda.", est: 50 },
       { id: "environments", lecture: 5, title: "Environments", blurb: "Frames, parents, and how names are looked up.", est: 50 },
-      { id: "abstraction", lecture: 6, title: "Abstraction", blurb: "Naming, splitting work into functions, and hiding detail.", est: 35 },
+      { id: "abstraction", lecture: 6, title: "Abstraction", blurb: "Lambda expressions, currying, and zero-argument functions.", est: 35 },
       { id: "function-examples", lecture: 7, title: "Function examples", blurb: "Worked problems that combine everything so far.", est: 30 }
     ]},
     { title: "Recursion and data", exam: "Midterm 2", topics: [
@@ -80,5 +80,41 @@ window.COURSE = {
       { id: "final-review", title: "Mixed review", blurb: "Mixed practice across every unit.", est: 60 }
     ]}
   ]
+};
+/* Official course materials for each topic, from the Fall 2026 calendar at
+   cs61a.org/fa26. These open in a new tab so the app stays where it is.
+   video = the lecture's YouTube playlist, slides = the PDF, page = lecture page. */
+window.COURSE.links = {
+  "functions": {"video": "https://www.youtube.com/watch?v=gNv81_4X0uU&list=PL6BsET-8jgYULSxiV2garZ0FxbnXR08MP&index=1", "slides": "https://cs61a.org/fa26/assets/lec/02-Functions.pdf", "page": "https://cs61a.org/fa26/lectures/02-functions/"},
+  "control": {"video": "https://www.youtube.com/watch?v=IPec2A7j2bY&list=PL6BsET-8jgYVCz97Y75GRXSWbb4sTpDIR", "slides": "https://cs61a.org/fa26/assets/lec/03-Control.pdf", "page": "https://cs61a.org/fa26/lectures/03-control/"},
+  "hof": {"video": "https://www.youtube.com/watch?v=pveIuZT0GJE&list=PL6BsET-8jgYXvcnnEX7x2_USaYug9xZFv", "slides": "https://cs61a.org/fa26/assets/lec/04-Higher-Order_Functions.pdf", "page": "https://cs61a.org/fa26/lectures/04-higher-order-functions/"},
+  "environments": {"video": "https://www.youtube.com/watch?v=1P2UgdAWwYg&list=PL6BsET-8jgYXTuSlJNYQS740YMCRHT79g", "slides": "https://cs61a.org/fa26/assets/lec/05-Environments.pdf", "page": "https://cs61a.org/fa26/lectures/05-environments/"},
+  "abstraction": {"video": "https://www.youtube.com/watch?v=PKlgS5eofNY&list=PL6BsET-8jgYVSwKGjsM9y1j8RQsRwtDy3", "slides": "https://cs61a.org/fa26/assets/lec/06-Functional_Abstraction.pdf", "page": "https://cs61a.org/fa26/lectures/06-abstraction/"},
+  "function-examples": {"video": "https://www.youtube.com/watch?v=guc-Q1x2vAY&list=PL6BsET-8jgYX6yuG9s7zO8GA1xHwHARFX", "slides": "https://cs61a.org/fa26/assets/lec/07-Midterm_1_Review_Part_1.pdf", "page": "https://cs61a.org/fa26/lectures/07-function-examples/"},
+  "recursion": {"video": "https://www.youtube.com/watch?v=B2_8t2jyvX0&list=PL6BsET-8jgYUUBHIgUAqjrMUoPCGQcYdl", "slides": "https://cs61a.org/fa26/assets/lec/09-Recursion.pdf", "page": "https://cs61a.org/fa26/lectures/09-recursion/"},
+  "tree-recursion": {"video": "https://www.youtube.com/watch?v=VYYkJ1OLXBw&list=PL6BsET-8jgYUUWPap4etQjZVWlWUeFxn0", "slides": "https://cs61a.org/fa26/assets/lec/10-Tree_Recursion.pdf", "page": "https://cs61a.org/fa26/lectures/10-tree-recursion/"},
+  "sequences": {"video": "https://www.youtube.com/watch?v=-Q45UcQ2XJk&list=PL6BsET-8jgYVfI7chdrXciKy8CP10tOcl", "slides": "https://cs61a.org/fa26/assets/lec/11-Sequences.pdf", "page": "https://cs61a.org/fa26/lectures/11-sequences/"},
+  "containers": {"video": "https://www.youtube.com/watch?v=aSqOiUZg7kQ&list=PL6BsET-8jgYW50w7isVJS3YumstvFX1LY", "slides": "https://cs61a.org/fa26/assets/lec/12-Containers.pdf", "page": "https://cs61a.org/fa26/lectures/12-containers/"},
+  "objects": {"video": "https://www.youtube.com/watch?v=Q-CewobDFZM&list=PLF3WGnKY88iQ", "slides": "https://cs61a.org/fa26/assets/lec/13-Objects.pdf", "page": "https://cs61a.org/fa26/lectures/13-objects/"},
+  "linked-lists": {"video": "https://www.youtube.com/watch?v=LbqHl278hcQ&list=PLO9sS0wuGDK0", "slides": "https://cs61a.org/fa26/assets/lec/14-Linked_Lists.pdf", "page": "https://cs61a.org/fa26/lectures/14-linked-lists/"},
+  "trees": {"video": "https://www.youtube.com/watch?v=pTPDmMH9dbs&list=PLCWEE1T0BmmA", "slides": "https://cs61a.org/fa26/assets/lec/15-Trees.pdf", "page": "https://cs61a.org/fa26/lectures/15-trees/"},
+  "problem-solving": {"slides": "https://cs61a.org/fa26/assets/lec/17-Problem_Solving.pdf", "page": "https://cs61a.org/fa26/lectures/17-problem-solving/"},
+  "mutation": {"video": "https://www.youtube.com/watch?v=qwO1AMKpKDY&list=PLPrA7aKz8SYg", "slides": "https://cs61a.org/fa26/assets/lec/18-Mutation.pdf", "page": "https://cs61a.org/fa26/lectures/18-mutation/"},
+  "classes": {"video": "https://www.youtube.com/watch?v=XdRZkeCRXs4&list=PL6BsET-8jgYVz2dLlWRsktOrtqO8wWRsy", "slides": "https://cs61a.org/fa26/assets/lec/19-Classes.pdf", "page": "https://cs61a.org/fa26/lectures/19-classes/"},
+  "attributes": {"video": "https://www.youtube.com/watch?v=mimP7cNrSHA&list=PL6BsET-8jgYVhCKr4EHUE9mw9kcH7Kg7Y", "slides": "https://cs61a.org/fa26/assets/lec/20-Attributes.pdf", "page": "https://cs61a.org/fa26/lectures/20-attributes/"},
+  "inheritance": {"video": "https://www.youtube.com/watch?v=Bqpe1iyq5vE&list=PLH902kY1ixw8", "slides": "https://cs61a.org/fa26/assets/lec/21-Inheritance.pdf", "page": "https://cs61a.org/fa26/lectures/21-inheritance/"},
+  "iterators": {"video": "https://www.youtube.com/watch?v=On-kFyFp8HY&list=PL6BsET-8jgYW7stiut93PHxGP6_QgBzVQ", "slides": "https://cs61a.org/fa26/assets/lec/22-Iterators.pdf", "page": "https://cs61a.org/fa26/lectures/22-iterators/"},
+  "generators": {"video": "https://www.youtube.com/watch?v=DyXPnQuaa0w&list=PL6BsET-8jgYXnY-7vDJXIv2N5xW98rJTZ", "slides": "https://cs61a.org/fa26/assets/lec/23-Generators.pdf", "page": "https://cs61a.org/fa26/lectures/23-generators/"},
+  "efficiency": {"video": "https://www.youtube.com/watch?v=DWhsOSHjY98&list=PLEIWw8-Yt9yo", "slides": "https://cs61a.org/fa26/assets/lec/24-Efficiency.pdf", "page": "https://cs61a.org/fa26/lectures/24-efficiency/"},
+  "object-examples": {"video": "https://www.youtube.com/watch?v=tpfpNR3u4zk&list=PLKBLCkthVkYU", "slides": "https://cs61a.org/fa26/assets/lec/25-Data_Examples.pdf", "page": "https://cs61a.org/fa26/lectures/25-object-examples/"},
+  "functional-programming": {"video": "https://www.youtube.com/watch?v=6kL4Hf4tMOg&list=PLae30RgoM-C4", "slides": "https://cs61a.org/fa26/assets/lec/27-Functional_Programming.pdf", "page": "https://cs61a.org/fa26/lectures/27-functional-programming/"},
+  "adts": {"video": "https://www.youtube.com/watch?v=ANuCSNT9Iq0&list=PLZnD6lXEx3MI", "slides": "https://cs61a.org/fa26/assets/lec/28-Algebraic_Data_Types.pdf", "page": "https://cs61a.org/fa26/lectures/28-algebraic-data-types/"},
+  "immutable-data": {"video": "https://www.youtube.com/watch?v=8RqnvcHEsW4&list=PLFUbuZx7kyQU", "slides": "https://cs61a.org/fa26/assets/lec/29-Immutable-Data.pdf", "page": "https://cs61a.org/fa26/lectures/29-immutable-data/"},
+  "interpreters": {"video": "https://www.youtube.com/watch?v=eWdsyVIALQ8&list=PLTyzwiLR_TYg", "slides": "https://cs61a.org/fa26/assets/lec/30-Interpreters.pdf", "page": "https://cs61a.org/fa26/lectures/30-interpreters/"},
+  "browsers": {"video": "https://www.youtube.com/watch?v=F14KIs5T_Kw&list=PLfjnIJLIo0e4", "slides": "https://cs61a.org/fa26/assets/lec/32-Browsers.pdf", "page": "https://cs61a.org/fa26/lectures/32-browsers/"},
+  "applications": {"slides": "https://cs61a.org/fa26/assets/lec/33-Applications.pdf", "page": "https://cs61a.org/fa26/lectures/33-applications/"},
+  "sql": {"video": "https://www.youtube.com/watch?v=lombSNkvRR4&list=PL6BsET-8jgYXiGEfLQkDfkGOBqOfb_up7", "slides": "https://cs61a.org/fa26/assets/lec/34-SQL.pdf", "page": "https://cs61a.org/fa26/lectures/34-sql/"},
+  "tables": {"video": "https://www.youtube.com/watch?v=iVhtiPdOSOU&list=PL6BsET-8jgYXDgyR3XJj9T8XS5nDp2nt6"},
+  "aggregation": {"video": "https://www.youtube.com/watch?v=gkAZMbzO5L8&list=PL6BsET-8jgYXazaYcmadXIjJApjL-DFET"}
 };
 window.LESSONS = window.LESSONS || {};

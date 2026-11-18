@@ -107,6 +107,15 @@
     return '<p class="crumb"><a href="#/">Course map</a> / <a href="#/t/' + t.id + '">' + esc(t.title) + "</a>" + (stage ? " / " + NAMES[stage] : "") + "</p>";
   }
 
+  /* A quiet line of links to the official lecture materials. They open in a new tab. */
+  function sources(t, lead) {
+    var k = (C.links || {})[t.id]; if (!k) return "";
+    var parts = [["video", "Lecture videos"], ["slides", "Slides"], ["page", "Lecture page"]].filter(function (p) { return k[p[0]]; }).map(function (p) {
+      return '<a href="' + esc(k[p[0]]) + '" target="_blank" rel="noopener" title="Opens in a new tab">' + p[1] + '<span aria-hidden="true"> \u2197</span><span class="sr"> (opens in a new tab)</span></a>';
+    });
+    return parts.length ? '<p class="sources"><span>' + esc(lead) + "</span>" + parts.join("") + "</p>" : "";
+  }
+
   /* A question (multiple choice or typed). `a` is the saved answer, if any. */
   function questionHTML(q, a, ctx, n) {
     var h = '<p class="q">' + esc(q.q) + "</p>";
@@ -171,7 +180,7 @@
     var first = level() === "review" ? "check" : "learn", suggested = null;
     STAGES.slice(STAGES.indexOf(first)).concat(STAGES).forEach(function (st) { if (!suggested && has(t, st) && !stageDone(t, st)) suggested = st; });
     var h = crumb(t) + '<p class="eyebrow">' + esc(t.unit || "") + "</p><h1>" + esc(t.title) + '</h1><p class="lede">' + esc(t.blurb) + '</p><p class="meta" style="margin-top:14px">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") +
-      (l ? cap(dur(topicMin(t))) + " for the lesson, check and exam-style problems" : "Planned: " + dur(topicMin(t))) + (has(t, "practice") ? " · Practice is extra" : "") + '</p><ol class="stages">';
+      (l ? cap(dur(topicMin(t))) + " for the lesson, check and exam-style problems" : "Planned: " + dur(topicMin(t))) + (has(t, "practice") ? " · Practice is extra" : "") + "</p>" + sources(t, "From the course" + (t.lecture ? ", Lecture " + t.lecture : "") + ":") + '<ol class="stages">';
     STAGES.forEach(function (st) {
       var ok = has(t, st), done = stageDone(t, st), label = "Start";
       if (st === "learn" && ok) label = s.lessonDone ? "Replay" : s.step ? "Continue" : "Start";
@@ -224,7 +233,7 @@
       '<button class="btn small quiet" type="button" data-act="back"' + (i === 0 ? " disabled" : "") + ">Back</button>" +
       (last ? '<a class="btn small primary" href="#/t/' + t.id + '/check">Go to the check questions</a>'
             : '<button class="btn small primary" type="button" data-act="next"' + (blocked ? ' disabled title="Answer the question to continue"' : "") + ">Next</button>") +
-      "</div></div>";
+      "</div></div>" + sources(t, "Want the original? Lecture " + t.lecture + ":");
     view.innerHTML = h;
     if (!quiet) speak(st.say);
   }
