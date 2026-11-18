@@ -119,7 +119,7 @@ window.LESSONS["proof-techniques"] = {
       say: "Theorem 3.1: if d divides n and n is odd, then d is odd. A direct proof is awkward: knowing n is odd tells you n is 2k plus 1, but nothing useful about d. The contrapositive is: if d is even, then n is even. Now you start from something you can write down.",
       ask: { type: "mc", q: "What is the contrapositive of \"if n² is odd, then n is odd\"?",
         choices: ["If n is odd, then n² is odd.", "If n is even, then n² is even.", "If n² is even, then n is even."], answer: 1,
-        why: "Negate both parts and swap them: ¬(n odd) ⟹ ¬(n² odd), that is, n even ⟹ n² even. "If n is odd, then n² is odd" is the converse." } },
+        why: "Negate both parts and swap them: ¬(n odd) ⟹ ¬(n² odd), that is, n even ⟹ n² even. \"If n is odd, then n² is odd\" is the converse." } },
     { board: "contra", hl: [8, 9],
       say: "Assume d is even, so d is 2k. Since d divides n, n is d times l. Substitute and you get n equals 2 times k l, which is even. Notice the first line of the proof names the technique. That tells your reader, and your grader, where the proof is going.",
       tip: "Write \"We proceed by contraposition\" and then state the contrapositive you are proving. If you skip that, a correct proof can look like it assumed the wrong thing." },
