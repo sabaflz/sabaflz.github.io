@@ -155,7 +155,7 @@ window.LESSONS["logic"] = {
       say: "Every implication has relatives. The contrapositive, not Q implies not P, swaps the two parts and negates both. The converse, Q implies P, only swaps them. The inverse, not P implies not Q, only negates them. The discussion sheet uses all three names.",
       ask: { type: "mc", q: "What is the contrapositive of \"if you passed the class, you received a certificate\"?",
         choices: ["If you received a certificate, you passed the class.", "If you did not receive a certificate, you did not pass the class.", "If you did not pass the class, you did not receive a certificate."], answer: 1,
-        why: "Contrapositive: ¬Q ⟹ ¬P. The first choice is the converse, and the third is the inverse." } },
+        why: "Contrapositive: ¬Q ⟹ ¬P. "If you received a certificate, you passed" is the converse, and "If you did not pass, you did not receive a certificate" is the inverse." } },
     { board: "relatives", hl: [6, 7, 8, 9, 10],
       say: "Look at the table. P implies Q and its contrapositive agree in every row, so they are equivalent. The converse differs in rows two and three, so it is not. This is the single most common confusion in the course. An implication can be true while its converse is false: if n is divisible by 4 then n is even, but 6 is even and not divisible by 4.",
       tip: "Proving the contrapositive proves the original. Proving the converse proves nothing about the original. Next lecture uses this as a proof technique." },
