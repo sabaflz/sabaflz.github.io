@@ -104,6 +104,8 @@ p{margin:0}
 .code .ln.hl{background:rgba(244,183,28,.16); border-left-color:#F4B71C}
 .side{padding:18px; border-left:1.5px solid var(--line); display:flex; flex-direction:column; gap:14px; min-width:0}
 .side h4{font:500 12px/1 var(--mono); text-transform:uppercase; letter-spacing:.06em; color:var(--muted); margin:0 0 8px}
+.names{display:flex; flex-direction:column; gap:6px}
+.names .frame small{color:var(--ink)}
 .frames{display:flex; flex-direction:column-reverse; gap:6px}
 .frame{border:1.5px solid var(--line); border-radius:10px; padding:8px 12px; font:500 14px/1.4 var(--mono); display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap; background:var(--surface-2)}
 .frame.top{border-color:var(--saffron); background:var(--saffron-soft)}
