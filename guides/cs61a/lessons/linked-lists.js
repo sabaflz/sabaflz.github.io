@@ -1,0 +1,121 @@
+/*
+  lessons/linked-lists.js: Lecture 14, Linked lists.
+  Follows the lecture videos: the Link data class with () as the empty list,
+  checking with isinstance before using first and rest, recursion and
+  iteration over a linked list, and building new linked lists.
+  Same shape as lessons/recursion.js, plus `env`.
+
+  The Link class the problems run against is defined in
+  ../cs61a-mt3-practice/problems.js (GLOBAL_SETUP), along with make_link and
+  to_list, which the hidden tests use.
+*/
+window.LESSONS["linked-lists"] = {
+  minutes: 16,
+  snippets: {
+    cls: "from dataclasses import dataclass\n\n@dataclass\nclass Link:\n    first: object\n    rest: object = ()     # another Link, or () for empty",
+    build: "s = Link(3, Link(4, Link(5)))\n\ns.first\ns.rest\ns.rest.first\ns.rest.rest.first\ns.rest.rest.rest",
+    longer: "s = Link(3, Link(4, Link(5)))\nt = Link(2, s)\n\nprint(t)\nprint(s)",
+    check: "def first_or_none(s):\n    if isinstance(s, Link):\n        return s.first\n    else:\n        return None",
+    sumrec: "def sum_link(s):\n    if not isinstance(s, Link):\n        return 0\n    return s.first + sum_link(s.rest)\n\nsum_link(Link(3, Link(4, Link(5))))",
+    sumiter: "def sum_link(s):\n    total = 0\n    while isinstance(s, Link):\n        total = total + s.first\n        s = s.rest\n    return total",
+    rangerec: "def range_link(start, end):\n    if start >= end:\n        return ()\n    return Link(start, range_link(start + 1, end))\n\nrange_link(3, 6)",
+    rangeiter: "def range_link(start, end):\n    s = ()\n    k = end - 1\n    while k >= start:\n        s = Link(k, s)\n        k = k - 1\n    return s",
+    extend: "def extend_link(s, t):\n    if not isinstance(s, Link):\n        return t\n    return Link(s.first, extend_link(s.rest, t))",
+    mapfilter: "def map_link(f, s):\n    if not isinstance(s, Link):\n        return ()\n    return Link(f(s.first), map_link(f, s.rest))\n\ndef filter_link(f, s):\n    if not isinstance(s, Link):\n        return ()\n    rest = filter_link(f, s.rest)\n    if f(s.first):\n        return Link(s.first, rest)\n    return rest"
+  },
+  steps: [
+    { code: "cls",
+      say: "Python's built-in list is one way to store a sequence. A linked list is another, and it is a standard structure across computer science. Python has no built-in one, so we make our own type for it. The definition is recursive: a linked list is either empty, or it is a first value together with the rest of the list, and the rest is itself a linked list." },
+    { code: "cls", hl: [3, 4, 5, 6],
+      say: "Here is the type, as a data class. A Link is one non-empty linked list. It has two attributes: first, which is one item, and rest, which is the linked list of everything after it. The empty linked list is represented by the empty tuple, written as a pair of parentheses with nothing inside. Line 6 makes that the default, so a link with nothing after it can be written with one argument.",
+      syntax: "Python notes: rest: object = () gives the attribute a default value. If you call Link with only one argument, rest is filled in as ()." },
+    { code: "build", hl: [1], env: [["s", "(3 4 5)"]],
+      say: "To store 3, 4, 5, you nest three links. Read line 1 from the inside out: Link(5) is the list holding just 5. Link(4, that) is the list 4, 5. Link(3, that) is the whole thing. When a linked list is printed, it is shown compactly in parentheses with no commas: (3 4 5)." },
+    { code: "build", hl: [3, 4, 5], env: [["s", "(3 4 5)"], ["s.rest", "(4 5)"]],
+      say: "s.first is the first item, 3. s.rest is not the second item. It is a whole linked list: everything after the first. To reach the second item, take the rest and then its first.",
+      ask: { type: "type", q: "What is s.rest.rest.first?", answer: "5",
+        why: "s.rest is (4 5). Its rest is (5). The first of that is 5." } },
+    { code: "build", hl: [7], env: [["s", "(3 4 5)"], ["s.rest.rest.rest", "()"]],
+      say: "Go one rest further and you run out of links. The value is the empty tuple, which is the empty linked list. It has no first and no rest, so asking it for either one is an error. That fact shapes every function you will write on linked lists." },
+    { code: "longer", hl: [2, 4, 5], out: ["(2 3 4 5)", "(3 4 5)"],
+      say: "Making a longer list is cheap. Line 2 builds one new link whose rest is the existing list s. Nothing is copied, and s is not changed. t is (2 3 4 5), and s is still (3 4 5), sitting inside t as its rest.",
+      ask: { type: "type", q: "What is t.rest.first?", answer: "3",
+        why: "t.rest is the list s, which is (3 4 5). Its first is 3." } },
+    { code: "check", hl: [2, 3],
+      say: "Rule one for linked lists: before you use first or rest, check that the list is not empty. The check is isinstance(s, Link). If it is true, s is a link and has both attributes. If it is false, s is the empty tuple. You will see this test at the top of nearly every linked list function." },
+    { code: "sumrec", hl: [2, 3, 4],
+      say: "Recursion fits linked lists exactly, because the rest is always a smaller linked list. The base case is the empty list. The recursive case uses first, and makes the recursive call on rest. Compare this with total from the Sequences lesson: s[0] became s.first, and s[1:] became s.rest.",
+      ask: { type: "type", q: "What does line 6 return?", answer: "12",
+        why: "It is 3 + (4 + (5 + 0)), which is 12." } },
+    { code: "sumiter", hl: [3, 4, 5],
+      say: "The same function with a while loop. The key line is s = s.rest. It does not change the linked list. It changes what the name s refers to, moving it one link down the chain. The loop ends when s has moved past the last link and become the empty tuple. Both versions give 12, but they add in a different order: the loop adds 3 first, and the recursion adds 5 first." },
+    { code: "rangerec", hl: [4],
+      say: "Rule two: when you build a linked list, the second argument to Link must be a linked list. That is either (), or another Link, or a call that returns one. In a recursive function it is nearly always the recursive call. range_link builds the list of whole numbers from start up to, but not including, end.",
+      ask: { type: "mc", q: "What does range_link(3, 6) print as?", choices: ["(3 4 5)", "(3 4 5 6)", "(5 4 3)"], answer: 0,
+        why: "Like range, it stops before the end. The first call makes Link(3, ...) and leaves the rest to the recursive call on 4 and 6." } },
+    { code: "rangeiter", hl: [2, 3, 5],
+      say: "With a loop, you have to build from the back. A link cannot be made until its rest exists, so the last link has to be made first. This version starts with the empty list and puts numbers on the front, counting down.",
+      ask: { type: "mc", q: "For range_link(3, 6), which number is put into a Link first?", choices: ["3", "5", "6"], answer: 1,
+        why: "k starts at end - 1, which is 5. The loop makes (5), then (4 5), then (3 4 5). The recursive version reads front to back, but the links are still created back to front, because the inner call has to finish first." } },
+    { code: "extend", hl: [2, 3, 4],
+      say: "extend_link returns a linked list with all the items of s followed by all the items of t. Think recursively: the result starts with the first of s. Its rest is everything else in s followed by t, which is the same problem on a shorter s.",
+      ask: { type: "mc", q: "Why does the base case return t and not ()?",
+        choices: ["Because when s is empty, all of s followed by all of t is just t", "Because () would be an error", "It should return ()"], answer: 0,
+        why: "The base case is reached when s has no items left. Nothing followed by t is t. Returning () would throw away the whole second list." } },
+    { code: "mapfilter", hl: [1, 2, 3, 4],
+      say: "Built-in lists have comprehensions. Linked lists do not, so we write functions that do the same jobs. map_link applies f to every item and builds a linked list of the results." },
+    { code: "mapfilter", hl: [6, 7, 8, 9, 10, 11, 12],
+      say: "filter_link keeps only the items for which f returns a true value. It filters the rest first and gives that a name. Then either the first item passes, and a new link is put in front, or it does not pass, and the filtered rest is returned as it is.",
+      ask: { type: "mc", q: "square squares a number and odd tests for odd numbers. What does map_link(square, filter_link(odd, range_link(1, 6))) print as?",
+        choices: ["(1 9 25)", "(1 4 9 16 25)", "(1 3 5)"], answer: 0,
+        why: "Work from the inside. The range is (1 2 3 4 5). Filtering for odd leaves (1 3 5). Squaring each gives (1 9 25). It is the linked list version of [x * x for x in range(1, 6) if odd(x)]." } },
+    { code: "mapfilter",
+      say: "To sum up: a linked list is () or a Link with a first and a rest, and the rest is a linked list. Check isinstance(s, Link) before touching first or rest. To build one, the second argument to Link must be a linked list, usually a recursive call. Recursion reads from the front, and a loop builds from the back." }
+  ],
+
+  check: [
+    { type: "type", code: "s = Link(7, Link(8, Link(9)))\ns.rest.first",
+      q: "What is the value of the last line?", answer: "8",
+      why: "s.rest is the list (8 9), and its first is 8." },
+    { type: "mc", code: "s = Link(7, Link(8))\ns.rest.rest",
+      q: "What is the value of the last line?", choices: ["8", "()", "An error"], answer: 1,
+      why: "s.rest is (8). That link was made with one argument, so its rest is the default: the empty tuple." },
+    { type: "mc", code: "s = Link(1, Link(2))\nt = Link(0, s)\nu = Link(9, s.rest)",
+      q: "What do t and u print as?", choices: ["(0 1 2) and (9 2)", "(0 1 2) and (9 1 2)", "(0) and (9)"], answer: 0,
+      why: "t puts 0 in front of all of s. u puts 9 in front of s.rest, which is (2). None of this changes s." },
+    { type: "mc",
+      q: "In a function that takes a linked list s, when is it safe to write s.first?",
+      choices: ["Always", "Only after checking isinstance(s, Link)", "Only inside a while loop"], answer: 1,
+      why: "s might be the empty tuple, which has no first. The isinstance check is what tells you s is a link." },
+    { type: "type", code: "def count(s):\n    if not isinstance(s, Link):\n        return 0\n    return 1 + count(s.rest)\n\ncount(Link(4, Link(4, Link(4, Link(4)))))",
+      q: "What is the value of the last line?", answer: "4",
+      why: "Each link adds 1 and the empty list adds 0. There are four links." },
+    { type: "mc", code: "def mystery(s):\n    result = ()\n    while isinstance(s, Link):\n        result = Link(s.first, result)\n        s = s.rest\n    return result",
+      q: "What does mystery(Link(1, Link(2, Link(3)))) print as?", choices: ["(1 2 3)", "(3 2 1)", "()"], answer: 1,
+      why: "Each pass puts the current item on the front of result. 1 goes on first, then 2 in front of it, then 3 in front of that. Building from the front with a loop reverses the order." }
+  ],
+
+  deepen: [
+    { id: "ll_count", title: "Count matches", source: "Original question",
+      desc: "Return how many items in the linked list s are equal to x. The Link class is already defined for you, and the empty linked list is ().",
+      starter: "def count_link(s, x):\n    \"\"\"Return the number of items in s that equal x.\n    >>> count_link(Link(2, Link(7, Link(2))), 2)\n    2\n    >>> count_link(Link(2, Link(7, Link(2))), 5)\n    0\n    >>> count_link((), 1)\n    0\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
+      solution: "def count_link(s, x):\n    if not isinstance(s, Link):\n        return 0\n    if s.first == x:\n        return 1 + count_link(s.rest, x)\n    return count_link(s.rest, x)",
+      tests: "assert count_link(make_link([2, 7, 2]), 2) == 2\nassert count_link(make_link([2, 7, 2]), 5) == 0\nassert count_link((), 1) == 0\nassert count_link(make_link([3]), 3) == 1\nassert count_link(make_link([1, 1, 1, 1]), 1) == 4\nassert count_link(make_link(['a', 'b', 'a']), 'a') == 2",
+      hints: ["Start with the empty case. How many matches are in a list with no items?", "For a link, the answer is the number of matches in s.rest, plus 1 if s.first equals x.", "Check isinstance(s, Link) first. Then return (1 if s.first == x else 0) + count_link(s.rest, x)."],
+      explain: "Same shape as sum_link: an empty base case, then the first item combined with a recursive call on the rest. A while loop with s = s.rest works just as well here." },
+    { id: "ll_every_other", title: "Every other item", source: "Original question",
+      desc: "Return a new linked list containing the first item of s, the third, the fifth, and so on. Do not change s.",
+      starter: "def every_other(s):\n    \"\"\"Return a linked list of the items at even positions of s: 0, 2, 4, ...\n    >>> print(every_other(Link(1, Link(2, Link(3, Link(4, Link(5)))))))\n    (1 3 5)\n    >>> print(every_other(Link(1, Link(2))))\n    (1)\n    >>> every_other(())\n    ()\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
+      solution: "def every_other(s):\n    if not isinstance(s, Link):\n        return ()\n    if not isinstance(s.rest, Link):\n        return Link(s.first)\n    return Link(s.first, every_other(s.rest.rest))",
+      tests: "assert to_list(every_other(make_link([1, 2, 3, 4, 5]))) == [1, 3, 5]\nassert to_list(every_other(make_link([1, 2]))) == [1]\nassert every_other(()) == ()\nassert to_list(every_other(make_link([9]))) == [9]\nassert to_list(every_other(make_link([1, 2, 3, 4]))) == [1, 3]\ns = make_link([1, 2, 3])\nevery_other(s)\nassert to_list(s) == [1, 2, 3], 'the original linked list should not be changed'",
+      hints: ["The result starts with s.first. What list should its rest be built from?", "After keeping the first item you skip one, so the recursive call is on s.rest.rest. But you can only write s.rest.rest if s.rest is a link.", "Three cases: s is empty, return (). s.rest is empty, return Link(s.first). Otherwise return Link(s.first, every_other(s.rest.rest))."],
+      explain: "Stepping two links at a time means two things could be empty, so there are two checks. Every attribute access is guarded by an isinstance test on the thing it is taken from." },
+    { id: "ll_insert_sorted", title: "Insert in order", source: "Original question",
+      desc: "The items of the linked list s are numbers in increasing order. Return a new linked list with the number x added in the right place, so the result is still in increasing order. Do not change s.",
+      starter: "def insert_sorted(s, x):\n    \"\"\"Return a linked list like s with x inserted in order.\n    >>> print(insert_sorted(Link(1, Link(4, Link(9))), 5))\n    (1 4 5 9)\n    >>> print(insert_sorted(Link(1, Link(4, Link(9))), 0))\n    (0 1 4 9)\n    >>> print(insert_sorted((), 3))\n    (3)\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
+      solution: "def insert_sorted(s, x):\n    if not isinstance(s, Link) or x <= s.first:\n        return Link(x, s)\n    return Link(s.first, insert_sorted(s.rest, x))",
+      tests: "assert to_list(insert_sorted(make_link([1, 4, 9]), 5)) == [1, 4, 5, 9]\nassert to_list(insert_sorted(make_link([1, 4, 9]), 0)) == [0, 1, 4, 9]\nassert to_list(insert_sorted((), 3)) == [3]\nassert to_list(insert_sorted(make_link([1, 4, 9]), 10)) == [1, 4, 9, 10]\nassert to_list(insert_sorted(make_link([2, 2]), 2)) == [2, 2, 2]\ns = make_link([1, 4])\ninsert_sorted(s, 3)\nassert to_list(s) == [1, 4], 'the original linked list should not be changed'",
+      hints: ["When does x belong at the very front? There are two situations.", "x goes at the front if s is empty, or if x is no bigger than s.first. In both cases the answer is Link(x, s).", "Otherwise keep s.first at the front and insert x somewhere in the rest: Link(s.first, insert_sorted(s.rest, x))."],
+      explain: "Link(x, s) reuses all of s as the rest without copying it, which is the cheap trick from the lesson. The or works because Python only looks at s.first when the isinstance check has already shown s is a link." }
+  ]
+};

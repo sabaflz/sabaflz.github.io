@@ -44,11 +44,11 @@ window.COURSE = {
     { title: "Recursion and data", exam: "Midterm 2", topics: [
       { id: "recursion", lecture: 9, title: "Recursion", blurb: "Base cases, recursive calls, and trusting the smaller problem.", est: 45, pool: ["Recursion"] },
       { id: "tree-recursion", lecture: 10, title: "Tree recursion", blurb: "More than one recursive call: counting, partitions, paths.", est: 60, pool: ["Recursion"] },
-      { id: "sequences", lecture: 11, title: "Sequences", blurb: "Lists, ranges, slicing and list comprehensions.", est: 45, pool: ["Lists & Dicts"], testOut: ["review"] },
-      { id: "containers", lecture: 12, title: "Containers", blurb: "Slicing, strings, sum, max, all and any, grids, and dictionaries.", est: 40, pool: ["Lists & Dicts"], testOut: ["review"] },
-      { id: "objects", lecture: 13, title: "Objects", blurb: "Dictionary comprehensions, objects and methods, data classes, and tracking state in tree recursion.", est: 35, pool: ["Recursion"] },
-      { id: "linked-lists", lecture: 14, title: "Linked lists", blurb: "The Link class and recursion over linked lists.", est: 50, pool: ["Linked Lists"] },
-      { id: "trees", lecture: 15, title: "Trees", blurb: "label, branches, and recursion over trees.", est: 55, pool: ["Trees"] },
+      { id: "sequences", lecture: 11, title: "Sequences", blurb: "Lists, for statements, ranges, list comprehensions, and recursion on lists.", est: 45, pool: ["Lists & Dicts"], testOut: ["review"] },
+      { id: "containers", lecture: 12, title: "Containers", blurb: "Slicing, strings, and sum, max, all and any.", est: 40, pool: ["Lists & Dicts"], testOut: ["review"] },
+      { id: "objects", lecture: 13, title: "Objects", blurb: "Dictionaries, objects and methods, data classes, tuples, and tracking state in tree recursion.", est: 35, pool: ["Recursion"] },
+      { id: "linked-lists", lecture: 14, title: "Linked lists", blurb: "The Link class, the empty list (), and recursion over linked lists.", est: 50, pool: ["Linked Lists"] },
+      { id: "trees", lecture: 15, title: "Trees", blurb: "The Tree class, leaves and branches, and recursion over trees.", est: 55, pool: ["Trees"] },
       { id: "problem-solving", lecture: 17, title: "Problem solving", blurb: "How to attack an unfamiliar exam problem step by step.", est: 30 }
     ]},
     { title: "Mutation and objects", exam: "Midterm 3", topics: [

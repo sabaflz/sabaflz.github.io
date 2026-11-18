@@ -3,17 +3,19 @@
   Lists, indexing, for statements, range, list comprehensions, and recursion
   over a list. Same shape as lessons/recursion.js, plus `env`.
 
-  Written from my own guides and the course's usual treatment of this topic;
-  I could not open the Fall 2026 deck for this lecture. Check it against the
-  slides linked on the topic page.
+  Coverage follows the lecture videos for this topic: the in operator, for
+  statements and unpacking, ranges, list comprehensions, and lists with
+  recursion (first element plus the rest).
 */
 window.LESSONS.sequences = {
-  minutes: 14,
+  minutes: 16,
   snippets: {
     basics: "digits = [8, 0, 8, 1]\n\ndigits[0]\ndigits[3]\ndigits[-1]\nlen(digits)",
     nested: "x = [7, [1, [9, 4], 6], 5]\n\nx[1]\nx[1][1]\nx[1][1][0]",
     ops: "a = [1, 2]\nb = a + [3]\nc = a * 2\n\n2 in a\n5 in a",
     forloop: "def count(s, value):\n    total = 0\n    for item in s:\n        if item == value:\n            total = total + 1\n    return total\n\ncount([1, 2, 1, 2, 1], 1)",
+    unpack: "pairs = [[1, 2], [2, 2], [3, 2], [4, 4]]\n\nsame = 0\nfor x, y in pairs:\n    if x == y:\n        same = same + 1",
+    cansum: "def can_sum(s, n):\n    if n == 0:\n        return True\n    if not s:\n        return False\n    return can_sum(s[1:], n - s[0]) or can_sum(s[1:], n)\n\ncan_sum([4, 2, 5], 7)",
     rng: "list(range(4))\nlist(range(2, 6))\n\ntotal = 0\nfor k in range(1, 5):\n    total = total + k",
     comp: "nums = [1, 2, 3, 4]\n\n[x * x for x in nums]\n[x for x in nums if x % 2 == 0]\n[x * 10 for x in nums if x > 2]",
     slice: "s = [10, 20, 30, 40]\n\ns[1:]\ns[:2]\ns[1:3]",
@@ -47,11 +49,15 @@ window.LESSONS.sequences = {
       say: "This function counts how many times a value appears. The body runs once per element. Compare it with a while loop: no index, no k = k + 1, and no way to get stuck.",
       ask: { type: "type", q: "What does count([1, 2, 1, 2, 1], 1) return?", answer: "3",
         why: "The loop looks at all five elements. Three of them equal 1, so total is increased three times." } },
+    { code: "unpack", hl: [4],
+      say: "When every element of a list is itself a short list of the same length, a for statement can name the parts directly. Line 4 reads: for each pair, call its two parts x and y. This is called unpacking, and it works just like assigning two names at once.",
+      ask: { type: "type", q: "After the loop, what is same?", answer: "2",
+        why: "The pairs are checked one at a time. [2, 2] and [4, 4] have equal parts, so same is increased twice." } },
     { code: "rng", hl: [1, 2],
       say: "A range is a sequence of whole numbers in a row. range(4) is 0, 1, 2, 3. It starts at 0 and stops before 4. range(2, 6) starts at 2 and stops before 6. The stopping number is never included.",
       syntax: "Python notes: wrapping a range in list(...) turns it into a list so you can see its elements." },
     { code: "rng", hl: [4, 5, 6],
-      say: "Ranges are mostly used with for, to repeat something a set number of times or to walk through numbers.",
+      say: "Ranges are mostly used with for, to repeat something a set number of times or to walk through numbers. When you only want the repetition and never use the number, the convention is to name it with a single underscore: for _ in range(3).",
       ask: { type: "type", q: "After the loop on lines 5 and 6, what is total?", answer: "10",
         why: "range(1, 5) is 1, 2, 3, 4. Their sum is 10. The 5 is not included." } },
     { code: "comp", hl: [3],
@@ -74,6 +80,10 @@ window.LESSONS.sequences = {
       say: "Each call peels off the first element and hands the rest to the next call, until the list is empty.",
       ask: { type: "type", q: "What does total([4, 6, 2]) return?", answer: "12",
         why: "It is 4 + (6 + (2 + 0)), which is 12." } },
+    { code: "cansum", hl: [6],
+      say: "Tree recursion works on lists too, and the choice is nearly always the same one: the first element is either used or it is not. can_sum asks whether some of the numbers in s add up to exactly n. If the first number is used, the rest must add up to n minus that number. If it is not used, the rest must add up to n.",
+      ask: { type: "mc", q: "What does can_sum([4, 2, 5], 7) return?", choices: ["True", "False", "7"], answer: 0,
+        why: "Skipping the 4 and using 2 and 5 gives 7. The recursion tries every combination of use and skip, and or reports whether any of them worked." } },
     { code: "comp",
       say: "To sum up: a list is an ordered collection, indexed from 0, with negative indexes counting from the end. A for statement visits every element. A range is a run of whole numbers that stops before its end. A list comprehension builds a new list, filtering first and then transforming. And first element plus the rest is how you recurse on a list." }
   ],

@@ -1,13 +1,17 @@
 /*
   lessons/objects.js: Lecture 13, Objects.
-  Follows the Fall 2026 deck: dictionary comprehensions, what an object is,
-  data classes, and more tree recursion (tracking state with extra
-  arguments, and choosing by the first decision).
+  Follows the Fall 2026 deck and lecture videos: dictionaries and dictionary
+  comprehensions, what an object is, data classes, tuples, and more tree
+  recursion (tracking state with extra arguments, choosing by the first
+  decision).
   Same shape as lessons/recursion.js, plus `env` and `tree`.
 */
 window.LESSONS.objects = {
-  minutes: 15,
+  minutes: 18,
   snippets: {
+    dicts: "ages = {'ada': 36, 'alan': 41}\n\nages['ada']\nages['grace'] = 45\nlen(ages)\n'alan' in ages\n41 in ages",
+    dloop: "ages = {'ada': 36, 'alan': 41}\n\nfor name in ages:\n    print(name, ages[name])\n\nlist(ages.values())",
+    tuples: "t = (3, 4, 5)\n\nt[0]\nt[1:]\nx, y = 10, 20\n\nplaces = {(0, 0): 'origin', (3, 4): 'cafe'}\nplaces[(3, 4)]",
     dcomp: "words = ['fig', 'kiwi', 'banana']\n\n{w: len(w) for w in words}\n{w: len(w) for w in words if len(w) > 3}",
     nested: "def by_length(words, lengths):\n    return {n: [w for w in words if len(w) == n] for n in lengths}\n\nby_length(['fig', 'kiwi', 'plum'], [3, 4, 5])",
     obj: "d = {3: 9, 4: 16}\n\nd.get(4)\nd.get(7)\ntype(d)\n\n'hello'.upper()\n[5, 1, 2].index(1)",
@@ -18,8 +22,20 @@ window.LESSONS.objects = {
     garden: "def count_garden(n):\n    if n < 0:\n        return 0\n    elif n == 0:\n        return 1\n    else:\n        return count_garden(n - 1) + count_garden(n - 1) + count_garden(n - 3)"
   },
   steps: [
+    { code: "dicts", hl: [1, 3], env: [["ages", "{'ada': 36, 'alan': 41}"]],
+      say: "This lecture has three parts: dictionaries, the idea of an object, and more tree recursion. A dictionary stores pairs. Each pair has a key and a value, written with a colon between them, inside curly braces. You look a value up by its key, in square brackets. A list is indexed by position. A dictionary is indexed by whatever keys you chose.",
+      syntax: "Python notes: looking up a key that is not in the dictionary with square brackets is an error. You cannot look up by position, and you cannot look up a key from its value." },
+    { code: "dicts", hl: [4, 5], env: [["ages", "{'ada': 36, 'alan': 41, 'grace': 45}"]],
+      say: "Assigning to a key adds a new pair, or replaces the value if the key is already there. A key can appear only once. len counts the pairs, so after line 4 it is 3." },
+    { code: "dicts", hl: [6, 7], env: [["ages", "{'ada': 36, 'alan': 41, 'grace': 45}"]],
+      say: "For a dictionary, in looks at the keys only.",
+      ask: { type: "mc", q: "What are the values of lines 6 and 7?",
+        choices: ["True and True", "True and False", "False and False"], answer: 1,
+        why: "'alan' is a key, so line 6 is True. 41 is a value, not a key, so line 7 is False." } },
+    { code: "dloop", hl: [3, 4, 6], out: ["ada 36", "alan 41"],
+      say: "A for statement over a dictionary goes through its keys. Inside the loop you use the key to look up its value. If you only want the values, the values method gives them to you, and list turns them into a list: here, [36, 41]." },
     { code: "dcomp", hl: [3, 4],
-      say: "This lecture has three parts: one more dictionary tool, the idea of an object, and more tree recursion. First, the dictionary comprehension. It has the same parts as a list comprehension, with curly braces and a key, colon, value at the front. Line 3 maps each word to its length. Line 4 adds a filter.",
+      say: "A dictionary comprehension builds a dictionary in one expression. It has the same parts as a list comprehension, with curly braces and a key, colon, value at the front. Line 3 maps each word to its length. Line 4 adds a filter.",
       ask: { type: "mc", q: "What is the value of line 4?",
         choices: ["{'kiwi': 4, 'banana': 6}", "{'fig': 3, 'kiwi': 4, 'banana': 6}", "['kiwi', 'banana']"], answer: 0,
         why: "The filter keeps only the words longer than 3 characters, and each one that gets through becomes a key with its length as the value." } },
@@ -56,6 +72,12 @@ window.LESSONS.objects = {
       ask: { type: "mc", q: "If __str__ were removed from the class, what would print(p) display?",
         choices: ["(3, 4)", "Point(x=3, y=4)", "An error"], answer: 1,
         why: "Without __str__, printing falls back to the display format that @dataclass provides." } },
+    { code: "tuples", hl: [1, 3, 4, 5],
+      say: "One more built-in type before the recursion. A tuple is a sequence written with parentheses. You index and slice it exactly like a list. The difference is that a tuple can never be changed after it is made. You have been using tuples already: x, y = 10, 20 builds the tuple (10, 20) and then unpacks it." },
+    { code: "tuples", hl: [7, 8],
+      say: "Because a tuple cannot change, it is allowed to be a dictionary key. A list is not. So when you want a key made of several parts, such as a pair of coordinates, use a tuple.",
+      ask: { type: "type", q: "What is places[(3, 4)]?", answer: "cafe",
+        why: "The tuple (3, 4) is one of the keys, and its value is 'cafe'." } },
     { code: "limited", hl: [1, 6],
       say: "Part three goes back to tree recursion. So far there have been two strategies. For a list or a number: deal with one item or digit, and recurse on the rest. For tree recursion: make one small choice, and recurse once for each option. Here is count_partitions again, written compactly as cp. Use at least one piece of size m, or use none." },
     { code: "limited", hl: [8, 13],
@@ -74,7 +96,7 @@ window.LESSONS.objects = {
       ask: { type: "type", q: "What does count_garden(3) return?", answer: "9",
         why: "count_garden(1) is 2 and count_garden(2) is 4. So count_garden(3) is 4 + 4 + count_garden(0) = 9: the 8 ways using only empty spots and flowers, plus one bush." } },
     { code: "garden",
-      say: "To sum up: a dictionary comprehension builds pairs, and the value can itself be a comprehension. Every value is an object with data and behavior, and methods are reached with a dot. A data class is a quick way to make your own type with named attributes. In tree recursion, track a constraint by adding an argument, and find the recursion by asking what the first choice is." }
+      say: "To sum up: a dictionary maps keys to values, and in and for work on its keys. A comprehension can build one. Every value is an object with data and behavior, and methods are reached with a dot. A data class is a quick way to make your own type with named attributes. A tuple is a sequence that cannot change, so it can be a key. In tree recursion, track a constraint by adding an argument, and find the recursion by asking what the first choice is." }
   ],
 
   check: [
@@ -82,6 +104,10 @@ window.LESSONS.objects = {
       q: "What is the value of this expression?",
       choices: ["{3: 0, 4: 1, 5: 2}", "{0: 3, 1: 4, 2: 5}", "[0, 1, 2]"], answer: 0,
       why: "The key is x itself and the value is x % 3. The remainders of 3, 4 and 5 are 0, 1 and 2." },
+    { type: "mc", code: "d = {'a': 1, 'b': 2}\nd['a'] = 5\nd['c'] = 1",
+      q: "What is d after these lines?",
+      choices: ["{'a': 1, 'b': 2, 'a': 5, 'c': 1}", "{'a': 5, 'b': 2, 'c': 1}", "{'a': 6, 'b': 2, 'c': 1}"], answer: 1,
+      why: "A key appears only once, so assigning to 'a' replaces its value. 'c' is a new key, so a new pair is added." },
     { type: "type", code: "d = {'a': 1}\nd.get('b')",
       q: "What is the value of the last line?", answer: "None",
       why: "'b' is not a key. The get method returns None for a missing key." },
@@ -101,6 +127,13 @@ window.LESSONS.objects = {
   ],
 
   deepen: [
+    { id: "obj_letter_counts", title: "Count the letters", source: "Original question",
+      desc: "Return a dictionary whose keys are the different characters in the string word, and whose values are how many times each one appears.",
+      starter: "def letter_counts(word):\n    \"\"\"Return a dictionary from each character in word to its count.\n    >>> letter_counts('noon') == {'n': 2, 'o': 2}\n    True\n    >>> letter_counts('abca') == {'a': 2, 'b': 1, 'c': 1}\n    True\n    >>> letter_counts('')\n    {}\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
+      solution: "def letter_counts(word):\n    counts = {}\n    for ch in word:\n        if ch in counts:\n            counts[ch] = counts[ch] + 1\n        else:\n            counts[ch] = 1\n    return counts",
+      tests: "assert letter_counts('noon') == {'n': 2, 'o': 2}\nassert letter_counts('abca') == {'a': 2, 'b': 1, 'c': 1}\nassert letter_counts('') == {}\nassert letter_counts('zzz') == {'z': 3}\nassert letter_counts('a b') == {'a': 1, ' ': 1, 'b': 1}",
+      hints: ["Start with an empty dictionary, {}, and go through the characters with a for statement.", "For each character there are two cases: it is already a key, or it is not. Looking up a missing key is an error, so check with in first.", "If ch in counts, add 1 to counts[ch]. Otherwise set counts[ch] = 1. Return counts after the loop."],
+      explain: "This check-then-update pattern is the standard way to build a dictionary of counts. A comprehension also works: {ch: word.count(ch) for ch in word}." },
     { id: "obj_divisors", title: "Table of divisors", source: "Original question",
       desc: "nums is a list of positive whole numbers. Return a dictionary in which each number in nums is a key, and its value is the list of all its divisors, from 1 up to the number itself, in increasing order. Try to write it as one dictionary comprehension with a list comprehension inside.",
       starter: "def divisors_table(nums):\n    \"\"\"Return a dictionary from each number in nums to a list of its divisors.\n    >>> divisors_table([6, 7]) == {6: [1, 2, 3, 6], 7: [1, 7]}\n    True\n    >>> divisors_table([1])\n    {1: [1]}\n    >>> divisors_table([])\n    {}\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",

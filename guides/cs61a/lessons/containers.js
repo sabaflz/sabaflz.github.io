@@ -1,28 +1,23 @@
 /*
   lessons/containers.js: Lecture 12, Containers.
-  Slicing, strings, functions that take a whole sequence (sum, max, min,
-  all, any), nested lists, and dictionaries. Same shape as
-  lessons/recursion.js, plus `env`.
-
-  Written from my own guides and the course's usual treatment of this topic;
-  I could not open the Fall 2026 deck for this lecture. Check it against the
-  slides linked on the topic page.
+  Coverage follows the lecture videos for this topic: slicing, functions
+  that take a whole sequence (sum, max, min, all, any), strings, and nested
+  lists. Dictionaries are in Lecture 13 (lessons/objects.js), as in class.
+  Same shape as lessons/recursion.js, plus `env`.
 */
 window.LESSONS.containers = {
-  minutes: 14,
+  minutes: 11,
   snippets: {
     slices: "s = [10, 20, 30, 40, 50]\n\ns[1:4]\ns[:2]\ns[3:]\ns[-2:]\ns[:]",
     strings: "w = 'berkeley'\n\nw[0]\nw[-1]\nw[1:4]\nlen(w)\n'ke' in w",
     agg: "s = [4, 9, 2]\n\nsum(s)\nmax(s)\nmin(s)\nall([x > 1 for x in s])\nany([x > 8 for x in s])",
     key: "words = ['fig', 'banana', 'kiwi']\n\nmax(words)\nmax(words, key=len)\nmin(words, key=len)",
     grid: "grid = [[1, 2, 3],\n        [4, 5, 6]]\n\ngrid[1]\ngrid[1][0]\n[row[0] for row in grid]\n[sum(row) for row in grid]",
-    dicts: "ages = {'ada': 36, 'alan': 41}\n\nages['ada']\nages['grace'] = 45\nlen(ages)\n'alan' in ages\n41 in ages",
-    dloop: "ages = {'ada': 36, 'alan': 41}\n\nfor name in ages:\n    print(name, ages[name])",
-    dcomp: "squares = {x: x * x for x in range(4)}\n\nsquares[3]"
+    sumstart: "sum([1, 2, 3], 10)\n\nsum([[1], [2, 3]], [])"
   },
   steps: [
     { code: "slices", hl: [3], env: [["s", "[10, 20, 30, 40, 50]"]],
-      say: "A container is a value that holds other values. Lists were the first. This lesson adds tools for working with them and two more containers: strings and dictionaries. Start with slicing, which you met briefly. s[1:4] is a new list holding the elements from index 1 up to, but not including, index 4.",
+      say: "A container is a value that holds other values. Lists were the first. This lesson adds tools for working with them, and a second kind of sequence: strings. Start with slicing, which you met briefly. s[1:4] is a new list holding the elements from index 1 up to, but not including, index 4.",
       ask: { type: "type", q: "What is s[1:4]? Write it as a list.", answer: "[20, 30, 40]",
         why: "It holds the elements at indexes 1, 2 and 3. Index 4 is where it stops, and that element is left out." } },
     { code: "slices", hl: [4, 5, 6], env: [["s", "[10, 20, 30, 40, 50]"]],
@@ -56,24 +51,12 @@ window.LESSONS.containers = {
       say: "A for over a grid gives you one row at a time. So a comprehension over a grid usually does something to each row.",
       ask: { type: "type", q: "What is [sum(row) for row in grid]? Write it as a list.", answer: "[6, 15]",
         why: "The rows are [1, 2, 3] and [4, 5, 6]. Their sums are 6 and 15." } },
-    { code: "dicts", hl: [1, 3], env: [["ages", "{'ada': 36, 'alan': 41}"]],
-      say: "A dictionary stores pairs. Each pair has a key and a value, written with a colon between them, inside curly braces. You look a value up by its key, in square brackets. A list is indexed by position. A dictionary is indexed by whatever keys you chose.",
-      syntax: "Python notes: looking up a key that is not in the dictionary is an error, just like an index that is out of range." },
-    { code: "dicts", hl: [4, 5], env: [["ages", "{'ada': 36, 'alan': 41, 'grace': 45}"]],
-      say: "Assigning to a key adds a new pair, or replaces the value if the key is already there. A key can appear only once. len counts the pairs, so after line 4 it is 3." },
-    { code: "dicts", hl: [6, 7], env: [["ages", "{'ada': 36, 'alan': 41, 'grace': 45}"]],
-      say: "For a dictionary, in looks at the keys only.",
-      ask: { type: "mc", q: "What are the values of lines 6 and 7?",
-        choices: ["True and True", "True and False", "False and False"], answer: 1,
-        why: "'alan' is a key, so line 6 is True. 41 is a value, not a key, so line 7 is False." } },
-    { code: "dloop", hl: [3, 4], out: ["ada 36", "alan 41"],
-      say: "A for statement over a dictionary goes through its keys. Inside the loop you use the key to look up its value. This is the standard way to do something with every pair." },
-    { code: "dcomp", hl: [1],
-      say: "There are dictionary comprehensions too. The only change from a list comprehension is the curly braces and the key, colon, value at the front.",
-      ask: { type: "type", q: "What is squares[3]?", answer: "9",
-        why: "The comprehension builds the pairs 0: 0, 1: 1, 2: 4 and 3: 9. Looking up the key 3 gives 9." } },
-    { code: "dcomp",
-      say: "To sum up: a slice is a new list, and the stopping index is left out. Strings index and slice like lists. sum, max, min, all and any replace many loops, and key tells max and min what to compare by. A grid is a list of rows. A dictionary maps keys to values, and both in and for work on its keys." }
+    { code: "sumstart", hl: [1, 3],
+      say: "One more detail about sum. It can take a second argument: a starting value that everything is added to. That matters when the elements are not numbers. Lists can be added together, but only to other lists, so to join a list of lists you start from an empty list.",
+      ask: { type: "type", q: "What is the value of line 3? Write it as a list.", answer: "[1, 2, 3]",
+        why: "Starting from the empty list, sum adds on [1] and then [2, 3]. Adding lists joins them, giving [1, 2, 3]." } },
+    { code: "grid",
+      say: "To sum up: a slice is a new list, and the stopping index is left out. Strings index and slice like lists, but in looks for a run of characters. sum, max, min, all and any replace many loops, and key tells max and min what to compare by. A grid is a list of rows." }
   ],
 
   check: [
@@ -89,10 +72,10 @@ window.LESSONS.containers = {
     { type: "type", code: "min([3, -8, 5], key=abs)",
       q: "What is the value of this expression?", answer: "3",
       why: "The key function gives 3, 8 and 5. The smallest of those is 3, which belongs to the element 3. min returns the element itself." },
-    { type: "mc", code: "d = {'a': 1, 'b': 2}\nd['a'] = 5\nd['c'] = 1",
-      q: "What is d after these lines?",
-      choices: ["{'a': 1, 'b': 2, 'a': 5, 'c': 1}", "{'a': 5, 'b': 2, 'c': 1}", "{'a': 6, 'b': 2, 'c': 1}"], answer: 1,
-      why: "A key appears only once, so assigning to 'a' replaces its value. 'c' is a new key, so a new pair is added." },
+    { type: "mc", code: "'at' in 'catalog'\n['a', 't'] in ['c', 'a', 't']",
+      q: "What are the values of these two lines?",
+      choices: ["True and True", "True and False", "False and False"], answer: 1,
+      why: "For a string, in looks for a run of characters, and 'at' appears inside 'catalog'. For a list, in only compares against single elements, and no element of the second list is the list ['a', 't']." },
     { type: "type", code: "grid = [[1, 2], [3, 4], [5, 6]]\nsum([row[1] for row in grid])",
       q: "What is the value of the last line?", answer: "12",
       why: "row[1] takes the second element of each row: 2, 4 and 6. Their sum is 12." }
@@ -106,13 +89,13 @@ window.LESSONS.containers = {
       tests: "assert longest_word(['fig', 'banana', 'kiwi']) == 'banana'\nassert longest_word(['ab', 'cd', 'e']) == 'ab'\nassert longest_word(['solo']) == 'solo'\nassert longest_word(['', 'a']) == 'a'\nassert longest_word(['zz', 'aaa', 'bbb']) == 'aaa'",
       hints: ["You want the largest element, where largest is measured by length.", "max takes a key function that says what to compare by.", "return max(words, key=len). When there is a tie, max returns the first one it met."],
       explain: "One line, because key lets max compare by length while still returning the word. A loop that remembers the best so far, updating only on a strictly longer word, does the same job." },
-    { id: "con_letter_counts", title: "Count the letters", source: "Original question",
-      desc: "Return a dictionary whose keys are the different characters in the string word, and whose values are how many times each one appears.",
-      starter: "def letter_counts(word):\n    \"\"\"Return a dictionary from each character in word to its count.\n    >>> letter_counts('noon') == {'n': 2, 'o': 2}\n    True\n    >>> letter_counts('abca') == {'a': 2, 'b': 1, 'c': 1}\n    True\n    >>> letter_counts('')\n    {}\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
-      solution: "def letter_counts(word):\n    counts = {}\n    for ch in word:\n        if ch in counts:\n            counts[ch] = counts[ch] + 1\n        else:\n            counts[ch] = 1\n    return counts",
-      tests: "assert letter_counts('noon') == {'n': 2, 'o': 2}\nassert letter_counts('abca') == {'a': 2, 'b': 1, 'c': 1}\nassert letter_counts('') == {}\nassert letter_counts('zzz') == {'z': 3}\nassert letter_counts('a b') == {'a': 1, ' ': 1, 'b': 1}",
-      hints: ["Start with an empty dictionary, {}, and go through the characters with a for statement.", "For each character there are two cases: it is already a key, or it is not. Looking up a missing key is an error, so check with in first.", "If ch in counts, add 1 to counts[ch]. Otherwise set counts[ch] = 1. Return counts after the loop."],
-      explain: "This check-then-update pattern is the standard way to build a dictionary of counts. A comprehension also works: {ch: word.count(ch) for ch in word}." },
+    { id: "con_count_vowels", title: "Count the vowels", source: "Original question",
+      desc: "Return how many characters in the string word are vowels. For this problem the vowels are the lowercase letters a, e, i, o and u. Try to write the body as one line using sum and a comprehension.",
+      starter: "def count_vowels(word):\n    \"\"\"Return the number of vowels in word.\n    >>> count_vowels('berkeley')\n    3\n    >>> count_vowels('rhythm')\n    0\n    >>> count_vowels('queue')\n    4\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
+      solution: "def count_vowels(word):\n    return sum([1 for ch in word if ch in 'aeiou'])",
+      tests: "assert count_vowels('berkeley') == 3\nassert count_vowels('rhythm') == 0\nassert count_vowels('queue') == 4\nassert count_vowels('') == 0\nassert count_vowels('aeiou') == 5\nassert count_vowels('a b') == 1",
+      hints: ["A for statement or a comprehension over a string gives you one character at a time.", "A character ch is a vowel when ch in 'aeiou' is true.", "return sum([1 for ch in word if ch in 'aeiou']). Each vowel contributes a 1, and sum adds them up."],
+      explain: "Counting is summing a 1 for each thing that passes a test. The filter does the testing, and in on a string makes the vowel check a single expression." },
     { id: "con_column_sums", title: "Column sums", source: "Original question",
       desc: "grid is a list of rows, and every row has the same length. Return a list with the sum of each column. An empty grid has no columns, so its answer is an empty list.",
       starter: "def column_sums(grid):\n    \"\"\"Return the sum of each column of grid.\n    >>> column_sums([[1, 2, 3], [4, 5, 6]])\n    [5, 7, 9]\n    >>> column_sums([[7], [8], [9]])\n    [24]\n    >>> column_sums([])\n    []\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
