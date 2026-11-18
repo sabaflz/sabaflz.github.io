@@ -52,8 +52,8 @@ window.COURSE = {
       { id: "problem-solving", lecture: 17, title: "Problem solving", blurb: "How to attack an unfamiliar exam problem step by step.", est: 30 }
     ]},
     { title: "Mutation and objects", exam: "Midterm 3", topics: [
-      { id: "mutation", lecture: 18, title: "Mutation", blurb: "Changing lists and dictionaries in place, identity versus equality.", est: 50, pool: ["Mutation & Iterators"] },
-      { id: "classes", lecture: 19, title: "Classes", blurb: "class, __init__, instances and methods.", est: 45, pool: ["OOP"] },
+      { id: "mutation", lecture: 18, title: "Mutation", blurb: "Changing lists and dictionaries in place, is versus ==, and functions with state.", est: 50, pool: ["Mutation & Iterators"] },
+      { id: "classes", lecture: 19, title: "Classes", blurb: "The class statement, __init__ and self, methods, and object identity.", est: 45, pool: ["OOP"] },
       { id: "attributes", lecture: 20, title: "Attributes", blurb: "Instance versus class attributes, and how lookup works.", est: 40, pool: ["OOP"] },
       { id: "inheritance", lecture: 21, title: "Inheritance", blurb: "Subclasses, overriding, and super.", est: 45, pool: ["OOP"] },
       { id: "iterators", lecture: 22, title: "Iterators", blurb: "iter, next, and lazy sequences.", est: 40, pool: ["Mutation & Iterators"] },

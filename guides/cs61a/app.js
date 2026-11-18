@@ -257,7 +257,13 @@
 
   /* ---------- deepen and practice (real Python) ---------- */
   var cur = null; // { t, stage, p }
-  function fnName(p) { var m = /def\s+(\w+)\s*\(/.exec(p.starter); return m ? m[1] : ""; }
+  /* The function or class whose docstring holds the examples: the first top-level
+     def or class that is followed by a docstring. A problem can name it with `target`. */
+  function fnName(p) {
+    if (p.target) return p.target;
+    var m = /^(?:def|class)\s+(\w+)[^\n]*\n\s+(?:"""|\x27\x27\x27)/m.exec(p.starter) || /^(?:def|class)\s+(\w+)/m.exec(p.starter);
+    return m ? m[1] : "";
+  }
   function renderWork(t, stage, pid) {
     var list = items(t, stage), s = T(t.id);
     var p = list.filter(function (x) { return x.id === pid; })[0] || list.filter(function (x) { return !s.solved[x.id]; })[0] || list[0];
