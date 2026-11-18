@@ -67,14 +67,14 @@ var PROJECTS = [
   });
   document.getElementById("list").innerHTML = html || '<p class="empty">No projects yet.</p>';
 
-  // Tab counts. Blogs is filled by blogs.js once blogs/data.js has loaded.
+  // Tab counts. The Blogs tab is private: blogs.js hides it unless you are logged in as owner.
   var pc = document.querySelector('[data-count="projects"]');
   if (pc) pc.textContent = PROJECTS.length;
 })();
 </script>
-<script src="blogs/data.js?v=1"></script>
-<script src="../assets/js/blogs.js?v=1"></script>
-<script src="../assets/js/nav.js?v=3"></script>
+<script src="../assets/js/owner.js?v=1"></script>
+<script src="../assets/js/blogs.js?v=3"></script>
+<script src="../assets/js/nav.js?v=4"></script>
 <script src="../assets/js/tts.js?v=2"></script>
 <script src="../assets/js/theme.js?v=1"></script>
 </body>

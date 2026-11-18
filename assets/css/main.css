@@ -109,6 +109,9 @@ section{padding:72px 0}
 .lead p{margin:0; max-width:52ch}
 
 /* skills and education */
+.subhead{font:600 13px/1 var(--mono); text-transform:uppercase; letter-spacing:.06em; color:var(--saffron-ink); margin:0 0 6px}
+.about-split{margin-top:64px; grid-template-columns:1fr 1.3fr}
+.about-split .subhead{margin-bottom:22px}
 .split{display:grid; grid-template-columns:1.3fr 1fr; gap:clamp(32px,5vw,72px)}
 dl.skills{margin:0; display:grid; grid-template-columns:auto 1fr; gap:14px 28px}
 dl.skills dt{font-weight:600}

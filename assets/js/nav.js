@@ -12,9 +12,16 @@
   if (seg[0] === "planner") here = "planner";       // planner subtabs (planner/study/) count as Planner           // "", "resume", "guides", "planner", "lab"
   var base = seg.length ? "../".repeat(seg.length) : "";
 
-  /* The canonical menu. One short bar; new work lives inside the hubs.
-     To rename a tab or add one, edit this list only. */
-  var ACADEMIC = { study: "Study Guides", planner: "Planner" };
+  /* The canonical menu. Public visitors see the portfolio pages only.
+     When you're logged in as owner (see owner.js), a "Private" menu appears
+     with the pages only you can open. To add a page, edit these lists only. */
+  var owner = false;
+  try { owner = !!sessionStorage.getItem("sf_planner_tok"); } catch (e) {}
+  var PRIVATE_PAGES = [
+    { href: "planner/", label: "Planner", desc: "Degree plan &amp; grad plan", key: "planner" },
+    { href: "lab/", label: "Lab", desc: "Side projects in progress", key: "lab" },
+    { href: "research/blogs/", label: "Blogs", desc: "Posts &amp; source logs", key: "blogs" }
+  ];
 
   function link(href, label) { return '<li><a href="' + base + href + '">' + label + "</a></li>"; }
 
@@ -22,16 +29,15 @@
     '<a class="mark" href="' + (base || "#") + '" aria-label="Home">SF</a>' +
     "<ul>" +
       link("#work", "Work") +
-      link("#leadership", "Leadership") +
-      link("#skills", "Skills") +
-      '<li class="has-menu">' +
-        '<button type="button" class="navtop" aria-haspopup="true" aria-expanded="false">' +
-          "Academics<span class=\"caret\" aria-hidden=\"true\"></span></button>" +
-      "</li>" +
+      link("#about", "About") +
       link("research/", "Research") +
-      link("lab/", "Lab") +
+      link("guides/", "Study Guides") +
       link("resume/", "Resume") +
-      link("#contact", "Contact") +
+      (owner ? '<li class="has-menu">' +
+        '<button type="button" class="navtop" aria-haspopup="true" aria-expanded="false">' +
+          "Private<span class=\"caret\" aria-hidden=\"true\"></span></button>" +
+      "</li>" : "") +
+      '<li class="cta-li"><a class="navcta" href="' + base + '#contact">Get in touch</a></li>' +
     "</ul>";
 
   /* ---- styles: reproduce the landing nav exactly, add the dropdown ------ */
@@ -55,9 +61,12 @@
     ".sf-submenu a{display:block;text-decoration:none;color:var(--ink);font:500 15px/1.2 var(--body);padding:11px 13px;border-radius:9px;white-space:nowrap}" +
     ".sf-submenu a:hover,.sf-submenu a:focus-visible{background:color-mix(in srgb,var(--saffron) 16%,transparent);color:var(--ink);outline:none}" +
     ".sf-submenu a[aria-current]{color:var(--saffron-ink);font-weight:600}" +
+    ".topbar .nav ul a.navcta{padding:8px 14px;border:2px solid var(--ink);border-radius:999px;font-weight:600}" +
+    ".topbar .nav ul a.navcta:hover{background:var(--saffron);border-color:var(--saffron);color:var(--on-saffron,#16193A)}" +
+    ".sf-submenu .sm-out{border-top:1.5px solid var(--line);border-radius:0 0 9px 9px;margin-top:4px;color:var(--muted)}" +
     ".sf-submenu .sm-desc{display:block;font:400 12.5px/1.3 var(--body);color:var(--muted);margin-top:2px}" +
     "@media (max-width:820px){.topbar .nav{padding:12px clamp(20px,5vw,48px)}.topbar .nav ul{gap:14px;font-size:14px}}" +
-    "@media (max-width:520px){.topbar .nav ul{gap:12px;font-size:13.5px}}" +
+    "@media (max-width:520px){.topbar .nav ul{gap:12px;font-size:13.5px}.topbar .nav .cta-li{display:none}}" +
     "@media (prefers-reduced-motion:reduce){.sf-submenu,.caret{transition:none}}";
 
   var style = document.createElement("style");
@@ -74,12 +83,20 @@
 
     /* active tab for the current page (landing uses scroll-spy instead) */
     var navtop = nav.querySelector(".navtop");
-    if (seg[0] === "research") markCurrent(nav, "research/");
+    var pkey = privateKey();
+    if (pkey) { if (navtop) navtop.classList.add("active"); }
+    else if (seg[0] === "research") markCurrent(nav, "research/");
+    else if (seg[0] === "guides") markCurrent(nav, "guides/");
     else if (here === "resume") markCurrent(nav, "resume/");
-    else if (here === "lab") markCurrent(nav, "lab/");
-    else if (here === "guides" || here === "planner") navtop.classList.add("active");
 
-    buildDropdown(nav, navtop);
+    if (navtop) buildDropdown(nav, navtop);
+  }
+
+  function privateKey() {
+    if (seg[0] === "planner") return "planner";
+    if (seg[0] === "lab") return "lab";
+    if (seg[0] === "research" && seg[1] === "blogs") return "blogs";
+    return "";
   }
 
   function markCurrent(nav, hrefEnd) {
@@ -87,23 +104,24 @@
     if (a) a.setAttribute("aria-current", "page");
   }
 
-  /* ---- the Academics dropdown: hover + tap + keyboard ------------------ */
+  /* ---- the owner-only Private dropdown: hover + tap + keyboard ------------------ */
   function buildDropdown(nav, btn) {
     var li = btn.closest(".has-menu");
     var panel = document.createElement("div");
     panel.className = "sf-submenu";
     panel.setAttribute("role", "menu");
-    panel.innerHTML =
-      '<a role="menuitem" href="' + base + 'guides/">' + ACADEMIC.study +
-        '<span class="sm-desc">Course references &amp; self-tests</span></a>' +
-      '<a role="menuitem" href="' + base + 'planner/">' + ACADEMIC.planner +
-        '<span class="sm-desc">Degree plan &amp; progress</span></a>';
+    panel.innerHTML = PRIVATE_PAGES.map(function (p) {
+      return '<a role="menuitem" href="' + base + p.href + '"' + (privateKey() === p.key ? ' aria-current="page"' : "") + ">" +
+        p.label + '<span class="sm-desc">' + p.desc + "</span></a>";
+    }).join("") + '<a role="menuitem" href="#" class="sm-out" data-owner-logout>Log out</a>';
     document.body.appendChild(panel);
+    panel.querySelector("[data-owner-logout]").addEventListener("click", function (e) {
+      e.preventDefault();
+      try { sessionStorage.removeItem("sf_planner_tok"); sessionStorage.removeItem("sf_planner_pw"); } catch (x) {}
+      location.reload();
+    });
 
-    if (here === "guides") panel.children[0].setAttribute("aria-current", "page");
-    if (here === "planner") panel.children[1].setAttribute("aria-current", "page");
-
-    var hideTimer = null;
+    var hideTimer = null, openedAt = 0;
     function position() {
       var r = btn.getBoundingClientRect();
       panel.style.top = r.bottom + 6 + "px";
@@ -112,6 +130,7 @@
     }
     function open() {
       clearTimeout(hideTimer);
+      if (!isOpen()) openedAt = Date.now();
       position();
       li.classList.add("open");
       panel.classList.add("open");
@@ -132,7 +151,7 @@
     panel.addEventListener("mouseleave", softClose);
 
     /* tap / click toggle (touch has no hover) */
-    btn.addEventListener("click", function (e) { e.preventDefault(); isOpen() ? close() : open(); });
+    btn.addEventListener("click", function (e) { e.preventDefault(); if (isOpen() && Date.now() - openedAt > 400) close(); else open(); });
 
     /* keyboard */
     btn.addEventListener("keydown", function (e) {
@@ -171,7 +190,13 @@
     window.addEventListener("scroll", onScroll, { passive: true });
   }
 
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", function () { mount(); wireScrolled(); });
-  } else { mount(); wireScrolled(); }
+  /* owner.js handles the login box (#owner) and reading private content */
+  if (!window.Owner && !document.querySelector('script[src*="owner.js"]')) {
+    var os = document.createElement("script"); os.src = base + "assets/js/owner.js?v=1"; document.head.appendChild(os);
+  }
+
+  /* Mount right away when the header is already in the page (scripts sit at the
+     end of <body>), so page scripts that run after this see the final menu. */
+  if (document.querySelector("header.topbar .nav, header .nav")) { mount(); wireScrolled(); }
+  else document.addEventListener("DOMContentLoaded", function () { mount(); wireScrolled(); });
 })();

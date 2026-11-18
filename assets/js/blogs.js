@@ -1,11 +1,13 @@
 /*
-  blogs.js: renders the Blogs subtab of Research, from research/blogs/data.js.
+  blogs.js: renders the Blogs subtab of Research. The Blogs tab is private: the
+  posts live in the private repo (sabaflz/site-private, research/blogs/data.json)
+  and load only when you're logged in as owner (see assets/js/owner.js).
 
   Two pages share this one file:
     research/blogs/index.html   the list  (needs #list, #bar)
     research/blogs/post.html    one post  (needs #post, reads ?id=<post id>)
 
-  To add a post: append one object to window.BLOG_POSTS in data.js. Nothing else
+  To add a post: append one object to research/blogs/data.json in site-private. Nothing else
   to create. Newest first is handled here by date, so order in the file is free.
 
   Every post keeps its own sources, so the point of this section is that you can
@@ -14,7 +16,7 @@
 (function () {
   "use strict";
 
-  var POSTS = window.BLOG_POSTS || [];
+  var POSTS = [];
 
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -209,7 +211,25 @@
     if (b) b.textContent = POSTS.length;
   }
 
-  function boot() { renderList(); renderPost(); paintCounts(); }
+  function boot() {
+    var main = document.getElementById("bloglist") || document.getElementById("post");
+    var tab = document.querySelector('[data-count="blogs"]');
+    var tabLi = tab && tab.closest("li");
+    var O = window.Owner;
+    if (!O || !O.signedIn()) {
+      if (tabLi && !main) { tabLi.hidden = true; tabLi.style.display = "none"; }          // Research hub: hide the tab from visitors
+      if (main) { var bar = document.getElementById("bar"); if (bar) bar.hidden = true; if (O) O.lockScreen(main, "My blog drafts and source logs are private."); }
+      return;
+    }
+    if (main) main.textContent = "Loading…";
+    O.json("research/blogs/data.json").then(function (posts) {
+      POSTS = Array.isArray(posts) ? posts : [];
+      if (main) main.textContent = "";
+      renderList(); renderPost(); paintCounts();
+    }).catch(function (e) {
+      if (main) { if (e.locked) O.lockScreen(main); else main.textContent = e.message; }
+    });
+  }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", boot);
   else boot();

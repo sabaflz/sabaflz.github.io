@@ -186,7 +186,11 @@
   }
 
   // ---------- page shell ----------
-  function showPlanner(editable) {
+  async function showPlanner(editable) {
+    // The Grad Plan is private: it lives in sabaflz/site-private and loads only for you.
+    if (PC.gradPlan !== false && token && window.Owner && !window.PLANNER_GRADPLAN) {
+      try { window.PLANNER_GRADPLAN = await window.Owner.json("planner/gradplan.json"); } catch (e) {}
+    }
     $("locked").hidden = true; closeModal();
     document.querySelectorAll("[data-planner]").forEach(function (el) { el.hidden = false; });
     app().start(data, { editable: editable, onChange: editable ? function (d) { data = d; scheduleSave(); } : null });

@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
+<meta name="robots" content="noindex">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Lab · Saba Feilizadeh</title>
-<meta name="description" content="Side projects and experiments by Saba Feilizadeh: small tools built to answer a question or scratch an itch.">
+<meta name="description" content="Private page.">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='66' font-size='44' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>SF</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,45 +35,11 @@
 </head>
 <body>
 <header class="topbar" id="topbar">
-  <nav class="nav wrap" aria-label="Main">
-    <a class="mark" href="../">SF</a>
-    <ul>
-      <li><a href="../#work">Work</a></li>
-      <li><a href="../#leadership">Leadership</a></li>
-      <li><a href="../#skills">Skills</a></li>
-      <li><a href="../guides/">Study Guides</a></li>
-      <li><a href="../planner/">Planner</a></li>
-      <li><a href="./" aria-current="page">Lab</a></li>
-      <li><a href="../resume/">Resume</a></li>
-      <li><a href="../#contact">Contact</a></li>
-    </ul>
-  </nav>
+  <nav class="nav wrap" aria-label="Main"></nav>
 </header>
 
 <main class="wrap">
-  <section class="lab-intro">
-    <p class="eyebrow">The lab</p>
-    <h1>Things I build for fun.</h1>
-    <p class="lede">Small tools and experiments outside of coursework, each one started by a question I wanted answered.</p>
-  </section>
-
-  <div class="lab-grid">
-    <article class="lab-card">
-      <span class="tag building">In progress</span>
-      <h2>Recipe keeper</h2>
-      <p>A clean place to save recipes and scale servings on the fly, without ten paragraphs of story before the ingredients.</p>
-      <span class="go" aria-disabled="true">Coming soon</span>
-    </article>
-
-    <article class="lab-card">
-      <span class="tag">Planned</span>
-      <h2>Favorite picker</h2>
-      <p>A tiny bracket tool for settling a favorite anything by head to head choices instead of an impossible ranked list.</p>
-      <span class="go" aria-disabled="true">Coming soon</span>
-    </article>
-  </div>
-
-  <p class="lab-note">More experiments land here as I finish them. Each ships as its own page under this tab, so the menu stays short while the shelf grows.</p>
+  <div id="lab-app" aria-live="polite"></div>
 
   <footer>
     <span>Built and maintained by Saba Feilizadeh.</span>
@@ -80,7 +47,17 @@
   </footer>
 </main>
 
-<script src="../assets/js/nav.js?v=3"></script>
+<script src="../assets/js/owner.js?v=1"></script>
+<script>
+(function () {
+  var el = document.getElementById("lab-app");
+  if (!Owner.signedIn()) { Owner.lockScreen(el, "The Lab is where I keep side projects while they're in progress."); return; }
+  el.textContent = "Loading…";
+  Owner.text("lab/index.html").then(function (html) { el.innerHTML = html; })
+    .catch(function (e) { if (e.locked) Owner.lockScreen(el); else el.textContent = e.message; });
+})();
+</script>
+<script src="../assets/js/nav.js?v=4"></script>
 <script src="../assets/js/tts.js?v=2"></script>
 <script src="../assets/js/theme.js?v=1"></script>
 </body>
