@@ -313,7 +313,12 @@
   function questionHTML(q, a, ctx, n) {
     var h = '<p class="q">' + esc(q.q) + "</p>";
     if (q.type === "mc") {
-      h += '<div class="choices">' + q.choices.map(function (c, i) {
+      /* Choices show in a fixed shuffled order per question, so the right answer isn't
+         always in the same place. Indexes stay the original ones, so saved answers still match. */
+      var seed = 0, qs = String(q.q); for (var k = 0; k < qs.length; k++) seed = (seed * 31 + qs.charCodeAt(k)) >>> 0;
+      var order = q.choices.map(function (c, i) { return i; });
+      for (var j = order.length - 1; j > 0; j--) { seed = (seed * 1103515245 + 12345) >>> 0; var r = seed % (j + 1), tmp = order[j]; order[j] = order[r]; order[r] = tmp; }
+      h += '<div class="choices">' + order.map(function (i) { var c = q.choices[i];
         var cls = "choice";
         if (a) { if (i === q.answer) cls += " right"; else if (a.picked === i) cls += " wrong"; }
         return '<button type="button" class="' + cls + '" data-act="pick" data-ctx="' + ctx + '" data-n="' + n + '" data-i="' + i + '"' + (a ? " disabled" : "") + ">" + esc(c) + "</button>";
