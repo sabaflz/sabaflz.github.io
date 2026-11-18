@@ -253,3 +253,17 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 .chart .hit{fill:transparent; outline:none}
 .chart .hit:hover,.chart .hit:focus-visible{fill:var(--ink); fill-opacity:.06}
 .tip{position:absolute; z-index:5; pointer-events:none; padding:6px 10px; border-radius:8px; background:var(--ink); color:var(--bg); font:500 13px/1.3 var(--body); white-space:nowrap}
+
+/* today's recommended time and on-track status */
+.todayrow{margin-top:12px}
+.todayrow p{margin:0 0 6px; font-size:15px}
+.timecard .todayrow .tbar{margin:0}
+.chip.trk{font-weight:700; margin-right:4px}
+.chip.trk.ahead,.chip.trk.on{color:var(--ok); border-color:var(--ok); background:var(--ok-soft)}
+.chip.trk.behind{color:var(--bad); border-color:var(--bad); background:var(--bad-soft)}
+.chart .tick{stroke:var(--ink); stroke-width:2.5; stroke-linecap:round}
+.legend{display:flex; gap:18px; margin:10px 0 0; font:500 12.5px/1 var(--mono); color:var(--muted)}
+.legend span{display:inline-flex; align-items:center; gap:7px}
+.legend .sw{display:inline-block; flex:none}
+.legend .sw.bar{width:12px; height:12px; border-radius:3px; background:var(--viz)}
+.legend .sw.tk{width:16px; height:0; border-top:2.5px solid var(--ink)}

@@ -105,6 +105,41 @@
   function sumMine(list) { return list.reduce(function (a, t) { return a + leftMine(t); }, 0); }
   function sumLeft(list) { return list.reduce(function (a, t) { return a + leftMin(t); }, 0); }
   function leftText(m) { return m < 2.5 ? "done" : dur(m).replace("about ", "") + " left"; }
+  /* ---------- recommended time for today, and whether you are on track ---------- */
+  function spentOn(k, withPractice) { var sp = ((S.days || {})[k] || {}).sp || {}; return ((sp.learn || 0) + (sp.check || 0) + (sp.deepen || 0) + (withPractice ? sp.practice || 0 : 0)) / 60; }
+  /* With an exam date: the work left at the start of today, at your pace, spread over the days left.
+     Without one: the daily goal you set, if any. */
+  function recToday(list) {
+    var d = daysUntil(S.examDate);
+    if (S.examDate && d !== null && d > 0) { var left = sumMine(list); return left < 2.5 ? 0 : (left + spentOn(today(), false)) / d; }
+    return S.dailyGoal || 0;
+  }
+  /* Compares your average over the last finished days (up to 7, today left out) with what the exam date needs. */
+  function track(list) {
+    var d = daysUntil(S.examDate), keys = Object.keys(S.days || {}).sort(), t = today();
+    if (!S.examDate || d === null || d <= 0) return null;
+    var left = sumMine(list); if (left < 2.5) return { state: "ahead", text: "Everything is done." };
+    if (!keys.length || keys[0] >= t) return { state: "early", text: "Too early to tell. Come back after your first full day." };
+    var n = Math.min(7, Math.round((fromIso(t) - fromIso(keys[0])) / 86400000)), sum = 0, day = fromIso(t);
+    for (var i = 0; i < n; i++) { day.setDate(day.getDate() - 1); sum += spentOn(iso(day), false); }
+    var avg = sum / n, need = left / d;
+    if (avg < 1) return { state: "behind", text: "Behind. No study time in the last " + n + " day" + (n === 1 ? "" : "s") + ". You now need " + dur(need).replace("about ", "") + " a day." };
+    var fin = Math.ceil(left / avg), slack = d - fin;
+    if (slack >= 2) return { state: "ahead", text: "Ahead. At your average of " + hm(avg) + " a day you finish " + slack + " days early." };
+    if (slack >= 0) return { state: "on", text: "On track. Your average of " + hm(avg) + " a day gets you there in time." };
+    return { state: "behind", text: "Behind. Your average is " + hm(avg) + " a day, and finishing in time needs " + dur(need).replace("about ", "") + " a day." };
+  }
+  var TRACK = { ahead: "Ahead", on: "On track", behind: "Behind", early: "Just started" };
+  function todayHTML(list) {
+    var rec = recToday(list), did = spentOn(today(), true), tr = track(list), h = "";
+    if (rec >= 1) {
+      dayRec().rec = Math.round(rec);
+      var pct = Math.min(100, Math.round(100 * did / rec)), togo = rec - did;
+      h += '<div class="todayrow"><p><strong>Today:</strong> ' + hm(did) + " of " + hm(Math.ceil(rec / 5) * 5) + " recommended" + (togo < 1 ? ". Done for today." : "") + '</p><div class="tbar" role="img" aria-label="' + pct + ' percent of today\'s recommended time"><i style="width:' + (pct ? Math.max(2, pct) : 0) + '%"></i></div></div>';
+    }
+    if (tr) h += '<p class="pace"><span class="chip trk ' + tr.state + '">' + TRACK[tr.state] + "</span> " + esc(tr.text.replace(/^(Ahead|On track|Behind)\. /, "")) + "</p>";
+    return h;
+  }
   function timeBar(list) {
     var r5 = function (m) { return Math.round(m / 5) * 5; }, total = r5(sumMin(list)), left = r5(sumLeft(list)), pct = total ? Math.round(100 * (total - left) / total) : 0;
     var plain = function (m) { return m < 2.5 ? "0 min" : dur(m).replace("about ", ""); };
@@ -121,6 +156,8 @@
     } else {
       h += '<form class="dateform" data-act="examdate"><label for="examdate">Exam date</label><input type="date" id="examdate" name="d" value="' + esc(S.examDate || "") + '"><button class="btn small" type="submit">Set</button>' + (S.examDate ? '<button type="button" class="linkbtn" data-act="dateclear">Remove</button>' : '<span class="muted">Shows how much to do each day.</span>') + "</form>";
     }
+    h += todayHTML(list);
+    if (!S.examDate || goalOpen) h += '<form class="dateform" data-act="dailygoal"><label for="dailygoal">' + (S.examDate ? "Daily goal" : "Or a daily goal") + '</label><input type="number" id="dailygoal" min="5" max="600" step="5" inputmode="numeric" value="' + esc(S.dailyGoal || "") + '" style="width:90px"><span>minutes</span><button class="btn small" type="submit">Set</button>' + (S.dailyGoal ? '<button type="button" class="linkbtn" data-act="goalclear">Remove</button>' : "") + "</form>";
     return h + "</div>";
   }
   /* Which units the map shows. "" means everything. */
@@ -266,7 +303,7 @@
   function grade(q, picked) { return q.type === "mc" ? picked === q.answer : norm(picked) === norm(q.answer); }
 
   /* ---------- course map ---------- */
-  var levelOpen = false, dateOpen = false;
+  var levelOpen = false, dateOpen = false, goalOpen = false;
   function renderMap() {
     var lv = level(), h = "";
     h += '<div class="maphead"><p class="eyebrow">Learn, check, deepen, practice</p><h1>CS 61A</h1>' +
@@ -313,7 +350,7 @@
       var k = iso(d), r = days[k] || {}, sp = r.sp || {}, est = r.est || {}, future = k > t;
       var core = ((sp.learn || 0) + (sp.check || 0) + (sp.deepen || 0)) / 60, e = (est.learn || 0) + (est.check || 0) + (est.deepen || 0);
       if (r.left != null) last = r.left;
-      rows.push({ k: k, future: future, spent: future ? null : core + (sp.practice || 0) / 60, done: future ? null : e, left: future ? null : last, speed: !future && e >= 5 && core > 0 ? core / e : null });
+      rows.push({ k: k, future: future, rec: future || r.rec == null ? null : r.rec, spent: future ? null : core + (sp.practice || 0) / 60, done: future ? null : e, left: future ? null : last, speed: !future && e >= 5 && core > 0 ? core / e : null });
     }
     return rows;
   }
@@ -321,7 +358,7 @@
   /* kind "line" or "bar". pts: [{label, v (null to skip), tip}]. opt: {max, fmt, ref:{v,label}, target:[{i,v}], targetLabel} */
   function chartSVG(kind, pts, opt) {
     var W = 720, H = 240, ml = 52, mr = 18, mt = 14, mb = 30, pw = W - ml - mr, ph = H - mt - mb, n = pts.length;
-    var vals = pts.filter(function (p) { return p.v != null; }).map(function (p) { return p.v; }).concat(opt.ref ? [opt.ref.v] : []).concat((opt.target || []).map(function (q) { return q.v; }));
+    var vals = pts.filter(function (p) { return p.v != null; }).map(function (p) { return p.v; }).concat(opt.ref ? [opt.ref.v] : []).concat((opt.target || []).map(function (q) { return q.v; })).concat((opt.marks || []).filter(function (v) { return v != null; }));
     var max = opt.max || niceMax(Math.max.apply(null, vals.concat([0.0001])) * 1.05), step = pw / Math.max(1, kind === "bar" ? n : n - 1);
     var X = function (i) { return ml + (kind === "bar" ? (i + 0.5) * step : n === 1 ? pw / 2 : i * step); }, Y = function (v) { return mt + ph - (v / max) * ph; };
     var g = '<svg class="chart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(opt.aria) + '">';
@@ -333,6 +370,7 @@
     if (kind === "bar") {
       var bw = Math.max(3, Math.min(34, step - 4));
       pts.forEach(function (p, i) { if (p.v > 0) { var y = Y(p.v), hgt = mt + ph - y, r = Math.min(4, bw / 2, hgt); g += '<path class="mark" d="M' + (X(i) - bw / 2) + " " + (mt + ph) + "V" + (y + r) + "q0 " + (-r) + " " + r + " " + (-r) + "h" + (bw - 2 * r) + "q" + r + " 0 " + r + " " + r + "V" + (mt + ph) + 'z"/>'; } });
+      (opt.marks || []).forEach(function (v, i) { if (v != null) g += '<line class="tick" x1="' + (X(i) - bw / 2 - 4) + '" x2="' + (X(i) + bw / 2 + 4) + '" y1="' + Y(v) + '" y2="' + Y(v) + '"/>'; });
     } else {
       var path = "", pen = false;
       pts.forEach(function (p, i) { if (p.v == null) return; path += (pen ? "L" : "M") + X(i) + " " + Y(p.v); pen = true; });
@@ -346,7 +384,7 @@
   function exampleDays() {
     var o = {}, d = new Date(), left = 1850, plan = [[40, 30], [0, 0], [65, 55], [50, 50], [30, 20], [0, 0], [75, 70], [45, 45], [60, 62], [20, 15], [55, 60], [70, 75], [35, 38], [50, 55]];
     d.setDate(d.getDate() - plan.length + 1);
-    plan.forEach(function (p) { left -= p[1]; o[iso(d)] = { sp: { learn: p[0] * 24, check: p[0] * 6, deepen: p[0] * 30 }, est: { learn: p[1] * 0.4, check: p[1] * 0.1, deepen: p[1] * 0.5 }, left: left }; d.setDate(d.getDate() + 1); });
+    plan.forEach(function (p) { left -= p[1]; o[iso(d)] = { rec: 50, sp: { learn: p[0] * 24, check: p[0] * 6, deepen: p[0] * 30 }, est: { learn: p[1] * 0.4, check: p[1] * 0.1, deepen: p[1] * 0.5 }, left: left }; d.setDate(d.getDate() + 1); });
     return o;
   }
   function renderProgress() {
@@ -368,6 +406,9 @@
       if (du !== null && du > 0) msg += need <= du ? " That is " + (du - need === 0 ? "the day before" : (du - need + 1) + " days before") + " your exam." : " That is " + (need - du) + " day" + (need - du === 1 ? "" : "s") + " too late for your exam, so the daily time needs to go up to " + dur(left / du).replace("about ", "") + ".";
       h += '<p class="pace" style="margin:14px 0 0">' + esc(msg) + "</p>";
     }
+    var trk = example ? { state: "on", text: "On track. Your average of 48 min a day gets you there in time." } : track(TOPICS);
+    if (trk) h += '<p class="pace" style="margin:12px 0 0"><span class="chip trk ' + trk.state + '">' + TRACK[trk.state] + "</span> " + esc(trk.text.replace(/^(Ahead|On track|Behind)\. /, "")) + "</p>";
+    else h += '<p class="meta" style="margin-top:12px">Set an exam date on the course map to see whether you are on track.</p>';
     if (!example && F.known) h += '<p class="meta" style="margin-top:10px">Speed by kind of work: lessons ' + (F.own.learn ? F.learn.toFixed(2) + "x" : "not enough yet") + " · checks " + (F.own.check ? F.check.toFixed(2) + "x" : "not enough yet") + " · problems " + (F.own.deepen ? F.deepen.toFixed(2) + "x" : "not enough yet") + ". 1x means exactly the estimate. Recent days count more.</p>";
 
     var lab = function (r) { return shortDay(r.k); };
@@ -376,13 +417,14 @@
     var firstLeft = null; rows.forEach(function (r) { if (firstLeft === null && r.left != null) firstLeft = r.left + r.done; });
     if (!example && S.examDate && rows.length > 1 && rows[rows.length - 1].future && firstLeft) { bopt.target = [{ i: 0, v: firstLeft / 60 }, { i: rows.length - 1, v: 0 }]; bopt.targetLabel = "on track for your exam"; }
     h += '<section class="chartbox"><h2>Course time left</h2><p class="meta">Estimated hours still to do, at the end of each day. Marking a topic confident also brings this down.</p>' + chartSVG("line", burn, bopt) + "</section>";
-    h += '<section class="chartbox"><h2>Time studied each day</h2><p class="meta">Minutes with a lesson, check or problem open and in use, practice included.</p>' +
-      chartSVG("bar", past.map(function (r) { return { label: lab(r), v: r.spent, tip: lab(r) + ": " + hm(r.spent) + " studied" }; }), { fmt: function (v) { return Math.round(v) + " min"; }, aria: "Minutes studied each day" }) + "</section>";
+    h += '<section class="chartbox"><h2>Time studied each day</h2><p class="meta">Minutes with a lesson, check or problem open and in use, practice included. The short line over each day is the time recommended for that day.</p>' +
+      '<p class="legend"><span><i class="sw bar"></i>studied</span><span><i class="sw tk"></i>recommended</span></p>' +
+      chartSVG("bar", past.map(function (r) { return { label: lab(r), v: r.spent, tip: lab(r) + ": " + hm(r.spent) + " studied" + (r.rec != null ? ", " + hm(r.rec) + " recommended" : "") }; }), { marks: past.map(function (r) { return r.rec; }), fmt: function (v) { return Math.round(v) + " min"; }, aria: "Minutes studied each day" }) + "</section>";
     var sp = past.map(function (r) { return { label: lab(r), v: r.speed, tip: r.speed == null ? "" : lab(r) + ": " + r.speed.toFixed(2) + "x the estimate (" + hm(r.spent) + " for " + hm(r.done) + " of estimated work)" }; });
     h += '<section class="chartbox"><h2>Your speed</h2><p class="meta">Time you took divided by the estimate for the work you finished that day. Below the dashed line is faster than estimated. Days with under 5 minutes of finished work are left out.</p>' +
       (sp.some(function (p) { return p.v != null; }) ? chartSVG("line", sp, { fmt: function (v) { return (Math.round(v * 100) / 100) + "x"; }, ref: { v: 1, label: "as estimated" }, aria: "Your time divided by the estimate, by day" }) : '<p class="empty">Shows up once you finish at least 5 estimated minutes of work in a day.</p>') + "</section>";
-    h += '<details class="reveal"><summary>Show as a table</summary><div class="tblwrap"><table class="tbl"><thead><tr><th>Day</th><th>Studied</th><th>Estimated work finished</th><th>Speed</th><th>Course left</th></tr></thead><tbody>' +
-      past.slice().reverse().map(function (r) { return "<tr><td>" + esc(lab(r)) + "</td><td>" + hm(r.spent) + "</td><td>" + hm(r.done) + "</td><td>" + (r.speed == null ? "" : r.speed.toFixed(2) + "x") + "</td><td>" + (r.left == null ? "" : hm(r.left)) + "</td></tr>"; }).join("") + "</tbody></table></div></details>";
+    h += '<details class="reveal"><summary>Show as a table</summary><div class="tblwrap"><table class="tbl"><thead><tr><th>Day</th><th>Studied</th><th>Recommended</th><th>Estimated work finished</th><th>Speed</th><th>Course left</th></tr></thead><tbody>' +
+      past.slice().reverse().map(function (r) { return "<tr><td>" + esc(lab(r)) + "</td><td>" + hm(r.spent) + "</td><td>" + (r.rec == null ? "" : hm(r.rec)) + "</td><td>" + hm(r.done) + "</td><td>" + (r.speed == null ? "" : r.speed.toFixed(2) + "x") + "</td><td>" + (r.left == null ? "" : hm(r.left)) + "</td></tr>"; }).join("") + "</tbody></table></div></details>";
     view.innerHTML = h + '<div class="tip" id="tip" hidden></div>';
   }
   function tipFor(el) {
@@ -779,6 +821,7 @@
     else if (act === "levelopen") { levelOpen = true; render(true); }
     else if (act === "filter") { S.filter = el.getAttribute("data-x") || ""; save(); render(true); }
     else if (act === "dateopen") { dateOpen = true; render(true); }
+    else if (act === "goalclear") { delete S.dailyGoal; save(); render(true); }
     else if (act === "dateclear") { delete S.examDate; dateOpen = false; save(); render(true); }
     else if (act === "hideprogexample") { S.noProgExample = true; save(); render(true); }
     else if (act === "hideexample") { S.noReviewExample = true; save(); render(true); }
@@ -805,6 +848,7 @@
     var f = e.target, act = f.getAttribute("data-act");
     e.preventDefault();
     if (act === "typed") { var v = f.querySelector("input").value; if (v.trim()) answer(f.getAttribute("data-ctx"), +f.getAttribute("data-n"), v.trim()); }
+    if (act === "dailygoal") { var gv = Math.round(+f.querySelector("input").value); if (gv >= 5) { S.dailyGoal = Math.min(600, gv); save(); render(true); } }
     if (act === "examdate") { var dv = f.querySelector("input").value; if (dv) { S.examDate = dv; dateOpen = false; save(); render(true); } }
     if (act === "level") { var c = f.querySelector("input:checked"); S.level = c ? c.value : C.defaultLevel; levelOpen = false; save(); render(true); }
   });
