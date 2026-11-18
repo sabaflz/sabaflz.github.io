@@ -1,0 +1,22 @@
+/* tokens.css: the one shared set of colors and fonts for the site.
+   New pages load this file instead of copying the values. The older pages
+   (main.css, guides hub, planner, research.css) still carry their own copies;
+   keep them matching this file until they are switched over to it. */
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --ok:#1E7A4C; --ok-soft:#E1F3E8; --bad:#B3261E; --bad-soft:#FBE4E2; --info:#3D4A8C; --info-soft:#E6E9F7;
+  --display:"Schibsted Grotesk","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#6FD39B; --ok-soft:#173326; --bad:#FF8A80; --bad-soft:#3A1D22; --info:#AEB8F2; --info-soft:#22284A; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#6FD39B; --ok-soft:#173326; --bad:#FF8A80; --bad-soft:#3A1D22; --info:#AEB8F2; --info-soft:#22284A; color-scheme:dark;
+}
