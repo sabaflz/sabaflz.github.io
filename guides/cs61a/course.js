@@ -58,8 +58,8 @@ window.COURSE = {
       { id: "inheritance", lecture: 21, title: "Inheritance", blurb: "Subclasses, overriding, reusing the base class, and is-a versus has-a.", est: 45, pool: ["OOP"] },
       { id: "iterators", lecture: 22, title: "Iterators", blurb: "iter and next, iterables versus iterators, and lazy map, filter, zip and reversed.", est: 40, pool: ["Mutation & Iterators"] },
       { id: "generators", lecture: 23, title: "Generators", blurb: "yield, pausing and resuming, yield from, and recursive generators.", est: 50, pool: ["Generators"] },
-      { id: "efficiency", lecture: 24, title: "Efficiency", blurb: "Counting steps and memoization.", est: 40 },
-      { id: "object-examples", lecture: 25, title: "Object examples", blurb: "Worked problems with classes, trees and linked lists.", est: 30 }
+      { id: "efficiency", lecture: 24, title: "Efficiency", blurb: "Counting calls, memoization, and how work grows with the input.", est: 40 },
+      { id: "object-examples", lecture: 25, title: "Object examples", blurb: "List mutation in detail, and short data problems with comprehensions.", est: 30, pool: ["Lists & Dicts"] }
     ]},
     { title: "Gleam, interpreters and applications", exam: "Final", topics: [
       { id: "functional-programming", lecture: 27, title: "Functional programming", blurb: "Gleam: functions, let, pipes, and no loops.", est: 50 },
