@@ -285,3 +285,28 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 .typed.final label{font-weight:600; font-size:15px}
 .tblh{font:600 15px/1.3 var(--display); margin:16px 0 6px}
 @media (max-width:440px){ .appbar .barlink.exit{display:none} .appbar .bar{gap:12px} }
+
+/* ---------- confidence bar: rate yourself or flag, from the topic page or any stage ---------- */
+.confbar{display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; margin:0 0 18px; padding:10px 12px; border:1.5px solid var(--line); border-radius:14px; background:var(--surface)}
+.confbar .cq{font-size:14.5px; color:var(--muted); margin-right:auto}
+.confbar .cbtns{display:flex; flex-wrap:wrap; gap:6px}
+.cbtn{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border:1.5px solid var(--line); border-radius:999px; background:transparent; color:var(--ink); font:500 14px/1 var(--body); cursor:pointer}
+.cbtn span{font-size:17px; line-height:1}
+.cbtn:hover{border-color:var(--saffron)}
+.cbtn[aria-pressed="true"]{border-color:var(--saffron); background:var(--saffron-soft); font-weight:600}
+.cbtn.c1[aria-pressed="true"],.cbtn.c2[aria-pressed="true"]{border-color:var(--bad); background:var(--bad-soft)}
+.cbtn.c4[aria-pressed="true"]{border-color:var(--ok); background:var(--ok-soft)}
+.cbtn.flagbtn[aria-pressed="true"]{border-color:var(--bad); background:var(--bad-soft); color:var(--bad)}
+.topics .chip.conf{border-color:var(--line)}
+.chip.conf.c1,.chip.conf.c2{color:var(--bad); background:var(--bad-soft); border-color:transparent}
+.chip.conf.c3{color:var(--saffron-ink); background:var(--saffron-soft); border-color:transparent}
+.chip.conf.c4{color:var(--ok); background:var(--ok-soft); border-color:transparent}
+.chist{margin:-6px 0 0}
+.chist span{white-space:nowrap}
+.stages + .confbar{margin-top:24px}
+@media (max-width:560px){ .confbar .cq{width:100%} .cbtn small{display:none} .cbtn.flagbtn small{display:inline} }
+
+/* ---------- read aloud: the sentence being read is highlighted ---------- */
+.narr .say .sent.now{background:var(--saffron-soft); box-shadow:0 0 0 3px var(--saffron-soft); border-radius:4px}
+.narctl{display:inline-flex; align-items:center; gap:6px}
+.narctl .ncount{font:500 12.5px/1 var(--mono); color:var(--muted); margin-left:2px}
