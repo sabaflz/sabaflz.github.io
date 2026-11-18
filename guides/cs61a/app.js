@@ -32,7 +32,7 @@
   function saveSoon() { clearTimeout(saveTimer); saveTimer = setTimeout(save, 400); }
   function T(id) {
     var t = S.topics[id] || (S.topics[id] = {});
-    t.asks = t.asks || {}; t.check = t.check || {}; t.solved = t.solved || {}; t.hints = t.hints || {}; t.step = t.step || 0;
+    t.asks = t.asks || {}; t.check = t.check || {}; t.solved = t.solved || {}; t.hints = t.hints || {}; t.step = t.step || 0; t.flags = t.flags || {}; t.spent = t.spent || {};
     return t;
   }
   function level() { return S.level || C.defaultLevel; }
@@ -80,9 +80,9 @@
   function topicMin(t) { return L[t.id] ? stageMin(t, "learn") + stageMin(t, "check") + stageMin(t, "deepen") : (t.est || 0); }
   /* Time still ahead for a topic. Counts what is finished inside it: lesson steps,
      check questions answered, problems solved. Marking a topic confident clears it. */
-  function leftMin(t) {
+  function leftMin(t, workOnly) {
     var s = S.topics[t.id];
-    if (s && s.confident) return 0;
+    if (s && s.confident && !workOnly) return 0;
     if (!L[t.id] || !s) return topicMin(t);
     var m = 0, n;
     if (!s.lessonDone) { n = items(t, "learn").length; m += stageMin(t, "learn") * (n ? Math.max(0, n - (s.step || 0)) / n : 1); }
@@ -94,8 +94,78 @@
   function leftText(m) { return m < 2.5 ? "done" : dur(m).replace("about ", "") + " left"; }
   function timeBar(list) {
     var r5 = function (m) { return Math.round(m / 5) * 5; }, total = r5(sumMin(list)), left = r5(sumLeft(list)), pct = total ? Math.round(100 * (total - left) / total) : 0;
-    return '<div class="timecard"><div class="nums"><div><strong>' + dur(total).replace("about ", "") + '</strong><span>whole course</span></div><div><strong>' + (total - left < 2.5 ? "0 min" : dur(total - left).replace("about ", "")) + '</strong><span>done</span></div><div><strong>' + (left < 2.5 ? "0 min" : dur(left).replace("about ", "")) + '</strong><span>left</span></div></div>' +
-      '<div class="bar" role="img" aria-label="' + pct + ' percent of the course time done"><i style="width:' + (pct ? Math.max(2, pct) : 0) + '%"></i></div><p class="meta">' + pct + '% done by time · estimates for the lesson, check and exam-style problems · practice is extra</p></div>';
+    var plain = function (m) { return m < 2.5 ? "0 min" : dur(m).replace("about ", ""); };
+    var h = '<div class="timecard"><div class="nums"><div><strong>' + plain(total) + "</strong><span>" + (S.filter ? esc(filterName(S.filter)) : "whole course") + "</span></div><div><strong>" + plain(total - left) + "</strong><span>done</span></div><div><strong>" + plain(left) + "</strong><span>left</span></div></div>" +
+      '<div class="tbar" role="img" aria-label="' + pct + ' percent done by time"><i style="width:' + (pct ? Math.max(2, pct) : 0) + '%"></i></div><p class="meta">' + pct + "% done by time · estimates for the lesson, check and exam-style problems · practice is extra</p>";
+    var f = paceFactor(), mine = f ? left * f : left;
+    if (f && left >= 5) h += '<p class="pace">At your pace so far, ' + (Math.abs(f - 1) < 0.08 ? "right on the estimates" : f < 1 ? "faster than the estimates" : "slower than the estimates") + ": <strong>" + dur(mine) + " left</strong>.</p>";
+    var d = daysUntil(S.examDate);
+    if (S.examDate && d !== null && !dateOpen) {
+      h += '<p class="pace">' + (d < 0 ? "Your exam date, " + esc(niceDate(S.examDate)) + ", has passed." : d === 0 ? "Your exam is today. " + (left >= 5 ? cap(dur(mine)) + " still on the list." : "Everything is done.") :
+        "Exam on " + esc(niceDate(S.examDate)) + ", in " + d + " day" + (d === 1 ? "" : "s") + ". " + (left < 5 ? "Everything here is done." : "To finish " + (S.filter ? "these units" : "the course") + " the day before: <strong>" + dur(mine / Math.max(1, d)) + " a day</strong>" + (d > 1 ? ", starting today." : "."))) +
+        ' <button type="button" class="linkbtn" data-act="dateopen">Change</button></p>';
+    } else {
+      h += '<form class="dateform" data-act="examdate"><label for="examdate">Exam date</label><input type="date" id="examdate" name="d" value="' + esc(S.examDate || "") + '"><button class="btn small" type="submit">Set</button>' + (S.examDate ? '<button type="button" class="linkbtn" data-act="dateclear">Remove</button>' : '<span class="muted">Shows how much to do each day.</span>') + "</form>";
+    }
+    return h + "</div>";
+  }
+  /* Which units the map shows. "" means everything. */
+  var EXAMS = []; C.units.forEach(function (u) { if (u.exam && EXAMS.indexOf(u.exam) < 0) EXAMS.push(u.exam); });
+  function shownUnits() { return S.filter ? C.units.filter(function (u) { return u.exam === S.filter; }) : C.units; }
+  function shownTopics() { var a = []; shownUnits().forEach(function (u) { a = a.concat(u.topics); }); return a; }
+  function filterName(x) { return x === "Final" ? "New for the final" : x + " units"; }
+
+  /* Time actually spent, counted only while a lesson, check or problem page is open and in use. */
+  function coreSpent(t) { var sp = (S.topics[t.id] || {}).spent || {}; return ((sp.learn || 0) + (sp.check || 0) + (sp.deepen || 0)) / 60; }
+  function allSpent(t) { return coreSpent(t) + ((((S.topics[t.id] || {}).spent || {}).practice || 0) / 60); }
+  /* Your pace: time spent on finished work, divided by its estimate. Needs 30 estimated minutes of finished work. */
+  function paceFactor() {
+    var est = 0, spent = 0;
+    TOPICS.forEach(function (t) {
+      if (!L[t.id]) return;
+      var done = topicMin(t) - leftMin(t, true), sp = coreSpent(t); // only work really finished counts, not topics skipped as confident
+      if (done > 0 && sp > 0) { est += done; spent += sp; }
+    });
+    if (est < 30) return 0;
+    return Math.min(2.5, Math.max(0.4, spent / est));
+  }
+  function daysUntil(iso) {
+    var p = String(iso || "").split("-"); if (p.length !== 3) return null;
+    var d = new Date(+p[0], +p[1] - 1, +p[2]), now = new Date(), today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    return isNaN(d) ? null : Math.round((d - today) / 86400000);
+  }
+  function niceDate(iso) { var p = iso.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }); }
+
+  /* Review list: things you flagged, plus topics where the app saw you struggle. */
+  function reviewItems() {
+    var out = [];
+    TOPICS.forEach(function (t) {
+      var s = S.topics[t.id]; if (!s) return;
+      var why = [], missed = 0, asks = 0, hinted = [];
+      Object.keys(s.check || {}).forEach(function (k) { if (!s.check[k].ok) missed++; });
+      Object.keys(s.asks || {}).forEach(function (k) { if (!s.asks[k].ok) asks++; });
+      ["deepen", "practice"].forEach(function (st) { items(t, st).forEach(function (p) { if ((s.hints || {})[p.id] >= 2) hinted.push(p); }); });
+      if (s.flag) why.push("you flagged this topic");
+      if (missed) why.push(missed + " check question" + (missed === 1 ? "" : "s") + " missed");
+      if (asks >= 2) why.push(asks + " lesson questions missed");
+      if (hinted.length) why.push(hinted.length + " problem" + (hinted.length === 1 ? "" : "s") + " needed two or more hints");
+      var flagged = [];
+      ["deepen", "practice"].forEach(function (st) { items(t, st).forEach(function (p) { if ((s.flags || {})[p.id]) flagged.push({ p: p, stage: st }); }); });
+      if (why.length || flagged.length) out.push({ t: t, why: why, flagged: flagged, weight: (s.flag ? 3 : 0) + missed * 2 + asks + hinted.length * 2 + flagged.length * 2, link: missed ? "/check" : "" });
+    });
+    out.sort(function (a, b) { return b.weight - a.weight; });
+    return out;
+  }
+  function reviewHTML() {
+    var list = reviewItems(), h = '<section class="review"><h2>Review list<small>What you flagged, and where you slipped</small></h2>';
+    if (!list.length) {
+      if (S.noReviewExample) return h + '<p class="muted">Nothing here yet. Flag a topic or a problem, or miss a check question, and it shows up here.</p></section>';
+      return h + '<ul class="rlist"><li class="example"><span><strong>Example: Tree recursion</strong><small>2 check questions missed · 1 problem needed two or more hints</small><small>Flagged problem: Count the paths</small></span><button type="button" class="linkbtn" data-act="hideexample">Remove example</button></li></ul><p class="muted" style="font-size:14px">This is what an entry looks like. Real ones appear when you flag something or miss questions.</p></section>';
+    }
+    return h + '<ul class="rlist">' + list.map(function (r) {
+      return '<li><span><a href="#/t/' + r.t.id + r.link + '"><strong>' + esc(r.t.title) + "</strong></a>" + (r.why.length ? "<small>" + esc(cap(r.why.join(" · "))) + "</small>" : "") +
+        r.flagged.map(function (f) { return '<small>Flagged problem: <a href="#/t/' + r.t.id + "/" + f.stage + "/" + f.p.id + '">' + esc(f.p.title) + "</a></small>"; }).join("") + '</span><span class="meta">' + ((S.topics[r.t.id] || {}).confident ? "marked confident" : leftText(leftMin(r.t))) + "</span></li>";
+    }).join("") + "</ul></section>";
   }
   function sumMin(list) { return list.reduce(function (a, t) { return a + topicMin(t); }, 0); }
   function dur(m) {
@@ -157,12 +227,12 @@
   function grade(q, picked) { return q.type === "mc" ? picked === q.answer : norm(picked) === norm(q.answer); }
 
   /* ---------- course map ---------- */
-  var levelOpen = false;
+  var levelOpen = false, dateOpen = false;
   function renderMap() {
     var lv = level(), h = "";
     h += '<div class="maphead"><p class="eyebrow">Learn, check, deepen, practice</p><h1>CS 61A</h1>' +
       '<p class="lede">Work through the course one topic at a time. Each topic starts with a step-through lesson, then quick questions, then exam-style problems that run real Python, Gleam and SQL in your browser. Skip around whenever you like. Your progress is saved in this browser.</p>' +
-      timeBar(TOPICS) + '</div>';
+      timeBar(shownTopics()) + '</div>';
 
     if (!S.level || levelOpen) {
       h += '<form class="level" data-act="level"><h2>Where are you starting from?</h2><div class="opts">' + C.levels.map(function (l) {
@@ -173,7 +243,11 @@
       h += '<p class="levelline">Starting level: <strong>' + esc(cur.label) + '</strong><button type="button" class="linkbtn" data-act="levelopen">Change</button></p>';
     }
 
-    C.units.forEach(function (u, ui) {
+    h += '<div class="filters" role="group" aria-label="Show units for">' + [""].concat(EXAMS).map(function (x) {
+      return '<button type="button" class="fchip' + ((S.filter || "") === x ? " on" : "") + '" data-act="filter" data-x="' + esc(x) + '" aria-pressed="' + ((S.filter || "") === x) + '">' + (x ? esc(filterName(x)) : "Everything") + "</button>";
+    }).join("") + "</div>" + reviewHTML();
+
+    shownUnits().forEach(function (u) { var ui = C.units.indexOf(u);
       h += '<section class="unit"><h2>' + esc(u.title) + "<small>Unit " + (ui + 1) + (u.exam ? " · for " + esc(u.exam) : "") + " · " + dur(sumMin(u.topics)) + " · " + leftText(sumLeft(u.topics)) + '</small></h2><ul class="topics">' + u.topics.map(function (t) {
         var s = T(t.id), dot = s.confident ? "done" : started(t) ? "started" : "";
         var chips = "";
@@ -181,7 +255,7 @@
         else if (started(t)) chips += '<span class="chip go">In progress</span>';
         if ((t.testOut || []).indexOf(lv) >= 0 && !s.confident) chips += '<span class="chip info">Optional at your level</span>';
         chips += '<span class="chip">' + (has(t, "learn") ? (has(t, "practice") ? "Lesson and practice" : "Lesson ready") : has(t, "practice") ? "Practice only" : "Coming soon") + "</span>";
-        return '<li><a class="topic" href="#/t/' + t.id + '"><span class="dot ' + dot + '" aria-hidden="true"></span><span class="txt"><h3>' + esc(t.title) + "</h3><p>" + esc(t.blurb) + '</p><p class="meta">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") + dur(topicMin(t)) + (started(t) ? " · " + leftText(leftMin(t)) : "") + '</p></span><span class="chips">' + chips + "</span></a></li>";
+        return '<li><a class="topic" href="#/t/' + t.id + '"><span class="dot ' + dot + '" aria-hidden="true"></span><span class="txt"><h3>' + esc(t.title) + "</h3><p>" + esc(t.blurb) + '</p><p class="meta">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") + dur(topicMin(t)) + (started(t) ? " · " + leftText(leftMin(t)) : "") + (allSpent(t) >= 1 ? " · " + Math.round(allSpent(t)) + " min spent" : "") + '</p></span><span class="chips">' + (s.flag ? '<span class="chip flag">Flagged</span>' : "") + chips + "</span></a></li>";
       }).join("") + "</ul></section>";
     });
     view.innerHTML = h;
@@ -199,7 +273,7 @@
     var first = level() === "review" ? "check" : "learn", suggested = null;
     STAGES.slice(STAGES.indexOf(first)).concat(STAGES).forEach(function (st) { if (!suggested && has(t, st) && !stageDone(t, st)) suggested = st; });
     var h = crumb(t) + '<p class="eyebrow">' + esc(t.unit || "") + "</p><h1>" + esc(t.title) + '</h1><p class="lede">' + esc(t.blurb) + '</p><p class="meta" style="margin-top:14px">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") +
-      (l ? cap(dur(topicMin(t))) + " for the lesson, check and exam-style problems" + (started(t) ? " · " + leftText(leftMin(t)) : "") : "Planned: " + dur(topicMin(t))) + (has(t, "practice") ? " · Practice is extra" : "") + "</p>" + sources(t, "From the course" + (t.lecture ? ", Lecture " + t.lecture : "") + ":") + '<ol class="stages">';
+      (l ? cap(dur(topicMin(t))) + " for the lesson, check and exam-style problems" + (started(t) ? " · " + leftText(leftMin(t)) : "") + (allSpent(t) >= 1 ? " · you have spent " + Math.round(allSpent(t)) + " min" : "") : "Planned: " + dur(topicMin(t))) + (has(t, "practice") ? " · Practice is extra" : "") + "</p>" + sources(t, "From the course" + (t.lecture ? ", Lecture " + t.lecture : "") + ":") + '<ol class="stages">';
     STAGES.forEach(function (st) {
       var ok = has(t, st), done = stageDone(t, st), label = "Start";
       if (st === "learn" && ok) label = s.lessonDone ? "Replay" : s.step ? "Continue" : "Start";
@@ -208,7 +282,7 @@
       h += '<li class="stage' + (done ? " done" : "") + '"><div><h2>' + NAMES[st] + "</h2><p>" + esc(desc[st]) + '</p></div><div class="act">' +
         (ok ? '<a class="btn small' + (st === suggested ? " primary" : "") + '" href="#/t/' + t.id + "/" + st + '">' + label + "</a>" : '<span class="chip">Coming soon</span>') + "</div></li>";
     });
-    h += '</ol><div class="finish"><label class="toggle"><input type="checkbox" data-act="confident"' + (s.confident ? " checked" : "") + "> I feel confident with this topic</label>" +
+    h += '</ol><div class="finish"><label class="toggle"><input type="checkbox" data-act="confident"' + (s.confident ? " checked" : "") + "> I feel confident with this topic</label>" + '<label class="toggle"><input type="checkbox" data-act="flagtopic"' + (s.flag ? " checked" : "") + "> Flag for review</label>" +
       (nx ? '<a class="btn small" href="#/t/' + nx.id + '">Next topic: ' + esc(nx.title) + "</a>" : "") + "</div>";
     view.innerHTML = h;
   }
@@ -301,7 +375,7 @@
         ? '<button class="btn small primary" type="button" data-act="reveal">Compare with the solution</button>'
         : '<button class="btn small" type="button" data-act="run">' + (p.sql ? "Run the query" : "Run the examples") + '</button><button class="btn small primary" type="button" data-act="submit">Submit</button>') +
       (p.hints ? '<button class="btn small quiet" type="button" data-act="hint">Hint</button>' : "") +
-      '<button class="btn small quiet" type="button" data-act="resetcode">Reset code</button></div><div id="hints">' + hintsHTML(p, s) + '</div><div class="result" id="result" aria-live="polite">' +
+      '<button class="btn small quiet" type="button" data-act="resetcode">Reset code</button><button class="btn small quiet" type="button" data-act="flagp" aria-pressed="' + !!s.flags[p.id] + '">' + (s.flags[p.id] ? "Flagged for review" : "Flag for review") + '</button></div><div id="hints">' + hintsHTML(p, s) + '</div><div class="result" id="result" aria-live="polite">' +
       (s.solved[p.id] ? solvedHTML() : "") + "</div>" +
       (p.norun ? '<p class="muted" style="font-size:14.5px; margin-top:14px">' + esc(p.lang || "This language") + ' does not run in this app, so this problem is self-checked: write your answer, then compare it with the solution.</p>'
                : '<details class="reveal"><summary>Show the solution</summary>' + codeHTML(p.solution) + (p.explain ? '<p style="margin-top:10px">' + esc(p.explain) + "</p>" : "") + "</details>") + "</div></div>";
@@ -564,6 +638,11 @@
     else if (act === "next") stepBy(1);
     else if (act === "back") stepBy(-1);
     else if (act === "levelopen") { levelOpen = true; render(true); }
+    else if (act === "filter") { S.filter = el.getAttribute("data-x") || ""; save(); render(true); }
+    else if (act === "dateopen") { dateOpen = true; render(true); }
+    else if (act === "dateclear") { delete S.examDate; dateOpen = false; save(); render(true); }
+    else if (act === "hideexample") { S.noReviewExample = true; save(); render(true); }
+    else if (act === "flagp" && cur) { var fs = T(cur.t.id); if (fs.flags[cur.p.id]) delete fs.flags[cur.p.id]; else fs.flags[cur.p.id] = true; save(); el.textContent = fs.flags[cur.p.id] ? "Flagged for review" : "Flag for review"; el.setAttribute("aria-pressed", !!fs.flags[cur.p.id]); }
     else if (act === "recheck" && t) { T(t.id).check = {}; save(); render(false); }
     else if (act === "reveal" && cur) {
       document.getElementById("result").innerHTML = revealHTML(cur.p);
@@ -578,6 +657,7 @@
   });
   view.addEventListener("change", function (e) {
     var act = e.target.getAttribute && e.target.getAttribute("data-act"), t = topicById(route()[1]);
+    if (act === "flagtopic" && t) { T(t.id).flag = e.target.checked; save(); }
     if (act === "confident" && t) { T(t.id).confident = e.target.checked; save(); render(true); }
     if (act === "narrate") { S.narrate = e.target.checked; save(); if (S.narrate && t) speak(L[t.id].steps[T(t.id).step].say); else hush(); }
   });
@@ -585,6 +665,7 @@
     var f = e.target, act = f.getAttribute("data-act");
     e.preventDefault();
     if (act === "typed") { var v = f.querySelector("input").value; if (v.trim()) answer(f.getAttribute("data-ctx"), +f.getAttribute("data-n"), v.trim()); }
+    if (act === "examdate") { var dv = f.querySelector("input").value; if (dv) { S.examDate = dv; dateOpen = false; save(); render(true); } }
     if (act === "level") { var c = f.querySelector("input:checked"); S.level = c ? c.value : C.defaultLevel; levelOpen = false; save(); render(true); }
   });
   view.addEventListener("input", function (e) {
@@ -612,6 +693,15 @@
     if (e.key === "ArrowRight") stepBy(1);
     if (e.key === "ArrowLeft") stepBy(-1);
   });
+  /* Time spent: every 15 seconds, if this tab is visible, a lesson, check or problem page is open,
+     and there was a key press, click or scroll in the last 2 minutes, add 15 seconds to that stage. */
+  var lastActive = Date.now();
+  ["keydown", "pointerdown", "scroll"].forEach(function (ev) { window.addEventListener(ev, function () { lastActive = Date.now(); }, { passive: true }); });
+  setInterval(function () {
+    var r = route(), t = r[0] === "t" ? topicById(r[1]) : null;
+    if (!t || STAGES.indexOf(r[2]) < 0 || document.hidden || Date.now() - lastActive > 120000) return;
+    var sp = T(t.id).spent; sp[r[2]] = (sp[r[2]] || 0) + 15; saveSoon();
+  }, 15000);
   window.addEventListener("pagehide", function () { hush(); save(); });
 
   render(false);

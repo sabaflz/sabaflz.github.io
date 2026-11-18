@@ -208,5 +208,25 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 .timecard .nums{display:flex; gap:28px; flex-wrap:wrap}
 .timecard .nums strong{display:block; font:700 22px/1.2 var(--display); color:var(--ink)}
 .timecard .nums span{font:500 12px/1.4 var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:.05em}
-.timecard .bar{height:8px; border-radius:99px; background:var(--surface-2); border:1px solid var(--line); margin:14px 0 8px; overflow:hidden}
-.timecard .bar i{display:block; height:100%; background:var(--saffron); border-radius:99px}
+.timecard .tbar{display:block; padding:0; height:8px; border-radius:99px; background:var(--surface-2); border:1px solid var(--line); margin:14px 0 8px; overflow:hidden}
+.timecard .tbar i{display:block; height:100%; background:var(--saffron); border-radius:99px}
+
+/* pace, exam date, unit filter, review list */
+.timecard .pace{margin:10px 0 0; font-size:15px; color:var(--ink)}
+.dateform{display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:12px; font-size:14.5px}
+.dateform label{font-weight:600}
+.dateform input{font:inherit; padding:6px 10px; border:1.5px solid var(--line); border-radius:8px; background:var(--surface); color:var(--ink)}
+.filters{display:flex; flex-wrap:wrap; gap:8px; margin:0 0 28px}
+.fchip{font:600 14px/1 var(--body); padding:9px 14px; border-radius:999px; border:1.5px solid var(--line); background:var(--surface); color:var(--ink); cursor:pointer}
+.fchip.on{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.fchip:focus-visible{outline:3px solid var(--saffron); outline-offset:2px}
+.review{margin:0 0 36px}
+.review h2{font:700 22px/1.2 var(--display); margin:0 0 12px}
+.review h2 small{font:500 13px/1 var(--mono); color:var(--muted); margin-left:10px}
+.rlist{list-style:none; margin:0; padding:0; border:1.5px solid var(--line); border-radius:14px; background:var(--surface)}
+.rlist li{display:flex; justify-content:space-between; gap:16px; align-items:center; padding:12px 16px; border-bottom:1px solid var(--line)}
+.rlist li:last-child{border-bottom:0}
+.rlist li.example{border-style:dashed; opacity:.85}
+.rlist small{display:block; color:var(--muted); font-size:14px; margin-top:3px}
+.chip.flag{color:var(--bad); border-color:var(--bad); background:var(--bad-soft)}
+.finish{flex-wrap:wrap}
