@@ -66,8 +66,8 @@ window.COURSE = {
       { id: "adts", lecture: 28, title: "Algebraic data types", blurb: "Types with variants, Result, and data that makes bad states impossible.", est: 45 },
       { id: "immutable-data", lecture: 29, title: "Immutable data", blurb: "Memoizing without mutation, external functions, and how programs run.", est: 45 },
       { id: "interpreters", lecture: 30, title: "Interpreters", blurb: "Programs as trees, environments as frames, and eval and apply.", est: 60 },
-      { id: "browsers", lecture: 32, title: "Browsers", blurb: "The Document Object Model and how pages are built.", est: 35 },
-      { id: "applications", lecture: 33, title: "Applications", blurb: "Structuring a single-page app: model, view, update.", est: 35 }
+      { id: "browsers", lecture: 32, title: "Browsers", blurb: "HTML, CSS and JavaScript, the DOM, events, and why apps keep a model.", est: 35 },
+      { id: "applications", lecture: 33, title: "Applications", blurb: "Model, view, update: building a web app from pure functions.", est: 35 }
     ]},
     { title: "SQL and software practice", exam: "Final", topics: [
       { id: "sql", lecture: 34, title: "SQL", blurb: "Declarative programming: select, where, order by.", est: 40 },
