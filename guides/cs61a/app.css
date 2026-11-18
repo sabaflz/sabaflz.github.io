@@ -267,3 +267,9 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 .legend .sw{display:inline-block; flex:none}
 .legend .sw.bar{width:12px; height:12px; border-radius:3px; background:var(--viz)}
 .legend .sw.tk{width:16px; height:0; border-top:2.5px solid var(--ink)}
+
+/* time line on lesson, check and problem pages */
+.timestrip{display:flex; flex-wrap:wrap; gap:6px 22px; margin:0 0 16px; font:500 13px/1.5 var(--mono); color:var(--muted)}
+.timestrip b{color:var(--ink); font-weight:600}
+.timestrip #clk{color:var(--ink); font-variant-numeric:tabular-nums}
+.timestrip.paused #clk::after{content:" (paused)"; color:var(--muted)}

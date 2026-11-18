@@ -262,6 +262,19 @@
       return '<div class="ln' + (hl.indexOf(i + 1) >= 0 ? " hl" : "") + '"><span class="no">' + (i + 1) + "</span><span>" + (esc(line) || " ") + "</span></div>";
     }).join("") + "</pre>";
   }
+  /* Time line shown while working: a running clock for this stage, what is left, and today's total. */
+  function clock(sec) { sec = Math.floor(sec); var m = Math.floor(sec / 60), x = sec % 60; return (m >= 60 ? Math.floor(m / 60) + ":" + ("0" + (m % 60)).slice(-2) : m) + ":" + ("0" + x).slice(-2); }
+  function stripInner(t, stage) {
+    var sp = T(t.id).spent[stage] || 0, F = factors(), names = { learn: "This lesson", check: "This check", deepen: "These problems", practice: "Practice here" };
+    var h = "<span><b>" + names[stage] + ':</b> <span id="clk">' + clock(sp) + "</span> spent";
+    if (stage !== "practice") { var l = leftParts(t)[stage] * F[stage]; h += " · " + (l < 1 ? "done" : "about " + hm(Math.max(1, Math.round(l))) + " left") + " (planned " + hm(stageMin(t, stage)) + ")"; }
+    h += "</span>";
+    if (stage !== "practice" && !T(t.id).confident) { var tl = leftMine(t); h += "<span><b>Topic:</b> " + (tl < 1 ? "done" : hm(Math.round(tl)) + " left") + "</span>"; }
+    var rec = recToday(TOPICS), did = spentOn(today(), true);
+    h += "<span><b>Today:</b> " + hm(did) + (rec >= 1 ? " of " + hm(Math.ceil(rec / 5) * 5) + (did >= rec ? ", done" : "") : "") + "</span>";
+    return h;
+  }
+  function timeStrip(t, stage) { return '<p class="timestrip" id="timestrip" data-t="' + t.id + '" data-stage="' + stage + '">' + stripInner(t, stage) + "</p>"; }
   function tabs(t, cur) {
     return '<ul class="tabs" aria-label="Stages">' + STAGES.map(function (st) {
       var ok = has(t, st);
@@ -477,7 +490,7 @@
     var i = s.step, st = l.steps[i], lv = level(), a = s.asks[i], last = i === n - 1;
     if (last && !s.lessonDone) { s.lessonDone = true; save(); }
     var blocked = st.ask && !a;
-    var h = crumb(t, "learn") + tabs(t, "learn") + '<div class="player"><div class="bar2"><i style="width:' + Math.round((i + 1) / n * 100) + '%"></i></div><div class="stagegrid">' +
+    var h = crumb(t, "learn") + tabs(t, "learn") + timeStrip(t, "learn") + '<div class="player"><div class="bar2"><i style="width:' + Math.round((i + 1) / n * 100) + '%"></i></div><div class="stagegrid">' +
       codeHTML(l.snippets[st.code] || "", st.hl) + '<div class="side">';
     if (st.stack) {
       h += "<div><h4>Calls in progress</h4><div class=\"frames\">" + st.stack.map(function (f, k) {
@@ -516,7 +529,7 @@
   function renderCheck(t) {
     var qs = items(t, "check"), s = T(t.id), nx = nextTopic(t);
     var answered = Object.keys(s.check).length, right = qs.filter(function (q, i) { return s.check[i] && s.check[i].ok; }).length;
-    var h = crumb(t, "check") + tabs(t, "check") + "<h1>Check</h1><p class=\"lede\" style=\"margin-bottom:24px\">Answer each one, then read the explanation. Nothing here is graded.</p>";
+    var h = crumb(t, "check") + tabs(t, "check") + timeStrip(t, "check") + "<h1>Check</h1><p class=\"lede\" style=\"margin-bottom:24px\">Answer each one, then read the explanation. Nothing here is graded.</p>";
     qs.forEach(function (q, i) {
       h += '<div class="qcard"><p class="num">Question ' + (i + 1) + " of " + qs.length + "</p>" + (q.code ? codeHTML(q.code) : "") + questionHTML(q, s.check[i], "check", i) + "</div>";
     });
@@ -543,7 +556,7 @@
     cur = { t: t, stage: stage, p: p };
     var intro = stage === "deepen" ? "Exam-style problems on this topic. Try each one before opening a hint."
       : "Past exam problems. Do as many as you need, then mark the topic confident.";
-    var h = crumb(t, stage) + tabs(t, stage) + "<h1>" + NAMES[stage] + '</h1><p class="lede" style="margin-bottom:24px">' + intro + '</p><div class="work"><ul class="plist" aria-label="Problems">' +
+    var h = crumb(t, stage) + tabs(t, stage) + timeStrip(t, stage) + "<h1>" + NAMES[stage] + '</h1><p class="lede" style="margin-bottom:24px">' + intro + '</p><div class="work"><ul class="plist" aria-label="Problems">' +
       list.map(function (x, i) {
         return '<li><a href="#/t/' + t.id + "/" + stage + "/" + x.id + '"' + (x === p ? ' aria-current="true"' : "") + '><span class="tick' + (s.solved[x.id] ? " yes" : "") + '" aria-hidden="true"></span>' + (i + 1) + ". " + esc(x.title) + (s.solved[x.id] ? '<span class="muted"> (solved)</span>' : "") + "</a></li>";
       }).join("") + '</ul><div class="prob"><h2>' + esc(p.title) + '</h2><p class="src">' + esc(p.source || "") +
@@ -877,16 +890,22 @@
     if (e.key === "ArrowRight") stepBy(1);
     if (e.key === "ArrowLeft") stepBy(-1);
   });
-  /* Time spent: every 15 seconds, if this tab is visible, a lesson, check or problem page is open,
-     and there was a key press, click or scroll in the last 2 minutes, add 15 seconds to that stage. */
-  var lastActive = Date.now();
+  /* Time spent: once a second, if this tab is visible, a lesson, check or problem page is open,
+     and there was a key press, click or scroll in the last 2 minutes, add a second to that stage.
+     Saved every 15 seconds and when the page is left. */
+  var lastActive = Date.now(), ticks = 0;
   ["keydown", "pointerdown", "scroll"].forEach(function (ev) { window.addEventListener(ev, function () { lastActive = Date.now(); }, { passive: true }); });
   setInterval(function () {
-    var r = route(), t = r[0] === "t" ? topicById(r[1]) : null;
-    if (!t || STAGES.indexOf(r[2]) < 0 || document.hidden || Date.now() - lastActive > 120000) return;
-    var sp = T(t.id).spent; sp[r[2]] = (sp[r[2]] || 0) + 15;
-    var d = dayRec(); d.sp[r[2]] = (d.sp[r[2]] || 0) + 15; if (d.left == null) d.left = Math.round(sumLeft(TOPICS)); fcache = null; saveSoon();
-  }, 15000);
+    var r = route(), t = r[0] === "t" ? topicById(r[1]) : null, strip = document.getElementById("timestrip");
+    var active = t && STAGES.indexOf(r[2]) >= 0 && !document.hidden && Date.now() - lastActive <= 120000;
+    if (strip) strip.classList.toggle("paused", !active);
+    if (!active) return;
+    var sp = T(t.id).spent; sp[r[2]] = (sp[r[2]] || 0) + 1;
+    var d = dayRec(); d.sp[r[2]] = (d.sp[r[2]] || 0) + 1; if (d.left == null) d.left = Math.round(sumLeft(TOPICS));
+    var clk = document.getElementById("clk");
+    if (++ticks % 15 === 0) { fcache = null; saveSoon(); if (strip && strip.getAttribute("data-t") === t.id && strip.getAttribute("data-stage") === r[2]) strip.innerHTML = stripInner(t, r[2]); }
+    else if (clk && strip && strip.getAttribute("data-stage") === r[2]) clk.textContent = clock(sp[r[2]]);
+  }, 1000);
   window.addEventListener("pagehide", function () { hush(); save(); });
 
   render(false);
