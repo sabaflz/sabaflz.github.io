@@ -1,0 +1,223 @@
+/*
+  lessons/random-variables.js: Lecture 19, Random variables (Note 19).
+  Follows the note: a random variable as a function on Ω, the homework
+  (fixed points) example, distributions and why they sum to 1, expectation
+  with the die, two dice and roulette examples, the Bernoulli, binomial and
+  uniform distributions, the geometric distribution and memorylessness, and
+  the tail sum formula that gives 𝔼[X] = 1/p.
+*/
+window.LESSONS["random-variables"] = {
+  minutes: 21,
+  boards: {
+    rv: [
+      "Experiment: flip a fair coin 4 times.  |Ω| = 2⁴ = 16",
+      "X = number of heads",
+      "",
+      "X(HTHH) = 3      X(HTHT) = 2      X(TTTT) = 0",
+      "",
+      "Definition:  a random variable is a function  X : Ω → ℝ",
+      "It assigns a real number X(ω) to every sample point ω ∈ Ω."
+    ],
+    fixed: [
+      "Shuffle 3 homeworks and hand them back at random.",
+      "X = number of students who get their own homework",
+      "",
+      "permutation:   123   132   213   231   312   321",
+      "X:               3     1     1     0     0     1",
+      "",
+      "Possible values:  0, 1, 3     (2 is impossible)"
+    ],
+    dist: [
+      "\"X = a\" is the event  {ω ∈ Ω : X(ω) = a}",
+      "",
+      "Distribution of X:  {(a, ℙ[X = a]) : a ∈ 𝒜}",
+      "",
+      "Fixed points, n = 3:   ℙ[X = 0] = 1/3,  ℙ[X = 1] = 1/2,  ℙ[X = 3] = 1/6",
+      "",
+      "The events X = a are disjoint and cover Ω (a partition),",
+      "so  Σₐ ℙ[X = a] = 1."
+    ],
+    expect: [
+      "Expectation:  𝔼[X] = Σₐ a · ℙ[X = a]",
+      "",
+      "Fixed points:  𝔼[X] = 0·(1/3) + 1·(1/2) + 3·(1/6) = 1",
+      "One die:       𝔼[X] = (1 + 2 + 3 + 4 + 5 + 6)/6 = 7/2",
+      "Two dice, sum: 𝔼[X] = 2·(1/36) + 3·(2/36) + … + 12·(1/36) = 7",
+      "",
+      "Roulette, $1 on black (18 black of 38 slots):",
+      "  𝔼[X] = (+1)·(18/38) + (−1)·(20/38) = −1/19"
+    ],
+    named: [
+      "Bernoulli(p):   ℙ[X = 1] = p,   ℙ[X = 0] = 1 − p",
+      "",
+      "Binomial(n, p): number of heads in n independent flips, ℙ[H] = p",
+      "   ℙ[X = i] = C(n, i) · pⁱ · (1 − p)ⁿ⁻ⁱ,   i = 0, 1, …, n",
+      "   (C(n, i) sequences with i heads, each with probability pⁱ(1 − p)ⁿ⁻ⁱ)",
+      "",
+      "Uniform{1, …, n}:  ℙ[X = i] = 1/n,   𝔼[X] = (n + 1)/2"
+    ],
+    geom: [
+      "Geometric(p): flips until the first head, ℙ[H] = p",
+      "   ℙ[X = i] = (1 − p)ⁱ⁻¹ · p,   i = 1, 2, 3, …",
+      "   Σᵢ (1 − p)ⁱ⁻¹ p = p · 1/(1 − (1 − p)) = 1  ✓",
+      "",
+      "ℙ[X > n] = (1 − p)ⁿ          (the first n flips are all tails)",
+      "",
+      "Memoryless:  ℙ[X > n + m | X > m] = (1 − p)ⁿ⁺ᵐ / (1 − p)ᵐ",
+      "                                  = (1 − p)ⁿ = ℙ[X > n]"
+    ],
+    tail: [
+      "Tail sum formula (X takes values in {0, 1, 2, …}):",
+      "   𝔼[X] = Σ_{i ≥ 1} ℙ[X ≥ i]",
+      "",
+      "Why:  𝔼[X] = 1·p₁ + 2·p₂ + 3·p₃ + …      (pᵢ = ℙ[X = i])",
+      "           = (p₁ + p₂ + p₃ + …) + (p₂ + p₃ + …) + (p₃ + …) + …",
+      "           = ℙ[X ≥ 1] + ℙ[X ≥ 2] + ℙ[X ≥ 3] + …",
+      "",
+      "Geometric:  ℙ[X ≥ i] = (1 − p)ⁱ⁻¹,  so  𝔼[X] = Σ (1 − p)ⁱ⁻¹ = 1/p"
+    ],
+    pitfalls: [
+      "Common mistakes:",
+      "1. Treating X as a number. X is a function; ℙ[X = a] is a number.",
+      "2. Expecting 𝔼[X] to be a value X can take (a die has 𝔼[X] = 7/2).",
+      "3. Calling something binomial when the trials are not independent",
+      "   or the number of trials is not fixed.",
+      "4. Off by one with the geometric: X counts the flips including",
+      "   the first head, so X ≥ 1 and ℙ[X = i] = (1 − p)ⁱ⁻¹ p."
+    ]
+  },
+  steps: [
+    { board: "rv", hl: [1, 2],
+      say: "So far you have computed probabilities of events. Now you want to measure something about the outcome, like the number of heads in 4 coin flips. Call that number X. Before the flips happen you do not know X, but every outcome gives it a definite value.",
+      basics: "Ω is the sample space, the set of all outcomes. ω (omega) is one outcome, also called a sample point. Here Ω has 16 outcomes like HTHH." },
+    { board: "rv", hl: [4, 6, 7],
+      say: "Formally, a random variable is a function from the sample space to the real numbers. For the outcome HTHH, X is 3. For HTHT, X is 2. The name is a little misleading: the function is fixed and nothing about it is random. What is random is which outcome happens, and so which value you see.",
+      ask: { type: "type", q: "Flip 4 coins and let X be the number of heads. What is X(THHH)?", answer: "3",
+        why: "THHH has three heads, so the function X sends this outcome to 3." } },
+    { board: "fixed", hl: [1, 2, 4, 5],
+      say: "Here is the note's running example. Collect 3 homeworks, shuffle them, and hand them back. X counts the students who get their own homework, which is the number of fixed points of the permutation. Each of the 6 permutations is equally likely, and the board shows X for each one.",
+      basics: "A permutation like 231 means student 1 gets homework 2, student 2 gets homework 3, and student 3 gets homework 1. A fixed point is a position i that gets i back." },
+    { board: "fixed", hl: [7],
+      say: "Reading off the second row, X only takes the values 0, 1 and 3. It can never be 2: if two students have their own homework, the last homework left is the third student's own.",
+      ask: { type: "mc", q: "With n students, which value can the number of fixed points never take?",
+        choices: ["0", "1", "n − 1", "n"], answer: 2,
+        why: "If n − 1 students have their own homework, the one homework left belongs to the last student, so that student has theirs too. Exactly n − 1 fixed points is impossible." } },
+    { board: "dist", hl: [1, 3, 5],
+      say: "For any value a, the set of outcomes where X equals a is an event, written X = a. The distribution of X lists every value X can take together with its probability. For the homework example, X is 0 with probability 2 out of 6, 1 with probability 3 out of 6, and 3 with probability 1 out of 6.",
+      table: { name: "Fixed points, n = 3", cols: ["a", "outcomes", "ℙ[X = a]"], rows: [["0", "231, 312", "1/3"], ["1", "132, 213, 321", "1/2"], ["3", "123", "1/6"]] } },
+    { board: "dist", hl: [7, 8],
+      say: "Because X is a function, every outcome lands in exactly one event X = a. So these events split the sample space into disjoint pieces, a partition, and their probabilities must add up to 1. That is a quick check on any distribution you compute.",
+      tip: "On an exam, add up your distribution before moving on. If it does not sum to 1, you missed a value or double counted.",
+      ask: { type: "type", q: "X takes only the values 0, 1 and 2, with ℙ[X = 0] = 0.2 and ℙ[X = 1] = 0.5. What is ℙ[X = 2]?", answer: "0.3", accept: ["3/10"],
+        why: "The probabilities must sum to 1, so ℙ[X = 2] = 1 − 0.2 − 0.5 = 0.3." } },
+    { board: "expect", hl: [1, 3],
+      say: "The full distribution is often hard to find and hard to read. The expectation summarizes it in one number: add up each value times its probability. For the homework example that is 0 times a third, plus 1 times a half, plus 3 times a sixth, which is exactly 1.",
+      basics: "Σₐ means \"add up over every value a that X can take\". 𝔼[X] is also called the mean or the expected value." },
+    { board: "expect", hl: [4, 5],
+      say: "For one fair die, the expectation is 21 over 6, which is 7 halves. Notice that a die never shows 3.5. The expectation is a long-run average, not a value you should expect to see. A good picture is a balance point: if you cut the bar chart of the distribution out of wood, 𝔼[X] is where it balances. Two dice have expected sum 7, which you can get from the full table of 11 values." },
+    { board: "expect", hl: [7, 8],
+      say: "Expectations can be negative. Bet 1 dollar on black in roulette. You win 1 dollar with probability 18 over 38 and lose 1 dollar with probability 20 over 38. Your expected net winnings are minus 1 over 19, about a nickel lost per game. The two green slots are what tip the game toward the casino.",
+      ask: { type: "type", q: "Instead, bet $1 on a single number. You win $35 with probability 1/38 and lose your $1 otherwise. What are your expected net winnings?", answer: "-1/19", accept: ["-2/38", "-0.0526", "-0.053"],
+        why: "𝔼[X] = 35 · (1/38) + (−1) · (37/38) = (35 − 37)/38 = −2/38 = −1/19. The same as betting on black." } },
+    { board: "named", hl: [1],
+      say: "Some distributions come up so often they have names. The simplest is Bernoulli with parameter p: the variable is 1 with probability p and 0 otherwise. Think of one flip of a coin with heads probability p, where heads counts as 1.",
+      basics: "X ∼ Bernoulli(p) is read \"X is distributed as Bernoulli with parameter p\". The symbol ∼ means \"has the distribution\"." },
+    { board: "named", hl: [3, 4, 5],
+      say: "Now flip that coin n times independently and count the heads. A sequence with exactly i heads has probability p to the i times 1 minus p to the n minus i, because the flips are independent. There are n choose i such sequences, so you multiply. That is the binomial distribution, written Bin of n and p.",
+      tip: "When a problem asks you to name a distribution, write it with its parameters, like X ∼ Bin(20, 2/5). The name alone usually loses points.",
+      ask: { type: "type", q: "X ∼ Bin(5, 1/3). What is ℙ[X = 2]? Give a fraction.", answer: "80/243", accept: ["0.329", "0.3292"],
+        why: "C(5, 2) · (1/3)² · (2/3)³ = 10 · (1/9) · (8/27) = 80/243." } },
+    { board: "named", hl: [7],
+      say: "The note uses the binomial for packet loss: send n plus k packets, each lost independently with probability p, and the number received is Bin of n plus k and 1 minus p. Another common one is the uniform distribution on 1 to n, where each value has probability 1 over n. Its mean is n plus 1 over 2, just like the die with n equal to 6." },
+    { board: "geom", hl: [1, 2, 3],
+      say: "Now keep flipping until the first head and let X be the number of flips, counting the head. X equals i exactly when the first i minus 1 flips are tails and flip i is heads, so the probability is 1 minus p to the i minus 1, times p. This is the geometric distribution. It has no largest value, and its probabilities still sum to 1 by the geometric series.",
+      basics: "The geometric series: 1 + r + r² + … = 1/(1 − r) when |r| < 1. Here r = 1 − p." },
+    { board: "geom", hl: [5, 7, 8],
+      say: "The probability that you need more than n flips is just the chance the first n are all tails, 1 minus p to the n. From that you get the memoryless property. If you have already failed m times, the chance you need more than n additional flips is the same as if you were starting fresh. The coin does not remember the past.",
+      ask: { type: "mc", q: "A fair coin has come up tails 10 times in a row. What is the probability the next flip is heads?",
+        choices: ["Less than 1/2", "Exactly 1/2", "More than 1/2, since heads is due"], answer: 1,
+        why: "The flips are independent, and the geometric distribution is memoryless. The past tails change nothing about the next flip." } },
+    { board: "tail", hl: [1, 2, 4, 5, 6],
+      say: "Computing the geometric mean straight from the definition needs a tricky sum. The note uses a better tool, the tail sum formula. For a variable that takes values 0, 1, 2 and so on, the expectation is the sum of the probabilities that X is at least i, for i from 1 up. The value i is counted i times, once in each of the first i tails.",
+      tip: "Reach for the tail sum formula whenever ℙ[X ≥ i] is easier to write than ℙ[X = i]. Maximums, minimums and waiting times are the usual cases." },
+    { board: "tail", hl: [8],
+      say: "For the geometric, X is at least i when the first i minus 1 flips are tails, so that probability is 1 minus p to the i minus 1. Summing the geometric series gives 1 over p. So a fair coin takes 2 flips on average to show heads, and a die takes 6 rolls on average to show a six.",
+      ask: { type: "type", q: "Each attempt to log in succeeds independently with probability 1/4. What is the expected number of attempts until the first success?", answer: "4",
+        why: "The number of attempts is Geometric(1/4), so 𝔼[X] = 1/p = 4." } },
+    { board: "pitfalls", hl: [1, 2, 3, 4, 5, 6, 7],
+      say: "To finish, the mistakes that cost points most often. Writing ℙ of X when you mean ℙ of X equals a. Expecting the mean to be a value X can take. Using the binomial when the trials are not independent, like drawing cards without replacement. And starting the geometric at 0: in this course it counts flips including the first head, so it starts at 1." }
+  ],
+
+  check: [
+    { type: "mc", q: "Flip 3 fair coins. X is the number of heads and Y is the number of tails. Which is true?",
+      choices: ["X and Y are the same random variable", "X and Y have the same distribution but are different functions", "X and Y have different distributions"], answer: 1,
+      why: "Both are Bin(3, 1/2), so they have the same distribution. But X(HHT) = 2 while Y(HHT) = 1, so they are different functions on Ω. In fact Y = 3 − X." },
+    { type: "type", q: "X is uniform on {1, 2, …, 10}. What is 𝔼[X]?", answer: "11/2", accept: ["5.5"],
+      why: "𝔼[X] = (n + 1)/2 = 11/2." },
+    { type: "type", q: "X ∼ Bin(6, 1/2). What is ℙ[X ≥ 1]? Give a fraction.", answer: "63/64", accept: ["0.984", "0.9844"],
+      why: "ℙ[X ≥ 1] = 1 − ℙ[X = 0] = 1 − (1/2)⁶ = 63/64. Using the complement avoids a sum." },
+    { type: "type", board: ["ℙ[X = −1] = 1/2,   ℙ[X = 2] = 1/3,   ℙ[X = 6] = 1/6"],
+      q: "What is 𝔼[X]? Give a fraction.", answer: "7/6", accept: ["1.167", "1.1667"],
+      why: "𝔼[X] = (−1)(1/2) + 2(1/3) + 6(1/6) = −1/2 + 2/3 + 1 = 7/6." },
+    { type: "type", q: "X ∼ Geometric(1/5). You have already seen 7 failures. What is the expected number of additional trials until the first success?", answer: "5",
+      why: "By memorylessness, the remaining wait is again Geometric(1/5), with mean 1/p = 5. The 7 failures do not matter." },
+    { type: "type", board: ["X takes values in {0, 1, 2, 3}", "ℙ[X ≥ 1] = 0.8,   ℙ[X ≥ 2] = 0.5,   ℙ[X ≥ 3] = 0.1"],
+      q: "What is 𝔼[X]?", answer: "1.4", accept: ["7/5"],
+      why: "By the tail sum formula, 𝔼[X] = 0.8 + 0.5 + 0.1 = 1.4." },
+    { type: "mc", q: "Which of these is binomial?",
+      choices: ["The number of aces in 5 cards dealt without replacement", "The number of sixes in 10 rolls of a fair die", "The number of rolls until the first six"], answer: 1,
+      why: "Ten independent rolls with ℙ[six] = 1/6 each gives Bin(10, 1/6). Cards without replacement are not independent, and \"rolls until the first six\" is geometric." },
+    { type: "type", q: "X ∼ Geometric(1/4). What is ℙ[X > 3]? Give a fraction.", answer: "27/64", accept: ["0.4219", "0.422"],
+      why: "X > 3 means the first 3 trials fail: (3/4)³ = 27/64." }
+  ],
+
+  deepen: [
+    { id: "rv_maxdice", title: "The larger of two dice", source: "Original question, in the style of Note 19",
+      desc: ["Roll two fair six-sided dice and let X be the larger of the two numbers (if they tie, X is that number).",
+        "Find the distribution of X, then find 𝔼[X]. Do it once from the definition and once with the tail sum formula."],
+      answer: "161/36", accept: ["4.472", "4.47"], answerLabel: "𝔼[X] =",
+      hints: ["X ≤ k means both dice are at most k. What is ℙ[X ≤ k]?",
+        "ℙ[X = k] = ℙ[X ≤ k] − ℙ[X ≤ k − 1] = (k² − (k − 1)²)/36.",
+        "For the tail sum, ℙ[X ≥ k] = 1 − ℙ[X ≤ k − 1] = 1 − (k − 1)²/36."],
+      solution: [
+        "ℙ[X ≤ k] = ℙ[both dice ≤ k] = (k/6)² = k²/36, since the dice are independent.",
+        "So ℙ[X = k] = (k² − (k − 1)²)/36 = (2k − 1)/36 for k = 1, …, 6.",
+        "Distribution: 1/36, 3/36, 5/36, 7/36, 9/36, 11/36 for k = 1, …, 6. These sum to 36/36 = 1. ✓",
+        "From the definition: 𝔼[X] = (1·1 + 2·3 + 3·5 + 4·7 + 5·9 + 6·11)/36 = (1 + 6 + 15 + 28 + 45 + 66)/36 = 161/36.",
+        "Tail sum: ℙ[X ≥ k] = 1 − (k − 1)²/36, so 𝔼[X] = Σ_{k=1}^{6} (1 − (k − 1)²/36) = 6 − (0 + 1 + 4 + 9 + 16 + 25)/36 = 6 − 55/36 = 161/36.",
+        "𝔼[X] = 161/36 ≈ 4.47."
+      ],
+      explain: "For a maximum, ℙ[X ≤ k] is easy because it is an AND of independent events. Get everything else from it by subtracting, or go straight to the tail sum." },
+    { id: "rv_packets", title: "How much redundancy is enough?", source: "Original question, based on the packet example in Note 19",
+      desc: ["You encode a message so that any 4 of the 5 packets you send are enough to rebuild it. Each packet is lost independently with probability 1/10.",
+        "Name the distribution of the number of packets received, with its parameters, and find the probability that the message can be rebuilt."],
+      answer: "45927/50000", accept: ["0.91854", "0.9185"], answerLabel: "ℙ[message rebuilt] =",
+      hints: ["Each packet arrives independently with probability 9/10. Count the arrivals.",
+        "The number received is X ∼ Bin(5, 9/10). You need ℙ[X ≥ 4] = ℙ[X = 4] + ℙ[X = 5]."],
+      solution: [
+        "Let X be the number of packets received. The 5 packets arrive independently, each with probability 9/10, so X ∼ Bin(5, 9/10).",
+        "The message can be rebuilt exactly when X ≥ 4.",
+        "ℙ[X = 5] = (9/10)⁵ = 59049/100000.",
+        "ℙ[X = 4] = C(5, 4) · (9/10)⁴ · (1/10) = 5 · 6561/100000 = 32805/100000.",
+        "ℙ[X ≥ 4] = (59049 + 32805)/100000 = 91854/100000 = 45927/50000 ≈ 0.919."
+      ],
+      explain: "A count of independent successes with a fixed number of trials is binomial. Name it with both parameters, then add up only the values you need." },
+    { id: "rv_firstsix", title: "First to roll a six", source: "Original question, a classic geometric setup",
+      desc: ["Alice and Bob take turns rolling a fair die, Alice first. The first person to roll a six wins.",
+        "(a) Let N be the total number of rolls in the game. What is the distribution of N, and what is 𝔼[N]?",
+        "(b) What is the probability that Bob wins?",
+        "(c) The first 4 rolls are not sixes. What is the expected total number of rolls now?"],
+      answer: "5/11", accept: ["0.4545", "0.455"], answerLabel: "ℙ[Bob wins] =",
+      hints: ["Each roll is a six with probability 1/6, independently. N is the roll number of the first six.",
+        "Bob wins exactly when N is even. Add ℙ[N = k] over even k; it is a geometric series with ratio (5/6)².",
+        "For (c), use memorylessness: after 4 failures, the remaining wait is a fresh Geometric(1/6)."],
+      solution: [
+        "(a) N ∼ Geometric(1/6), so 𝔼[N] = 1/p = 6.",
+        "(b) Bob rolls on the even turns, so ℙ[Bob wins] = Σ_{k even} (5/6)ᵏ⁻¹ (1/6).",
+        "   = (1/6)(5/6) · [1 + (5/6)² + (5/6)⁴ + …] = (5/36) · 1/(1 − 25/36) = (5/36) · (36/11) = 5/11.",
+        "   Check another way: Alice wins on roll 1 with probability 1/6; otherwise (5/6) the roles swap. So a = 1/6 + (5/6)(1 − a), giving a = 6/11 for Alice and 5/11 for Bob.",
+        "(c) Given N > 4, the extra rolls needed are again Geometric(1/6) with mean 6, so 𝔼[total] = 4 + 6 = 10."
+      ],
+      explain: "Going first is an advantage of 6/11 to 5/11. Memorylessness lets you restart the clock after any run of failures." }
+  ]
+};

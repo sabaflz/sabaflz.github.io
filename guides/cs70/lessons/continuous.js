@@ -1,0 +1,238 @@
+/*
+  lessons/continuous.js: Lecture 24, Continuous probability (slides; no course note yet).
+  Follows the slides: a uniform number on [0, 2], the density (PDF), the
+  triangle distribution, the CDF and how to use it, the exponential as the
+  limit of finer and finer geometric waiting times, expectation and variance
+  (exponential and uniform), joint densities, marginals (the dart in a disk),
+  and independence.
+*/
+window.LESSONS["continuous"] = {
+  minutes: 21,
+  boards: {
+    uniform: [
+      "X = a real number chosen uniformly at random from [0, 2]",
+      "",
+      "ℙ[X = 0.3] = 0",
+      "ℙ[X ≤ 1/2] = 1/4",
+      "ℙ[0.7 ≤ X ≤ 0.9] = 0.2/2 = 0.1",
+      "ℙ[a ≤ X ≤ b] = (b − a)/2     for 0 ≤ a ≤ b ≤ 2",
+      "",
+      "Every single point has probability 0. Intervals carry the probability."
+    ],
+    pdf: [
+      "A density (PDF) f : ℝ → ℝ satisfies",
+      "   f(x) ≥ 0 for all x,     ∫₋∞^∞ f(x) dx = 1",
+      "and gives probabilities by area:",
+      "   ℙ[a ≤ X ≤ b] = ∫ₐᵇ f(x) dx",
+      "",
+      "f(x) is probability per unit length near x. It is not a probability,",
+      "and it can be bigger than 1.",
+      "Uniform on [0, 2]:  f(x) = 1/2 on [0, 2], and 0 elsewhere"
+    ],
+    triangle: [
+      "Triangle density on [−2, 2], peak 1/2 at x = 0:",
+      "   f(x) = 1/2 − |x|/4   for −2 ≤ x ≤ 2,   0 elsewhere",
+      "Total area = (base · height)/2 = (4 · 1/2)/2 = 1  ✓",
+      "",
+      "ℙ[X ≤ −1] = area of the triangle from −2 to −1",
+      "          = (1 · 1/4)/2 = 1/8",
+      "Or integrate:  ∫₋₂⁻¹ (1/2 + x/4) dx = 1/8"
+    ],
+    cdf: [
+      "CDF:   F(a) = ℙ[X ≤ a] = ∫₋∞ᵃ f(x) dx",
+      "PDF from CDF:   f(a) = dF(a)/da",
+      "",
+      "F rises from 0 to 1 and never goes down.",
+      "ℙ[a < X ≤ b] = F(b) − F(a)",
+      "For continuous X:  ℙ[X < a] = ℙ[X ≤ a]   (the point a has probability 0)",
+      "",
+      "Uniform on [0, 2]:  F(a) = 0 for a < 0,  a/2 for 0 ≤ a ≤ 2,  1 for a > 2"
+    ],
+    limit: [
+      "Wait for an emission. Expected wait 5 minutes, so rate λ = 0.2 per minute.",
+      "",
+      "1 coin per minute,  p = 0.2:        ℙ[wait > 3] = 0.8³ ≈ 0.512",
+      "60 coins per minute, p = 0.2/60:     (1 − 0.2/60)¹⁸⁰ ≈ 0.548",
+      "60,000 per minute:                   ≈ 0.549",
+      "n per minute:   (1 − 0.2/n)³ⁿ  →  e^(−0.2 · 3) = e^(−0.6) ≈ 0.549",
+      "   using  (1 − 1/x)ˣ → e⁻¹"
+    ],
+    expo: [
+      "X ~ Exponential(λ),  λ > 0:",
+      "   ℙ[X > a] = e^(−λa)        for a ≥ 0",
+      "   F(a) = 1 − e^(−λa)        for a ≥ 0,  0 for a < 0",
+      "   f(a) = λ e^(−λa)          for a ≥ 0,  0 for a < 0",
+      "",
+      "Neutrino example, λ = 0.02 per minute:",
+      "   ℙ[X ≤ 100] = F(100) = 1 − e^(−2) ≈ 0.8647",
+      "",
+      "Memoryless:  ℙ[X > s + t | X > s] = e^(−λ(s+t))/e^(−λs) = e^(−λt) = ℙ[X > t]"
+    ],
+    expect: [
+      "𝔼[X] = ∫₋∞^∞ x f(x) dx           (discrete: Σ x · ℙ[X = x])",
+      "𝔼[g(X)] = ∫₋∞^∞ g(x) f(x) dx",
+      "Var(X) = 𝔼[X²] − 𝔼[X]²",
+      "",
+      "Exponential(λ), by parts:  𝔼[X] = ∫₀^∞ x λe^(−λx) dx = 1/λ",
+      "                           𝔼[X²] = 2/λ²,   Var(X) = 2/λ² − 1/λ² = 1/λ²",
+      "Compare Geometric(p):  𝔼 = 1/p,  Var = (1 − p)/p²",
+      "",
+      "Uniform on [0, ℓ]:  𝔼[X] = ℓ/2,   Var(X) = ℓ²/12"
+    ],
+    joint: [
+      "Joint density f(x, y) ≥ 0 with  ∫∫ f(x, y) dx dy = 1",
+      "ℙ[a ≤ X ≤ b, c ≤ Y ≤ d] = ∫ (y from c to d) ∫ (x from a to b) f(x, y) dx dy",
+      "In general ℙ[(X, Y) ∈ R] = ∫∫ over R of f(x, y)",
+      "",
+      "Marginals:  f_X(x) = ∫₋∞^∞ f(x, y) dy,    f_Y(y) = ∫₋∞^∞ f(x, y) dx"
+    ],
+    dart: [
+      "Dart lands uniformly in the disk of radius 2 around the origin.",
+      "   f(x, y) = 1/(4π)  if x² + y² ≤ 4,   0 otherwise   (area of disk = 4π)",
+      "",
+      "Marginal of X, for −2 ≤ x ≤ 2:  y runs from −√(4 − x²) to √(4 − x²)",
+      "   f_X(x) = 2√(4 − x²) · 1/(4π) = √(4 − x²)/(2π)",
+      "Check: ∫₋₂² √(4 − x²) dx = half the disk's area = 2π, so the total is 1. ✓"
+    ],
+    indep: [
+      "X and Y are independent if for all intervals",
+      "   ℙ[a ≤ X ≤ b, c ≤ Y ≤ d] = ℙ[a ≤ X ≤ b] · ℙ[c ≤ Y ≤ d]",
+      "Equivalently:  f(x, y) = f_X(x) · f_Y(y)  for all x, y",
+      "",
+      "Dart in the disk:  NOT independent.",
+      "   If X is near 2, Y must be near 0. Knowing X changes what Y can be.",
+      "Quick test: if the region where f > 0 is not a rectangle, they are dependent."
+    ]
+  },
+  steps: [
+    { board: "uniform", hl: [1, 3],
+      say: "Until now every random variable took values in a list you could count. Now pick a real number uniformly from 0 to 2. What is the chance it equals exactly 0.3? There are uncountably many possible values, all equally likely, so each single value has probability 0.",
+      basics: "[0, 2] is the closed interval of all real numbers x with 0 ≤ x ≤ 2." },
+    { board: "uniform", hl: [4, 5, 6, 8],
+      say: "Intervals are where the probability lives. Being at most a half is a quarter of the length of the range, so it has probability one quarter. The interval from 0.7 to 0.9 is a tenth of the range. In general an interval inside 0 to 2 has probability equal to its length over 2.",
+      ask: { type: "type", q: "X is uniform on [0, 2]. What is ℙ[0.5 ≤ X ≤ 1.75]?", answer: "0.625", accept: ["5/8", ".625"],
+        why: "Length 1.25 out of 2: 1.25/2 = 0.625." } },
+    { board: "pdf", hl: [1, 2, 3, 4],
+      say: "The probability mass function from the discrete case is useless here, since it is 0 everywhere. Its replacement is the probability density function, f. A density is never negative, has total area 1 under it, and the probability of an interval is the area under f over that interval.",
+      basics: "∫ₐᵇ f(x) dx is the area under the graph of f between a and b. For a flat f this is just height times width." },
+    { board: "pdf", hl: [6, 7, 8],
+      say: "Think of f of x as probability per unit length near x. It is not itself a probability, and it can be bigger than 1. For the uniform on 0 to 2, the density is a flat line at height one half, because the area must be 1 over a width of 2. A uniform on 0 to a quarter would have height 4.",
+      ask: { type: "type", q: "X is uniform on [3, 7]. What is the value of its density f(x) for x between 3 and 7?", answer: "1/4", accept: ["0.25", ".25"],
+        why: "The area under a flat density over a width of 4 must be 1, so the height is 1/4." } },
+    { board: "triangle", hl: [1, 2, 3],
+      say: "Here is the lecture's triangle density. It is zero outside minus 2 to 2, rises in a straight line to height one half at 0, and falls back down. Check the total area first: the base is 4 and the height is a half, so the area is 1, and it is a valid density." },
+    { board: "triangle", hl: [5, 6, 7],
+      say: "What is the chance that X is at most minus 1? That is the area of the small triangle from minus 2 to minus 1. Its base is 1 and its height there is a quarter, so the area is one eighth. You get the same from the integral of the left side line, one half plus x over 4, from minus 2 to minus 1.",
+      tip: "When a density is made of straight lines, use triangle and rectangle areas. It is faster and less error-prone than integrating.",
+      ask: { type: "type", q: "For the same triangle density, what is ℙ[X ≤ 1]?", answer: "7/8", accept: ["0.875", ".875"],
+        why: "By symmetry ℙ[X > 1] = ℙ[X < −1] = 1/8, so ℙ[X ≤ 1] = 1 − 1/8 = 7/8." } },
+    { board: "cdf", hl: [1, 2, 4],
+      say: "The cumulative distribution function F of a is the probability that X is at most a. It is the area under the density up to a, so the density is the derivative of the CDF. Every CDF starts at 0 on the far left, ends at 1 on the far right, and never decreases.",
+      basics: "Lowercase f is the density and capital F is the CDF. F(a) = ℙ[X ≤ a]." },
+    { board: "cdf", hl: [5, 6, 8],
+      say: "Once you have the CDF, interval probabilities need no integral: subtract F of a from F of b. And since a single point has probability 0, it does not matter whether you write less than or less than or equal for a continuous variable. That is a real difference from the discrete case, where it matters a lot." },
+    { board: "limit", hl: [1, 3, 4],
+      say: "Now a new distribution. You wait for an alpha particle, and the expected wait is 5 minutes. A first model flips one coin per minute with success chance 0.2: a geometric. The chance of waiting more than 3 minutes is 0.8 cubed, about 0.512. Flip 60 coins per minute with chance 0.2 over 60 each, and the answer becomes about 0.548." },
+    { board: "limit", hl: [5, 6, 7],
+      say: "Keep making the coins finer. With n flips per minute, the chance of more than 3 minutes is 1 minus 0.2 over n, to the power 3n. As n goes to infinity this goes to e to the minus 0.6, about 0.549. The limit is a continuous waiting time, the exponential distribution.",
+      ask: { type: "mc", q: "In the limit, what is the chance of waiting more than 10 minutes (rate 0.2 per minute)?",
+        choices: ["e^(−2) ≈ 0.135", "0.8¹⁰ ≈ 0.107", "e^(−0.2) ≈ 0.819"], answer: 0,
+        why: "ℙ[X > a] = e^(−λa) with λ = 0.2 and a = 10 gives e^(−2) ≈ 0.135. The value 0.8¹⁰ is the one-coin-per-minute geometric model." } },
+    { board: "expo", hl: [1, 2, 3, 4],
+      say: "An exponential with rate λ has tail probability e to the minus λ a. One minus that is the CDF, and its derivative, λ e to the minus λ a, is the density. All three are 0 for negative a, since a waiting time cannot be negative.",
+      tip: "For exponential questions, work with the tail ℙ[X > a] = e^(−λa). It avoids integrals almost every time." },
+    { board: "expo", hl: [6, 7, 9],
+      say: "In the lecture's neutrino example the rate is 0.02 per minute. The chance of a detection within 100 minutes is F of 100, which is 1 minus e to the minus 2, about 86.5%. The exponential also has the memoryless property: if you have already waited s minutes, the chance of waiting t more is the same as if you had just started. This is the continuous version of the geometric's memorylessness.",
+      ask: { type: "type", q: "Bulb lifetimes are Exponential with λ = 0.01 per hour. A bulb has already lasted 300 hours. What is the probability it lasts at least 100 more hours? (Give e^(−k) as a decimal; e^(−1) ≈ 0.3679.)", answer: "0.3679", accept: ["e^-1", "e^(-1)", "1/e", ".3679", "0.368", ".368"],
+        why: "Memoryless: ℙ[X > 400 | X > 300] = ℙ[X > 100] = e^(−0.01 · 100) = e^(−1) ≈ 0.3679." } },
+    { board: "expect", hl: [1, 2, 3],
+      say: "Expectation works the same way as before, with the sum replaced by an integral and the probability of each value replaced by the density. The expectation of a function g of X is the integral of g times f. Variance is still the expectation of X squared minus the square of the expectation." },
+    { board: "expect", hl: [5, 6, 7, 9],
+      say: "For the exponential, integration by parts gives mean 1 over λ, second moment 2 over λ squared, and variance 1 over λ squared. Compare the geometric with success chance p: same mean 1 over p, variance 1 minus p over p squared. For the uniform on 0 to ℓ, the mean is the midpoint ℓ over 2 and the variance is ℓ squared over 12.",
+      tip: "Note the slides write \"Geometric(λ)\" in a few places on these expectation slides. They mean Exponential(λ).",
+      ask: { type: "type", q: "X is uniform on [0, 6]. What is Var(X)?", answer: "3",
+        why: "ℓ²/12 with ℓ = 6 gives 36/12 = 3." } },
+    { board: "joint", hl: [1, 2, 3, 5],
+      say: "For two continuous variables there is a joint density f of x and y. It is never negative and has total volume 1, and the probability that the pair lands in a region is the double integral over that region. To get the density of X alone, the marginal, integrate out y. To get Y alone, integrate out x.",
+      basics: "∫∫ f(x, y) dx dy is a double integral: integrate in x first (holding y fixed), then integrate the result in y." },
+    { board: "dart", hl: [1, 2, 4, 5, 6],
+      say: "A dart lands uniformly in a disk of radius 2. The disk has area 4 pi, so the joint density is 1 over 4 pi inside it. For a fixed x, y runs between minus and plus the square root of 4 minus x squared, so the marginal of X is that length times 1 over 4 pi, which is the square root of 4 minus x squared over 2 pi. Checking that it integrates to 1 is a good habit.",
+      tip: "The posted slide writes this marginal as √(4 − x²)/π. That integrates to 2, not 1. The correct marginal has 2π in the denominator." },
+    { board: "indep", hl: [1, 2, 3, 5, 6, 7],
+      say: "X and Y are independent when the joint probability of every pair of intervals factors into the product, or equivalently when the joint density is the product of the marginals everywhere. The dart's coordinates are not independent: if X is close to 2, Y is forced to be close to 0. A quick test: if the set where the density is positive is not a rectangle, the variables cannot be independent.",
+      ask: { type: "mc", q: "f(x, y) = 1 on the unit square [0, 1] × [0, 1] and 0 elsewhere. Are X and Y independent?",
+        choices: ["Yes: f_X(x) = 1 and f_Y(y) = 1 on [0, 1], and f = f_X · f_Y", "No: they share the same square", "Cannot tell without more information"], answer: 0,
+        why: "Integrating out y gives f_X(x) = 1 on [0, 1], and the same for Y. The product is 1 on the square, which equals f, so they are independent." } }
+  ],
+
+  check: [
+    { type: "mc", q: "X is a continuous random variable. Which is always true?",
+      choices: ["ℙ[X = a] = 0 for every a", "f(a) ≤ 1 for every a", "ℙ[X < a] < ℙ[X ≤ a]"], answer: 0,
+      why: "Single points have probability 0. A density can exceed 1 (uniform on [0, 1/4] has height 4), and since ℙ[X = a] = 0, ℙ[X < a] equals ℙ[X ≤ a]." },
+    { type: "type", q: "f(x) = c · x for 0 ≤ x ≤ 2, and 0 elsewhere. What must c be?", answer: "1/2", accept: ["0.5", ".5"],
+      why: "∫₀² c x dx = c · 2 = 1, so c = 1/2." },
+    { type: "type", q: "X has CDF F(a) = a² for 0 ≤ a ≤ 1 (0 below, 1 above). What is ℙ[0.5 < X ≤ 1]?", answer: "3/4", accept: ["0.75", ".75"],
+      why: "F(1) − F(0.5) = 1 − 0.25 = 0.75." },
+    { type: "mc", q: "Same CDF F(a) = a² on [0, 1]. What is the density?",
+      choices: ["f(x) = 2x on [0, 1]", "f(x) = x³/3 on [0, 1]", "f(x) = x² on [0, 1]"], answer: 0,
+      why: "The density is the derivative of the CDF: d(a²)/da = 2a." },
+    { type: "type", q: "X ~ Exponential(λ = 1/4). What is 𝔼[X]?", answer: "4",
+      why: "The mean of an exponential is 1/λ = 4." },
+    { type: "mc", q: "X ~ Exponential(2). What is ℙ[X > 1.5]?",
+      choices: ["e^(−3)", "1 − e^(−3)", "e^(−0.75)"], answer: 0,
+      why: "ℙ[X > a] = e^(−λa) = e^(−2 · 1.5) = e^(−3) ≈ 0.0498." },
+    { type: "type", q: "X ~ Exponential(λ = 3). What is Var(X)? (Give a fraction.)", answer: "1/9", accept: ["0.1111", ".1111", "0.111", ".111"],
+      why: "Var(X) = 1/λ² = 1/9." },
+    { type: "mc", q: "(X, Y) is uniform on the triangle 0 ≤ y ≤ x ≤ 1. Are X and Y independent?",
+      choices: ["No: given X = 0.1, Y must be at most 0.1", "Yes: the density is constant", "Yes: the marginals are both valid densities"], answer: 0,
+      why: "A constant density on a region that is not a rectangle never factors. Knowing X limits the possible values of Y, so they are dependent." }
+  ],
+
+  deepen: [
+    { id: "cont_poly", title: "A density with a constant to find", source: "Original question",
+      desc: ["X has density f(x) = c · x² for 0 ≤ x ≤ 3, and f(x) = 0 otherwise.",
+        "(a) Find c.  (b) Find ℙ[1 ≤ X ≤ 2].  (c) Find 𝔼[X].  (d) Find Var(X)."],
+      answer: "27/80", accept: ["0.3375", ".3375"], answerLabel: "Var(X) =",
+      hints: ["The total area must be 1: ∫₀³ c x² dx = c · 27/3.", "𝔼[X] = ∫₀³ x · f(x) dx and 𝔼[X²] = ∫₀³ x² · f(x) dx.", "∫₀³ x³ dx = 81/4 and ∫₀³ x⁴ dx = 243/5."],
+      solution: [
+        "(a) ∫₀³ c x² dx = c · 3³/3 = 9c = 1, so c = 1/9.",
+        "(b) ℙ[1 ≤ X ≤ 2] = (1/9) ∫₁² x² dx = (1/9)(8/3 − 1/3) = (1/9)(7/3) = 7/27.",
+        "(c) 𝔼[X] = (1/9) ∫₀³ x³ dx = (1/9)(81/4) = 9/4.",
+        "(d) 𝔼[X²] = (1/9) ∫₀³ x⁴ dx = (1/9)(243/5) = 27/5.",
+        "    Var(X) = 𝔼[X²] − 𝔼[X]² = 27/5 − 81/16 = (432 − 405)/80 = 27/80."
+      ],
+      explain: "Every continuous problem starts the same way: make the density integrate to 1, then turn sums into integrals. The variance formula 𝔼[X²] − 𝔼[X]² is unchanged." },
+    { id: "cont_race", title: "Which exponential finishes first", source: "Original question",
+      desc: ["Two independent servers finish a job in times X ~ Exponential(1) and Y ~ Exponential(2) (in minutes).",
+        "(a) Write the joint density of (X, Y).",
+        "(b) Use it to compute ℙ[X < Y].",
+        "(c) Show that min(X, Y) is exponential, and give its rate."],
+      answer: "1/3", accept: ["0.3333", ".3333", "0.333", ".333"], answerLabel: "ℙ[X < Y] =",
+      hints: ["Independent, so the joint density is the product of the two densities, for x, y ≥ 0.", "ℙ[X < Y] = ∫₀^∞ ∫ₓ^∞ e^(−x) · 2e^(−2y) dy dx. Do the inner integral with the exponential tail: ∫ₓ^∞ 2e^(−2y) dy = e^(−2x).", "For (c), min(X, Y) > t exactly when both X > t and Y > t."],
+      solution: [
+        "(a) f(x, y) = f_X(x) f_Y(y) = e^(−x) · 2e^(−2y) for x, y ≥ 0, and 0 otherwise.",
+        "(b) ℙ[X < Y] = ∫₀^∞ e^(−x) ( ∫ₓ^∞ 2e^(−2y) dy ) dx",
+        "            = ∫₀^∞ e^(−x) · e^(−2x) dx = ∫₀^∞ e^(−3x) dx = 1/3.",
+        "(c) ℙ[min(X, Y) > t] = ℙ[X > t] · ℙ[Y > t] = e^(−t) · e^(−2t) = e^(−3t) for t ≥ 0.",
+        "    That is the tail of an Exponential(3), so min(X, Y) ~ Exponential(3)."
+      ],
+      explain: "With independent variables, multiply densities, then integrate over the region the event describes. In general ℙ[X < Y] = λ₁/(λ₁ + λ₂) and the minimum is Exponential(λ₁ + λ₂)." },
+    { id: "cont_square", title: "A joint density that does not factor", source: "Original question",
+      desc: ["(X, Y) has joint density f(x, y) = x + y for 0 ≤ x ≤ 1 and 0 ≤ y ≤ 1, and 0 elsewhere.",
+        "(a) Check that f is a valid joint density.",
+        "(b) Find the marginal density f_X(x).",
+        "(c) Compute ℙ[X ≤ 1/2, Y ≤ 1/2].",
+        "(d) Are X and Y independent?"],
+      answer: "1/8", accept: ["0.125", ".125"], answerLabel: "ℙ[X ≤ 1/2, Y ≤ 1/2] =",
+      hints: ["For (a), integrate x + y over the square. By symmetry ∫∫ x and ∫∫ y are equal.", "f_X(x) = ∫₀¹ (x + y) dy = x + 1/2.", "For (d), compare ℙ[X ≤ 1/2, Y ≤ 1/2] with ℙ[X ≤ 1/2] · ℙ[Y ≤ 1/2]."],
+      solution: [
+        "(a) f ≥ 0 on the square, and ∫₀¹∫₀¹ (x + y) dx dy = 1/2 + 1/2 = 1. ✓",
+        "(b) f_X(x) = ∫₀¹ (x + y) dy = x + 1/2 for 0 ≤ x ≤ 1. By symmetry f_Y(y) = y + 1/2.",
+        "(c) ∫₀^½ ∫₀^½ (x + y) dx dy = ∫₀^½∫₀^½ x + ∫₀^½∫₀^½ y = (1/8)(1/2) + (1/8)(1/2) = 1/8.",
+        "(d) ℙ[X ≤ 1/2] = ∫₀^½ (x + 1/2) dx = 1/8 + 1/4 = 3/8, and the same for Y.",
+        "    (3/8)² = 9/64, but ℙ[X ≤ 1/2, Y ≤ 1/2] = 8/64. These differ, so X and Y are not independent.",
+        "    (Also f_X(x) f_Y(y) = (x + 1/2)(y + 1/2), which is not x + y.)"
+      ],
+      explain: "The region here is a rectangle, so the shape test says nothing. You have to check whether the density factors, and one pair of intervals where the product rule fails is enough to prove dependence." }
+  ]
+};
