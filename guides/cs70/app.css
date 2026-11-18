@@ -294,12 +294,15 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 .cbtn span{font-size:17px; line-height:1}
 .cbtn:hover{border-color:var(--saffron)}
 .cbtn[aria-pressed="true"]{border-color:var(--saffron); background:var(--saffron-soft); font-weight:600}
-.cbtn.c1[aria-pressed="true"],.cbtn.c2[aria-pressed="true"]{border-color:var(--bad); background:var(--bad-soft)}
+.cbtn.c1[aria-pressed="true"]{border-color:var(--bad); background:var(--bad-soft)}
+.cbtn.c2[aria-pressed="true"]{border-color:var(--saffron); background:var(--saffron-soft)}
+.cbtn.c3[aria-pressed="true"]{border-color:var(--info); background:var(--info-soft)}
 .cbtn.c4[aria-pressed="true"]{border-color:var(--ok); background:var(--ok-soft)}
 .cbtn.flagbtn[aria-pressed="true"]{border-color:var(--bad); background:var(--bad-soft); color:var(--bad)}
 .topics .chip.conf{border-color:var(--line)}
-.chip.conf.c1,.chip.conf.c2{color:var(--bad); background:var(--bad-soft); border-color:transparent}
-.chip.conf.c3{color:var(--saffron-ink); background:var(--saffron-soft); border-color:transparent}
+.chip.conf.c1{color:var(--bad); background:var(--bad-soft); border-color:transparent}
+.chip.conf.c2{color:var(--saffron-ink); background:var(--saffron-soft); border-color:transparent}
+.chip.conf.c3{color:var(--info); background:var(--info-soft); border-color:transparent}
 .chip.conf.c4{color:var(--ok); background:var(--ok-soft); border-color:transparent}
 .chist{margin:-6px 0 0}
 .chist span{white-space:nowrap}
@@ -310,3 +313,25 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 .narr .say .sent.now{background:var(--saffron-soft); box-shadow:0 0 0 3px var(--saffron-soft); border-radius:4px}
 .narctl{display:inline-flex; align-items:center; gap:6px}
 .narctl .ncount{font:500 12.5px/1 var(--mono); color:var(--muted); margin-left:2px}
+
+/* ---------- our own confidence faces (SVG, colors from tokens.css) ---------- */
+.face{width:20px; height:20px; flex:none; vertical-align:-5px}
+.face .disc{fill:var(--fbg); stroke:currentColor; stroke-width:1.7}
+.face .ln{fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
+.face .pen{fill:var(--bad-soft); stroke:currentColor; stroke-width:1.7; stroke-linejoin:round}
+.face.f1{color:var(--bad); --fbg:var(--bad-soft)}
+.face.f2{color:var(--saffron-ink); --fbg:var(--saffron-soft)}
+.face.f3{color:var(--info); --fbg:var(--info-soft)}
+.face.f4{color:var(--ok); --fbg:var(--ok-soft)}
+.face.f4 .spark{color:var(--saffron)}
+.face.fflag{color:var(--bad)}
+.cbtn .face{width:22px; height:22px}
+.cbtn:not([aria-pressed="true"]) .face{filter:saturate(.35); opacity:.8}
+.cbtn:hover .face,.cbtn[aria-pressed="true"] .face{filter:none; opacity:1}
+.cbtn[aria-pressed="true"] .face{transform:scale(1.12); transition:transform .15s}
+.chip.conf{display:inline-flex; align-items:center; gap:5px}
+.chip.conf .face{width:16px; height:16px}
+.chist .face{width:17px; height:17px; vertical-align:-4px}
+.chist .arrow{color:var(--muted)}
+.btn .face{width:18px; height:18px; margin-right:2px}
+@media (prefers-reduced-motion:reduce){ .cbtn[aria-pressed="true"] .face{transition:none} }

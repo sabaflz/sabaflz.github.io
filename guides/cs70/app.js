@@ -42,7 +42,18 @@
   function level() { return S.level || C.defaultLevel; }
 
   /* ---------- confidence: how sure you feel about a topic, rated from any stage ---------- */
-  var CONF = [{ v: 1, e: "\uD83D\uDE1F", l: "Lost" }, { v: 2, e: "\uD83D\uDE10", l: "Shaky" }, { v: 3, e: "\uD83D\uDE42", l: "Getting there" }, { v: 4, e: "\uD83D\uDE0E", l: "Confident" }];
+  var CONF = [{ v: 1, l: "Lost" }, { v: 2, l: "Shaky" }, { v: 3, l: "Getting there" }, { v: 4, l: "Confident" }];
+  /* Our own faces, drawn in the site's colors so they look the same on every device.
+     Each is a 24 × 24 SVG: a round face, two eyes, and a mouth that changes with the level. */
+  var EYES = '<circle cx="9.3" cy="11" r="1.25" fill="currentColor"/><circle cx="14.7" cy="11" r="1.25" fill="currentColor"/>';
+  var FACE = {
+    1: '<path d="M7.2 9.1l2.8-1.5M16.8 9.1l-2.8-1.5" class="ln"/>' + EYES + '<path d="M8.7 17.2q3.3-3.1 6.6 0" class="ln"/>',
+    2: EYES + '<path d="M8.4 15.6q1.9-1.5 3.6 0t3.6 0" class="ln"/>',
+    3: EYES + '<path d="M8.6 14.4q3.4 3 6.8 0" class="ln"/>',
+    4: '<path d="M5.9 9.3h12.2v1.1q0 3-2.9 3-2.6 0-2.8-2.4h-.8q-.2 2.4-2.8 2.4-2.9 0-2.9-3z" fill="currentColor"/><path d="M8.2 15q3.8 3.9 7.6 0" class="ln"/><path d="M19.6 3.2l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5z" fill="currentColor" class="spark"/>'
+  };
+  function icon(v) { return '<svg class="face f' + v + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9.4" class="disc"/>' + FACE[v] + "</svg>"; }
+  var FLAG = '<svg class="face fflag" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 21V3.6" class="ln"/><path d="M6.5 4.2h11.2l-2.9 4.1 2.9 4.1H6.5z" class="pen"/></svg>';
   function confOf(id) { var s = S.topics[id] || {}; return s.conf || (s.confident ? 4 : 0); }
   function confInfo(v) { return CONF[v - 1] || null; }
   /* One entry per day in the history; picking the same rating again clears it. */
@@ -56,18 +67,18 @@
     else if (v) s.confLog.push({ d: k, v: v, w: where });
     save();
   }
-  function confChip(id) { var c = confInfo(confOf(id)); return c ? '<span class="chip conf c' + c.v + '" title="Your confidence">' + c.e + " " + c.l + "</span>" : ""; }
+  function confChip(id) { var c = confInfo(confOf(id)); return c ? '<span class="chip conf c' + c.v + '" title="Your confidence">' + icon(c.v) + c.l + "</span>" : ""; }
   /* The bar shown on the topic page and on every stage: rate yourself, or flag the topic. */
   function confBar(t, where) {
     var cv = confOf(t.id), s = T(t.id);
     return '<div class="confbar" data-where="' + (where || "topic") + '"><span class="cq">How sure do you feel about ' + esc(t.title) + '?</span><span class="cbtns" role="group" aria-label="Your confidence">' +
-      CONF.map(function (c) { return '<button type="button" class="cbtn c' + c.v + '" data-act="conf" data-v="' + c.v + '" aria-pressed="' + (cv === c.v) + '" title="' + c.l + '"><span aria-hidden="true">' + c.e + "</span><small>" + c.l + "</small></button>"; }).join("") +
-      '</span><button type="button" class="cbtn flagbtn" data-act="flagt" aria-pressed="' + !!s.flag + '"><span aria-hidden="true">\uD83D\uDEA9</span><small>' + (s.flag ? "Flagged for review" : "Flag for review") + "</small></button></div>";
+      CONF.map(function (c) { return '<button type="button" class="cbtn c' + c.v + '" data-act="conf" data-v="' + c.v + '" aria-pressed="' + (cv === c.v) + '" title="' + c.l + '">' + icon(c.v) + "<small>" + c.l + "</small></button>"; }).join("") +
+      '</span><button type="button" class="cbtn flagbtn" data-act="flagt" aria-pressed="' + !!s.flag + '">' + FLAG + "<small>" + (s.flag ? "Flagged for review" : "Flag for review") + "</small></button></div>";
   }
   function confHistory(t) {
     var log = (S.topics[t.id] || {}).confLog || [];
     if (!log.length) return '<p class="meta chist">Rate yourself any time, from this page or inside a stage. Your ratings build a history here.</p>';
-    return '<p class="meta chist"><b>Your confidence so far:</b> ' + log.slice(-8).map(function (x) { var c = confInfo(x.v), p = x.d.split("-"); return '<span title="' + esc(c.l + (x.w ? ", rated in " + x.w : "")) + '">' + new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " " + c.e + "</span>"; }).join(" \u2192 ") + "</p>";
+    return '<p class="meta chist"><b>Your confidence so far:</b> ' + log.slice(-8).map(function (x) { var c = confInfo(x.v), p = x.d.split("-"); return '<span title="' + esc(c.l + (x.w ? ", rated in " + x.w : "")) + '">' + new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " " + icon(c.v) + "</span>"; }).join(' <span class="arrow" aria-hidden="true">\u2192</span> ') + "</p>";
   }
   function refreshConf(t) {
     document.querySelectorAll(".confbar").forEach(function (el) { var w = el.getAttribute("data-where"); el.outerHTML = confBar(t, w); });
@@ -269,7 +280,7 @@
       Object.keys(s.asks || {}).forEach(function (k) { if (!s.asks[k].ok) asks++; });
       ["deepen", "practice"].forEach(function (st) { items(t, st).forEach(function (p) { if ((s.hints || {})[p.id] >= 2) hinted.push(p); }); });
       if (s.flag) why.push("you flagged this topic");
-      var cv = confOf(t.id); if (cv && cv <= 2) why.push("you rated it " + confInfo(cv).e + " " + confInfo(cv).l);
+      var cv = confOf(t.id); if (cv && cv <= 2) why.push("you rated it " + confInfo(cv).l);
       if (missed) why.push(missed + " check question" + (missed === 1 ? "" : "s") + " missed");
       if (asks >= 2) why.push(asks + " lesson questions missed");
       if (hinted.length) why.push(hinted.length + " problem" + (hinted.length === 1 ? "" : "s") + " needed two or more hints");
@@ -671,7 +682,7 @@
     return '<p class="banner pass">Marked as solved.</p>' + (cur.stage === "deepen" ? solHTML(cur.p) : "") +
       '<div class="row" style="margin-top:12px">' + (nxp ? '<a class="btn small primary" href="#/t/' + t.id + "/" + cur.stage + "/" + nxp.id + '">Next problem</a>' : "") +
       (cur.stage === "deepen" && has(t, "practice") ? '<a class="btn small" href="#/t/' + t.id + '/practice">Discussion and homework problems</a>' : "") +
-      (confOf(t.id) !== 4 ? '<button class="btn small" type="button" data-act="confidentbtn">\uD83D\uDE0E I feel confident with this topic</button>' : nx ? '<a class="btn small" href="#/t/' + nx.id + '">Next topic</a>' : "") + "</div>";
+      (confOf(t.id) !== 4 ? '<button class="btn small" type="button" data-act="confidentbtn">' + icon(4) + ' I feel confident with this topic</button>' : nx ? '<a class="btn small" href="#/t/' + nx.id + '">Next topic</a>' : "") + "</div>";
   }
   function banner(kind, text) { return '<p class="banner ' + kind + '">' + esc(text) + "</p>"; }
   function pre(text) { return text && String(text).trim() ? "<pre>" + esc(String(text).trim()) + "</pre>" : ""; }
