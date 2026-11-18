@@ -334,11 +334,23 @@
     return h;
   }
   /* Typed answers: spaces, case and quotes don't matter, and q.accept lists other ways to write it. */
+  function num(x) {
+    var t = String(x).replace(/\s+/g, "").replace(/−/g, "-"), m = /^(-?\d+(?:\.\d+)?)\/(-?\d+(?:\.\d+)?)$/.exec(t);
+    if (m) return +m[2] ? +m[1] / +m[2] : null;
+    return /^-?(\d+\.?\d*|\.\d+)$/.test(t) ? +t : null;
+  }
   function mnorm(x) { return norm(x).replace(/\s+/g, "").replace(/\*/g, "").replace(/·/g, ""); }
   function grade(q, picked) {
     if (q.type === "mc") return picked === q.answer;
     var p = mnorm(picked);
-    return [q.answer].concat(q.accept || []).some(function (a) { return mnorm(a) === p; }) || (!isNaN(+q.answer) && picked.trim() !== "" && !isNaN(+picked) && Math.abs(+picked - +q.answer) < 1e-9);
+    if ([q.answer].concat(q.accept || []).some(function (a) { return mnorm(a) === p; })) return true;
+    /* Numbers: an equal fraction always counts, and a decimal counts if it is the answer
+       correctly rounded to the places given (at least 2 places, unless it is exact). */
+    var want = num(q.answer), got = num(picked);
+    if (want === null || got === null) return false;
+    if (Math.abs(got - want) < 1e-9) return true;
+    var d = /\.(\d+)/.exec(p);
+    return !!d && d[1].length >= 2 && Math.abs(got - want) <= 0.5 * Math.pow(10, -d[1].length) + 1e-12;
   }
 
   /* ---------- course map ---------- */

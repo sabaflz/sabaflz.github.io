@@ -8,7 +8,7 @@
   fixed points, binomial mean, balls and bins).
 */
 window.LESSONS["linearity"] = {
-  minutes: 22,
+  minutes: 21,
   boards: {
     poisson: [
       "Poisson(λ):  ℙ[X = i] = (λⁱ / i!) · e^(−λ),   i = 0, 1, 2, …",
