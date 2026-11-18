@@ -83,7 +83,7 @@
   function refreshConf(t) {
     document.querySelectorAll(".confbar").forEach(function (el) { var w = el.getAttribute("data-where"); el.outerHTML = confBar(t, w); });
     var h = document.querySelector(".chist"); if (h) h.outerHTML = confHistory(t);
-    progress();
+    progress(); renderSide();
   }
 
   /* ---------- course helpers ---------- */
@@ -399,6 +399,59 @@
     return !!d && d[1].length >= 2 && Math.abs(got - want) <= 0.5 * Math.pow(10, -d[1].length) + 1e-12;
   }
 
+  /* ---------- which unit is open: yours to choose, else the one you are working in ---------- */
+  function unitOfTopic(id) { for (var i = 0; i < C.units.length; i++) if (C.units[i].topics.some(function (t) { return t.id === id; })) return i; return -1; }
+  function currentUnit() {
+    var m = /#\/t\/([^/]+)/.exec(S.last || ""), u = m ? unitOfTopic(m[1]) : -1;
+    if (u >= 0) return u;
+    for (var i = 0; i < C.units.length; i++) if (C.units[i].topics.some(function (t) { return !(S.topics[t.id] || {}).confident; })) return i;
+    return 0;
+  }
+  function unitOpen(ui) { var o = S.unitOpen || {}; return ui in o ? !!o[ui] : ui === currentUnit(); }
+  function confCount(u) { var n = u.topics.filter(function (t) { return (S.topics[t.id] || {}).confident; }).length; return n + " of " + u.topics.length + " confident"; }
+
+  /* ---------- left sidebar: every unit and topic, and the stages of the topic you are on ---------- */
+  var side = document.getElementById("side");
+  function renderSide() {
+    if (!side) return;
+    var r = route(), here = r[0] === "t" ? r[1] : "", stage = r[2] || "", hu = here ? unitOfTopic(here) : -1, so = S.sideOpen || {};
+    var h = '<nav aria-label="Course contents"><ul class="sd-top"><li><a href="#/"' + (!r.length ? ' aria-current="page"' : "") + '>Course map</a></li><li><a href="#/progress"' + (r[0] === "progress" ? ' aria-current="page"' : "") + ">Progress</a></li></ul>";
+    C.units.forEach(function (u, ui) {
+      var open = ui in so ? !!so[ui] : (hu >= 0 ? ui === hu : ui === currentUnit());
+      if (ui === hu && !(ui in so)) open = true;
+      h += '<details class="sd-unit" data-sui="' + ui + '"' + (open ? " open" : "") + '><summary><span class="sd-n">' + (ui + 1) + '</span><span class="sd-t">' + esc(u.title) + '</span><small>' + u.topics.filter(function (t) { return (S.topics[t.id] || {}).confident; }).length + "/" + u.topics.length + "</small></summary><ul>" +
+        u.topics.map(function (t) {
+          var cv = confOf(t.id), on = t.id === here, mark = cv ? icon(cv) : '<span class="sd-dot' + (started(t) ? " started" : "") + '" aria-hidden="true"></span>';
+          var x = '<li><a href="#/t/' + t.id + '"' + (on && !stage ? ' aria-current="page"' : on ? ' aria-current="true"' : "") + ">" + mark + '<span class="sd-tt">' + esc(t.title) + "</span>" + ((S.topics[t.id] || {}).flag ? '<span class="sd-flag" aria-label="flagged">' + FLAG + "</span>" : "") + "</a>";
+          if (on) x += '<ul class="sd-stages">' + STAGES.filter(function (st) { return has(t, st); }).map(function (st) { return '<li><a href="#/t/' + t.id + "/" + st + '"' + (st === stage ? ' aria-current="page"' : "") + ">" + NAMES[st] + (stageDone(t, st) ? ' <span class="sd-ok" aria-label="done">\u2713</span>' : "") + "</a></li>"; }).join("") + "</ul>";
+          return x + "</li>";
+        }).join("") + "</ul></details>";
+    });
+    var keep = side.scrollTop;
+    side.innerHTML = h + "</nav>";
+    side.scrollTop = keep;
+    var a = side.querySelector('a[aria-current="page"], a[aria-current="true"]');
+    if (a && (a.offsetTop < side.scrollTop || a.offsetTop > side.scrollTop + side.clientHeight - 40)) side.scrollTop = a.offsetTop - side.clientHeight / 3;
+  }
+  /* Opening or closing a unit, on the map or in the sidebar, is remembered. */
+  document.addEventListener("toggle", function (e) {
+    var d = e.target; if (!d || d.tagName !== "DETAILS") return;
+    if (d.hasAttribute("data-ui")) { S.unitOpen = S.unitOpen || {}; S.unitOpen[d.getAttribute("data-ui")] = d.open; saveSoon(); }
+    if (d.hasAttribute("data-sui")) { S.sideOpen = S.sideOpen || {}; S.sideOpen[d.getAttribute("data-sui")] = d.open; saveSoon(); }
+  }, true);
+  /* Phones and narrow windows: the sidebar slides in from the left. */
+  function sideOpen(v) { document.body.classList.toggle("side-open", v); var b = document.getElementById("sideBtn"); if (b) b.setAttribute("aria-expanded", v); if (v && side) { var f = side.querySelector("a"); if (f) f.focus(); } }
+  (function () {
+    var b = document.getElementById("sideBtn"), scrim = document.getElementById("sideScrim");
+    if (b) b.addEventListener("click", function () { sideOpen(!document.body.classList.contains("side-open")); });
+    if (scrim) scrim.addEventListener("click", function () { sideOpen(false); });
+    if (side) side.addEventListener("click", function (e) { if (e.target.closest("a")) sideOpen(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && document.body.classList.contains("side-open")) { sideOpen(false); if (b) b.focus(); } });
+    var bar = document.querySelector(".appbar");
+    function barH() { if (bar) document.documentElement.style.setProperty("--barh", bar.offsetHeight + "px"); }
+    barH(); window.addEventListener("resize", barH);
+  })();
+
   /* ---------- course map ---------- */
   var levelOpen = false, dateOpen = false, goalOpen = false;
   function renderMap() {
@@ -418,10 +471,11 @@
 
     h += '<div class="filters" role="group" aria-label="Show units for">' + [""].concat(EXAMS).map(function (x) {
       return '<button type="button" class="fchip' + ((S.filter || "") === x ? " on" : "") + '" data-act="filter" data-x="' + esc(x) + '" aria-pressed="' + ((S.filter || "") === x) + '">' + (x ? esc(filterName(x)) : "Everything") + "</button>";
-    }).join("") + "</div>" + reviewHTML();
+    }).join("") + "</div>" + reviewHTML() +
+      '<div class="unitctl"><button type="button" class="linkbtn" data-act="units" data-x="1">Expand all units</button><button type="button" class="linkbtn" data-act="units" data-x="0">Collapse all</button></div>';
 
     shownUnits().forEach(function (u) { var ui = C.units.indexOf(u);
-      h += '<section class="unit"><h2>' + esc(u.title) + "<small>Unit " + (ui + 1) + (u.exam ? " · for " + esc(u.exam) : "") + " · " + dur(sumMin(u.topics)) + " · " + leftText(sumMine(u.topics)) + (factors().known && sumMine(u.topics) >= 2.5 ? " at your pace" : "") + '</small></h2><ul class="topics">' + u.topics.map(function (t) {
+      h += '<details class="unit" data-ui="' + ui + '"' + (unitOpen(ui) ? " open" : "") + '><summary><h2>' + esc(u.title) + '<span class="uconf">' + confCount(u) + "</span><small>Unit " + (ui + 1) + (u.exam ? " · for " + esc(u.exam) : "") + " · " + dur(sumMin(u.topics)) + " · " + leftText(sumMine(u.topics)) + (factors().known && sumMine(u.topics) >= 2.5 ? " at your pace" : "") + '</small></h2></summary><ul class="topics">' + u.topics.map(function (t) {
         var s = T(t.id), dot = s.confident ? "done" : started(t) ? "started" : "";
         var chips = "";
         if (confOf(t.id)) chips += confChip(t.id);
@@ -429,7 +483,7 @@
         if ((t.testOut || []).indexOf(lv) >= 0 && !s.confident) chips += '<span class="chip info">Optional at your level</span>';
         chips += '<span class="chip">' + (has(t, "learn") ? (has(t, "practice") ? "Lesson and practice" : "Lesson ready") : has(t, "practice") ? "Practice only" : "Coming soon") + "</span>";
         return '<li><a class="topic" href="#/t/' + t.id + '"><span class="dot ' + dot + '" aria-hidden="true"></span><span class="txt"><h3>' + esc(t.title) + "</h3><p>" + esc(t.blurb) + '</p><p class="meta">' + (t.lecture ? "Lecture " + t.lecture + (t.note && t.note !== "slides" ? " · Note " + esc(t.note) : "") + (t.quiz ? " · " + esc(t.quiz) : "") + " · " : "") + dur(topicMin(t)) + (started(t) ? " · " + leftText(leftMine(t)) : "") + (allSpent(t) >= 1 ? " · " + Math.round(allSpent(t)) + " min spent" : "") + '</p></span><span class="chips">' + (s.flag ? '<span class="chip flag">Flagged</span>' : "") + chips + "</span></a></li>";
-      }).join("") + "</ul></section>";
+      }).join("") + "</ul></details>";
     });
     view.innerHTML = h;
   }
@@ -710,7 +764,7 @@
     else if ((stage === "deepen" || stage === "practice") && has(t, stage)) renderWork(t, stage, r[3]);
     else renderTopic(t);
     if (t) { S.last = "#/" + r.join("/"); save(); }
-    progress();
+    progress(); renderSide();
     document.title = (t ? t.title + " · " : r[0] === "progress" ? "Progress · " : "") + "CS 70 · Saba Feilizadeh";
     if (!keepScroll) { window.scrollTo(0, 0); try { view.focus({ preventScroll: true }); } catch (e) {} }
   }
@@ -747,6 +801,7 @@
     else if (act === "next") stepBy(1);
     else if (act === "back") stepBy(-1);
     else if (act === "levelopen") { levelOpen = true; render(true); }
+    else if (act === "units") { var allOpen = el.getAttribute("data-x") === "1"; S.unitOpen = {}; C.units.forEach(function (u, i) { S.unitOpen[i] = allOpen; }); save(); render(true); }
     else if (act === "filter") { S.filter = el.getAttribute("data-x") || ""; save(); render(true); }
     else if (act === "dateopen") { dateOpen = true; render(true); }
     else if (act === "goalclear") { delete S.dailyGoal; save(); render(true); }

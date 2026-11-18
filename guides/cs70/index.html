@@ -10,11 +10,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/css/tokens.css?v=1">
-<link rel="stylesheet" href="app.css?v=5">
+<link rel="stylesheet" href="app.css?v=7">
 </head>
 <body>
 <header class="appbar">
   <div class="wrap bar">
+    <button type="button" class="iconbtn sidebtn" id="sideBtn" aria-controls="side" aria-expanded="false" aria-label="Course contents"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6.5h16M4 12h16M4 17.5h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
     <a class="mark" href="#/" aria-label="CS 70 course map">CS 70</a>
     <span class="prog" id="prog" aria-live="polite"></span>
     <span class="spacer"></span>
@@ -26,9 +27,13 @@
   </div>
 </header>
 
+<div class="shell">
+<aside class="navside" id="side" aria-label="Course contents"></aside>
+<div class="side-scrim" id="sideScrim" aria-hidden="true"></div>
 <main class="wrap" id="view" tabindex="-1">
   <noscript><p class="empty">This app needs JavaScript turned on.</p></noscript>
 </main>
+</div>
 
 <script src="course.js?v=2"></script>
 <script src="lessons/direct-proofs.js?v=1"></script>
@@ -59,7 +64,7 @@
 <script src="lessons/markov-chains.js?v=1"></script>
 <script src="lessons/final-review.js?v=1"></script>
 <!--LESSONS-->
-<script src="app.js?v=6"></script>
+<script src="app.js?v=8"></script>
 <script src="../../assets/js/theme.js?v=1"></script>
 </body>
 </html>
