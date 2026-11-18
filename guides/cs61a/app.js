@@ -80,16 +80,29 @@
   function topicMin(t) { return L[t.id] ? stageMin(t, "learn") + stageMin(t, "check") + stageMin(t, "deepen") : (t.est || 0); }
   /* Time still ahead for a topic. Counts what is finished inside it: lesson steps,
      check questions answered, problems solved. Marking a topic confident clears it. */
+  var CORE = ["learn", "check", "deepen"];
+  /* Estimated minutes of unfinished work in a written topic, by stage. */
+  function leftParts(t) {
+    var s = S.topics[t.id] || {}, p = { learn: 0, check: 0, deepen: 0 }, n;
+    n = items(t, "learn").length; if (!s.lessonDone) p.learn = stageMin(t, "learn") * (n ? Math.max(0, n - (s.step || 0)) / n : 1);
+    n = items(t, "check").length; if (n) p.check = stageMin(t, "check") * Math.max(0, n - Object.keys(s.check || {}).length) / n;
+    n = items(t, "deepen").length; if (n) p.deepen = stageMin(t, "deepen") * (n - items(t, "deepen").filter(function (q) { return (s.solved || {})[q.id]; }).length) / n;
+    return p;
+  }
   function leftMin(t, workOnly) {
     var s = S.topics[t.id];
     if (s && s.confident && !workOnly) return 0;
-    if (!L[t.id] || !s) return topicMin(t);
-    var m = 0, n;
-    if (!s.lessonDone) { n = items(t, "learn").length; m += stageMin(t, "learn") * (n ? Math.max(0, n - (s.step || 0)) / n : 1); }
-    n = items(t, "check").length; if (n) m += stageMin(t, "check") * Math.max(0, n - Object.keys(s.check || {}).length) / n;
-    n = items(t, "deepen").length; if (n) m += stageMin(t, "deepen") * (n - solvedCount(t, "deepen")) / n;
-    return m;
+    if (!L[t.id]) return topicMin(t);
+    var p = leftParts(t); return p.learn + p.check + p.deepen;
   }
+  /* The same, scaled to your own speed on each kind of work (see factors). */
+  function leftMine(t) {
+    var s = S.topics[t.id], F = factors();
+    if (s && s.confident) return 0;
+    if (!L[t.id]) return topicMin(t) * F.all;
+    var p = leftParts(t); return p.learn * F.learn + p.check * F.check + p.deepen * F.deepen;
+  }
+  function sumMine(list) { return list.reduce(function (a, t) { return a + leftMine(t); }, 0); }
   function sumLeft(list) { return list.reduce(function (a, t) { return a + leftMin(t); }, 0); }
   function leftText(m) { return m < 2.5 ? "done" : dur(m).replace("about ", "") + " left"; }
   function timeBar(list) {
@@ -97,8 +110,9 @@
     var plain = function (m) { return m < 2.5 ? "0 min" : dur(m).replace("about ", ""); };
     var h = '<div class="timecard"><div class="nums"><div><strong>' + plain(total) + "</strong><span>" + (S.filter ? esc(filterName(S.filter)) : "whole course") + "</span></div><div><strong>" + plain(total - left) + "</strong><span>done</span></div><div><strong>" + plain(left) + "</strong><span>left</span></div></div>" +
       '<div class="tbar" role="img" aria-label="' + pct + ' percent done by time"><i style="width:' + (pct ? Math.max(2, pct) : 0) + '%"></i></div><p class="meta">' + pct + "% done by time · estimates for the lesson, check and exam-style problems · practice is extra</p>";
-    var f = paceFactor(), mine = f ? left * f : left;
-    if (f && left >= 5) h += '<p class="pace">At your pace so far, ' + (Math.abs(f - 1) < 0.08 ? "right on the estimates" : f < 1 ? "faster than the estimates" : "slower than the estimates") + ": <strong>" + dur(mine) + " left</strong>.</p>";
+    var F = factors(), f = F.known ? 1 : 0, mine = sumMine(list); if (f && left > 0) f = mine / Math.max(1, sumLeft(list));
+    if (f && left >= 5) h += '<p class="pace">At your pace so far, ' + (Math.abs(f - 1) < 0.08 ? "right on the estimates" : f < 1 ? "faster than the estimates" : "slower than the estimates") + ": <strong>" + dur(mine) + " left</strong>. <a href=\"#/progress\">See your progress</a></p>";
+    else h += '<p class="pace"><a href="#/progress">See your progress over time</a></p>';
     var d = daysUntil(S.examDate);
     if (S.examDate && d !== null && !dateOpen) {
       h += '<p class="pace">' + (d < 0 ? "Your exam date, " + esc(niceDate(S.examDate)) + ", has passed." : d === 0 ? "Your exam is today. " + (left >= 5 ? cap(dur(mine)) + " still on the list." : "Everything is done.") :
@@ -118,16 +132,41 @@
   /* Time actually spent, counted only while a lesson, check or problem page is open and in use. */
   function coreSpent(t) { var sp = (S.topics[t.id] || {}).spent || {}; return ((sp.learn || 0) + (sp.check || 0) + (sp.deepen || 0)) / 60; }
   function allSpent(t) { return coreSpent(t) + ((((S.topics[t.id] || {}).spent || {}).practice || 0) / 60); }
-  /* Your pace: time spent on finished work, divided by its estimate. Needs 30 estimated minutes of finished work. */
-  function paceFactor() {
-    var est = 0, spent = 0;
-    TOPICS.forEach(function (t) {
-      if (!L[t.id]) return;
-      var done = topicMin(t) - leftMin(t, true), sp = coreSpent(t); // only work really finished counts, not topics skipped as confident
-      if (done > 0 && sp > 0) { est += done; spent += sp; }
+  /* ---------- daily log: what was done and how long it took, one entry per day ---------- */
+  function iso(d) { return d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2); }
+  function fromIso(k) { var p = k.split("-"); return new Date(+p[0], +p[1] - 1, +p[2]); }
+  function today() { return iso(new Date()); }
+  function dayRec() { S.days = S.days || {}; var k = today(); return S.days[k] || (S.days[k] = { sp: {}, est: {} }); }
+  function workDone() {
+    var w = { learn: 0, check: 0, deepen: 0 };
+    TOPICS.forEach(function (t) { if (!L[t.id] || !S.topics[t.id]) return; var p = leftParts(t); CORE.forEach(function (st) { w[st] += stageMin(t, st) - p[st]; }); });
+    return w;
+  }
+  /* Called whenever progress may have changed: credits newly finished work to today. */
+  function logProgress() {
+    var w = workDone(), d = null;
+    if (S.cum) CORE.forEach(function (st) { var dl = w[st] - (S.cum[st] || 0); if (dl > 0.01) { d = d || dayRec(); d.est[st] = (d.est[st] || 0) + dl; } });
+    S.cum = w;
+    if (d || (S.days && S.days[today()])) dayRec().left = Math.round(sumLeft(TOPICS));
+    fcache = null;
+  }
+  /* Your speed per kind of work: time spent divided by the estimate for what you finished.
+     Recent days count more (each day back counts 15% less). A stage needs enough finished work
+     before it gets its own factor; until then it uses the overall one, and that needs 30 minutes. */
+  var fcache = null, NEED = { learn: 15, check: 5, deepen: 20 };
+  function factors() {
+    if (fcache) return fcache;
+    var num = { learn: 0, check: 0, deepen: 0 }, den = { learn: 0, check: 0, deepen: 0 }, raw = { learn: 0, check: 0, deepen: 0 }, now = fromIso(today());
+    Object.keys(S.days || {}).forEach(function (k) {
+      var d = S.days[k], w = Math.pow(0.85, Math.max(0, Math.round((now - fromIso(k)) / 86400000)));
+      CORE.forEach(function (st) { var e = (d.est || {})[st] || 0, sp = ((d.sp || {})[st] || 0) / 60; num[st] += w * sp; den[st] += w * e; raw[st] += e; });
     });
-    if (est < 30) return 0;
-    return Math.min(2.5, Math.max(0.4, spent / est));
+    var clamp = function (x) { return Math.min(2.5, Math.max(0.4, x)); };
+    var N = num.learn + num.check + num.deepen, D = den.learn + den.check + den.deepen, R = raw.learn + raw.check + raw.deepen;
+    var F = { all: R >= 30 && D > 0 ? clamp(N / D) : 1, known: R >= 30 && D > 0, own: {} };
+    CORE.forEach(function (st) { F.own[st] = raw[st] >= NEED[st] && den[st] > 0; F[st] = F.own[st] ? clamp(num[st] / den[st]) : F.all; });
+    F.known = F.known || F.own.learn || F.own.check || F.own.deepen;
+    return (fcache = F);
   }
   function daysUntil(iso) {
     var p = String(iso || "").split("-"); if (p.length !== 3) return null;
@@ -164,7 +203,7 @@
     }
     return h + '<ul class="rlist">' + list.map(function (r) {
       return '<li><span><a href="#/t/' + r.t.id + r.link + '"><strong>' + esc(r.t.title) + "</strong></a>" + (r.why.length ? "<small>" + esc(cap(r.why.join(" · "))) + "</small>" : "") +
-        r.flagged.map(function (f) { return '<small>Flagged problem: <a href="#/t/' + r.t.id + "/" + f.stage + "/" + f.p.id + '">' + esc(f.p.title) + "</a></small>"; }).join("") + '</span><span class="meta">' + ((S.topics[r.t.id] || {}).confident ? "marked confident" : leftText(leftMin(r.t))) + "</span></li>";
+        r.flagged.map(function (f) { return '<small>Flagged problem: <a href="#/t/' + r.t.id + "/" + f.stage + "/" + f.p.id + '">' + esc(f.p.title) + "</a></small>"; }).join("") + '</span><span class="meta">' + ((S.topics[r.t.id] || {}).confident ? "marked confident" : leftText(leftMine(r.t))) + "</span></li>";
     }).join("") + "</ul></section>";
   }
   function sumMin(list) { return list.reduce(function (a, t) { return a + topicMin(t); }, 0); }
@@ -248,18 +287,116 @@
     }).join("") + "</div>" + reviewHTML();
 
     shownUnits().forEach(function (u) { var ui = C.units.indexOf(u);
-      h += '<section class="unit"><h2>' + esc(u.title) + "<small>Unit " + (ui + 1) + (u.exam ? " · for " + esc(u.exam) : "") + " · " + dur(sumMin(u.topics)) + " · " + leftText(sumLeft(u.topics)) + '</small></h2><ul class="topics">' + u.topics.map(function (t) {
+      h += '<section class="unit"><h2>' + esc(u.title) + "<small>Unit " + (ui + 1) + (u.exam ? " · for " + esc(u.exam) : "") + " · " + dur(sumMin(u.topics)) + " · " + leftText(sumMine(u.topics)) + (factors().known && sumMine(u.topics) >= 2.5 ? " at your pace" : "") + '</small></h2><ul class="topics">' + u.topics.map(function (t) {
         var s = T(t.id), dot = s.confident ? "done" : started(t) ? "started" : "";
         var chips = "";
         if (s.confident) chips += '<span class="chip ok">Confident</span>';
         else if (started(t)) chips += '<span class="chip go">In progress</span>';
         if ((t.testOut || []).indexOf(lv) >= 0 && !s.confident) chips += '<span class="chip info">Optional at your level</span>';
         chips += '<span class="chip">' + (has(t, "learn") ? (has(t, "practice") ? "Lesson and practice" : "Lesson ready") : has(t, "practice") ? "Practice only" : "Coming soon") + "</span>";
-        return '<li><a class="topic" href="#/t/' + t.id + '"><span class="dot ' + dot + '" aria-hidden="true"></span><span class="txt"><h3>' + esc(t.title) + "</h3><p>" + esc(t.blurb) + '</p><p class="meta">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") + dur(topicMin(t)) + (started(t) ? " · " + leftText(leftMin(t)) : "") + (allSpent(t) >= 1 ? " · " + Math.round(allSpent(t)) + " min spent" : "") + '</p></span><span class="chips">' + (s.flag ? '<span class="chip flag">Flagged</span>' : "") + chips + "</span></a></li>";
+        return '<li><a class="topic" href="#/t/' + t.id + '"><span class="dot ' + dot + '" aria-hidden="true"></span><span class="txt"><h3>' + esc(t.title) + "</h3><p>" + esc(t.blurb) + '</p><p class="meta">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") + dur(topicMin(t)) + (started(t) ? " · " + leftText(leftMine(t)) : "") + (allSpent(t) >= 1 ? " · " + Math.round(allSpent(t)) + " min spent" : "") + '</p></span><span class="chips">' + (s.flag ? '<span class="chip flag">Flagged</span>' : "") + chips + "</span></a></li>";
       }).join("") + "</ul></section>";
     });
     view.innerHTML = h;
   }
+
+  /* ---------- progress page: charts built as plain SVG ---------- */
+  function hm(m) { m = Math.round(m); return m < 60 ? m + " min" : Math.floor(m / 60) + " h" + (m % 60 ? " " + (m % 60) + " min" : ""); }
+  function shortDay(k) { return fromIso(k).toLocaleDateString(undefined, { month: "short", day: "numeric" }); }
+  /* One row per calendar day from the first logged day to today (or to the day before the exam). */
+  function dayRows(days, examIso) {
+    var keys = Object.keys(days).sort(); if (!keys.length) return [];
+    var rows = [], d = fromIso(keys[0]), end = fromIso(today()), last = null, t = today();
+    if (examIso) { var ex = fromIso(examIso); ex.setDate(ex.getDate() - 1); if (ex > end && (ex - end) / 86400000 <= 120) end = ex; }
+    if ((end - d) / 86400000 > 200) { d = new Date(end); d.setDate(d.getDate() - 200); }
+    for (; d <= end; d.setDate(d.getDate() + 1)) {
+      var k = iso(d), r = days[k] || {}, sp = r.sp || {}, est = r.est || {}, future = k > t;
+      var core = ((sp.learn || 0) + (sp.check || 0) + (sp.deepen || 0)) / 60, e = (est.learn || 0) + (est.check || 0) + (est.deepen || 0);
+      if (r.left != null) last = r.left;
+      rows.push({ k: k, future: future, spent: future ? null : core + (sp.practice || 0) / 60, done: future ? null : e, left: future ? null : last, speed: !future && e >= 5 && core > 0 ? core / e : null });
+    }
+    return rows;
+  }
+  function niceMax(v) { if (v <= 0) return 1; var p = Math.pow(10, Math.floor(Math.log(v) / Math.LN10)), f = v / p; return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 3 ? 3 : f <= 4 ? 4 : f <= 5 ? 5 : f <= 8 ? 8 : 10) * p; }
+  /* kind "line" or "bar". pts: [{label, v (null to skip), tip}]. opt: {max, fmt, ref:{v,label}, target:[{i,v}], targetLabel} */
+  function chartSVG(kind, pts, opt) {
+    var W = 720, H = 240, ml = 52, mr = 18, mt = 14, mb = 30, pw = W - ml - mr, ph = H - mt - mb, n = pts.length;
+    var vals = pts.filter(function (p) { return p.v != null; }).map(function (p) { return p.v; }).concat(opt.ref ? [opt.ref.v] : []).concat((opt.target || []).map(function (q) { return q.v; }));
+    var max = opt.max || niceMax(Math.max.apply(null, vals.concat([0.0001])) * 1.05), step = pw / Math.max(1, kind === "bar" ? n : n - 1);
+    var X = function (i) { return ml + (kind === "bar" ? (i + 0.5) * step : n === 1 ? pw / 2 : i * step); }, Y = function (v) { return mt + ph - (v / max) * ph; };
+    var g = '<svg class="chart" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc(opt.aria) + '">';
+    for (var i = 0; i <= 4; i++) { var gv = max * i / 4, gy = Y(gv); g += '<line class="grid" x1="' + ml + '" x2="' + (W - mr) + '" y1="' + gy + '" y2="' + gy + '"/><text class="ax" x="' + (ml - 8) + '" y="' + (gy + 4) + '" text-anchor="end">' + esc(opt.fmt(gv)) + "</text>"; }
+    var every = Math.max(1, Math.ceil(n / 8));
+    pts.forEach(function (p, i) { if (i % every === 0 || i === n - 1 && n - 1 - Math.floor((n - 1) / every) * every > every / 2) g += '<text class="ax" x="' + X(i) + '" y="' + (H - 9) + '" text-anchor="middle">' + esc(p.label) + "</text>"; });
+    if (opt.ref) { var ry = Y(opt.ref.v); g += '<line class="ref" x1="' + ml + '" x2="' + (W - mr) + '" y1="' + ry + '" y2="' + ry + '"/><text class="ax" x="' + (ml + 6) + '" y="' + (ry + 15) + '" text-anchor="start">' + esc(opt.ref.label) + "</text>"; }
+    if (opt.target && opt.target.length === 2) { var a = opt.target[0], b = opt.target[1]; g += '<line class="ref" x1="' + X(a.i) + '" y1="' + Y(a.v) + '" x2="' + X(b.i) + '" y2="' + Y(b.v) + '"/><text class="ax" x="' + ((X(a.i) + X(b.i)) / 2 + 10) + '" y="' + ((Y(a.v) + Y(b.v)) / 2 - 10) + '" text-anchor="start">' + esc(opt.targetLabel) + "</text>"; }
+    if (kind === "bar") {
+      var bw = Math.max(3, Math.min(34, step - 4));
+      pts.forEach(function (p, i) { if (p.v > 0) { var y = Y(p.v), hgt = mt + ph - y, r = Math.min(4, bw / 2, hgt); g += '<path class="mark" d="M' + (X(i) - bw / 2) + " " + (mt + ph) + "V" + (y + r) + "q0 " + (-r) + " " + r + " " + (-r) + "h" + (bw - 2 * r) + "q" + r + " 0 " + r + " " + r + "V" + (mt + ph) + 'z"/>'; } });
+    } else {
+      var path = "", pen = false;
+      pts.forEach(function (p, i) { if (p.v == null) return; path += (pen ? "L" : "M") + X(i) + " " + Y(p.v); pen = true; });
+      g += '<path class="linemark" d="' + path + '"/>';
+      var shown = pts.filter(function (p) { return p.v != null; }).length;
+      pts.forEach(function (p, i) { if (p.v != null && (shown <= 40 || i === n - 1)) g += '<circle class="dotmark" cx="' + X(i) + '" cy="' + Y(p.v) + '" r="4"/>'; });
+    }
+    pts.forEach(function (p, i) { if (p.tip) g += '<rect class="hit" tabindex="0" x="' + (X(i) - step / 2) + '" y="' + mt + '" width="' + step + '" height="' + ph + '" data-tip="' + esc(p.tip) + '" aria-label="' + esc(p.tip) + '"/>'; });
+    return g + '<line class="base" x1="' + ml + '" x2="' + (W - mr) + '" y1="' + (mt + ph) + '" y2="' + (mt + ph) + '"/></svg>';
+  }
+  function exampleDays() {
+    var o = {}, d = new Date(), left = 1850, plan = [[40, 30], [0, 0], [65, 55], [50, 50], [30, 20], [0, 0], [75, 70], [45, 45], [60, 62], [20, 15], [55, 60], [70, 75], [35, 38], [50, 55]];
+    d.setDate(d.getDate() - plan.length + 1);
+    plan.forEach(function (p) { left -= p[1]; o[iso(d)] = { sp: { learn: p[0] * 24, check: p[0] * 6, deepen: p[0] * 30 }, est: { learn: p[1] * 0.4, check: p[1] * 0.1, deepen: p[1] * 0.5 }, left: left }; d.setDate(d.getDate() + 1); });
+    return o;
+  }
+  function renderProgress() {
+    var real = S.days || {}, hasReal = Object.keys(real).some(function (k) { var sp = real[k].sp || {}; return (sp.learn || 0) + (sp.check || 0) + (sp.deepen || 0) + (sp.practice || 0) >= 60; });
+    var example = !hasReal && !S.noProgExample, days = hasReal ? real : example ? exampleDays() : {};
+    var h = '<nav class="crumb" aria-label="Breadcrumb"><a href="#/">Course map</a> / Progress</nav><h1>Progress</h1><p class="lede">What you have done each day, how long it took, and how that compares with the estimates. Recorded in this browser from the day you started using this page.</p>';
+    if (!hasReal && !example) { view.innerHTML = h + '<p class="empty">Nothing recorded yet. Open a lesson or a problem and work for a minute, then come back.</p>'; return; }
+    if (example) h += '<p class="banner wait" style="margin-top:18px">This is example data, so you can see what the page looks like. Your own replaces it as soon as you have studied for a minute. <button type="button" class="linkbtn" data-act="hideprogexample">Remove example</button></p>';
+    var rows = dayRows(days, example ? "" : S.examDate), past = rows.filter(function (r) { return !r.future; });
+    var total = past.reduce(function (a, r) { return a + r.spent; }, 0), active = past.filter(function (r) { return r.spent >= 1; }).length, doneEst = past.reduce(function (a, r) { return a + r.done; }, 0);
+    var week = past.slice(-7), avg = week.reduce(function (a, r) { return a + r.spent; }, 0) / Math.max(1, week.length);
+    var F = example ? { known: true, all: total / Math.max(1, doneEst), learn: 1, check: 1, deepen: 1, own: {} } : factors(), left = example ? past[past.length - 1].left : sumMine(TOPICS);
+    var speedTxt = F.known ? (Math.round(F.all * 100) / 100) + "x" : "not yet";
+    var tile = function (v, l) { return "<div><strong>" + esc(v) + "</strong><span>" + esc(l) + "</span></div>"; };
+    h += '<div class="tiles">' + tile(hm(total), "studied in total") + tile(active + " of " + past.length, "days studied") + tile(hm(avg), "a day, last " + week.length + " day" + (week.length === 1 ? "" : "s")) + tile(speedTxt, "your time vs the estimates") + "</div>";
+    if (left >= 5 && avg >= 1) {
+      var need = Math.ceil(left / avg), fin = new Date(); fin.setDate(fin.getDate() + need - 1);
+      var msg = "At that daily average you finish the course on " + fin.toLocaleDateString(undefined, { weekday: "short", month: "short", day: "numeric" }) + ".", du = example ? null : daysUntil(S.examDate);
+      if (du !== null && du > 0) msg += need <= du ? " That is " + (du - need === 0 ? "the day before" : (du - need + 1) + " days before") + " your exam." : " That is " + (need - du) + " day" + (need - du === 1 ? "" : "s") + " too late for your exam, so the daily time needs to go up to " + dur(left / du).replace("about ", "") + ".";
+      h += '<p class="pace" style="margin:14px 0 0">' + esc(msg) + "</p>";
+    }
+    if (!example && F.known) h += '<p class="meta" style="margin-top:10px">Speed by kind of work: lessons ' + (F.own.learn ? F.learn.toFixed(2) + "x" : "not enough yet") + " · checks " + (F.own.check ? F.check.toFixed(2) + "x" : "not enough yet") + " · problems " + (F.own.deepen ? F.deepen.toFixed(2) + "x" : "not enough yet") + ". 1x means exactly the estimate. Recent days count more.</p>";
+
+    var lab = function (r) { return shortDay(r.k); };
+    var burn = rows.map(function (r) { return { label: lab(r), v: r.left == null ? null : r.left / 60, tip: r.left == null ? "" : lab(r) + ": " + hm(r.left) + " of course left" }; });
+    var bopt = { fmt: function (v) { return (Math.round(v * 10) / 10) + " h"; }, aria: "Estimated hours of course left, by day" };
+    var firstLeft = null; rows.forEach(function (r) { if (firstLeft === null && r.left != null) firstLeft = r.left + r.done; });
+    if (!example && S.examDate && rows.length > 1 && rows[rows.length - 1].future && firstLeft) { bopt.target = [{ i: 0, v: firstLeft / 60 }, { i: rows.length - 1, v: 0 }]; bopt.targetLabel = "on track for your exam"; }
+    h += '<section class="chartbox"><h2>Course time left</h2><p class="meta">Estimated hours still to do, at the end of each day. Marking a topic confident also brings this down.</p>' + chartSVG("line", burn, bopt) + "</section>";
+    h += '<section class="chartbox"><h2>Time studied each day</h2><p class="meta">Minutes with a lesson, check or problem open and in use, practice included.</p>' +
+      chartSVG("bar", past.map(function (r) { return { label: lab(r), v: r.spent, tip: lab(r) + ": " + hm(r.spent) + " studied" }; }), { fmt: function (v) { return Math.round(v) + " min"; }, aria: "Minutes studied each day" }) + "</section>";
+    var sp = past.map(function (r) { return { label: lab(r), v: r.speed, tip: r.speed == null ? "" : lab(r) + ": " + r.speed.toFixed(2) + "x the estimate (" + hm(r.spent) + " for " + hm(r.done) + " of estimated work)" }; });
+    h += '<section class="chartbox"><h2>Your speed</h2><p class="meta">Time you took divided by the estimate for the work you finished that day. Below the dashed line is faster than estimated. Days with under 5 minutes of finished work are left out.</p>' +
+      (sp.some(function (p) { return p.v != null; }) ? chartSVG("line", sp, { fmt: function (v) { return (Math.round(v * 100) / 100) + "x"; }, ref: { v: 1, label: "as estimated" }, aria: "Your time divided by the estimate, by day" }) : '<p class="empty">Shows up once you finish at least 5 estimated minutes of work in a day.</p>') + "</section>";
+    h += '<details class="reveal"><summary>Show as a table</summary><div class="tblwrap"><table class="tbl"><thead><tr><th>Day</th><th>Studied</th><th>Estimated work finished</th><th>Speed</th><th>Course left</th></tr></thead><tbody>' +
+      past.slice().reverse().map(function (r) { return "<tr><td>" + esc(lab(r)) + "</td><td>" + hm(r.spent) + "</td><td>" + hm(r.done) + "</td><td>" + (r.speed == null ? "" : r.speed.toFixed(2) + "x") + "</td><td>" + (r.left == null ? "" : hm(r.left)) + "</td></tr>"; }).join("") + "</tbody></table></div></details>";
+    view.innerHTML = h + '<div class="tip" id="tip" hidden></div>';
+  }
+  function tipFor(el) {
+    var tip = document.getElementById("tip"); if (!tip) return;
+    if (!el) { tip.hidden = true; return; }
+    tip.textContent = el.getAttribute("data-tip"); tip.hidden = false;
+    var b = el.getBoundingClientRect(), w = tip.offsetWidth;
+    tip.style.left = Math.max(8, Math.min(window.innerWidth - w - 8, b.left + b.width / 2 - w / 2)) + window.scrollX + "px";
+    tip.style.top = b.top + window.scrollY - tip.offsetHeight - 6 + "px";
+  }
+  view.addEventListener("pointerover", function (e) { if (e.target.classList && e.target.classList.contains("hit")) tipFor(e.target); });
+  view.addEventListener("pointerout", function (e) { if (e.target.classList && e.target.classList.contains("hit")) tipFor(null); });
+  view.addEventListener("focusin", function (e) { if (e.target.classList && e.target.classList.contains("hit")) tipFor(e.target); });
+  view.addEventListener("focusout", function (e) { if (e.target.classList && e.target.classList.contains("hit")) tipFor(null); });
 
   /* ---------- topic page ---------- */
   function renderTopic(t) {
@@ -273,7 +410,7 @@
     var first = level() === "review" ? "check" : "learn", suggested = null;
     STAGES.slice(STAGES.indexOf(first)).concat(STAGES).forEach(function (st) { if (!suggested && has(t, st) && !stageDone(t, st)) suggested = st; });
     var h = crumb(t) + '<p class="eyebrow">' + esc(t.unit || "") + "</p><h1>" + esc(t.title) + '</h1><p class="lede">' + esc(t.blurb) + '</p><p class="meta" style="margin-top:14px">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") +
-      (l ? cap(dur(topicMin(t))) + " for the lesson, check and exam-style problems" + (started(t) ? " · " + leftText(leftMin(t)) : "") + (allSpent(t) >= 1 ? " · you have spent " + Math.round(allSpent(t)) + " min" : "") : "Planned: " + dur(topicMin(t))) + (has(t, "practice") ? " · Practice is extra" : "") + "</p>" + sources(t, "From the course" + (t.lecture ? ", Lecture " + t.lecture : "") + ":") + '<ol class="stages">';
+      (l ? cap(dur(topicMin(t))) + " for the lesson, check and exam-style problems" + (started(t) ? " · " + leftText(leftMine(t)) : "") + (allSpent(t) >= 1 ? " · you have spent " + Math.round(allSpent(t)) + " min" : "") : "Planned: " + dur(topicMin(t))) + (has(t, "practice") ? " · Practice is extra" : "") + "</p>" + sources(t, "From the course" + (t.lecture ? ", Lecture " + t.lecture : "") + ":") + '<ol class="stages">';
     STAGES.forEach(function (st) {
       var ok = has(t, st), done = stageDone(t, st), label = "Start";
       if (st === "learn" && ok) label = s.lessonDone ? "Replay" : s.step ? "Continue" : "Start";
@@ -596,17 +733,19 @@
     hush();
     var r = route(), t = r[0] === "t" ? topicById(r[1]) : null, stage = r[2];
     cur = null;
-    if (!t) renderMap();
+    if (r[0] === "progress") renderProgress();
+    else if (!t) renderMap();
     else if (stage === "learn" && has(t, "learn")) renderLearn(t);
     else if (stage === "check" && has(t, "check")) renderCheck(t);
     else if ((stage === "deepen" || stage === "practice") && has(t, stage)) renderWork(t, stage, r[3]);
     else renderTopic(t);
     if (t) { S.last = "#/" + r.join("/"); save(); }
     progress();
-    document.title = (t ? t.title + " · " : "") + "CS 61A · Saba Feilizadeh";
+    document.title = (t ? t.title + " · " : r[0] === "progress" ? "Progress · " : "") + "CS 61A · Saba Feilizadeh";
     if (!keepScroll) { window.scrollTo(0, 0); try { view.focus({ preventScroll: true }); } catch (e) {} }
   }
   function progress() {
+    logProgress(); saveSoon();
     var done = TOPICS.filter(function (t) { return (S.topics[t.id] || {}).confident; }).length;
     var lm = sumLeft(TOPICS);
     document.getElementById("prog").textContent = done + " of " + TOPICS.length + " topics confident · " + (lm < 2.5 ? "all done" : dur(lm).replace("about ", "") + " left");
@@ -641,6 +780,7 @@
     else if (act === "filter") { S.filter = el.getAttribute("data-x") || ""; save(); render(true); }
     else if (act === "dateopen") { dateOpen = true; render(true); }
     else if (act === "dateclear") { delete S.examDate; dateOpen = false; save(); render(true); }
+    else if (act === "hideprogexample") { S.noProgExample = true; save(); render(true); }
     else if (act === "hideexample") { S.noReviewExample = true; save(); render(true); }
     else if (act === "flagp" && cur) { var fs = T(cur.t.id); if (fs.flags[cur.p.id]) delete fs.flags[cur.p.id]; else fs.flags[cur.p.id] = true; save(); el.textContent = fs.flags[cur.p.id] ? "Flagged for review" : "Flag for review"; el.setAttribute("aria-pressed", !!fs.flags[cur.p.id]); }
     else if (act === "recheck" && t) { T(t.id).check = {}; save(); render(false); }
@@ -700,7 +840,8 @@
   setInterval(function () {
     var r = route(), t = r[0] === "t" ? topicById(r[1]) : null;
     if (!t || STAGES.indexOf(r[2]) < 0 || document.hidden || Date.now() - lastActive > 120000) return;
-    var sp = T(t.id).spent; sp[r[2]] = (sp[r[2]] || 0) + 15; saveSoon();
+    var sp = T(t.id).spent; sp[r[2]] = (sp[r[2]] || 0) + 15;
+    var d = dayRec(); d.sp[r[2]] = (d.sp[r[2]] || 0) + 15; if (d.left == null) d.left = Math.round(sumLeft(TOPICS)); fcache = null; saveSoon();
   }, 15000);
   window.addEventListener("pagehide", function () { hush(); save(); });
 
