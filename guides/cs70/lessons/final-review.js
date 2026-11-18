@@ -1,0 +1,231 @@
+/*
+  lessons/final-review.js: Mixed review for the final (whole course, Notes 0 to 23
+  and Lectures 24 to 26). A short lesson on how to attack a CS 70 final: which
+  proof technique to reach for, one checklist of facts per area, and the traps
+  that cost the most points. Then mixed questions, and four problems that each
+  combine two topics.
+*/
+window.LESSONS["final-review"] = {
+  minutes: 12,
+  boards: {
+    plan: [
+      "Before you write anything:",
+      "1. What kind of question is it?  Prove / compute / bound / construct.",
+      "2. Which unit?  Look for the trigger words (mod, graph, polynomial, ℙ, 𝔼 …).",
+      "3. Write the definitions you will use. Many proofs are definitions + algebra.",
+      "4. Try a small case (n = 1, 2, 3; a 2-state chain; a 3-vertex graph).",
+      "5. For a number answer, sanity check it: is a probability in [0, 1]?",
+      "   Is a variance ≥ 0? Does a count come out an integer?"
+    ],
+    proofs: [
+      "Claim looks like …                       Reach for …",
+      "P ⟹ Q, with Q easy to start from         direct proof",
+      "P ⟹ Q, with ¬Q easier to use             contraposition: ¬Q ⟹ ¬P",
+      "\"there is no …\", \"is irrational\", \"infinitely many\"   contradiction",
+      "∀n ∈ ℕ, P(n)                              induction (strong if k + 1 splits into smaller pieces)",
+      "an identity between counts                combinatorial proof: count one set two ways",
+      "a set is uncountable                      diagonalization",
+      "no program can decide …                   reduce the halting problem to it",
+      "a graph claim for all n                   induction: start from size k + 1 and shrink"
+    ],
+    numbers: [
+      "Modular:  a has an inverse mod m  ⟺  gcd(a, m) = 1   (find it with extended Euclid)",
+      "Fermat:   p prime, a ≢ 0 (mod p)  ⟹  aᵖ⁻¹ ≡ 1 (mod p)",
+      "CRT:      pairwise coprime moduli  ⟹  exactly one solution mod their product",
+      "RSA:      N = pq,  e coprime to (p − 1)(q − 1),  d ≡ e⁻¹ mod (p − 1)(q − 1)",
+      "          E(x) = xᵉ mod N,   D(y) = yᵈ mod N",
+      "Polys:    degree ≤ d over GF(p) is fixed by d + 1 points; a nonzero one has ≤ d roots",
+      "Codes:    n message packets: send n + k for k erasures, n + 2k for k general errors",
+      "Secret sharing: k of n shares recover the secret: degree k − 1 polynomial, secret P(0)"
+    ],
+    graphs: [
+      "Handshake:  Σ deg(v) = 2|E|",
+      "Eulerian tour  ⟺  connected (ignoring isolated vertices) and every degree even",
+      "Tree on n vertices: connected, no cycles, n − 1 edges (any two of these give the third)",
+      "Planar, connected:  v + f = e + 2;   simple with v ≥ 3:  e ≤ 3v − 6",
+      "Hypercube of dimension n:  2ⁿ vertices,  n · 2ⁿ⁻¹ edges",
+      "Stable matching: propose-and-reject is optimal for the proposers,",
+      "                 pessimal for the side that receives proposals",
+      "Countable: ℕ, ℤ, ℚ, finite strings.   Uncountable: ℝ, [0, 1], P(ℕ)"
+    ],
+    counting: [
+      "Ordered, no repeats:   n!/(n − k)!        Unordered:  C(n, k) = n!/(k!(n − k)!)",
+      "Repeats allowed, ordered:   nᵏ",
+      "Stars and bars: n identical items into k bins:   C(n + k − 1, k − 1)",
+      "Rearrangements of a word with repeated letters:   n!/(n₁! n₂! …)",
+      "Inclusion-exclusion:  |A ∪ B| = |A| + |B| − |A ∩ B|",
+      "",
+      "Uniform space:  ℙ[A] = |A|/|Ω|",
+      "Bayes:  ℙ[A | B] = ℙ[B | A] ℙ[A] / ℙ[B]",
+      "Total probability:  ℙ[B] = Σᵢ ℙ[B | Aᵢ] ℙ[Aᵢ]   (Aᵢ a partition)",
+      "Union bound:  ℙ[A₁ ∪ … ∪ Aₙ] ≤ ℙ[A₁] + … + ℙ[Aₙ]"
+    ],
+    rvs: [
+      "Linearity:  𝔼[X + Y] = 𝔼[X] + 𝔼[Y]   ALWAYS (no independence needed)",
+      "Indicators: X = Σ Iᵢ  ⟹  𝔼[X] = Σ ℙ[event i]",
+      "Var(X) = 𝔼[X²] − 𝔼[X]²,    Var(aX + b) = a² Var(X)",
+      "Var(X + Y) = Var(X) + Var(Y) + 2 Cov(X, Y)",
+      "Cov(X, Y) = 𝔼[XY] − 𝔼[X]𝔼[Y];  independent ⟹ Cov = 0 (not the reverse)",
+      "Corr(X, Y) = Cov(X, Y)/(σ_X σ_Y) ∈ [−1, 1]"
+    ],
+    last: [
+      "Markov (X ≥ 0):  ℙ[X ≥ c] ≤ 𝔼[X]/c",
+      "Chebyshev:       ℙ[|X − μ| ≥ c] ≤ Var(X)/c²;   sample size n ≥ 1/(4ε²δ)",
+      "Continuous:  ℙ[a ≤ X ≤ b] = ∫ f,   F' = f,   ℙ[X = a] = 0",
+      "Exponential(λ):  ℙ[X > t] = e^(−λt), memoryless",
+      "Gaussian:  standardize z = (x − μ)/σ, use Φ;  independent sums: means add, variances add",
+      "CLT:  Sₙ ≈ N(nμ, nσ²) for large n",
+      "Markov chains:  πₙ₊₁ = πₙP;  β(i) = 1 + Σ P(i, j)β(j);  α(i) = Σ P(i, j)α(j);",
+      "                π = πP, Σπ = 1;  converges if irreducible and aperiodic"
+    ],
+    traps: [
+      "Traps that cost the most points:",
+      "1. Induction: hypothesis is P(k), not ∀n P(n); base case must cover what the step uses.",
+      "2. Modular: dividing without an inverse (only multiply by a⁻¹ when gcd(a, m) = 1).",
+      "3. Counting: order matters or not? Overcounting identical items? Divide only by symmetry you have.",
+      "4. Probability: ℙ[A | B] ≠ ℙ[B | A]. Independent ≠ disjoint.",
+      "5. 𝔼[XY] = 𝔼[X]𝔼[Y] and Var(X + Y) = Var X + Var Y need independence (uncorrelated).",
+      "6. N(μ, σ²): the second number is the variance. Standard deviations do not add.",
+      "7. Bounds (Markov, Chebyshev, union) are not the probability.",
+      "8. Hitting times have \"1 +\"; A-before-B probabilities do not."
+    ]
+  },
+  steps: [
+    { board: "plan", hl: [1, 2, 3, 4, 5, 6, 7],
+      say: "The final covers the whole course, so the first skill is recognizing what a question is about. Decide whether you must prove, compute, bound or construct something. Then write down the definitions you need. A surprising number of CS 70 proofs are just the definitions plus a few lines of algebra. When you are stuck, try a small case. And always sanity check a number before you move on.",
+      tip: "Partial credit comes from visible structure: the definitions, the setup of an induction, the first-step equations, the event you are bounding. Write those even if you cannot finish." },
+    { board: "proofs", hl: [1, 2, 3, 4, 5],
+      say: "Here is a chooser for proof techniques. If the conclusion is easy to build from the hypothesis, go direct. If the negation of the conclusion gives you something concrete to work with, use the contrapositive. Claims that something does not exist, is irrational, or that there are infinitely many of something usually go by contradiction. A claim for every natural number suggests induction.",
+      ask: { type: "mc", q: "Prove: if n² is even, then n is even. Which technique is most natural?",
+        choices: ["Contraposition: if n is odd, then n² is odd", "Induction on n", "Diagonalization"], answer: 0,
+        why: "Starting from \"n² is even\" gives you little to work with. Starting from \"n is odd\" gives n = 2k + 1, so n² = 4k² + 4k + 1 is odd. That proves the contrapositive." } },
+    { board: "proofs", hl: [6, 7, 8, 9],
+      say: "The later units add their own techniques. An identity between binomial coefficients often has a combinatorial proof: count the same set two different ways. To show a set is uncountable, assume a list exists and build an element that differs from the n-th entry in the n-th place. To show no program can decide a property, show that such a program would let you solve the halting problem. For graphs, start from an arbitrary graph of size k plus 1 and shrink it.",
+      ask: { type: "mc", q: "You must show there is no program that decides whether a given program ever prints \"hello\". What is the standard plan?",
+        choices: ["Assume it exists and use it to build a halting-problem solver", "Diagonalize over all real numbers", "Use strong induction on program length"], answer: 0,
+        why: "That is a reduction: if the \"hello\" tester existed, you could decide whether any program halts. The halting problem is undecidable, so the tester cannot exist." } },
+    { board: "numbers", hl: [1, 2, 3, 4, 5],
+      say: "The number theory checklist. An inverse mod m exists exactly when the gcd is 1, and extended Euclid finds it. Fermat's little theorem reduces huge exponents mod a prime. The Chinese remainder theorem gives a unique solution modulo the product of pairwise coprime moduli. RSA ties them together: d is the inverse of e modulo p minus 1 times q minus 1.",
+      ask: { type: "type", q: "What is 2⁵⁰ mod 7? (Hint: 2³ = 8 ≡ 1 mod 7.)", answer: "4",
+        why: "50 = 3 · 16 + 2, so 2⁵⁰ = (2³)¹⁶ · 2² ≡ 1 · 4 = 4 (mod 7)." } },
+    { board: "numbers", hl: [6, 7, 8],
+      say: "Polynomials: a polynomial of degree at most d is pinned down by d plus 1 points, and a nonzero one has at most d roots. For codes, to send n packets and survive k lost packets, send n plus k. To survive k corrupted packets, send n plus 2k and decode with Berlekamp-Welch. For secret sharing where any k people can recover the secret, use a polynomial of degree k minus 1 with the secret at 0.",
+      basics: "GF(p) means arithmetic mod a prime p, where every nonzero number has an inverse." },
+    { board: "graphs", hl: [1, 2, 3, 4, 5, 6, 7, 8],
+      say: "Graphs and the rest of the first half. The sum of the degrees is twice the number of edges. Eulerian tours need connectivity and all even degrees. Trees have n minus 1 edges. Connected planar graphs satisfy Euler's formula, and simple planar graphs have at most 3v minus 6 edges. In stable matching, the side that proposes gets its best possible stable partner. And keep the countable and uncountable sets straight.",
+      ask: { type: "type", q: "A simple connected planar graph has 12 vertices. At most how many edges can it have?", answer: "30",
+        why: "e ≤ 3v − 6 = 36 − 6 = 30." } },
+    { board: "counting", hl: [1, 2, 3, 4, 5],
+      say: "For counting, the first question is always whether order matters and whether repeats are allowed. Stars and bars counts ways to put identical items in distinct bins. Words with repeated letters divide by the factorial of each letter's count. When a direct count overlaps, use inclusion-exclusion or count the complement.",
+      ask: { type: "type", q: "How many ways can you put 8 identical cookies into 3 distinct jars (jars may be empty)?", answer: "45",
+        why: "Stars and bars: C(8 + 3 − 1, 3 − 1) = C(10, 2) = 45." } },
+    { board: "counting", hl: [7, 8, 9, 10],
+      say: "For probability, a uniform space turns a probability into a ratio of counts. Bayes' rule flips a conditional, and total probability computes its denominator by splitting into cases. The union bound gives an upper bound on the probability that at least one bad event happens, even when the events overlap." },
+    { board: "rvs", hl: [1, 2, 3, 4, 5, 6],
+      say: "Random variables. Linearity of expectation needs no independence, and writing a count as a sum of indicators is the most useful trick in the second half of the course. Variance is not linear: constants come out squared, and the variance of a sum picks up twice the covariance. Independence gives covariance 0, but covariance 0 does not give independence.",
+      table: { name: "Distributions", cols: ["X", "𝔼[X]", "Var(X)"], rows: [
+        ["Bernoulli(p)", "p", "p(1 − p)"],
+        ["Binomial(n, p)", "np", "np(1 − p)"],
+        ["Geometric(p)", "1/p", "(1 − p)/p²"],
+        ["Poisson(λ)", "λ", "λ"],
+        ["Uniform{1, …, n}", "(n + 1)/2", "(n² − 1)/12"],
+        ["Uniform[0, ℓ]", "ℓ/2", "ℓ²/12"],
+        ["Exponential(λ)", "1/λ", "1/λ²"],
+        ["N(μ, σ²)", "μ", "σ²"]] },
+      ask: { type: "type", q: "X ~ Geometric(1/4). What is Var(X)?", answer: "12",
+        why: "(1 − p)/p² = (3/4)/(1/16) = 12." } },
+    { board: "last", hl: [1, 2, 3, 4, 5, 6, 7, 8],
+      say: "The last unit in one board. Markov and Chebyshev bound tail probabilities, and Chebyshev gives the polling sample size. Continuous probability replaces sums with integrals. The exponential's tail is e to the minus lambda t. Gaussians are handled by standardizing, and the central limit theorem makes sums approximately Gaussian. Markov chains come down to three kinds of linear equations: hitting times, A-before-B probabilities, and the invariant distribution." },
+    { board: "traps", hl: [1, 2, 3, 4, 5, 6, 7, 8, 9],
+      say: "Finally, the traps. Read this list once more the night before the exam. Each one is a mistake that is easy to make under time pressure and expensive when you do.",
+      ask: { type: "mc", q: "A and B are disjoint events, each with probability 1/3. Are they independent?",
+        choices: ["No: ℙ[A ∩ B] = 0 but ℙ[A]ℙ[B] = 1/9", "Yes: disjoint events are independent", "Cannot tell"], answer: 0,
+        why: "Independence needs ℙ[A ∩ B] = ℙ[A]ℙ[B]. Disjoint events with positive probability are always dependent: if A happens, B cannot." } }
+  ],
+
+  check: [
+    { type: "mc", q: "What is the negation of ∀x ∃y P(x, y)?",
+      choices: ["∃x ∀y ¬P(x, y)", "∀x ∃y ¬P(x, y)", "∃x ∃y ¬P(x, y)"], answer: 0,
+      why: "Negating flips each quantifier and negates the inside: ¬∀x ∃y P ≡ ∃x ¬∃y P ≡ ∃x ∀y ¬P." },
+    { type: "type", q: "What is 3¹⁰⁰ mod 7?", answer: "4",
+      why: "By Fermat, 3⁶ ≡ 1 (mod 7). 100 = 6 · 16 + 4, so 3¹⁰⁰ ≡ 3⁴ = 81 ≡ 4 (mod 7)." },
+    { type: "type", q: "RSA with p = 5, q = 11 and e = 3. What is the private key d?", answer: "27",
+      why: "(p − 1)(q − 1) = 40, and d ≡ 3⁻¹ (mod 40). 3 · 27 = 81 = 2 · 40 + 1, so d = 27." },
+    { type: "type", q: "You send a 5-packet message with a polynomial code and up to 3 packets may be corrupted (general errors). How many packets must you send?", answer: "11",
+      why: "n + 2k = 5 + 2 · 3 = 11." },
+    { type: "type", q: "How many distinct rearrangements does the word MISSISSIPPI have?", answer: "34650", accept: ["34,650"],
+      why: "11 letters with M once, I four times, S four times, P twice: 11!/(1! 4! 4! 2!) = 34,650." },
+    { type: "type", q: "1% of people have a disease. A test is positive for 90% of sick people and for 10% of healthy people. Given a positive test, what is the probability of the disease?", answer: "1/12", accept: ["0.0833", ".0833", "0.083", ".083"],
+      why: "Bayes: (0.01 · 0.9)/(0.01 · 0.9 + 0.99 · 0.1) = 0.009/(0.009 + 0.099) = 0.009/0.108 = 1/12." },
+    { type: "mc", q: "Which of these sets is uncountable?",
+      choices: ["The set of all subsets of ℕ", "The set of all finite binary strings", "ℚ, the rationals"], answer: 0,
+      why: "|P(ℕ)| > |ℕ| by diagonalization. Finite strings and the rationals can both be listed, so they are countable." },
+    { type: "mc", q: "X and Y have Var(X) = 4, Var(Y) = 9 and Cov(X, Y) = −2. What is Var(X + Y)?",
+      choices: ["9", "13", "17"], answer: 0,
+      why: "Var(X + Y) = Var(X) + Var(Y) + 2Cov(X, Y) = 4 + 9 − 4 = 9." }
+  ],
+
+  deepen: [
+    { id: "final_candy", title: "Candy for four kids", source: "Original question: counting + probability",
+      desc: ["10 identical candies are given to 4 distinct kids. All the ways to do this (kids may get none) are equally likely.",
+        "(a) How many ways are there in total?",
+        "(b) What is the probability that every kid gets at least one candy?"],
+      answer: "42/143", accept: ["0.2937", ".2937", "0.294", ".294"], answerLabel: "ℙ[every kid gets at least one] =",
+      hints: ["Stars and bars: n identical items into k distinct bins in C(n + k − 1, k − 1) ways.", "For \"at least one each\", hand one candy to every kid first. How many candies are left to distribute freely?", "6 candies into 4 kids: C(9, 3)."],
+      solution: [
+        "(a) Stars and bars with n = 10, k = 4:  C(13, 3) = 286 ways.",
+        "(b) Give each kid one candy first. The remaining 6 candies go to 4 kids freely:",
+        "    C(6 + 3, 3) = C(9, 3) = 84 ways, and each corresponds to exactly one distribution where everyone gets ≥ 1.",
+        "    The space is uniform, so ℙ = 84/286 = 42/143 ≈ 0.294."
+      ],
+      explain: "In a uniform space, a probability is a ratio of two counts. \"At least one each\" becomes an unrestricted count after you hand out the minimum. (The uniform choice here is over distributions, not over candies tossed one at a time; those two models give different answers.)" },
+    { id: "final_triangles", title: "Triangles in a random graph", source: "Original question: graphs + linearity of expectation",
+      desc: ["Start with 10 vertices. For each of the C(10, 2) possible edges, include it independently with probability 1/2.",
+        "(a) What is the expected number of triangles (sets of 3 vertices with all 3 edges present)?",
+        "(b) What is the expected number of edges, and the expected sum of all the degrees?"],
+      answer: "15", answerLabel: "expected number of triangles =",
+      hints: ["Write the number of triangles as a sum of indicators, one for each set of 3 vertices.", "A given set of 3 vertices is a triangle when its 3 edges are all present: probability (1/2)³.", "For (b), use the handshake lemma: the sum of the degrees is twice the number of edges."],
+      solution: [
+        "(a) For each 3-vertex set T, let I_T = 1 if all three edges of T are present.",
+        "    ℙ[I_T = 1] = (1/2)³ = 1/8, by independence of the edges.",
+        "    Number of triangles = Σ I_T over all C(10, 3) = 120 sets.",
+        "    By linearity, 𝔼[triangles] = 120 · 1/8 = 15. (The indicators are dependent, and linearity does not care.)",
+        "(b) Each of the C(10, 2) = 45 edges is present with probability 1/2: 𝔼[edges] = 45/2 = 22.5.",
+        "    Σ deg(v) = 2|E| always, so 𝔼[Σ deg(v)] = 2 · 22.5 = 45."
+      ],
+      explain: "Linearity of expectation works with any dependence between the indicators. Pick the indicator to match the object you count: one per triple for triangles, one per pair for edges." },
+    { id: "final_modind", title: "Divisible by 7, two ways", source: "Original question: induction + modular arithmetic",
+      desc: ["Prove that for every n ∈ ℕ, 7 divides 3²ⁿ⁺¹ + 2ⁿ⁺².",
+        "(a) Prove it by induction.",
+        "(b) Prove it again with modular arithmetic, without induction.",
+        "Then compute (3⁷ + 2⁵)/7, the quotient for n = 3."],
+      answer: "317", answerLabel: "(3⁷ + 2⁵)/7 =",
+      hints: ["Base case n = 0: 3¹ + 2² = 7.", "In the step, 3²⁽ᵏ⁺¹⁾⁺¹ = 9 · 3²ᵏ⁺¹ and 2ᵏ⁺³ = 2 · 2ᵏ⁺². Write 9 = 7 + 2.", "For (b), 3²ⁿ⁺¹ = 3 · 9ⁿ and 9 ≡ 2 (mod 7)."],
+      solution: [
+        "(a) P(n): 7 | 3²ⁿ⁺¹ + 2ⁿ⁺².  Base case n = 0: 3 + 4 = 7. ✓",
+        "    Hypothesis: 3²ᵏ⁺¹ + 2ᵏ⁺² = 7m for some integer m.",
+        "    Step: 3²ᵏ⁺³ + 2ᵏ⁺³ = 9 · 3²ᵏ⁺¹ + 2 · 2ᵏ⁺² = 7 · 3²ᵏ⁺¹ + 2(3²ᵏ⁺¹ + 2ᵏ⁺²) = 7 · 3²ᵏ⁺¹ + 2 · 7m.",
+        "    Both terms are multiples of 7, so P(k + 1) holds. By induction, P(n) for all n ∈ ℕ. ∎",
+        "(b) 3²ⁿ⁺¹ = 3 · 9ⁿ ≡ 3 · 2ⁿ (mod 7), and 2ⁿ⁺² = 4 · 2ⁿ.",
+        "    So 3²ⁿ⁺¹ + 2ⁿ⁺² ≡ 3 · 2ⁿ + 4 · 2ⁿ = 7 · 2ⁿ ≡ 0 (mod 7). ∎",
+        "n = 3: 3⁷ + 2⁵ = 2187 + 32 = 2219 = 7 · 317."
+      ],
+      explain: "The induction step works by making the k expression appear inside the k + 1 expression. Modular arithmetic gets there faster by replacing 9 with 2 mod 7. Either proof earns full credit." },
+    { id: "final_fixed", title: "Bounding fixed points", source: "Original question: indicators and variance + Chebyshev",
+      desc: ["n ≥ 11 students hand in homework, which is shuffled uniformly at random and handed back. Let X be the number of students who get their own homework back.",
+        "(a) Show 𝔼[X] = 1 and Var(X) = 1 using indicators.",
+        "(b) Use Markov's inequality to bound ℙ[X ≥ 11].",
+        "(c) Use Chebyshev's inequality to bound ℙ[X ≥ 11]."],
+      answer: "1/100", accept: ["0.01", ".01", "1%"], answerLabel: "Chebyshev bound on ℙ[X ≥ 11] =",
+      hints: ["X = I₁ + … + Iₙ, where Iᵢ = 1 if student i gets their own back. ℙ[Iᵢ = 1] = 1/n.", "For i ≠ j, ℙ[Iᵢ = 1 and Iⱼ = 1] = 1/(n(n − 1)). Use 𝔼[X²] = Σ𝔼[Iᵢ] + Σ over i ≠ j of 𝔼[IᵢIⱼ].", "X ≥ 11 means X − 1 ≥ 10, which is inside |X − 1| ≥ 10."],
+      solution: [
+        "(a) X = Σ Iᵢ with 𝔼[Iᵢ] = 1/n, so 𝔼[X] = n · 1/n = 1.",
+        "    Iᵢ² = Iᵢ, and for i ≠ j, 𝔼[IᵢIⱼ] = (1/n) · (1/(n − 1)).",
+        "    𝔼[X²] = Σᵢ 𝔼[Iᵢ] + Σ over the n(n − 1) ordered pairs i ≠ j of 𝔼[IᵢIⱼ] = 1 + n(n − 1) · 1/(n(n − 1)) = 2.",
+        "    Var(X) = 𝔼[X²] − 𝔼[X]² = 2 − 1 = 1.",
+        "(b) X ≥ 0, so Markov gives ℙ[X ≥ 11] ≤ 𝔼[X]/11 = 1/11.",
+        "(c) ℙ[X ≥ 11] ≤ ℙ[|X − 1| ≥ 10] ≤ Var(X)/10² = 1/100."
+      ],
+      explain: "The indicators are dependent, so the variance needs the cross terms 𝔼[IᵢIⱼ]; they are exactly what makes Var(X) = 1. With the variance in hand, Chebyshev beats Markov by a factor of about 9." }
+  ]
+};

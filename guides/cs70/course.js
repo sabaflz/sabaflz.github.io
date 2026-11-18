@@ -68,7 +68,7 @@ window.COURSE = {
     { title: "Graphs and stable matching", exam: "Midterm", topics: [
       { id: "graphs", lecture: 10, date: "Tue 9/29", note: "10", title: "Graphs", blurb: "Vertices, edges, degree, paths and cycles, connectivity, and Eulerian tours.", quiz: "Quiz 5", est: 45,
         practice: [["dis05", 1, "Short Graph Proofs"], ["dis05", 4, "Counting Edges"], ["hw05", 2, "Graph Basics"], ["hw05", 3, "Short Answers"]] },
-      { id: "graphs-ii", lecture: 11, date: "Thu 10/1", note: "10", title: "Graphs II", blurb: "Trees, planar graphs and Euler's formula, coloring, hypercubes, and induction on graphs.", quiz: "Quiz 5", est: 55,
+      { id: "graphs-ii", lecture: 11, date: "Thu 10/1", note: "10", title: "Graphs II", blurb: "Trees, planar graphs and Euler's formula, hypercubes, and induction on graphs.", quiz: "Quiz 5", est: 55,
         practice: [["dis05", 2, "Build-Up Error?"], ["dis05", 3, "Hypercubes"], ["dis05", 5, "Proofs in Graphs"], ["dis05", 6, "Not Everything is Normal: Odd-Degree Vertices"], ["hw05", 4, "Properties of Trees"]] },
       { id: "stable-matching", lecture: 12, date: "Tue 10/6", note: "11", title: "Stable matching", blurb: "The propose and reject algorithm, why it ends in a stable matching, and who it favors.", est: 50,
         practice: [["dis06", 1, "Reverse Preference Stable Matching"], ["hw06", 1, "Stable Matching Basics"], ["hw06", 2, "Universal Preference"], ["hw06", 3, "Pairing Up"], ["hw06", 4, "The Lattice of Stable Matchings"]] }
