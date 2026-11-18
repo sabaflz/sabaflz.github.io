@@ -16,6 +16,8 @@ p{margin:0}
 .lede{color:var(--muted); max-width:62ch; margin-top:12px}
 .eyebrow{font:500 13px/1 var(--mono); color:var(--saffron-ink); text-transform:uppercase; letter-spacing:.06em; margin-bottom:12px}
 .muted{color:var(--muted)}
+.meta{font:500 13px/1.4 var(--mono); color:var(--muted)}
+.topic .txt p.meta{font-size:13px; margin-top:4px}
 .empty{color:var(--muted); padding:48px 0}
 
 /* top bar */
@@ -62,8 +64,8 @@ p{margin:0}
 .levelline{display:flex; flex-wrap:wrap; gap:10px; align-items:center; color:var(--muted); font-size:15px; margin-bottom:32px}
 .linkbtn{background:none; border:0; padding:0; cursor:pointer; text-decoration:underline; text-decoration-color:var(--saffron); text-decoration-thickness:2px; text-underline-offset:3px}
 .unit{margin-bottom:36px}
-.unit > h2{display:flex; align-items:baseline; gap:12px; padding-bottom:12px}
-.unit > h2 small{font:500 13px/1 var(--mono); color:var(--muted); letter-spacing:0}
+.unit > h2{display:flex; flex-wrap:wrap; align-items:baseline; gap:12px; padding-bottom:12px}
+.unit > h2 small{font:500 13px/1.3 var(--mono); color:var(--muted); letter-spacing:0}
 .topics{list-style:none; margin:0; padding:0}
 .topic{display:flex; align-items:center; gap:14px; padding:16px 0; border-top:1.5px solid var(--line); text-decoration:none}
 .topics li:last-child .topic{border-bottom:1.5px solid var(--line)}

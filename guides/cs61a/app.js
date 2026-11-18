@@ -39,7 +39,7 @@
 
   /* ---------- course helpers ---------- */
   var TOPICS = [];
-  C.units.forEach(function (u) { u.topics.forEach(function (t) { TOPICS.push(t); }); });
+  C.units.forEach(function (u) { u.topics.forEach(function (t) { t.unit = u.title; TOPICS.push(t); }); });
   function topicById(id) { for (var i = 0; i < TOPICS.length; i++) if (TOPICS[i].id === id) return TOPICS[i]; return null; }
   function nextTopic(t) { var i = TOPICS.indexOf(t); return i >= 0 && i < TOPICS.length - 1 ? TOPICS[i + 1] : null; }
   function poolFor(t) { return POOL.filter(function (p) { return (t.pool || []).indexOf(p.cat) >= 0; }); }
@@ -65,8 +65,30 @@
     return !!s.confident;
   }
 
+  /* ---------- time estimates ---------- */
+  var PACE = C.pace || { perCheckQuestion: 1, perDeepenProblem: 10, perPracticeProblem: 15 };
+  function up5(m) { return Math.max(5, Math.ceil(m / 5) * 5); }
+  function stageMin(t, stage) {
+    var l = L[t.id], n = items(t, stage).length;
+    if (!n) return 0;
+    if (stage === "learn") return l.minutes || up5(n * 0.6);
+    if (stage === "check") return up5(n * PACE.perCheckQuestion);
+    if (stage === "deepen") return up5(n * PACE.perDeepenProblem);
+    return PACE.perPracticeProblem; // practice is open-ended: minutes per problem
+  }
+  /* Lesson + check + exam-style problems. Practice is extra. */
+  function topicMin(t) { return L[t.id] ? stageMin(t, "learn") + stageMin(t, "check") + stageMin(t, "deepen") : (t.est || 0); }
+  function sumMin(list) { return list.reduce(function (a, t) { return a + topicMin(t); }, 0); }
+  function dur(m) {
+    if (m < 60) return "about " + m + " min";
+    var h = Math.floor(m / 60), r = Math.round((m % 60) / 5) * 5;
+    if (r === 60) { h++; r = 0; }
+    return "about " + h + " h" + (r ? " " + r + " min" : "");
+  }
+
   /* ---------- small helpers ---------- */
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   function norm(s) { return String(s).trim().toLowerCase().replace(/[\s,]+/g, " "); }
   function codeHTML(src, hl) {
     hl = hl || [];
@@ -110,7 +132,8 @@
   function renderMap() {
     var lv = level(), h = "";
     h += '<div class="maphead"><p class="eyebrow">Learn, check, deepen, practice</p><h1>CS 61A</h1>' +
-      '<p class="lede">Work through the course one topic at a time. Each topic starts with a step-through lesson, then quick questions, then exam-style problems that run real Python in your browser. Skip around whenever you like. Your progress is saved in this browser.</p></div>';
+      '<p class="lede">Work through the course one topic at a time. Each topic starts with a step-through lesson, then quick questions, then exam-style problems that run real Python in your browser. Skip around whenever you like. Your progress is saved in this browser.</p>' +
+      '<p class="meta" style="margin-top:14px">Whole course: ' + dur(sumMin(TOPICS)) + ' · Left for you: ' + dur(sumMin(TOPICS.filter(function (t) { return !T(t.id).confident; }))) + ' · Practice is extra</p></div>';
 
     if (!S.level || levelOpen) {
       h += '<form class="level" data-act="level"><h2>Where are you starting from?</h2><div class="opts">' + C.levels.map(function (l) {
@@ -122,14 +145,14 @@
     }
 
     C.units.forEach(function (u, ui) {
-      h += '<section class="unit"><h2>' + esc(u.title) + "<small>Unit " + (ui + 1) + '</small></h2><ul class="topics">' + u.topics.map(function (t) {
+      h += '<section class="unit"><h2>' + esc(u.title) + "<small>Unit " + (ui + 1) + (u.exam ? " · for " + esc(u.exam) : "") + " · " + dur(sumMin(u.topics)) + '</small></h2><ul class="topics">' + u.topics.map(function (t) {
         var s = T(t.id), dot = s.confident ? "done" : started(t) ? "started" : "";
         var chips = "";
         if (s.confident) chips += '<span class="chip ok">Confident</span>';
         else if (started(t)) chips += '<span class="chip go">In progress</span>';
         if ((t.testOut || []).indexOf(lv) >= 0 && !s.confident) chips += '<span class="chip info">Optional at your level</span>';
         chips += '<span class="chip">' + (has(t, "learn") ? "Lesson and practice" : has(t, "practice") ? "Practice only" : "Coming soon") + "</span>";
-        return '<li><a class="topic" href="#/t/' + t.id + '"><span class="dot ' + dot + '" aria-hidden="true"></span><span class="txt"><h3>' + esc(t.title) + "</h3><p>" + esc(t.blurb) + '</p></span><span class="chips">' + chips + "</span></a></li>";
+        return '<li><a class="topic" href="#/t/' + t.id + '"><span class="dot ' + dot + '" aria-hidden="true"></span><span class="txt"><h3>' + esc(t.title) + "</h3><p>" + esc(t.blurb) + '</p><p class="meta">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") + dur(topicMin(t)) + '</p></span><span class="chips">' + chips + "</span></a></li>";
       }).join("") + "</ul></section>";
     });
     view.innerHTML = h;
@@ -139,14 +162,15 @@
   function renderTopic(t) {
     var s = T(t.id), l = L[t.id], nx = nextTopic(t);
     var desc = {
-      learn: l ? "A step-through lesson, about " + l.minutes + " minutes, with questions along the way." : "The lesson for this topic is not written yet.",
-      check: has(t, "check") ? items(t, "check").length + " quick questions to see if the lesson stuck." : "Quick questions arrive with the lesson.",
-      deepen: has(t, "deepen") ? items(t, "deepen").length + " exam-style problems. Write the code, run it, submit it." : "Exam-style problems arrive with the lesson.",
-      practice: has(t, "practice") ? items(t, "practice").length + " past exam problems. Keep going until you feel confident." : "No practice problems for this topic yet."
+      learn: l ? "A step-through lesson with questions along the way. " + cap(dur(stageMin(t, "learn"))) + "." : "The lesson for this topic is not written yet.",
+      check: has(t, "check") ? items(t, "check").length + " quick questions to see if the lesson stuck. " + cap(dur(stageMin(t, "check"))) + "." : "Quick questions arrive with the lesson.",
+      deepen: has(t, "deepen") ? items(t, "deepen").length + " exam-style problems. Write the code, run it, submit it. " + cap(dur(stageMin(t, "deepen"))) + "." : "Exam-style problems arrive with the lesson.",
+      practice: has(t, "practice") ? items(t, "practice").length + " past exam problems, " + dur(stageMin(t, "practice")) + " each. Keep going until you feel confident." : "No practice problems for this topic yet."
     };
     var first = level() === "review" ? "check" : "learn", suggested = null;
     STAGES.slice(STAGES.indexOf(first)).concat(STAGES).forEach(function (st) { if (!suggested && has(t, st) && !stageDone(t, st)) suggested = st; });
-    var h = crumb(t) + '<p class="eyebrow">' + esc(t.unit || "") + "</p><h1>" + esc(t.title) + '</h1><p class="lede">' + esc(t.blurb) + '</p><ol class="stages">';
+    var h = crumb(t) + '<p class="eyebrow">' + esc(t.unit || "") + "</p><h1>" + esc(t.title) + '</h1><p class="lede">' + esc(t.blurb) + '</p><p class="meta" style="margin-top:14px">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") +
+      (l ? cap(dur(topicMin(t))) + " for the lesson, check and exam-style problems" : "Planned: " + dur(topicMin(t))) + (has(t, "practice") ? " · Practice is extra" : "") + '</p><ol class="stages">';
     STAGES.forEach(function (st) {
       var ok = has(t, st), done = stageDone(t, st), label = "Start";
       if (st === "learn" && ok) label = s.lessonDone ? "Replay" : s.step ? "Continue" : "Start";
