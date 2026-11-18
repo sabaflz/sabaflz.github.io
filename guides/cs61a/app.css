@@ -202,3 +202,11 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 .tbl th{background:var(--surface-2); font-weight:700; color:var(--ink)}
 .tbl tr:last-child td{border-bottom:0}
 .tblh{margin:14px 0 0; font:700 12px/1 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
+
+/* course time summary on the map */
+.timecard{margin-top:18px; padding:16px 18px; background:var(--surface); border:1.5px solid var(--line); border-radius:14px; max-width:560px}
+.timecard .nums{display:flex; gap:28px; flex-wrap:wrap}
+.timecard .nums strong{display:block; font:700 22px/1.2 var(--display); color:var(--ink)}
+.timecard .nums span{font:500 12px/1.4 var(--mono); color:var(--muted); text-transform:uppercase; letter-spacing:.05em}
+.timecard .bar{height:8px; border-radius:99px; background:var(--surface-2); border:1px solid var(--line); margin:14px 0 8px; overflow:hidden}
+.timecard .bar i{display:block; height:100%; background:var(--saffron); border-radius:99px}

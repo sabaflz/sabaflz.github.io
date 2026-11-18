@@ -78,6 +78,25 @@
   }
   /* Lesson + check + exam-style problems. Practice is extra. */
   function topicMin(t) { return L[t.id] ? stageMin(t, "learn") + stageMin(t, "check") + stageMin(t, "deepen") : (t.est || 0); }
+  /* Time still ahead for a topic. Counts what is finished inside it: lesson steps,
+     check questions answered, problems solved. Marking a topic confident clears it. */
+  function leftMin(t) {
+    var s = S.topics[t.id];
+    if (s && s.confident) return 0;
+    if (!L[t.id] || !s) return topicMin(t);
+    var m = 0, n;
+    if (!s.lessonDone) { n = items(t, "learn").length; m += stageMin(t, "learn") * (n ? Math.max(0, n - (s.step || 0)) / n : 1); }
+    n = items(t, "check").length; if (n) m += stageMin(t, "check") * Math.max(0, n - Object.keys(s.check || {}).length) / n;
+    n = items(t, "deepen").length; if (n) m += stageMin(t, "deepen") * (n - solvedCount(t, "deepen")) / n;
+    return m;
+  }
+  function sumLeft(list) { return list.reduce(function (a, t) { return a + leftMin(t); }, 0); }
+  function leftText(m) { return m < 2.5 ? "done" : dur(m).replace("about ", "") + " left"; }
+  function timeBar(list) {
+    var r5 = function (m) { return Math.round(m / 5) * 5; }, total = r5(sumMin(list)), left = r5(sumLeft(list)), pct = total ? Math.round(100 * (total - left) / total) : 0;
+    return '<div class="timecard"><div class="nums"><div><strong>' + dur(total).replace("about ", "") + '</strong><span>whole course</span></div><div><strong>' + (total - left < 2.5 ? "0 min" : dur(total - left).replace("about ", "")) + '</strong><span>done</span></div><div><strong>' + (left < 2.5 ? "0 min" : dur(left).replace("about ", "")) + '</strong><span>left</span></div></div>' +
+      '<div class="bar" role="img" aria-label="' + pct + ' percent of the course time done"><i style="width:' + (pct ? Math.max(2, pct) : 0) + '%"></i></div><p class="meta">' + pct + '% done by time · estimates for the lesson, check and exam-style problems · practice is extra</p></div>';
+  }
   function sumMin(list) { return list.reduce(function (a, t) { return a + topicMin(t); }, 0); }
   function dur(m) {
     m = Math.max(5, Math.round(m / 5) * 5);
@@ -142,8 +161,8 @@
   function renderMap() {
     var lv = level(), h = "";
     h += '<div class="maphead"><p class="eyebrow">Learn, check, deepen, practice</p><h1>CS 61A</h1>' +
-      '<p class="lede">Work through the course one topic at a time. Each topic starts with a step-through lesson, then quick questions, then exam-style problems that run real Python in your browser. Skip around whenever you like. Your progress is saved in this browser.</p>' +
-      '<p class="meta" style="margin-top:14px">Whole course: ' + dur(sumMin(TOPICS)) + ' · Left for you: ' + dur(sumMin(TOPICS.filter(function (t) { return !T(t.id).confident; }))) + ' · Practice is extra</p></div>';
+      '<p class="lede">Work through the course one topic at a time. Each topic starts with a step-through lesson, then quick questions, then exam-style problems that run real Python, Gleam and SQL in your browser. Skip around whenever you like. Your progress is saved in this browser.</p>' +
+      timeBar(TOPICS) + '</div>';
 
     if (!S.level || levelOpen) {
       h += '<form class="level" data-act="level"><h2>Where are you starting from?</h2><div class="opts">' + C.levels.map(function (l) {
@@ -155,14 +174,14 @@
     }
 
     C.units.forEach(function (u, ui) {
-      h += '<section class="unit"><h2>' + esc(u.title) + "<small>Unit " + (ui + 1) + (u.exam ? " · for " + esc(u.exam) : "") + " · " + dur(sumMin(u.topics)) + '</small></h2><ul class="topics">' + u.topics.map(function (t) {
+      h += '<section class="unit"><h2>' + esc(u.title) + "<small>Unit " + (ui + 1) + (u.exam ? " · for " + esc(u.exam) : "") + " · " + dur(sumMin(u.topics)) + " · " + leftText(sumLeft(u.topics)) + '</small></h2><ul class="topics">' + u.topics.map(function (t) {
         var s = T(t.id), dot = s.confident ? "done" : started(t) ? "started" : "";
         var chips = "";
         if (s.confident) chips += '<span class="chip ok">Confident</span>';
         else if (started(t)) chips += '<span class="chip go">In progress</span>';
         if ((t.testOut || []).indexOf(lv) >= 0 && !s.confident) chips += '<span class="chip info">Optional at your level</span>';
         chips += '<span class="chip">' + (has(t, "learn") ? (has(t, "practice") ? "Lesson and practice" : "Lesson ready") : has(t, "practice") ? "Practice only" : "Coming soon") + "</span>";
-        return '<li><a class="topic" href="#/t/' + t.id + '"><span class="dot ' + dot + '" aria-hidden="true"></span><span class="txt"><h3>' + esc(t.title) + "</h3><p>" + esc(t.blurb) + '</p><p class="meta">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") + dur(topicMin(t)) + '</p></span><span class="chips">' + chips + "</span></a></li>";
+        return '<li><a class="topic" href="#/t/' + t.id + '"><span class="dot ' + dot + '" aria-hidden="true"></span><span class="txt"><h3>' + esc(t.title) + "</h3><p>" + esc(t.blurb) + '</p><p class="meta">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") + dur(topicMin(t)) + (started(t) ? " · " + leftText(leftMin(t)) : "") + '</p></span><span class="chips">' + chips + "</span></a></li>";
       }).join("") + "</ul></section>";
     });
     view.innerHTML = h;
@@ -180,7 +199,7 @@
     var first = level() === "review" ? "check" : "learn", suggested = null;
     STAGES.slice(STAGES.indexOf(first)).concat(STAGES).forEach(function (st) { if (!suggested && has(t, st) && !stageDone(t, st)) suggested = st; });
     var h = crumb(t) + '<p class="eyebrow">' + esc(t.unit || "") + "</p><h1>" + esc(t.title) + '</h1><p class="lede">' + esc(t.blurb) + '</p><p class="meta" style="margin-top:14px">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") +
-      (l ? cap(dur(topicMin(t))) + " for the lesson, check and exam-style problems" : "Planned: " + dur(topicMin(t))) + (has(t, "practice") ? " · Practice is extra" : "") + "</p>" + sources(t, "From the course" + (t.lecture ? ", Lecture " + t.lecture : "") + ":") + '<ol class="stages">';
+      (l ? cap(dur(topicMin(t))) + " for the lesson, check and exam-style problems" + (started(t) ? " · " + leftText(leftMin(t)) : "") : "Planned: " + dur(topicMin(t))) + (has(t, "practice") ? " · Practice is extra" : "") + "</p>" + sources(t, "From the course" + (t.lecture ? ", Lecture " + t.lecture : "") + ":") + '<ol class="stages">';
     STAGES.forEach(function (st) {
       var ok = has(t, st), done = stageDone(t, st), label = "Start";
       if (st === "learn" && ok) label = s.lessonDone ? "Replay" : s.step ? "Continue" : "Start";
@@ -515,7 +534,8 @@
   }
   function progress() {
     var done = TOPICS.filter(function (t) { return (S.topics[t.id] || {}).confident; }).length;
-    document.getElementById("prog").textContent = done + " of " + TOPICS.length + " topics confident";
+    var lm = sumLeft(TOPICS);
+    document.getElementById("prog").textContent = done + " of " + TOPICS.length + " topics confident · " + (lm < 2.5 ? "all done" : dur(lm).replace("about ", "") + " left");
     var res = document.getElementById("resume"), onMap = !route().length;
     if (S.last && onMap) { res.hidden = false; res.setAttribute("href", S.last); } else res.hidden = true;
   }
