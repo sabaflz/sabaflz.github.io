@@ -1,17 +1,23 @@
 /*
   lessons/hof.js: Lecture 4, Higher-order functions.
   Same shape as lessons/recursion.js, plus `env` for the names panel.
+  Lambda is left for Lecture 6 (lessons/abstraction.js), as in class.
+
+  Deepen problems here use `setup`: helper functions that are defined for the
+  student before their code runs, so the examples can use them.
 */
 window.LESSONS.hof = {
-  minutes: 12,
+  minutes: 13,
   snippets: {
     vals: "def square(x):\n    return x * x\n\nf = square\nf(5)",
     callvs: "def greet():\n    return 'hi'\n\na = greet\nb = greet()",
+    describe: "def square(x):\n    \"\"\"Return x times x.\n\n    x is any number. The result is never negative.\n    \"\"\"\n    return x * x",
+    sums: "def sum_naturals(n):\n    total, k = 0, 1\n    while k <= n:\n        total = total + k\n        k = k + 1\n    return total\n\ndef sum_cubes(n):\n    total, k = 0, 1\n    while k <= n:\n        total = total + k * k * k\n        k = k + 1\n    return total",
+    summation: "def summation(n, term):\n    total, k = 0, 1\n    while k <= n:\n        total = total + term(k)\n        k = k + 1\n    return total\n\ndef cube(x):\n    return x * x * x\n\nsummation(3, cube)",
     twice: "def square(x):\n    return x * x\n\ndef twice(f, x):\n    return f(f(x))\n\ntwice(square, 3)",
     adder: "def make_adder(n):\n    def adder(k):\n        return k + n\n    return adder\n\nadd_three = make_adder(3)\nadd_three(4)",
     chain: "def make_adder(n):\n    def adder(k):\n        return k + n\n    return adder\n\nmake_adder(1)(2)",
-    lam: "square = lambda x: x * x\n\ndef twice(f, x):\n    return f(f(x))\n\ntwice(lambda x: x + 10, 1)",
-    compose: "def compose(f, g):\n    return lambda x: f(g(x))\n\nsquare = lambda x: x * x\nh = compose(square, lambda x: x + 1)\nh(2)"
+    compose: "def compose(f, g):\n    def h(x):\n        return f(g(x))\n    return h\n\ndef square(x):\n    return x * x\n\ndef add_one(x):\n    return x + 1\n\nh = compose(square, add_one)\nh(2)"
   },
   steps: [
     { code: "vals", hl: [4], env: [["square", "a function"], ["f", "the same function"]],
@@ -26,16 +32,22 @@ window.LESSONS.hof = {
       ask: { type: "mc", q: "After these lines run, what are a and b?",
         choices: ["a is the function greet, b is 'hi'", "a is 'hi', b is 'hi'", "a is 'hi', b is the function greet"], answer: 0,
         why: "Line 4 has no parentheses, so a is the function. Line 5 calls it, so b is the returned value 'hi'." } },
+    { code: "describe", hl: [2, 3, 4, 5],
+      say: "Before passing functions around, it helps to be able to describe one. Three things describe a function. Its domain is the set of inputs it accepts. Its range is the set of outputs it can give back. Its behavior is how the output relates to the input. For square: the domain is any number, the range is numbers that are not negative, and the behavior is that it returns the input times itself.",
+      syntax: "Python notes: the text in triple quotes right under the def line is called a docstring. It is where you write down what the function does. Python ignores it when running the code." },
+    { code: "sums", hl: [4, 11],
+      say: "Now look at these two functions. One adds up the numbers from 1 to n. The other adds up their cubes. They are identical except for one piece: what gets added on each pass. Writing the same loop twice is a signal. A good function does one job, and a process should be written once and reused." },
+    { code: "summation", hl: [1, 4],
+      say: "summation is the shared pattern with the changing piece pulled out as a parameter. term is a function. On line 4, term(k) calls whatever function was passed in. A function that takes another function as an argument, or returns one, is called a higher-order function." },
+    { code: "summation", hl: [11],
+      stack: [{ call: "summation(3, cube)", vars: "n = 3, term = cube", state: "adds term(1) + term(2) + term(3)" }],
+      say: "Line 11 passes cube in as a value, with no parentheses. Inside the call, term is cube, so each pass of the loop adds cube(k).",
+      ask: { type: "type", q: "What is the value of summation(3, cube)?", answer: "36",
+        why: "It adds cube(1) + cube(2) + cube(3), which is 1 + 8 + 27 = 36." } },
     { code: "twice", hl: [4, 5],
-      say: "A higher-order function is a function that takes another function as an argument, or returns one. twice takes a function f and a value x, and applies f two times.",
-      syntax: "Python notes: inside twice, f is just a parameter name. Whatever function you pass in is the one that f(...) calls." },
-    { code: "twice", hl: [7],
-      stack: [{ call: "twice(square, 3)", vars: "f = square, x = 3", state: "needs f(f(3))" }],
-      say: "Line 7 passes square in as a value, with no parentheses. Inside the call, f is square and x is 3. Now evaluate f(f(x)) the usual way: the inner call first.",
+      say: "A second small example of the same idea. twice takes a function f and a value x, and applies f two times.",
       ask: { type: "type", q: "What is the value of twice(square, 3)?", answer: "81",
-        why: "The inner call is square(3), which is 9. The outer call is square(9), which is 81." } },
-    { code: "twice", hl: [4, 5],
-      say: "Why bother? Because twice describes a pattern, do something two times, without caring what the something is. You write the pattern once and reuse it with any function. That is the point of higher-order functions: they let you name patterns, not just calculations." },
+        why: "f is square. The inner call is square(3), which is 9. The outer call is square(9), which is 81." } },
     { code: "adder", hl: [1, 2, 3, 4],
       say: "Functions can also return functions. make_adder contains a def inside its body. Each time make_adder is called, that inner def runs and creates a new function named adder. Line 4 returns that function. Notice there are no parentheses on line 4: it returns the function, it does not call it." },
     { code: "adder", hl: [6], env: [["make_adder", "a function"], ["add_three", "adder, remembering n = 3"]],
@@ -50,19 +62,12 @@ window.LESSONS.hof = {
       say: "You do not have to name the returned function before using it. Read line 6 from left to right. make_adder(1) is a call that returns a function. The (2) right after it calls that returned function.",
       ask: { type: "type", q: "What is the value of make_adder(1)(2)?", answer: "3",
         why: "make_adder(1) returns an adder that remembers n = 1. Calling it with 2 gives 2 + 1 = 3." } },
-    { code: "lam", hl: [1],
-      say: "A lambda expression creates a function without a def statement. Line 1 makes a function that takes x and returns x times x, then names it square. It behaves the same as the def version.",
-      syntax: "Python notes: lambda x: x * x reads as: a function that takes x and returns x * x. The body is one expression and it is returned automatically. There is no return keyword and no room for statements." },
-    { code: "lam", hl: [6],
-      say: "Lambdas are most useful when you need a small function once, as an argument, and giving it a name would be noise.",
-      ask: { type: "type", q: "What is the value of twice(lambda x: x + 10, 1)?", answer: "21",
-        why: "f is the function that adds 10. f(1) is 11, and f(11) is 21." } },
-    { code: "compose", hl: [1, 2],
-      say: "Last one, and it combines everything. compose takes two functions and returns a new one. The new function takes x, applies g first, and then applies f to the result.",
+    { code: "compose", hl: [1, 2, 3, 4],
+      say: "Last one, and it combines both directions. compose takes two functions and returns a new one. The new function takes x, applies g first, and then applies f to the result.",
       ask: { type: "type", q: "What is the value of h(2)?", answer: "9",
-        why: "h(2) is f(g(2)). g adds 1, so g(2) is 3. f is square, so the result is 9. The function written on the inside runs first." } },
+        why: "h(2) is f(g(2)). g is add_one, so g(2) is 3. f is square, so the result is 9. The function written on the inside runs first." } },
     { code: "compose",
-      say: "To sum up: a function name without parentheses is the function itself, and with parentheses it is a call. Functions can be passed in and returned like any value. A function defined inside another one remembers the names from where it was defined. And lambda is a short way to write a function that is a single expression." }
+      say: "To sum up: a function name without parentheses is the function itself, and with parentheses it is a call. When two functions share a pattern, pull out the part that changes and pass it in as a function. Functions can be returned like any value, and a function defined inside another one remembers the names from where it was defined." }
   ],
 
   check: [
@@ -72,13 +77,13 @@ window.LESSONS.hof = {
     { type: "mc", code: "def f():\n    print('a')\n    return 1\n\nx = f",
       q: "What does this display?", choices: ["a", "Nothing", "1"], answer: 1,
       why: "Line 5 has no parentheses, so f is never called. x becomes another name for the function and nothing is displayed." },
-    { type: "type", code: "def run(f):\n    return f(1)\n\nrun(lambda x: x + 5)",
+    { type: "type", code: "def add_five(x):\n    return x + 5\n\ndef run(f):\n    return f(1)\n\nrun(add_five)",
       q: "What is the value of the last line?", answer: "6",
-      why: "Inside run, f is the function that adds 5. f(1) is 6." },
-    { type: "type", code: "(lambda x, y: x * y)(3, 4)",
-      q: "What is the value of this expression?", answer: "12",
-      why: "The lambda is a function of two arguments, and it is called straight away with 3 and 4. The result is 3 * 4 = 12." },
-    { type: "type", code: "def make_multiplier(n):\n    return lambda k: k * n\n\ntriple = make_multiplier(3)\ntriple(triple(2))",
+      why: "Inside run, f is add_five. f(1) is 6." },
+    { type: "type", code: "def summation(n, term):\n    total, k = 0, 1\n    while k <= n:\n        total = total + term(k)\n        k = k + 1\n    return total\n\ndef square(x):\n    return x * x\n\nsummation(4, square)",
+      q: "What is the value of the last line?", answer: "30",
+      why: "It adds square(1) + square(2) + square(3) + square(4), which is 1 + 4 + 9 + 16 = 30." },
+    { type: "type", code: "def make_multiplier(n):\n    def multiply(k):\n        return k * n\n    return multiply\n\ntriple = make_multiplier(3)\ntriple(triple(2))",
       q: "What is the value of the last line?", answer: "18",
       why: "triple multiplies by 3. The inner call is 6, and the outer call is triple(6) = 18." },
     { type: "type", code: "def make_adder(n):\n    def adder(k):\n        return k + n\n    return adder\n\nmake_adder(2)(make_adder(3)(4))",
@@ -88,25 +93,28 @@ window.LESSONS.hof = {
 
   deepen: [
     { id: "hof_both", title: "Both tests", source: "Original question",
-      desc: "both takes two one-argument functions, f and g, that each return True or False. It returns a new one-argument function. The new function returns True when f and g are both true for its argument, and False otherwise.",
-      starter: "def both(f, g):\n    \"\"\"Return a function that is true only where f and g are both true.\n    >>> is_even = lambda x: x % 2 == 0\n    >>> is_big = lambda x: x > 10\n    >>> big_and_even = both(is_even, is_big)\n    >>> big_and_even(12)\n    True\n    >>> big_and_even(4)\n    False\n    >>> big_and_even(13)\n    False\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
-      solution: "def both(f, g):\n    return lambda x: bool(f(x) and g(x))",
-      tests: "is_even = lambda x: x % 2 == 0\nis_big = lambda x: x > 10\nh = both(is_even, is_big)\nassert callable(h), 'both should return a function'\nassert h(12) is True\nassert h(4) is False\nassert h(13) is False\nassert h(11) is False\nassert both(is_big, is_big)(50) is True\nassert both(lambda x: True, lambda x: False)(0) is False\nassert both(lambda x: x == 0, lambda x: True)(0) is True",
-      hints: ["both has to return a function, not True or False. The True or False comes later, when that function is called.", "The returned function takes one argument, x, and needs to ask both f(x) and g(x).", "return lambda x: f(x) and g(x)"],
+      desc: "both takes two one-argument functions, f and g, that each return True or False. It returns a new one-argument function. The new function returns True when f and g are both true for its argument, and False otherwise. The functions is_even and is_big used in the examples are already defined for you.",
+      setup: "def is_even(x):\n    return x % 2 == 0\n\ndef is_big(x):\n    return x > 10\n",
+      starter: "def both(f, g):\n    \"\"\"Return a function that is true only where f and g are both true.\n    >>> big_and_even = both(is_even, is_big)\n    >>> big_and_even(12)\n    True\n    >>> big_and_even(4)\n    False\n    >>> big_and_even(13)\n    False\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
+      solution: "def both(f, g):\n    def h(x):\n        return f(x) and g(x)\n    return h",
+      tests: "h = both(is_even, is_big)\nassert callable(h), 'both should return a function'\nassert h(12) is True\nassert h(4) is False\nassert h(13) is False\nassert h(11) is False\nassert both(is_big, is_big)(50) is True\ndef _yes(x):\n    return True\ndef _no(x):\n    return False\nassert both(_yes, _no)(0) is False\nassert both(_yes, _yes)(0) is True",
+      hints: ["both has to return a function, not True or False. The True or False comes later, when that function is called.", "Define a function inside both. It takes one argument, x, and needs to ask both f(x) and g(x).", "def h(x): return f(x) and g(x), then return h."],
       explain: "both itself never sees x. It builds a new function that remembers f and g, and that function does the testing when it is finally called with an x." },
     { id: "hof_shift", title: "Shift the input", source: "Original question",
-      desc: "shift takes a one-argument function f and a number d. It returns a new function g such that g(x) is the same as f(x + d) for every x.",
-      starter: "def shift(f, d):\n    \"\"\"Return a function g where g(x) equals f(x + d).\n    >>> square = lambda x: x * x\n    >>> g = shift(square, 3)\n    >>> g(1)       # square(4)\n    16\n    >>> g(-3)      # square(0)\n    0\n    >>> shift(shift(square, 1), 1)(1)   # square(3)\n    9\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
+      desc: "shift takes a one-argument function f and a number d. It returns a new function g such that g(x) is the same as f(x + d) for every x. The function square used in the examples is already defined for you.",
+      setup: "def square(x):\n    return x * x\n",
+      starter: "def shift(f, d):\n    \"\"\"Return a function g where g(x) equals f(x + d).\n    >>> g = shift(square, 3)\n    >>> g(1)       # square(4)\n    16\n    >>> g(-3)      # square(0)\n    0\n    >>> shift(shift(square, 1), 1)(1)   # square(3)\n    9\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
       solution: "def shift(f, d):\n    def g(x):\n        return f(x + d)\n    return g",
-      tests: "square = lambda x: x * x\ng = shift(square, 3)\nassert callable(g), 'shift should return a function'\nassert g(1) == 16\nassert g(-3) == 0\nassert shift(shift(square, 1), 1)(1) == 9\nassert shift(lambda x: x, 0)(7) == 7\nassert shift(lambda x: x * 2, -5)(5) == 0\nassert shift(abs, -10)(4) == 6",
-      hints: ["Like make_adder in the lesson: define a function inside shift and return it.", "The inner function takes x. It can use f and d, because it remembers the names from where it was defined.", "def g(x): return f(x + d), then return g. Or in one line: return lambda x: f(x + d)."],
+      tests: "g = shift(square, 3)\nassert callable(g), 'shift should return a function'\nassert g(1) == 16\nassert g(-3) == 0\nassert shift(shift(square, 1), 1)(1) == 9\nassert shift(abs, -10)(4) == 6\nassert shift(abs, 0)(-7) == 7\nassert shift(square, -5)(5) == 0",
+      hints: ["Like make_adder in the lesson: define a function inside shift and return it.", "The inner function takes x. It can use f and d, because it remembers the names from where it was defined.", "def g(x): return f(x + d), then return g."],
       explain: "The returned function uses three names: its own x, plus f and d from the call to shift that created it. The third example works because shifting twice by 1 builds a function inside a function, each remembering its own d." },
     { id: "hof_first_where", title: "First one that passes", source: "Original question",
-      desc: "first_where takes a one-argument function f that returns True or False, and a whole number start. It returns the smallest whole number that is at least start and for which f is true. You can assume there is one.",
-      starter: "def first_where(f, start):\n    \"\"\"Return the smallest k >= start for which f(k) is true.\n    >>> first_where(lambda k: k % 7 == 0, 10)\n    14\n    >>> first_where(lambda k: k * k > 50, 0)\n    8\n    >>> first_where(lambda k: True, 5)\n    5\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
+      desc: "first_where takes a one-argument function f that returns True or False, and a whole number start. It returns the smallest whole number that is at least start and for which f is true. You can assume there is one. The functions is_even and is_big used in the examples are already defined for you: is_big(x) is true when x is more than 10.",
+      setup: "def is_even(x):\n    return x % 2 == 0\n\ndef is_big(x):\n    return x > 10\n",
+      starter: "def first_where(f, start):\n    \"\"\"Return the smallest k >= start for which f(k) is true.\n    >>> first_where(is_even, 7)\n    8\n    >>> first_where(is_big, 0)\n    11\n    >>> first_where(is_even, 4)\n    4\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
       solution: "def first_where(f, start):\n    k = start\n    while not f(k):\n        k = k + 1\n    return k",
-      tests: "assert first_where(lambda k: k % 7 == 0, 10) == 14\nassert first_where(lambda k: k * k > 50, 0) == 8\nassert first_where(lambda k: True, 5) == 5\nassert first_where(lambda k: k % 7 == 0, 14) == 14\nassert first_where(lambda k: k > 0, -3) == 1\nassert first_where(lambda k: k % 2 == 1 and k % 5 == 0, 6) == 15",
+      tests: "assert first_where(is_even, 7) == 8\nassert first_where(is_big, 0) == 11\nassert first_where(is_even, 4) == 4\nassert first_where(is_big, 50) == 50\nassert first_where(is_even, -3) == -2\ndef _seven(k):\n    return k % 7 == 0\nassert first_where(_seven, 10) == 14\nassert first_where(_seven, 14) == 14",
       hints: ["This one is a while loop from the Control lesson. The only new part is that the test is a function you were handed.", "Start k at start. Keep going while f(k) is not true.", "while not f(k): k = k + 1, then return k."],
-      explain: "The loop does not know or care what the test is. Passing the test in as a function turns one specific search into a tool for any search." }
+      explain: "The loop does not know or care what the test is. Passing the test in as a function turns one specific search into a tool for any search, which is the same move as summation in the lesson." }
   ]
 };

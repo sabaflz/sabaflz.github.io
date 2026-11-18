@@ -161,7 +161,7 @@
         if (s.confident) chips += '<span class="chip ok">Confident</span>';
         else if (started(t)) chips += '<span class="chip go">In progress</span>';
         if ((t.testOut || []).indexOf(lv) >= 0 && !s.confident) chips += '<span class="chip info">Optional at your level</span>';
-        chips += '<span class="chip">' + (has(t, "learn") ? "Lesson and practice" : has(t, "practice") ? "Practice only" : "Coming soon") + "</span>";
+        chips += '<span class="chip">' + (has(t, "learn") ? (has(t, "practice") ? "Lesson and practice" : "Lesson ready") : has(t, "practice") ? "Practice only" : "Coming soon") + "</span>";
         return '<li><a class="topic" href="#/t/' + t.id + '"><span class="dot ' + dot + '" aria-hidden="true"></span><span class="txt"><h3>' + esc(t.title) + "</h3><p>" + esc(t.blurb) + '</p><p class="meta">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") + dur(topicMin(t)) + '</p></span><span class="chips">' + chips + "</span></a></li>";
       }).join("") + "</ul></section>";
     });

@@ -3,9 +3,11 @@
   Same shape as lessons/recursion.js, plus `env` for the names panel.
 */
 window.LESSONS.control = {
-  minutes: 12,
+  minutes: 14,
   snippets: {
     ifs: "def sign(x):\n    if x > 0:\n        return 'positive'\n    elif x == 0:\n        return 'zero'\n    else:\n        return 'negative'",
+    twoifs: "def describe(x):\n    words = ''\n    if x > 0:\n        words = words + 'positive '\n    if x > 10:\n        words = words + 'big'\n    return words",
+    primes: "def prime_factors(n):\n    k = 2\n    while n > 1:\n        if n % k == 0:\n            print(k)\n            n = n // k\n        else:\n            k = k + 1",
     truth: "bool(0)        # False\nbool('')       # False\nbool(None)     # False\nbool(7)        # True\nbool('hi')     # True",
     andor: "True and 5\n0 and 1 / 0\n0 or 'x'\n3 or 1 / 0",
     loop: "def sum_to(n):\n    total, k = 0, 1\n    while k <= n:\n        total = total + k\n        k = k + 1\n    return total",
@@ -20,6 +22,10 @@ window.LESSONS.control = {
       say: "Python checks the tests in order and runs the body of the first one that is true. Every clause after that is skipped, even if its test would also be true.",
       ask: { type: "mc", q: "For sign(0), which line returns?", choices: ["Line 3", "Line 5", "Line 7"], answer: 1,
         why: "0 > 0 is false, so line 3 is skipped. 0 == 0 is true, so line 5 returns 'zero'. The else on line 6 is never looked at." } },
+    { code: "twoifs", hl: [3, 5],
+      say: "Compare that with two separate if statements. They are not connected. Python checks the first one, then checks the second one no matter what happened with the first. So both bodies can run.",
+      ask: { type: "mc", q: "What does describe(20) return?", choices: ["'positive '", "'big'", "'positive big'"], answer: 2,
+        why: "20 > 0 is true, so line 4 runs. Then the second if is checked separately: 20 > 10 is also true, so line 6 runs too. If line 5 were elif, only the first body would run." } },
     { code: "truth",
       say: "The test in an if does not have to be True or False. Any value can be used, and Python treats it as either true or false. The false values are worth memorizing: False, 0, the empty string, None, and empty containers. Everything else counts as true.",
       syntax: "Python notes: bool(v) shows how Python treats the value v in a test. The text after each # is a comment and is ignored." },
@@ -57,6 +63,10 @@ window.LESSONS.control = {
       say: "Always test the smallest input too.",
       ask: { type: "mc", q: "What does count_digits(0) return?", choices: ["1", "0", "It loops forever"], answer: 1,
         why: "0 > 0 is false straight away, so the body never runs and count is still 0. Whether that is the right answer depends on the problem, which is why you check edge cases on purpose." } },
+    { code: "primes", hl: [3, 4, 5, 6, 7, 8],
+      say: "Here is a loop with an if inside it, and it does something useful: it prints the prime factors of n. It tries a divisor k. If k divides n, it prints k and divides n by it, keeping the same k. If not, it moves on to the next k. The loop ends when n has been divided down to 1.",
+      ask: { type: "mc", q: "What does prime_factors(12) print, top to bottom?", choices: ["2, 3", "2, 2, 3", "2, 6"], answer: 1,
+        why: "12 is divisible by 2, so it prints 2 and n becomes 6. 6 is divisible by 2 again, so it prints 2 and n becomes 3. 3 is not divisible by 2, so k becomes 3. Then it prints 3 and n becomes 1." } },
     { code: "stuck", hl: [2, 3],
       say: "Finally, the bug every loop can have. Look at what changes inside this loop.",
       ask: { type: "mc", q: "What happens when you call stuck(2)?", choices: ["It prints 2 once and returns 2", "It prints 2 forever", "It returns 0"], answer: 1,

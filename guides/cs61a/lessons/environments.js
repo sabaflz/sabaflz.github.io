@@ -11,7 +11,7 @@ window.LESSONS.environments = {
     lookup: "n = 10\n\ndef add_n(k):\n    return k + n\n\nadd_n(5)",
     parent: "n = 1\n\ndef f():\n    n = 2\n    return g()\n\ndef g():\n    return n\n\nf()",
     adder: "def make_adder(n):\n    def adder(k):\n        return k + n\n    return adder\n\nadd_three = make_adder(3)\nadd_three(4)",
-    late: "a = 5\nf = lambda b: a + b\na = 20\nf(1)"
+    late: "a = 5\n\ndef f(b):\n    return a + b\n\na = 20\nf(1)"
   },
   steps: [
     { code: "basic",
@@ -72,18 +72,17 @@ window.LESSONS.environments = {
                { title: "f1: make_adder [parent=Global]", vars: [["n", "3"], ["adder", "func adder(k) [parent=f1]"]], ret: "func adder(k) [parent=f1]" },
                { title: "f2: adder [parent=f1]", vars: [["k", "4"]], ret: "7", active: true }],
       say: "The new frame is f2, with parent f1 and k bound to 4. The body needs k + n. k is in f2. n is not, so Python follows the parent to f1 and finds 3. The return value is 7." },
-    { code: "late", hl: [2],
-      frames: [{ title: "Global frame", vars: [["a", "5"], ["f", "func λ(b) [parent=Global]"]], active: true }],
-      say: "One last trap. Line 2 creates a lambda function. Its body mentions a, but the body does not run when the function is created. A function does not store the values of the names it uses. It only stores its parent.",
-      syntax: "Python notes: in a diagram, a lambda function has no name, so it is written with the Greek letter lambda in place of one." },
     { code: "late", hl: [3, 4],
-      frames: [{ title: "Global frame", vars: [["a", "20"], ["f", "func λ(b) [parent=Global]"]] },
-               { title: "f1: λ [parent=Global]", vars: [["b", "1"]], active: true }],
-      say: "Line 3 rebinds a to 20. Then line 4 finally calls the function, and only now is a looked up.",
+      frames: [{ title: "Global frame", vars: [["a", "5"], ["f", "func f(b) [parent=Global]"]], active: true }],
+      say: "One last trap. The def on line 3 creates a function. Its body mentions a, but the body does not run when the function is created. A function does not store the values of the names it uses. It only stores its parent." },
+    { code: "late", hl: [6, 7],
+      frames: [{ title: "Global frame", vars: [["a", "20"], ["f", "func f(b) [parent=Global]"]] },
+               { title: "f1: f [parent=Global]", vars: [["b", "1"]], active: true }],
+      say: "Line 6 rebinds a to 20. Then line 7 finally calls the function, and only now is a looked up.",
       ask: { type: "type", q: "What is the value of f(1)?", answer: "21",
         why: "Names are looked up when the body runs, not when the function is created. At the time of the call, a in Global is 20, so the result is 20 + 1 = 21." } },
     { code: "late",
-      say: "Four rules cover everything here. One: a def or a lambda creates a function whose parent is the frame it was created in. Two: a call opens a new frame, whose parent is the parent of the function being called. Three: to look up a name, start in the current frame and follow parents. Four: lookups happen when the body runs. On an exam, draw the frames and let the rules give you the answer." }
+      say: "Four rules cover everything here. One: a def creates a function whose parent is the frame it was created in. Two: a call opens a new frame, whose parent is the parent of the function being called. Three: to look up a name, start in the current frame and follow parents. Four: lookups happen when the body runs. On an exam, draw the frames and let the rules give you the answer." }
   ],
 
   check: [
@@ -120,16 +119,16 @@ window.LESSONS.environments = {
     { id: "env_between", title: "Remember two bounds", source: "Original question",
       desc: "make_between takes two numbers, low and high, and returns a function. The returned function takes x and returns True if x is at least low and at most high, and False otherwise.",
       starter: "def make_between(low, high):\n    \"\"\"Return a function that tests whether a number is from low to high.\n    >>> teen = make_between(13, 19)\n    >>> teen(15)\n    True\n    >>> teen(13)\n    True\n    >>> teen(20)\n    False\n    >>> make_between(0, 0)(0)\n    True\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
-      solution: "def make_between(low, high):\n    return lambda x: low <= x and x <= high",
+      solution: "def make_between(low, high):\n    def between(x):\n        return low <= x and x <= high\n    return between",
       tests: "teen = make_between(13, 19)\nassert callable(teen), 'make_between should return a function'\nassert teen(15) is True\nassert teen(13) is True\nassert teen(19) is True\nassert teen(20) is False\nassert teen(12) is False\nassert make_between(0, 0)(0) is True\nassert make_between(-5, 5)(-6) is False\nassert make_between(5, 1)(3) is False",
-      hints: ["The returned function needs three names: x, low and high. Only x is its own parameter.", "low and high are found by following the parent to the frame for the call to make_between.", "return lambda x: low <= x and x <= high"],
+      hints: ["The returned function needs three names: x, low and high. Only x is its own parameter.", "low and high are found by following the parent to the frame for the call to make_between.", "def between(x): return low <= x and x <= high, then return between."],
       explain: "The returned function has one parameter but uses three names. The other two come from its parent frame, which stays around for as long as the function does." },
     { id: "env_delayed", title: "Not yet", source: "Original question",
       desc: "delayed takes a one-argument function f and a value x. It must not call f. It returns a function that takes no arguments. When that returned function is called, it calls f(x) and returns the result.",
       starter: "def delayed(f, x):\n    \"\"\"Return a zero-argument function that computes f(x) when called.\n    >>> def noisy(v):\n    ...     print('working on', v)\n    ...     return v * 2\n    >>> later = delayed(noisy, 21)\n    >>> later()\n    working on 21\n    42\n    \"\"\"\n    \"*** YOUR CODE HERE ***\"\n",
-      solution: "def delayed(f, x):\n    return lambda: f(x)",
+      solution: "def delayed(f, x):\n    def later():\n        return f(x)\n    return later",
       tests: "calls = []\ndef spy(v):\n    calls.append(v)\n    return v * 2\nd = delayed(spy, 3)\nassert callable(d), 'delayed should return a function'\nassert calls == [], 'delayed called f too early: f should only run when the returned function is called'\nassert d() == 6\nassert calls == [3]\nassert d() == 6\nassert calls == [3, 3], 'f should run again each time the returned function is called'\nassert delayed(abs, -4)() == 4",
-      hints: ["If you write f(x) directly in the body of delayed, f runs right away. It has to sit inside another function.", "A function with no parameters is written def later(): or lambda: with nothing before the colon.", "return lambda: f(x)"],
+      hints: ["If you write f(x) directly in the body of delayed, f runs right away. It has to sit inside another function.", "A function with no parameters is written def later(): with empty parentheses.", "def later(): return f(x), then return later."],
       explain: "This is rule four from the lesson put to work: a function body runs when the function is called, not when it is created. Wrapping f(x) in a function postpones it." }
   ]
 };

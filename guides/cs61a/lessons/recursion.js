@@ -15,9 +15,12 @@
   deepen   exam-style coding questions, run against hidden tests
 */
 window.LESSONS.recursion = {
-  minutes: 10,
+  minutes: 13,
   snippets: {
     fact: "def fact(n):\n    if n == 0:\n        return 1\n    return n * fact(n - 1)",
+    loop: "def fact_loop(n):\n    total, k = 1, 1\n    while k <= n:\n        total, k = total * k, k + 1\n    return total",
+    running: "def fact_total(n, total):\n    if n == 0:\n        return total\n    return fact_total(n - 1, total * n)\n\nfact_total(3, 1)",
+    helper: "def fact(n):\n    def go(n, total):\n        if n == 0:\n            return total\n        return go(n - 1, total * n)\n    return go(n, 1)",
     digits: "def sum_digits(n):\n    if n < 10:\n        return n\n    return n % 10 + sum_digits(n // 10)",
     broken: "def count_down(n):\n    if n == 0:\n        return 0\n    return 1 + count_down(n)",
     cascade: "def cascade(n):\n    if n < 10:\n        print(n)\n    else:\n        print(n)\n        cascade(n // 10)\n        print(n)"
@@ -61,6 +64,19 @@ window.LESSONS.recursion = {
       say: "And fact(3) gets 2 and returns 3 times 2, which is 6. Calls stack up until the base case, then answers flow back in reverse order." },
     { code: "fact", hl: [4],
       say: "Here is the habit that makes recursion manageable: you do not trace every call. When you write line 4, assume fact(n - 1) already gives the right answer, and only ask how to get from that answer to yours. This is called the recursive leap of faith." },
+    { code: "loop", hl: [2, 3, 4],
+      say: "Any while loop can be rewritten as recursion, and seeing how is the fastest way to write recursive functions when you already know the loop. Here is factorial as a loop. Notice what the loop keeps track of between passes: a running total, and a counter.",
+      syntax: "Python notes: line 4 updates two names at once. Both right sides are worked out first, then both names are rebound." },
+    { code: "running", hl: [1, 4],
+      stack: [{ call: "fact_total(3, 1)", vars: "n = 3, total = 1", state: "calls fact_total(2, ?)" }],
+      say: "In the recursive version, the things the loop kept track of become arguments. Each call passes the updated values to the next call, the way each pass of the loop handed them to the next pass. The base case is the loop's stopping test, and it returns the total that has been built up.",
+      ask: { type: "type", q: "fact_total(3, 1) makes the call fact_total(2, ?). What is the second argument?", answer: "3",
+        why: "Line 4 passes total * n, which is 1 * 3 = 3. The calls go (3, 1), (2, 3), (1, 6), (0, 6), and the last one returns 6." } },
+    { code: "running", hl: [2, 3],
+      stack: [{ call: "fact_total(3, 1)", vars: "n = 3, total = 1", state: "waiting" }, { call: "fact_total(2, 3)", vars: "n = 2, total = 3", state: "waiting" }, { call: "fact_total(1, 6)", vars: "n = 1, total = 6", state: "waiting" }, { call: "fact_total(0, 6)", vars: "n = 0, total = 6", state: "returns 6", done: true }],
+      say: "Compare this with the first fact. There, the multiplying happened on the way back. Here it happens on the way in, and by the time the base case is reached the answer is already finished. Each waiting call just passes that 6 straight back." },
+    { code: "helper", hl: [2, 6],
+      say: "One problem: fact_total needs a second argument that the caller should not have to supply. The fix is a helper function defined inside. The outer function keeps the signature the problem asked for. The inner one carries the extra argument. Line 6 starts it off with the right first value. You will use this pattern constantly." },
     { code: "digits", hl: [4],
       say: "A second example. sum_digits adds up the digits of a number. The smaller problem is the same number with its last digit removed.",
       syntax: "Python notes: n % 10 is the remainder after dividing by 10, which is the last digit. n // 10 divides and drops the remainder, which is everything except the last digit. So 2026 % 10 is 6 and 2026 // 10 is 202." },
