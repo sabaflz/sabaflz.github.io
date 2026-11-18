@@ -221,9 +221,10 @@
           (!f.vars.length && f.ret == null ? '<p class="bind none"><span>(no names yet)</span></p>' : "") + "</div>";
       }).join("") + "</div></div>";
     }
+    if (st.tree) h += '<div><h4>Call tree</h4><pre class="out tree">' + esc(st.tree.join("\n")) + "</pre></div>";
     if (st.env) h += '<div><h4>Names</h4><div class="names">' + st.env.map(function (p) { return '<div class="frame"><span>' + esc(p[0]) + "</span><small>" + esc(p[1]) + "</small></div>"; }).join("") + "</div></div>";
     if (st.out) h += '<div><h4>Printed</h4><pre class="out">' + esc(st.out.join("\n")) + "</pre></div>";
-    if (!st.stack && !st.out && !st.env && !st.frames) h += '<p class="muted" style="font-size:15px">Names, calls and printed output show up here as the code runs.</p>';
+    if (!st.stack && !st.out && !st.env && !st.frames && !st.tree) h += '<p class="muted" style="font-size:15px">Names, calls and printed output show up here as the code runs.</p>';
     h += '</div></div><div class="narr"><p class="say">' + esc(st.say) + "</p>";
     if (st.basics && lv === "new") h += '<p class="note"><b>The basics.</b> ' + esc(st.basics) + "</p>";
     if (st.syntax && (lv === "new" || lv === "programmer")) h += '<p class="note">' + esc(st.syntax).replace(/^Python notes:/, "<b>Python notes.</b>") + "</p>";

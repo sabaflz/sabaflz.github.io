@@ -39,7 +39,7 @@ window.COURSE = {
       { id: "hof", lecture: 4, title: "Higher-order functions", blurb: "Functions as arguments and return values, lambda.", est: 50 },
       { id: "environments", lecture: 5, title: "Environments", blurb: "Frames, parents, and how names are looked up.", est: 50 },
       { id: "abstraction", lecture: 6, title: "Abstraction", blurb: "Lambda expressions, currying, and zero-argument functions.", est: 35 },
-      { id: "function-examples", lecture: 7, title: "Function examples", blurb: "Worked problems that combine everything so far.", est: 30 }
+      { id: "function-examples", lecture: 7, title: "Function examples", blurb: "A method for implementation problems, plus mixed Midterm 1 practice.", est: 30 }
     ]},
     { title: "Recursion and data", exam: "Midterm 2", topics: [
       { id: "recursion", lecture: 9, title: "Recursion", blurb: "Base cases, recursive calls, and trusting the smaller problem.", est: 45, pool: ["Recursion"] },
