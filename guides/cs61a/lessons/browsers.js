@@ -19,7 +19,7 @@ window.LESSONS["browsers"] = {
     { code: "html",
       say: "You just built an interpreter. Here is one you use every day: the web browser. A browser is an interpreter for three different languages at once. HTML describes what is on a page. CSS describes how it looks. JavaScript describes how it behaves. Gleam is not one of the three, but Gleam compiles to JavaScript, so a browser can run a Gleam program once it is compiled." },
     { code: "html", hl: [1, 2, 3, 4, 5],
-      tree: ["div  class=card", "├─ p", "│  └─ \"Tasks left: 3\"", "├─ button  class=primary", "│  └─ \"Add task\"", "└─ button  class=primary", "   └─ \"Clear\""],
+      treeTitle: "DOM tree", tree: ["div  class=card", "├─ p", "│  └─ \"Tasks left: 3\"", "├─ button  class=primary", "│  └─ \"Add task\"", "└─ button  class=primary", "   └─ \"Clear\""],
       say: "HTML describes a page as a tree of elements. A div is a box that holds other things, a p is a paragraph, a button is a button. Elements are written with an opening and a closing tag, and whatever is between them is inside. When the browser parses HTML it builds that tree in memory. It is called the document object model, or DOM: a tree of elements and pieces of text. The panel shows the DOM for this HTML.",
       ask: { type: "type", q: "How many elements are in this tree? Count the elements, not the pieces of text.", answer: "4",
         why: "One div, one p and two buttons. The three pieces of text are nodes in the tree too, but they are text nodes, not elements." } },

@@ -71,8 +71,8 @@ window.COURSE = {
     ]},
     { title: "SQL and software practice", exam: "Final", topics: [
       { id: "sql", lecture: 34, title: "SQL", blurb: "Declarative programming: select, where, order by.", est: 40 },
-      { id: "tables", lecture: 35, title: "Tables", blurb: "Creating tables and joining them.", est: 40 },
-      { id: "aggregation", lecture: 36, title: "Aggregation", blurb: "group by, having, and aggregate functions.", est: 40 },
+      { id: "tables", lecture: 35, title: "Tables", blurb: "Joins: combining tables, joining a table with itself, and expressions.", est: 40 },
+      { id: "aggregation", lecture: 36, title: "Aggregation", blurb: "Aggregate functions, group by and having.", est: 40 },
       { id: "testing", lecture: 37, title: "Software testing", blurb: "Writing tests that catch real mistakes.", est: 30 },
       { id: "tracing", lecture: 38, title: "Software tracing", blurb: "Following a program's execution to find a bug.", est: 30 }
     ]},

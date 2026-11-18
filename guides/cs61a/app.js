@@ -221,10 +221,11 @@
           (!f.vars.length && f.ret == null ? '<p class="bind none"><span>(no names yet)</span></p>' : "") + "</div>";
       }).join("") + "</div></div>";
     }
-    if (st.tree) h += '<div><h4>Call tree</h4><pre class="out tree">' + esc(st.tree.join("\n")) + "</pre></div>";
+    if (st.tables) st.tables.forEach(function (t) { h += "<div><h4>" + esc(t.name) + "</h4>" + tableHTML(t.cols, t.rows) + "</div>"; });
+    if (st.tree) h += '<div><h4>' + esc(st.treeTitle || "Call tree") + '</h4><pre class="out tree">' + esc(st.tree.join("\n")) + "</pre></div>";
     if (st.env) h += '<div><h4>Names</h4><div class="names">' + st.env.map(function (p) { return '<div class="frame"><span>' + esc(p[0]) + "</span><small>" + esc(p[1]) + "</small></div>"; }).join("") + "</div></div>";
     if (st.out) h += '<div><h4>Printed</h4><pre class="out">' + esc(st.out.join("\n")) + "</pre></div>";
-    if (!st.stack && !st.out && !st.env && !st.frames && !st.tree) h += '<p class="muted" style="font-size:15px">Names, calls and printed output show up here as the code runs.</p>';
+    if (!st.stack && !st.out && !st.env && !st.frames && !st.tree && !st.tables) h += '<p class="muted" style="font-size:15px">Names, calls and printed output show up here as the code runs.</p>';
     h += '</div></div><div class="narr"><p class="say">' + esc(st.say) + "</p>";
     if (st.basics && lv === "new") h += '<p class="note"><b>The basics.</b> ' + esc(st.basics) + "</p>";
     if (st.syntax && (lv === "new" || lv === "programmer")) h += '<p class="note">' + esc(st.syntax).replace(/^Python notes:/, "<b>Python notes.</b>") + "</p>";
@@ -275,10 +276,11 @@
         return '<li><a href="#/t/' + t.id + "/" + stage + "/" + x.id + '"' + (x === p ? ' aria-current="true"' : "") + '><span class="tick' + (s.solved[x.id] ? " yes" : "") + '" aria-hidden="true"></span>' + (i + 1) + ". " + esc(x.title) + (s.solved[x.id] ? '<span class="muted"> (solved)</span>' : "") + "</a></li>";
       }).join("") + '</ul><div class="prob"><h2>' + esc(p.title) + '</h2><p class="src">' + esc(p.source || "") +
       (p.exam ? ' · <a href="' + esc(p.exam) + '" target="_blank" rel="noopener">exam PDF (opens in a new tab)</a>' : "") + "</p><p>" + esc(p.desc) + "</p>" +
-      '<textarea class="editor" id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Your Python code">' + esc(S.code[p.id] != null ? S.code[p.id] : p.starter) + "</textarea>" +
+      (p.sql && p.sql.tables ? '<details class="reveal" style="margin:0 0 12px"><summary>Show the tables</summary>' + p.sql.tables.map(function (t) { return '<h4 class="tblh">' + esc(t.name) + "</h4>" + tableHTML(t.cols, t.rows); }).join("") + "</details>" : "") +
+      '<textarea class="editor" id="editor" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Your ' + esc(p.lang || "Python") + ' code">' + esc(S.code[p.id] != null ? S.code[p.id] : p.starter) + "</textarea>" +
       '<div class="row" style="margin-top:12px">' + (p.norun
         ? '<button class="btn small primary" type="button" data-act="reveal">Compare with the solution</button>'
-        : '<button class="btn small" type="button" data-act="run">Run the examples</button><button class="btn small primary" type="button" data-act="submit">Submit</button>') +
+        : '<button class="btn small" type="button" data-act="run">' + (p.sql ? "Run the query" : "Run the examples") + '</button><button class="btn small primary" type="button" data-act="submit">Submit</button>') +
       (p.hints ? '<button class="btn small quiet" type="button" data-act="hint">Hint</button>' : "") +
       '<button class="btn small quiet" type="button" data-act="resetcode">Reset code</button></div><div id="hints">' + hintsHTML(p, s) + '</div><div class="result" id="result" aria-live="polite">' +
       (s.solved[p.id] ? solvedHTML() : "") + "</div>" +
@@ -391,8 +393,81 @@
       }
     });
   }
+  /* ---------- SQL: SQLite in the browser, run by sql/worker.js ---------- */
+  function tableHTML(cols, rows, max) {
+    var shown = max && rows.length > max ? rows.slice(0, max) : rows;
+    return '<div class="tblwrap"><table class="tbl"><thead><tr>' + cols.map(function (c) { return "<th>" + esc(c) + "</th>"; }).join("") + "</tr></thead><tbody>" +
+      (shown.length ? shown.map(function (r) { return "<tr>" + r.map(function (v) { return "<td>" + (v === null ? '<span class="muted">NULL</span>' : esc(v)) + "</td>"; }).join("") + "</tr>"; }).join("") : '<tr><td class="muted" colspan="' + cols.length + '">no rows</td></tr>') +
+      "</tbody></table></div>" + (shown.length < rows.length ? '<p class="muted" style="font-size:13.5px">Showing ' + shown.length + " of " + rows.length + " rows.</p>" : "");
+  }
+  var sw = null, sReady = false, sErr = null, sWaiting = [], sPending = {};
+  function runSql(msg) {
+    return new Promise(function (resolve) {
+      if (!sw) {
+        sReady = false;
+        try { sw = new Worker("sql/worker.js?v=2"); } catch (e) { resolve({ ok: false, error: "This browser cannot run SQL here." }); return; }
+        sw.onmessage = function (e) {
+          var d = e.data;
+          if (d.ready || d.loadError) { sReady = !!d.ready; sErr = d.loadError || null; sWaiting.splice(0).forEach(function (f) { f(); }); return; }
+          var q = sPending[d.id]; if (!q) return;
+          delete sPending[d.id]; clearTimeout(q.timer); q.resolve(d);
+        };
+        sw.onerror = function () { sErr = "the SQL engine failed to start"; sWaiting.splice(0).forEach(function (f) { f(); }); };
+      }
+      var id = ++seq; msg.id = id;
+      function go() {
+        if (sErr) { var m = sErr; sw = null; sErr = null; resolve({ ok: false, error: "SQL could not load (" + m + ")." }); return; }
+        var timer = setTimeout(function () { delete sPending[id]; sw.terminate(); sw = null; resolve({ timeout: true }); }, 8000);
+        sPending[id] = { resolve: resolve, timer: timer };
+        sw.postMessage(msg);
+      }
+      if (sReady) go(); else sWaiting.push(go);
+    });
+  }
+  // Compare two result tables. Row order only matters when the problem says so.
+  function sameTable(got, want, ordered) {
+    if (got.cols.length !== want.cols.length) return "Your table has " + got.cols.length + " column" + (got.cols.length === 1 ? "" : "s") + ", but " + want.cols.length + " expected.";
+    for (var i = 0; i < want.cols.length; i++) if (got.cols[i].toLowerCase() !== want.cols[i].toLowerCase()) return "Column " + (i + 1) + " should be named " + want.cols[i] + ", but yours is named " + got.cols[i] + ".";
+    if (got.rows.length !== want.rows.length) return "Your table has " + got.rows.length + " row" + (got.rows.length === 1 ? "" : "s") + ", but " + want.rows.length + " expected.";
+    var key = function (r) { return JSON.stringify(r); }, a = got.rows.map(key), b = want.rows.map(key);
+    if (!ordered) { a.sort(); b.sort(); }
+    for (var j = 0; j < a.length; j++) if (a[j] !== b[j]) return ordered && a.slice().sort().join() === b.slice().sort().join() ? "The rows are right, but they are in the wrong order." : "Some rows do not match what is expected.";
+    return "";
+  }
+  function executeSql(mode) {
+    var job = cur, p = job.p, ed = document.getElementById("editor"), box = document.getElementById("result");
+    if (!ed || !box) return;
+    box.innerHTML = banner("wait", sReady ? "Running..." : "Loading SQL. The first run takes a moment...");
+    var setups = mode === "run" ? [p.sql.setup] : [p.sql.setup].concat(p.sql.hidden || []);
+    runSql({ setups: setups, src: ed.value, solution: p.solution, check: p.sql.check || "" }).then(function (d) {
+      if (cur !== job || !document.getElementById("result")) return;
+      box = document.getElementById("result");
+      if (d.timeout) { box.innerHTML = banner("fail", "Your query ran for over 8 seconds and was stopped."); return; }
+      if (!d.ok) { box.innerHTML = banner("fail", "Could not run") + pre(d.error); return; }
+      var first = d.result[0], g = first.got;
+      if (g.error) { box.innerHTML = banner("fail", "SQLite could not run your query") + pre(g.error); return; }
+      if (g.none) { box.innerHTML = banner("fail", "Your code did not produce a table. End with a SELECT statement."); return; }
+      var why = sameTable(g, first.want, p.sql.ordered), mine = "<h4 class=\"tblh\">Your result</h4>" + tableHTML(g.cols, g.rows, 12);
+      if (mode === "run") {
+        box.innerHTML = (why ? banner("fail", "Not matching yet. " + why) + mine + "<h4 class=\"tblh\">Expected</h4>" + tableHTML(first.want.cols, first.want.rows, 12)
+                             : banner("pass", "Your result matches on this data. Submit to check it on hidden data too.") + mine);
+        return;
+      }
+      for (var i = 1; !why && i < d.result.length; i++) {
+        var r = d.result[i];
+        if (r.got.error || r.got.none) why = "On a different set of data, your query failed.";
+        else if (sameTable(r.got, r.want, p.sql.ordered)) why = "It matches the data you can see, but not a hidden set of data. Check that nothing in your query depends on these particular rows.";
+      }
+      if (!why) {
+        T(job.t.id).solved[p.id] = true; save(); progress();
+        var a = view.querySelector('.plist a[aria-current] .tick'); if (a) a.classList.add("yes");
+        box.innerHTML = solvedHTML();
+      } else box.innerHTML = banner("fail", "Not yet. " + why) + mine;
+    });
+  }
   function execute(mode) {
     if (cur && cur.p.gleam) { executeGleam(mode); return; }
+    if (cur && cur.p.sql) { executeSql(mode); return; }
     var job = cur, p = job.p, ed = document.getElementById("editor"), box = document.getElementById("result");
     if (!ed || !box) return;
     box.innerHTML = banner("wait", wReady ? "Running..." : "Loading Python. The first run takes a few seconds...");

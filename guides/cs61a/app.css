@@ -194,3 +194,11 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 }
 @media (max-width:420px){ .barlink.exit{font-size:14px} .barlink{font-size:14px} }
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} .player .bar2 i{transition:none} }
+
+/* result tables (SQL) */
+.tblwrap{overflow-x:auto; margin:8px 0 0}
+.tbl{border-collapse:collapse; font:500 13.5px/1.4 var(--mono); background:var(--surface); border:1.5px solid var(--line); border-radius:8px}
+.tbl th,.tbl td{padding:5px 12px; text-align:left; border-bottom:1px solid var(--line); white-space:nowrap}
+.tbl th{background:var(--surface-2); font-weight:700; color:var(--ink)}
+.tbl tr:last-child td{border-bottom:0}
+.tblh{margin:14px 0 0; font:700 12px/1 var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--muted)}
