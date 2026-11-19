@@ -401,3 +401,11 @@ details.unit[open]{margin-bottom:30px}
 }
 @media (prefers-reduced-motion:reduce){ .navside, details.unit > summary::before{transition:none} }
 @media (min-width:1180px){ .appbar .wrap.bar{max-width:none; padding-left:26px; padding-right:32px} }
+
+/* ---------- answered questions: result, Reset, and the explanation behind a toggle ---------- */
+.fbrow{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-top:12px}
+.fbrow .fb{margin:0}
+details.why{margin-top:8px; font-size:15.5px}
+details.why > summary{cursor:pointer; color:var(--saffron-ink); font-weight:600; font-size:14.5px; width:max-content}
+details.why > p{margin:8px 0 0; padding:10px 14px; border-left:3px solid var(--saffron); background:var(--surface-2); border-radius:0 8px 8px 0}
+.banner .linkbtn{margin-left:10px; font-size:14px}
