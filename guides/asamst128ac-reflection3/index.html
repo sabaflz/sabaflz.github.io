@@ -1,0 +1,731 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ASAMST 128AC Reflection 3 Guide</title>
+<meta name="description" content="Study guide for the ASAMST 128AC (Muslims in America) third reflection on state recognition: Said's Orientalism, Hatem Bazian's Palestine and Settler Colonialism and I Can't Breathe, and GhaneaBassiri Chapter 8, with the TA's likely question, a quote bank, and full model essays.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect x='8' y='8' width='84' height='84' rx='18' fill='%23E9A400'/><text x='50' y='68' font-size='34' font-family='Arial' font-weight='700' text-anchor='middle' fill='%2316193A'>R3</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@500;600;700&family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#EEF0F3; --surface:#FFFFFF; --surface-2:#F5F6F9; --ink:#16193A; --muted:#555A73; --line:#D3D6DF;
+  --saffron:#E9A400; --saffron-ink:#7E5600; --on-saffron:#16193A; --saffron-soft:#FBF0D6;
+  --ok:#1C7C54; --ok-soft:#E3F3EA; --warn:#B4531A; --warn-soft:#FBEADF;
+  --display:"Schibsted Grotesk","Avenir Next",system-ui,sans-serif;
+  --body:"Instrument Sans","Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  box-sizing:border-box;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#54C78C; --ok-soft:#163026; --warn:#E89156; --warn-soft:#2E2016; color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#11132A; --surface:#1A1D39; --surface-2:#161931; --ink:#E9EBF3; --muted:#A0A5BE; --line:#2C3052;
+  --saffron:#F4B71C; --saffron-ink:#F4B71C; --on-saffron:#11132A; --saffron-soft:#2A2718;
+  --ok:#54C78C; --ok-soft:#163026; --warn:#E89156; --warn-soft:#2E2016; color-scheme:dark;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-behavior:smooth}
+body{margin:0; background:var(--bg); color:var(--ink); font:400 17px/1.62 var(--body); -webkit-font-smoothing:antialiased; overflow-x:hidden}
+a{color:inherit}
+:focus-visible{outline:3px solid var(--saffron); outline-offset:3px; border-radius:3px}
+
+#topbar{position:sticky; top:0; z-index:20; background:var(--bg); border-bottom:1.5px solid var(--line)}
+.nav{display:flex; justify-content:space-between; align-items:center; gap:14px; max-width:1180px; margin:0 auto; padding:14px clamp(16px,4vw,34px)}
+.nav .mark{font:800 20px/1 var(--display); text-decoration:none; letter-spacing:-.02em}
+.crumbs{font:500 14px var(--body); color:var(--muted); display:flex; gap:8px; align-items:center; min-width:0}
+.crumbs a{text-decoration:none} .crumbs a:hover{color:var(--saffron-ink)} .crumbs b{color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.crumbs span{color:var(--line)}
+.t-btn{font:500 13px/1 var(--mono); background:var(--surface); color:var(--ink); border:1.5px solid var(--line); border-radius:999px; padding:8px 13px; cursor:pointer; white-space:nowrap}
+.t-btn:hover{border-color:var(--saffron)}
+
+#exam-strip{background:#16193A; color:#fff; font:500 13.5px/1.4 var(--body); text-align:center; padding:9px 16px}
+:root[data-theme="dark"] #exam-strip{background:#000}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #exam-strip{background:#000}}
+#exam-strip b{color:var(--saffron)}
+
+#layout{display:flex; gap:28px; max-width:1180px; margin:0 auto; padding:0 clamp(16px,4vw,34px); align-items:flex-start}
+#sidebar{position:sticky; top:72px; width:232px; flex:none; padding:26px 0 40px; max-height:calc(100vh - 80px); overflow:auto}
+.side-head{font:500 11px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--muted); margin:0 0 10px}
+.prog-wrap{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:14px; margin-bottom:18px}
+.prog-bar{height:8px; background:var(--surface-2); border-radius:999px; overflow:hidden; margin:8px 0 6px}
+.prog-fill{height:100%; width:0%; background:var(--saffron); transition:width .3s}
+.prog-label{font:500 12.5px var(--mono); color:var(--muted)}
+#toc{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:1px}
+#toc a{display:flex; align-items:center; gap:9px; text-decoration:none; font-size:14px; color:var(--muted); padding:7px 11px; border-radius:9px; border-left:2.5px solid transparent}
+#toc a:hover{color:var(--ink); background:var(--surface-2)}
+#toc a.active{color:var(--ink); background:var(--saffron-soft); border-left-color:var(--saffron); font-weight:600}
+#toc a .tdot{flex:none; width:13px; height:13px; border-radius:999px; border:2px solid var(--line); box-sizing:border-box; position:relative; transition:background .2s, border-color .2s}
+#toc a.done .tdot{background:var(--saffron); border-color:var(--saffron)}
+#toc a.done .tdot::after{content:"\2713"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font:700 8px/1 var(--body); color:var(--on-saffron)}
+#toc a.done{color:var(--ink)}
+
+#main{flex:1; min-width:0; padding:26px 0 90px}
+header.page{padding:12px 0 8px}
+.eyebrow{font:500 12px/1 var(--mono); letter-spacing:.14em; text-transform:uppercase; color:var(--saffron-ink); margin:0 0 10px}
+h1{font:600 clamp(1.9rem,5vw,2.7rem)/1.04 var(--display); margin:0 0 12px; letter-spacing:-.01em; text-wrap:balance}
+.lede{color:var(--muted); max-width:66ch; margin:0 0 6px}
+
+section.block{scroll-margin-top:118px; padding:30px 0 6px; border-top:1.5px solid var(--line); margin-top:30px}
+section.block:first-of-type{border-top:none; margin-top:14px}
+h2{font:600 clamp(1.4rem,3.4vw,1.9rem)/1.1 var(--display); margin:0 0 6px; letter-spacing:-.01em}
+h2 .num{font:500 14px var(--mono); color:var(--saffron-ink); display:block; margin-bottom:4px; letter-spacing:.05em}
+h3{font:600 18.5px/1.25 var(--display); margin:24px 0 8px}
+h4{font:600 15px/1.3 var(--body); margin:16px 0 4px; color:var(--ink)}
+p{margin:10px 0} .muted{color:var(--muted)}
+ul,ol{margin:10px 0; padding-left:22px} li{margin:6px 0}
+strong{font-weight:600}
+em{font-style:italic}
+code,.k{font:500 14.5px var(--mono); background:var(--surface-2); padding:1px 6px; border-radius:6px; color:var(--saffron-ink)}
+.lead-term{font-weight:600; color:var(--ink)}
+.cite{font:500 12.5px var(--mono); color:var(--muted)}
+
+.card{background:var(--surface); border:1.5px solid var(--line); border-radius:16px; padding:20px 22px; margin:16px 0}
+.card.tint{background:var(--saffron-soft); border-color:transparent}
+.card.dark{background:#16193A; color:#EDEEF6; border:1.5px solid transparent}
+:root[data-theme="dark"] .card.dark{background:#20244D; border-color:#343A6B}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .card.dark{background:#20244D; border-color:#343A6B}}
+.card.dark .cite, .card.dark .muted{color:#AEB3CC}
+.card.dark strong{color:var(--saffron)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+@media(max-width:720px){.grid2{grid-template-columns:1fr}}
+.mini{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; padding:16px 18px}
+.mini h4{margin-top:0}
+
+.pill{display:inline-block; font:500 11.5px/1 var(--mono); padding:5px 9px; border-radius:999px; border:1.5px solid var(--line); color:var(--muted); margin:0 6px 6px 0}
+.pill.said{color:#1F6FB2; border-color:#1F6FB2}
+.pill.hatem{color:#8A4FB0; border-color:#8A4FB0}
+.pill.gb{color:#2C7A4B; border-color:#2C7A4B}
+:root[data-theme="dark"] .pill.said{color:#6DB8EC;border-color:#3A6E95}
+:root[data-theme="dark"] .pill.hatem{color:#C79AE6;border-color:#6A4F84}
+:root[data-theme="dark"] .pill.gb{color:#6FD39A;border-color:#366B4D}
+
+details.q{background:var(--surface); border:1.5px solid var(--line); border-radius:14px; margin:12px 0; overflow:hidden}
+details.q[open]{border-color:var(--saffron)}
+details.q>summary{list-style:none; cursor:pointer; padding:15px 18px; font-weight:500; display:flex; gap:12px; align-items:flex-start; user-select:none}
+details.q>summary::-webkit-details-marker{display:none}
+details.q>summary::before{content:"+"; flex:none; width:24px; height:24px; border-radius:50%; background:var(--surface-2); color:var(--muted); font:700 15px/24px var(--mono); text-align:center; margin-top:1px}
+details.q[open]>summary::before{content:"\2013"; background:var(--saffron); color:var(--on-saffron)}
+.ans{padding:2px 18px 18px 54px; color:var(--ink); border-top:1px dashed var(--line); margin-top:2px}
+.ans p:first-child{margin-top:12px}
+
+.model{background:var(--surface-2); border-left:4px solid var(--saffron); border-radius:0 10px 10px 0; padding:12px 16px; margin:10px 0; font-size:15.5px; line-height:1.56}
+.model p{margin:0 0 10px} .model p:last-child{margin-bottom:0}
+.model .wc{float:right; font:500 11.5px var(--mono); color:var(--muted)}
+table.match{width:100%; border-collapse:collapse; margin:10px 0; font-size:14.5px}
+.match td,.match th{padding:9px 11px; border-bottom:1px solid var(--line); vertical-align:top; text-align:left}
+.match th{font:600 12px var(--mono); color:var(--saffron-ink); text-transform:uppercase; letter-spacing:.04em}
+.match td:first-child{font-weight:600}
+.rev-all{font:500 13px var(--mono); background:var(--surface); border:1.5px solid var(--line); border-radius:999px; padding:8px 14px; cursor:pointer; margin:4px 0 2px}
+.rev-all:hover{border-color:var(--saffron)}
+
+.review-row{display:flex; align-items:center; gap:10px; margin:18px 0 2px; padding-top:14px; border-top:1px dashed var(--line)}
+.review-row label{font:500 14px var(--body); color:var(--muted); display:flex; align-items:center; gap:9px; cursor:pointer}
+.review-row input{appearance:none; -webkit-appearance:none; margin:0; width:21px; height:21px; border:2px solid var(--line); border-radius:999px; background:var(--surface); cursor:pointer; position:relative; transition:background .2s, border-color .2s}
+.review-row input:hover{border-color:var(--saffron)}
+.review-row input:checked{background:var(--saffron); border-color:var(--saffron)}
+.review-row input:checked::after{content:"\2713"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font:700 12px/1 var(--body); color:var(--on-saffron)}
+.review-row input:focus-visible{outline:3px solid var(--saffron); outline-offset:2px}
+.sec-done{display:none; width:22px; height:22px; border-radius:999px; background:var(--saffron); margin-left:11px; vertical-align:middle; position:relative}
+.sec-done::after{content:"\2713"; position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font:700 12px/1 var(--body); color:var(--on-saffron)}
+section.block.done .sec-done{display:inline-block}
+.flag{display:inline-block; font:600 11px var(--mono); letter-spacing:.06em; text-transform:uppercase; color:var(--warn); background:var(--warn-soft); border-radius:6px; padding:3px 8px; margin-left:6px}
+
+footer{max-width:1180px; margin:0 auto; padding:30px clamp(16px,4vw,34px) 70px; color:var(--muted); font-size:14px; border-top:1.5px solid var(--line)}
+#menuBtn{display:none}
+@media(max-width:860px){
+  #sidebar{display:none}
+  #menuBtn{display:block; position:fixed; right:16px; bottom:16px; z-index:30; background:var(--saffron); color:var(--on-saffron); border:none; border-radius:999px; padding:13px 18px; font:600 14px var(--body); box-shadow:0 6px 20px rgba(0,0,0,.18); cursor:pointer}
+  #sidebar.open{display:block; position:fixed; inset:60px 10px 10px auto; width:min(80vw,300px); background:var(--bg); border:1.5px solid var(--line); border-radius:16px; padding:18px; z-index:29; box-shadow:0 10px 40px rgba(0,0,0,.25); max-height:80vh}
+}
+
+.nav-actions{display:flex; gap:8px; align-items:center}
+.sec-listen{margin-left:12px; vertical-align:middle; font:600 11px/1 var(--mono); letter-spacing:.02em;
+  background:var(--surface-2); color:var(--saffron-ink); border:1.5px solid var(--line);
+  border-radius:999px; padding:6px 11px; cursor:pointer; white-space:nowrap}
+.sec-listen:hover{border-color:var(--saffron)}
+.tts-active{background:var(--saffron-soft); border-radius:8px; box-shadow:0 0 0 7px var(--saffron-soft); scroll-margin-top:96px}
+#tts-bar{position:fixed; left:50%; transform:translateX(-50%); bottom:16px; z-index:40; display:none;
+  align-items:center; gap:8px; background:var(--surface); border:1.5px solid var(--line);
+  border-radius:999px; padding:7px 9px 7px 16px; box-shadow:0 12px 36px rgba(0,0,0,.24); max-width:calc(100vw - 20px)}
+#tts-bar.on{display:flex}
+#tts-bar .lbl{font:600 13px var(--body); color:var(--ink); max-width:34vw; overflow:hidden;
+  text-overflow:ellipsis; white-space:nowrap}
+#tts-bar button{border:none; background:var(--surface-2); color:var(--ink); min-width:38px; height:38px;
+  border-radius:999px; cursor:pointer; font-size:15px; line-height:1; display:grid; place-items:center; padding:0}
+#tts-bar button:hover{background:var(--saffron-soft)}
+#tts-bar .rate{font:600 12px var(--mono); padding:0 13px}
+#tts-bar .stop{background:var(--ink); color:var(--surface)}
+#tts-bar .stop:hover{background:var(--saffron); color:var(--on-saffron)}
+body.tts-on #menuBtn{bottom:74px}
+@media (max-width:620px){ #tts-bar .lbl{display:none} .sec-listen{margin-left:8px} }
+
+.cheat-grid{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:16px 0 4px}
+@media(max-width:720px){.cheat-grid{grid-template-columns:1fr}}
+.cheat-card{background:var(--surface); border:1.5px solid var(--line); border-radius:12px; padding:14px 16px}
+.cheat-card h4{margin:0 0 9px; font:700 12px/1 var(--mono); letter-spacing:.04em; text-transform:uppercase; color:var(--saffron-ink)}
+.cheat-card ul{margin:0; padding-left:18px}
+.cheat-card li{margin:0 0 7px; font-size:13.5px; line-height:1.45}
+.cheat-card li:last-child{margin-bottom:0}
+.cheat-print{font:600 12px/1 var(--mono); background:var(--saffron); color:var(--on-saffron); border:none;
+  border-radius:999px; padding:7px 13px; cursor:pointer; margin-left:8px; vertical-align:middle}
+.cheat-print:hover{filter:brightness(1.06)}
+@media print{
+  :root{--bg:#fff; --surface:#fff; --surface-2:#f3f3f3; --ink:#000; --muted:#333; --line:#b9b9b9;
+    --saffron-soft:#FBF0D6; --saffron-ink:#7E5600; --saffron:#B9810A}
+  body *{visibility:hidden}
+  #cheatsheet, #cheatsheet *{visibility:visible}
+  #cheatsheet{position:absolute; left:0; top:0; width:100%; margin:0}
+  #cheatsheet .review-row, #cheatsheet .sec-listen, #cheatsheet .cheat-print{display:none !important}
+  #cheatsheet h2 .num{color:#7E5600}
+  .cheat-grid{gap:8px}
+  .cheat-card{break-inside:avoid; border:1px solid #b9b9b9}
+  #tts-bar, #menuBtn{display:none !important}
+  @page{margin:12mm}
+}
+</style>
+</head>
+<body>
+<header id="topbar">
+  <nav class="nav" aria-label="Main">
+    <a class="mark" href="../../" aria-label="Back to site">SF</a>
+    <div class="crumbs"><a href="../">Study Guides</a> <span>/</span> <b>ASAMST 128AC Reflection 3</b></div>
+    <div class="nav-actions">
+      <button type="button" id="ttsTop" class="t-btn" aria-label="Read the guide aloud" aria-pressed="false">&#9654; Listen</button>
+      <button type="button" id="themeBtn" class="t-btn" aria-label="Toggle theme">theme</button>
+    </div>
+  </nav>
+</header>
+
+<div id="exam-strip">
+  <b>Reflection 3 (final) &middot; in discussion section</b> &nbsp;&middot;&nbsp; Handwritten, ~30 min &nbsp;&middot;&nbsp; 400 to 500 words &nbsp;&middot;&nbsp; Keyword: state recognition &nbsp;&middot;&nbsp; ONE sustained argument
+</div>
+
+<div id="layout">
+  <aside id="sidebar" aria-label="Contents">
+    <div class="prog-wrap">
+      <div class="side-head">Your review progress</div>
+      <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+      <div class="prog-label"><span id="progNow">0</span> / <span id="progTot">0</span> sections reviewed</div>
+    </div>
+    <div class="side-head">Jump to</div>
+    <nav><ul id="toc"></ul></nav>
+  </aside>
+
+  <main id="main">
+    <header class="page">
+      <p class="eyebrow">ASAMST 128AC &middot; Muslims in America &middot; Fall 2026</p>
+      <h1>Reflection 3 Study Guide</h1>
+      <p class="lede">The final reflection, on the keyword <strong>state recognition</strong>. Built from Said's <em>Orientalism</em>, Hatem Bazian's <em>Palestine and Settler Colonialism</em> and <em>I Can't Breathe</em>, and GhaneaBassiri's Chapter 8. It leads with the question your TA workshopped out loud in office hours, decodes recognition, then walks each reading with real page cites, a quote bank, and full model essays. Lecturer: Hatem Bazian &middot; GSI: Abed Togas.</p>
+      <p class="muted" style="font-size:14.5px">Check off each section as you review it; the bar on the left remembers your progress in this browser.</p>
+    </header>
+
+    <!-- ===================== FORMAT ===================== -->
+    <section class="block" id="format" data-rev>
+      <h2><span class="num">00 &middot; Start here</span>What this reflection is</h2>
+      <p>Written in discussion during the week of Nov 16. Handwritten, about 30 minutes, 400 to 500 words, prompt released on the spot. Same rubric and same rule as the last two: <strong>one argument, carried all the way through</strong>, not a list.</p>
+      <div class="card tint">
+        <strong>What the GSI wants, in his words:</strong> a "sustained elaboration of what you argue, rather than multiple arguments at once. Commit to a point and flesh out your thinking." The reading he said matters most for this one is Hatem's <em>Palestine and Settler Colonialism</em>, and the keyword to build around is <span class="k">state recognition</span>.
+      </div>
+      <h4>The readings</h4>
+      <ul>
+        <li><span class="pill said">Said</span> <em>Orientalism</em>, Introduction. Recognition's dark twin: Orientalism as a system of misrecognition.</li>
+        <li><span class="pill hatem">Hatem</span> <em>Palestine and Settler Colonialism</em> (Ch 1). The core case: Palestinian refugeehood and UN recognition.</li>
+        <li><span class="pill hatem">Hatem</span> <em>I Can't Breathe</em> (Ch 5). Recognition's limit: legal personhood vs full humanity.</li>
+        <li><span class="pill gb">GhaneaBassiri</span> Ch 8, "Between Experience and Politics" (1989 to 2008). Supplementary, Muslim-American recognition after 9/11.</li>
+      </ul>
+      <h4>The A rubric, one line each</h4>
+      <ul>
+        <li><strong>Argument:</strong> specific, convincing, insightful, original. One claim, not a survey.</li>
+        <li><strong>Evidence:</strong> well chosen and specific from the course materials. Name the reading.</li>
+        <li><strong>Analysis:</strong> sustained and revealing. Do not just drop a quote, break it down.</li>
+      </ul>
+    </section>
+
+    <!-- ===================== LIKELY QUESTION ===================== -->
+    <section class="block" id="likely" data-rev>
+      <h2><span class="num">01 &middot; Workshopped in office hours</span>The likely question</h2>
+      <div class="card dark">
+        <strong>Likely prompt (your GSI built this one out loud with students, so it is close to the real thing):</strong>
+        <p style="margin:8px 0 0">"What does it mean to seek recognition as both Muslim and American in the US? Thinking through Palestinian refugeehood, what are the limits and uses of recognition by the state?"</p>
+      </div>
+      <p>Two parts, one argument. Part one asks the concept: what recognition <em>is</em> and what it costs. Part two grounds it in the sharpest case, Palestinian refugeehood, and asks for its <strong>uses</strong> (what recognition gives) and its <strong>limits</strong> (what it withholds). Do not answer them as two separate essays, run one claim through both.</p>
+      <div class="card tint">
+        <strong>The one-line answer:</strong> state recognition is a <strong>double-edged bargain</strong>. It is real and worth having, it brings aid, rights, and a place in the nation, but it is always partial and conditional, granted on the state's terms and only for the parts of you that serve the nation. The limit of recognition is that it never sees the whole person, only the useful part.
+      </div>
+      <button class="rev-all" type="button" data-scope="likely">Reveal the model answer</button>
+      <details class="q"><summary><span class="qnum">MODEL</span><span>Full model answer for the likely prompt (about 470 words, in a handwriting voice). Adapt the opening to the real wording on the day.</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~470 words</span>
+          <p>To seek recognition as both Muslim and American is to ask the state for something it offers and takes back in the same motion. My argument is that state recognition is a double-edged bargain. It is real and worth having, it brings aid, rights, and a place in the nation, but it is always partial and conditional, granted on the state's terms and only for the parts of a person that serve the nation. The limit of recognition is that it never sees the whole person, only the useful part.</p>
+          <p>Palestinian refugeehood is the clearest version of this. Hatem Bazian shows that Palestinians were recognized as refugees not through the UNHCR like everyone else, but through UNRWA, a temporary agency whose funding depends on voluntary donations, so Palestinian refugees "exist at the mercy of donor states" (25). The recognition is useful, it unlocks assistance and services. But it is defined narrowly, only people whose residence fell between June 1946 and May 1948 count (27), which writes many of the displaced out of the category. Bazian's sharpest point is that "even as the UN worked to provide support, it actually allowed Israel and its allies to define who is and who is not a Palestinian refugee, thus aiding and abetting the dispossession" (27). Recognition here is not only help, it is a tool that contains the very people it names.</p>
+          <p>The same logic runs through Muslim-American life. GhaneaBassiri shows Muslims seeking recognition as both Muslim and American by building institutions and entering public life, yet after 9/11 they were pulled "into America's collective conscience as a security threat, a potential enemy within," and had their civil rights abused and were deported (327). They were recognized, but recognized as a danger. That is Said's point exactly: Orientalism is a system of misrecognition, in which the West keeps the authority to define Muslims and sees only the version that fits its grid.</p>
+          <p>Bazian's "I Can't Breathe" takes the limit to its end. Black Americans are legally recognized as citizens, but the knee on George Floyd's neck marks "the difference between the human endowed with meaning and the subhuman within the colonially crafted time, space, and body" (142). Legal recognition never became recognition of full humanity.</p>
+          <p>So seeking recognition as both Muslim and American means seeking a belonging the state hands over and withholds at once. The use of recognition is survival and a real foothold in the nation. The limit is that the state recognizes you only as far as it benefits from you, never as a whole person. That gap, between being counted and being seen, is where all three readings meet.</p>
+        </div></div></details>
+      <p class="muted" style="font-size:14px">Two more full essays, for the containment angle and the institutions angle, are in <a href="#models">section 09</a>.</p>
+    </section>
+
+    <!-- ===================== CHEAT SHEET ===================== -->
+    <section class="block" id="cheatsheet" data-rev>
+      <h2><span class="num">Cheat sheet</span>Everything on one screen</h2>
+      <p class="muted" style="font-size:14px">The whole guide compressed to a last-ten-minutes skim, or print and glance before you walk in. <button type="button" class="cheat-print" onclick="window.print()">&#9113; Print just this</button></p>
+      <div class="card dark" style="text-align:center">
+        <strong>The tension in one line:</strong> Muslims won the right to teach Islam, but not the power to decide how America reads it. Recognition counts you without seeing you.
+      </div>
+      <div class="cheat-grid">
+        <div class="cheat-card">
+          <h4>The question and the answer</h4>
+          <ul>
+            <li><strong>Q:</strong> seek recognition as both Muslim and American; uses and limits of state recognition?</li>
+            <li><strong>A:</strong> recognition is a double-edged bargain: real benefits, but partial, conditional, on the state's terms.</li>
+            <li>Uses: aid, rights, legitimacy, belonging. Limits: it only recognizes the useful part, never the whole person.</li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>State recognition, defined</h4>
+          <ul>
+            <li>To be named by a state or the UN as a citizen or refugee, which decides who gets benefits and who falls under its control.</li>
+            <li>To be recognized is to be <strong>incorporated and contained at once</strong>.</li>
+            <li>Said: Orientalism is a system of <strong>misrecognition</strong>.</li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>Palestine (Hatem, the core case)</h4>
+          <ul>
+            <li>Recognized through UNRWA, "at the mercy of donor states" (25).</li>
+            <li>Narrow definition: only June 1946 to May 1948 counts (27).</li>
+            <li>UN "allowed Israel to define who is a refugee... aiding the dispossession" (27).</li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>I Can't Breathe (Hatem)</h4>
+          <ul>
+            <li>The knee = "the difference between the human endowed with meaning and the subhuman" (142).</li>
+            <li>Legal recognition is not recognition of full personhood.</li>
+            <li>Racism "baked into policing, governing, education, the economy" (142).</li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>GhaneaBassiri Ch 8</h4>
+          <ul>
+            <li>Post-9/11 Muslims recognized as "a security threat, a potential enemy within" (327).</li>
+            <li>American Muslims as "both Muslim and American," an intermediary role (329).</li>
+            <li>Haddad's title says it all: "Recognized and Integrated, or Seduced and Abandoned?"</li>
+          </ul>
+        </div>
+        <div class="cheat-card">
+          <h4>Pick ONE thesis</h4>
+          <ul>
+            <li><strong>A Bargain:</strong> recognition is useful but partial, never the whole person.</li>
+            <li><strong>B Containment:</strong> recognition incorporates in order to govern.</li>
+            <li><strong>C Institutions:</strong> they give real recognition but cannot fix the structure, a band-aid.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== KEYWORD ===================== -->
+    <section class="block" id="keyword" data-rev>
+      <h2><span class="num">02 &middot; The keyword</span>What "state recognition" means</h2>
+      <p>Recognition is being <strong>named and counted by a power that is not your community</strong>, a nation-state, a government, or an international body like the UN, as a citizen, a refugee, a legitimate identity. That naming decides who falls under the state's care and control, and who gets benefits. It is, as the GSI put it, the premise of immigration politics: who the nation takes in.</p>
+      <div class="grid2">
+        <div class="mini"><h4>The uses (why people seek it)</h4><ul style="margin-bottom:0">
+          <li>Material: aid, services, rights, protection, a legal status.</li>
+          <li>Political: legitimacy, a voice, a seat at the table.</li>
+          <li>Personal: a real feeling of belonging, of being seen as part of the nation.</li>
+        </ul></div>
+        <div class="mini"><h4>The limits (what it costs)</h4><ul style="margin-bottom:0">
+          <li><strong>Conditional:</strong> it can be narrowed or withdrawn.</li>
+          <li><strong>Defining:</strong> the recognizer sets the terms, not you.</li>
+          <li><strong>Selective:</strong> it recognizes only the part of you that serves the nation.</li>
+          <li><strong>Control:</strong> to be recognized is to be incorporated and governed at once.</li>
+        </ul></div>
+      </div>
+      <div class="card">
+        <strong>The move that makes this an argument, not a definition:</strong> recognition and misrecognition are the same act. The state cannot see you as a full person and still manage you as a category, so it recognizes the useful part and misrecognizes the rest. Said names the misrecognition, Bazian shows it operating on Palestinian and Black bodies, GhaneaBassiri shows it flip Muslims from "both Muslim and American" into "enemy within." Commit to that single idea and the whole essay holds together.
+      </div>
+      <p class="muted" style="font-size:14px"><strong>The course's fundamental contradiction, worth naming:</strong> yes, Muslims are in America, and also this country was not built for Muslims in America. Recognition lives inside that contradiction.</p>
+    </section>
+
+    <!-- ===================== THESIS ===================== -->
+    <section class="block" id="thesis" data-rev>
+      <h2><span class="num">03 &middot; Commit to a point</span>Pick one thesis</h2>
+      <p><strong>A</strong> is the direct answer to the likely prompt; <strong>B</strong> and <strong>C</strong> are strong backups. Each still reaches all the readings.</p>
+      <div class="card">
+        <strong>A &middot; The bargain (headline).</strong> State recognition is a double-edged bargain, useful but partial and conditional; its limit is that it recognizes the useful part of a person, never the whole. <span class="cite">Use: UNRWA "donor states" 25, narrow definition 27, "enemy within" 327, Said misrecognition, the knee 142.</span>
+      </div>
+      <div class="card">
+        <strong>B &middot; Recognition as containment.</strong> State recognition is less a gift than a technology of control, it incorporates people in order to govern and limit them. Palestinian refugeehood shows recognition defining a population precisely so its right of return can be managed away. <span class="cite">Use: "allowed Israel to define who is a refugee" 27, demographics as "colonial obsession" 27, PATRIOT Act and surveillance 328.</span>
+      </div>
+      <div class="card">
+        <strong>C &middot; Institutions, survival not cure.</strong> Muslims sought recognition by building institutions, which gives a real foothold and is necessary to survive, but recognition won this way is a band-aid that cannot change the structure that keeps denying full recognition. <span class="cite">Use: institutions root Muslims 329, W.D. Mohammed's dual authenticity 334, "enemy within" 327, racism "baked into" institutions 142.</span>
+      </div>
+      <p class="muted" style="font-size:14px">Paragraph shape, whichever you pick: <strong>claim, then named evidence, then analysis, then a link back to the thesis.</strong></p>
+    </section>
+
+    <!-- ===================== SAID ===================== -->
+    <section class="block" id="said" data-rev>
+      <h2><span class="num">04 &middot; The theory</span>Said: recognition as misrecognition</h2>
+      <p>You know Said from Reflection 2, so here he is in one move, aimed at recognition. Orientalism is a <strong>system of knowledge that is also a system of power</strong>: the West holds the authority to describe the East, and that description is never neutral. Applied to recognition, Orientalism is how the state <strong>misrecognizes</strong>, it sees Muslims only through its own grid, so even being "recognized" means being seen as the West's idea of a Muslim, not as yourself.</p>
+      <ul>
+        <li>"an accepted grid for filtering through the Orient into Western consciousness" (14). The grid is what does the misrecognizing.</li>
+        <li>"a relationship of power, of domination, of varying degrees of a complex hegemony" (13). Recognition flows one way, from the powerful to the named.</li>
+        <li>The core question: <strong>who has the authority to describe another people</strong> and decide what counts as legitimate knowledge, or legitimate identity.</li>
+      </ul>
+      <div class="card tint"><strong>The link to make:</strong> when your other readings show Palestinians, Muslims, or Black Americans recognized only partially, Said explains why. The power that recognizes them also reserves the right to define them, so recognition and misrecognition are the same act seen from two sides.</div>
+    </section>
+
+    <!-- ===================== PALESTINE ===================== -->
+    <section class="block" id="palestine" data-rev>
+      <h2><span class="num">05 &middot; The core case</span>Hatem: Palestine and Settler Colonialism</h2>
+      <p class="muted">Chapter 1 of Bazian's book, partly a memoir (he grew up in the Al-Hussein refugee camp in Amman). The GSI named this the key reading. It is where "recognition by the state" becomes concrete, through the figure of the refugee.</p>
+      <h3>Refugeehood as recognition, and its price</h3>
+      <ul>
+        <li><strong>A separate, lesser recognition.</strong> Palestinians fall not under the UNHCR but under <span class="k">UNRWA</span>, a temporary agency created in 1950, its mandate renewed periodically and its funding from voluntary donations, so Palestinian refugees "exist at the mercy of donor states" (25).</li>
+        <li><strong>The narrow definition.</strong> UNRWA counts only "persons whose normal place of residence was Palestine during the period 1 June 1946 to 15 May 1948" (27). People displaced between 1917 and 1948, and those studying abroad, are written out of the category.</li>
+        <li><strong>Recognition as a tool of erasure.</strong> "even as the UN worked to provide support, it actually allowed Israel and its allies to define who is and who is not a Palestinian refugee, thus aiding and abetting the dispossession of the indigenous population" (27). This is your sharpest quote.</li>
+        <li><strong>Included through omission.</strong> "Palestinians are included through structural omission" (26). Because Palestine "is not a state," Palestinians face "a separate regime when it comes to the refugee designation" (26).</li>
+        <li><strong>Law as a colonial tool.</strong> "international law is the codification of the legal 'rights' and 'privileges' attained by the colonial powers during direct colonization, setting it as the measure and tool to regulate the postcolonial" (26).</li>
+        <li><strong>Demographics as power.</strong> "Demographics is a central obsession of colonial enterprises and more pernicious in the settler colonial type" (27). Counting is controlling.</li>
+      </ul>
+      <div class="card"><strong>The uses and limits, right here:</strong> UNRWA's recognition is a genuine <em>use</em>, it delivers aid and services to millions and is better than nothing. Its <em>limit</em> is that the same act defines Palestinians so narrowly, and on terms the colonizer helped set, that recognition becomes a way to manage the dispossession rather than end it. The Nakba, Bazian insists, "is not a singular event... Palestinians are still experiencing and living the Nakba on a daily basis" (29).</div>
+    </section>
+
+    <!-- ===================== I CAN'T BREATHE ===================== -->
+    <section class="block" id="icb" data-rev>
+      <h2><span class="num">06 &middot; The limit</span>Hatem: I Can't Breathe</h2>
+      <p class="muted">Chapter 5. Bazian reads George Floyd's murder (May 25, 2020) as "the most painful and apt summation of the colonization effects" (139), and links it to a web of colonized and displaced bodies. For this prompt, it is the reading that shows recognition's hard limit: legal status is not the same as being recognized as human.</p>
+      <ul>
+        <li><strong>The human / subhuman line.</strong> The eight minutes and forty-six seconds are "the difference between the human endowed with the meaning contained therein and the subhuman within the colonially crafted time, space, and body" (142). Recognition decides who counts as fully human.</li>
+        <li><strong>Structure, not incident.</strong> "Race and systematic and structural racism are the colonial legacies that are baked into policing, governing, education, the economy" (142). Recognition inside those institutions does not undo them.</li>
+        <li><strong>The web of recognition.</strong> Floyd (descendant of enslaved Africans), the store owner (a Palestinian immigrant), Chauvin (Irish, "admitted into whiteness after the Civil War and the Chinese Exclusion Act"), officer Tou Thao (a Hmong refugee), all sit on one map of who the nation has and has not recognized as fully human (142).</li>
+        <li><strong>The through-line to Palestine.</strong> Bazian ties Floyd to Iyad el-Hallaq (an autistic Palestinian killed by Israeli forces) and Alan Kurdi (the drowned Syrian toddler) (139). The knee and the refugee camp are the same logic of denied recognition.</li>
+      </ul>
+      <div class="card tint"><strong>The move:</strong> Black Americans have been legally recognized as citizens for over 150 years, and that recognition never became protection of their personhood. Use this to show the deepest limit of recognition: the state can count you and still refuse to see you as human. <span class="flag">confirm page w/ notes</span></div>
+    </section>
+
+    <!-- ===================== GB CH 8 ===================== -->
+    <section class="block" id="gb8" data-rev>
+      <h2><span class="num">07 &middot; Supplementary</span>GhaneaBassiri Ch 8: both Muslim and American</h2>
+      <p class="muted">"Between Experience and Politics: American Muslims and the 'New World Order,' 1989 to 2008." Abed said you may use it to guide your thinking. It gives you the Muslim-American half of the prompt in plain terms.</p>
+      <ul>
+        <li><strong>The intermediary role.</strong> "At the end of the Cold War, Islam became deeply entangled in America's most recent search for a national identity. American Muslims played an intermediary role... as individuals who are both Muslim and American" (329). That phrase is the prompt.</li>
+        <li><strong>Recognized as a threat.</strong> Militant violence and the invasions of Afghanistan and Iraq "brought American Muslims into America's collective conscience as a security threat, a potential enemy within. Consequently, hundreds of American Muslims have found their civil rights abused and an untold number have been deported" (327). Recognition flipped into suspicion.</li>
+        <li><strong>The surveillance state.</strong> After 9/11, Homeland Security absorbed immigration and citizenship agencies, and the PATRIOT Act gave "greater powers of surveillance and regulation," so "surveillance and the threat of terrorism became a much more routine part of Americans' lives" (328).</li>
+        <li><strong>Dual authenticity.</strong> W.D. Mohammed spoke only after "establishing his authenticity as an American and a Muslim" (334), which shows the work Muslims had to do to be recognized as both at once.</li>
+        <li><strong>The question in a title.</strong> GhaneaBassiri cites Yvonne Haddad's "Muslims in U.S. Politics: Recognized and Integrated, or Seduced and Abandoned?" (334 n.14). That either/or is your essay's tension in six words.</li>
+      </ul>
+    </section>
+
+    <!-- ===================== MODELS ===================== -->
+    <section class="block" id="models" data-rev>
+      <h2><span class="num">08 &middot; Model essays</span>Two more worked answers</h2>
+      <p>The headline model (the bargain) is in <a href="#likely">section 01</a>. These take the other two theses. Each commits to one argument and stays in a handwriting voice.</p>
+      <button class="rev-all" type="button" data-scope="models">Reveal all model answers</button>
+
+      <details class="q"><summary><span class="qnum">B</span><span>Thesis B, recognition as containment (about 440 words)</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~440 words</span>
+          <p>We tend to hear recognition as a gift, the nation finally seeing you. My argument is the opposite: state recognition is mainly a technology of control. The state recognizes people in order to govern them, and Palestinian refugeehood shows the trick most clearly, because there recognition exists to manage a population, not to free it.</p>
+          <p>Hatem Bazian makes the point almost literally. Palestinians are recognized through UNRWA, whose definition counts only "persons whose normal place of residence was Palestine during the period 1 June 1946 to 15 May 1948" (27). That sounds like bureaucratic detail, but Bazian shows its purpose: "even as the UN worked to provide support, it actually allowed Israel and its allies to define who is and who is not a Palestinian refugee, thus aiding and abetting the dispossession" (27). The act of recognizing is the act of drawing a border around who can ever return. He adds that "demographics is a central obsession of colonial enterprises" (27), because to count a people is to control them.</p>
+          <p>Said explains why this is built in. Orientalism is "a relationship of power, of domination, of varying degrees of a complex hegemony" (13), so recognition always flows one way, from the power that defines to the people it names. There is no neutral counting. To be recognized is to accept the recognizer's terms.</p>
+          <p>The same containment runs through Muslim-American life. GhaneaBassiri shows that after 9/11 the state recognized Muslims intensely, but as "a security threat, a potential enemy within," which is why Homeland Security absorbed the immigration agencies and the PATRIOT Act expanded "surveillance and regulation" (327 to 328). This is recognition as surveillance, being seen so you can be watched. Bazian's "I Can't Breathe" shows the endpoint: Black Americans are fully recognized as citizens, yet structural racism stays "baked into policing, governing, education, the economy" (142), because legal recognition was never meant to loosen the state's grip, only to formalize it.</p>
+          <p>So the uses of recognition are real, aid and status and a paper that says you belong. But its deeper function is containment. The state names you to fix you in place, to decide what you can claim and how far you can go. For Palestinians that means a refugee category that forecloses return; for Muslims it means belonging that can flip to suspicion overnight. Recognition is not the end of being governed. It is how being governed begins.</p>
+        </div></div></details>
+
+      <details class="q"><summary><span class="qnum">C</span><span>Thesis C, institutions as survival not cure (about 440 words)</span></summary>
+        <div class="ans"><div class="model"><span class="wc">~440 words</span>
+          <p>One honest way to answer what it means to seek recognition as both Muslim and American is to look at how Muslims actually did it, by building institutions. My argument is that institutional recognition is real and necessary for survival, but it is a band-aid: it buys a place inside the system without changing the system that keeps denying full recognition.</p>
+          <p>GhaneaBassiri shows that since the late 1980s American Muslims built mosques, schools, self-help organizations, and advocacy groups, and became visible in public life as "individuals who are both Muslim and American" (329). This is the optimistic reading, and it is not wrong. Institutions gave Muslims a foothold and a way to be recognized by local and federal government as a community that belongs. W.D. Mohammed could speak only after "establishing his authenticity as an American and a Muslim" (334). That feeling of recognition matters, people need institutions to survive and to be who they are.</p>
+          <p>But recognition won this way hits its limit fast. The same chapter shows that after 9/11 all that visibility flipped, and Muslims were recognized most powerfully as "a security threat, a potential enemy within" (327). Building schools did not stop the PATRIOT Act or the deportations. Bazian's "I Can't Breathe" explains why: structural racism is "baked into policing, governing, education, the economy" (142), so recognition inside those institutions cannot undo the structure. Black Americans have been recognized as citizens for generations, and the knee stayed on the neck.</p>
+          <p>Palestinian refugeehood makes the band-aid visible. UNRWA recognition delivers real aid, but Bazian shows it was built to manage Palestinians, since the UN let Israel "define who is and who is not a Palestinian refugee" (27). Recognition relieved suffering while leaving the dispossession in place.</p>
+          <p>So seeking recognition as both Muslim and American through institutions is worth doing, and I would not tell anyone to stop. But it is reformist, not transformative. It wins inclusion without winning structural change, a feeling of belonging inside a system that was not built to recognize Muslims, Palestinians, or Black Americans as full people. The use of institutional recognition is survival. Its limit is that survival is not the same as justice.</p>
+        </div></div></details>
+    </section>
+
+    <!-- ===================== QUOTE BANK ===================== -->
+    <section class="block" id="quotes" data-rev>
+      <h2><span class="num">09 &middot; Quote bank</span>Memorize five or six</h2>
+      <table class="match">
+        <tr><td>Hatem, Palestine 25</td><td>Palestinian refugees "exist at the mercy of donor states" (UNRWA).</td></tr>
+        <tr><td>Hatem, Palestine 27</td><td>the UN "allowed Israel and its allies to define who is and who is not a Palestinian refugee, thus aiding and abetting the dispossession."</td></tr>
+        <tr><td>Hatem, Palestine 26</td><td>"Palestinians are included through structural omission."</td></tr>
+        <tr><td>Hatem, Palestine 27</td><td>"Demographics is a central obsession of colonial enterprises."</td></tr>
+        <tr><td>Hatem, Breathe 142</td><td>"the difference between the human endowed with the meaning contained therein and the subhuman within the colonially crafted time, space, and body."</td></tr>
+        <tr><td>Hatem, Breathe 142</td><td>racism "baked into policing, governing, education, the economy."</td></tr>
+        <tr><td>GB 327</td><td>Muslims brought "into America's collective conscience as a security threat, a potential enemy within."</td></tr>
+        <tr><td>GB 329</td><td>American Muslims "as individuals who are both Muslim and American."</td></tr>
+        <tr><td>GB 334</td><td>Haddad: "Recognized and Integrated, or Seduced and Abandoned?"</td></tr>
+        <tr><td>Said 14</td><td>"an accepted grid for filtering through the Orient into Western consciousness."</td></tr>
+      </table>
+      <p class="muted" style="font-size:14px">Pick three that fit your thesis, plus one Said line, and you have plenty for 450 words.</p>
+    </section>
+
+    <!-- ===================== PLAN ===================== -->
+    <section class="block" id="plan" data-rev>
+      <h2><span class="num">10 &middot; On the day</span>Writing plan and honest flags</h2>
+      <div class="grid2">
+        <div class="mini"><h4>25 to 30 minute plan</h4><ul style="margin-bottom:0">
+          <li><strong>0 to 3:</strong> write your one-sentence thesis on recognition; jot three anchors (UNRWA "donor states" 25, "enemy within" 327, the knee 142).</li>
+          <li><strong>3 to 6:</strong> intro, define recognition, state the bargain, name your thesis.</li>
+          <li><strong>6 to 13:</strong> body 1, Palestinian refugeehood as the core case (uses and limits).</li>
+          <li><strong>13 to 20:</strong> body 2, carry it to Muslim-American recognition plus Said, then the knee for the deepest limit.</li>
+          <li><strong>20 to 24:</strong> turn and conclusion, the gap between being counted and being seen.</li>
+          <li><strong>24 to 25:</strong> reread, check the thesis word is in every paragraph.</li>
+        </ul></div>
+        <div class="mini"><h4>Do and avoid</h4><ul style="margin-bottom:0">
+          <li><strong>Do:</strong> one argument; hold both halves (Muslim-American and Palestinian) under it; name a page.</li>
+          <li><strong>Do:</strong> use the uses-and-limits structure, it is literally in the prompt.</li>
+          <li><strong>Avoid:</strong> writing only from personal experience. The GSI flagged that the prompt steers you to the readings, so lead with evidence, not your own story.</li>
+          <li><strong>Avoid:</strong> two separate mini-essays. Run one claim through both parts.</li>
+        </ul></div>
+      </div>
+      <p class="muted" style="font-size:14px"><span class="flag">confirm against your notes and the readings</span> The Said quotes and the GhaneaBassiri Ch 8 pages (327 to 334) are pulled straight from the readings. The Hatem page numbers (25 to 29 for Palestine, 139 to 142 for I Can't Breathe) are from the chapters attached to the announcement; glance at your own copy before you write a page number down. The argument holds regardless, and page numbers are a bonus, not the grade.</p>
+    </section>
+
+  </main>
+</div>
+
+<button id="menuBtn" type="button" aria-label="Open contents">Contents</button>
+
+<div id="tts-bar" role="region" aria-label="Read aloud player">
+  <span class="lbl" id="ttsLbl">Reading</span>
+  <button type="button" id="ttsPrev" aria-label="Previous section" title="Previous section">&#9198;</button>
+  <button type="button" id="ttsPause" aria-label="Pause" title="Pause or resume">&#9208;</button>
+  <button type="button" id="ttsNext" aria-label="Next section" title="Next section">&#9197;</button>
+  <button type="button" id="ttsRate" class="rate" aria-label="Playback speed" title="Playback speed">1&times;</button>
+  <button type="button" id="ttsStop" class="stop" aria-label="Stop reading" title="Stop">&times;</button>
+</div>
+
+<footer>
+  Built by Saba Feilizadeh for her own ASAMST 128AC reflection. Review progress saves in your own browser. Not affiliated with the course staff; verify anything marked "confirm w/ notes" against your lecture notes and your copy of the readings.
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var root=document.documentElement, TK="sf_theme";
+  try{var t=localStorage.getItem(TK); if(t) root.setAttribute("data-theme",t);}catch(e){}
+  var tb=document.getElementById("themeBtn");
+  if(tb) tb.onclick=function(){
+    var cur=root.getAttribute("data-theme");
+    var dark=cur?cur==="dark":window.matchMedia("(prefers-color-scheme:dark)").matches;
+    var next=dark?"light":"dark"; root.setAttribute("data-theme",next);
+    try{localStorage.setItem(TK,next);}catch(e){}
+  };
+
+  var secs=[].slice.call(document.querySelectorAll("section.block"));
+  var toc=document.getElementById("toc");
+  var labels={format:"What this is",likely:"Likely question",cheatsheet:"Cheat sheet",keyword:"State recognition",thesis:"Pick one thesis",said:"Said: misrecognition",palestine:"Hatem: Palestine",icb:"Hatem: I Can't Breathe",gb8:"GhaneaBassiri Ch 8",models:"Model essays",quotes:"Quote bank",plan:"Writing plan"};
+  var tocById={};
+  secs.forEach(function(s){
+    var a=document.createElement("a"); a.href="#"+s.id; a.dataset.id=s.id;
+    a.innerHTML='<span class="tdot" aria-hidden="true"></span><span class="tlabel"></span>';
+    a.querySelector(".tlabel").textContent=labels[s.id]||s.id;
+    toc.appendChild(a); tocById[s.id]=a;
+  });
+  var tocLinks=[].slice.call(toc.querySelectorAll("a"));
+
+  var PK="sf_asamst_r3_rev";
+  var state={}; try{state=JSON.parse(localStorage.getItem(PK)||"{}");}catch(e){state={};}
+  var revSecs=secs.filter(function(s){return s.hasAttribute("data-rev");});
+  var totEl=document.getElementById("progTot"), nowEl=document.getElementById("progNow"), fill=document.getElementById("progFill");
+  totEl.textContent=revSecs.length;
+  function paint(){
+    var n=revSecs.filter(function(s){return state[s.id];}).length;
+    nowEl.textContent=n; fill.style.width=(revSecs.length?Math.round(n/revSecs.length*100):0)+"%";
+  }
+  function setDone(id, done){
+    var a=tocById[id]; if(a) a.classList.toggle("done", done);
+    var sec=document.getElementById(id); if(sec) sec.classList.toggle("done", done);
+  }
+  revSecs.forEach(function(s){
+    var h=s.querySelector("h2");
+    if(h && !h.querySelector(".sec-done")){
+      var bd=document.createElement("span"); bd.className="sec-done"; bd.setAttribute("aria-hidden","true"); h.appendChild(bd);
+    }
+    var row=document.createElement("div"); row.className="review-row";
+    var id="rev_"+s.id;
+    row.innerHTML='<label for="'+id+'"><input type="checkbox" id="'+id+'"> Mark this section reviewed</label>';
+    s.appendChild(row);
+    var cb=row.querySelector("input");
+    cb.checked=!!state[s.id];
+    setDone(s.id, !!state[s.id]);
+    cb.addEventListener("change",function(){
+      state[s.id]=cb.checked; try{localStorage.setItem(PK,JSON.stringify(state));}catch(e){}
+      setDone(s.id, cb.checked);
+      paint();
+    });
+  });
+  paint();
+
+  var byId={}; tocLinks.forEach(function(a){byId[a.dataset.id]=a;});
+  if("IntersectionObserver" in window){
+    var io=new IntersectionObserver(function(ents){
+      ents.forEach(function(en){
+        if(en.isIntersecting){
+          tocLinks.forEach(function(a){a.classList.remove("active");});
+          var a=byId[en.target.id]; if(a) a.classList.add("active");
+        }
+      });
+    },{rootMargin:"-120px 0px -70% 0px",threshold:0});
+    secs.forEach(function(s){io.observe(s);});
+  }
+
+  [].slice.call(document.querySelectorAll(".rev-all")).forEach(function(btn){
+    btn.addEventListener("click",function(){
+      var sec=document.getElementById(btn.dataset.scope);
+      if(!sec) return;
+      var ds=[].slice.call(sec.querySelectorAll("details.q"));
+      var anyClosed=ds.some(function(d){return !d.open;});
+      ds.forEach(function(d){d.open=anyClosed;});
+      btn.textContent=anyClosed?"Hide answers in this section":(btn.dataset.scope==="likely"?"Reveal the model answer":"Reveal all model answers");
+    });
+  });
+
+  var mb=document.getElementById("menuBtn"), sb=document.getElementById("sidebar");
+  if(mb) mb.onclick=function(){ sb.classList.toggle("open"); };
+  toc.addEventListener("click",function(){ if(sb.classList.contains("open")) sb.classList.remove("open"); });
+
+  // ---------- read aloud ----------
+  (function(){
+    var synth = window.speechSynthesis;
+    var ttsTop = document.getElementById("ttsTop");
+    var bar = document.getElementById("tts-bar");
+    var supported = !!synth && typeof window.SpeechSynthesisUtterance !== "undefined";
+    if(!supported){ if(ttsTop) ttsTop.style.display="none"; return; }
+
+    var barLbl = document.getElementById("ttsLbl");
+    var pauseBtn = document.getElementById("ttsPause");
+    var prevBtn = document.getElementById("ttsPrev");
+    var nextBtn = document.getElementById("ttsNext");
+    var rateBtn = document.getElementById("ttsRate");
+    var stopBtn = document.getElementById("ttsStop");
+
+    var CHUNK_SEL = "h2,h3,h4,p,li,summary,td,th,.model,blockquote";
+    var STRIP_SEL = ".num, button, .review-row, .sec-listen, .sec-done";
+
+    function chunkText(el){
+      var c = el.cloneNode(true);
+      [].slice.call(c.querySelectorAll(CHUNK_SEL)).forEach(function(n){ n.parentNode && n.parentNode.removeChild(n); });
+      [].slice.call(c.querySelectorAll(STRIP_SEL)).forEach(function(n){ n.parentNode && n.parentNode.removeChild(n); });
+      return c.textContent.replace(/[\u00B7\u2022]/g, ", ").replace(/[\u2013\u2014]/g, ", ").replace(/\s+/g, " ").trim();
+    }
+    function splitLong(t){
+      if(t.length <= 220) return [t];
+      var sentences = [], cur = "", i;
+      for(i=0;i<t.length;i++){ cur += t.charAt(i);
+        if(/[.!?]/.test(t.charAt(i)) && (t.charAt(i+1)===" " || i===t.length-1)){ sentences.push(cur); cur=""; } }
+      if(cur) sentences.push(cur);
+      var out = [], buf = "";
+      sentences.forEach(function(p){ p = p.trim(); if(!p) return;
+        if(buf && (buf+" "+p).length > 220){ out.push(buf.trim()); buf = p; }
+        else buf = buf ? buf+" "+p : p; });
+      if(buf.trim()) out.push(buf.trim());
+      return out;
+    }
+
+    var queue = [];
+    secs.forEach(function(s){
+      [].slice.call(s.querySelectorAll(CHUNK_SEL)).forEach(function(el){
+        if(el.closest(".review-row")) return;
+        var t = chunkText(el); if(!t) return;
+        splitLong(t).forEach(function(part){ queue.push({ el: el, sec: s.id, text: part }); });
+      });
+    });
+
+    secs.forEach(function(s){
+      var h = s.querySelector("h2"); if(!h) return;
+      var b = document.createElement("button");
+      b.type = "button"; b.className = "sec-listen"; b.innerHTML = "&#9654; Listen";
+      b.setAttribute("aria-label", "Listen to this section");
+      b.addEventListener("click", function(){ start(sectionStart(s.id)); });
+      h.appendChild(b);
+    });
+
+    var order = secs.map(function(s){ return s.id; });
+    var RK = "sf_tts_rate", rates = [0.8, 1, 1.2, 1.5], rate = 1;
+    try{ var sr = parseFloat(localStorage.getItem(RK)); if(sr && rates.indexOf(sr)!==-1) rate = sr; }catch(e){}
+    rateBtn.textContent = (rate % 1 === 0 ? rate : rate) + "×";
+
+    var voice = null;
+    function pickVoice(){
+      var vs = synth.getVoices() || []; if(!vs.length) return;
+      voice = vs.filter(function(v){ return v.lang === "en-US"; })[0]
+           || vs.filter(function(v){ return /^en/i.test(v.lang); })[0] || vs[0];
+    }
+    pickVoice();
+    if(typeof synth.onvoiceschanged !== "undefined") synth.onvoiceschanged = pickVoice;
+
+    var idx = -1, playing = false, paused = false, gen = 0;
+
+    function clearHi(){ var p = document.querySelector(".tts-active"); if(p) p.classList.remove("tts-active"); }
+    function sectionStart(id){ for(var i=0;i<queue.length;i++){ if(queue[i].sec===id) return i; } return 0; }
+    function curSec(){ return (idx>=0 && idx<queue.length) ? queue[idx].sec : order[0]; }
+    function inViewSec(){ var best = order[0]; secs.forEach(function(s){ if(s.getBoundingClientRect().top <= 150) best = s.id; }); return best; }
+    function setPauseIcon(){ pauseBtn.innerHTML = paused ? "&#9654;" : "&#9208;"; pauseBtn.setAttribute("aria-label", paused ? "Resume" : "Pause"); }
+    function setTop(active){ ttsTop.innerHTML = active ? "&#9632; Stop" : "&#9654; Listen"; ttsTop.setAttribute("aria-pressed", active ? "true" : "false"); }
+
+    function speak(myGen){
+      if(myGen !== gen || !playing) return;
+      if(idx >= queue.length){ stopAll(); return; }
+      var item = queue[idx];
+      clearHi();
+      var det = item.el.closest("details"); if(det && !det.open) det.open = true;
+      item.el.classList.add("tts-active");
+      var r = item.el.getBoundingClientRect();
+      if(r.top < 96 || r.bottom > window.innerHeight - 96) item.el.scrollIntoView({ block: "center", behavior: "smooth" });
+      barLbl.textContent = "Reading: " + (labels[item.sec] || item.sec);
+      var u = new SpeechSynthesisUtterance(item.text);
+      if(voice) u.voice = voice;
+      u.rate = rate; u.pitch = 1;
+      u.onend = function(){ if(myGen !== gen || !playing || paused) return; idx++; speak(myGen); };
+      u.onerror = function(){ if(myGen !== gen || !playing) return; idx++; speak(myGen); };
+      synth.speak(u);
+    }
+
+    function start(from){
+      gen++; var myGen = gen;
+      try{ synth.cancel(); }catch(e){}
+      idx = from; playing = true; paused = false;
+      bar.classList.add("on"); document.body.classList.add("tts-on");
+      setPauseIcon(); setTop(true);
+      setTimeout(function(){ speak(myGen); }, 70);
+    }
+    function stopAll(){
+      gen++; playing = false; paused = false;
+      try{ synth.cancel(); }catch(e){}
+      clearHi(); bar.classList.remove("on"); document.body.classList.remove("tts-on"); setTop(false);
+    }
+    function togglePause(){
+      if(!playing) return;
+      if(paused){ synth.resume(); paused = false; } else { synth.pause(); paused = true; }
+      setPauseIcon();
+    }
+    function jump(dir){
+      var ci = order.indexOf(curSec());
+      var ni = Math.max(0, Math.min(order.length - 1, ci + dir));
+      start(sectionStart(order[ni]));
+    }
+
+    ttsTop.addEventListener("click", function(){ if(playing) stopAll(); else start(sectionStart(inViewSec())); });
+    stopBtn.addEventListener("click", stopAll);
+    pauseBtn.addEventListener("click", togglePause);
+    prevBtn.addEventListener("click", function(){ jump(-1); });
+    nextBtn.addEventListener("click", function(){ jump(1); });
+    rateBtn.addEventListener("click", function(){
+      rate = rates[(rates.indexOf(rate) + 1) % rates.length];
+      rateBtn.textContent = rate + "×";
+      try{ localStorage.setItem(RK, rate); }catch(e){}
+      if(playing) start(idx);
+    });
+    window.addEventListener("beforeunload", function(){ try{ synth.cancel(); }catch(e){} });
+  })();
+})();
+</script>
+</body>
+</html>
