@@ -375,7 +375,10 @@
         (a ? "" : '<button class="btn small primary" type="submit">Check</button><button class="btn small quiet" type="button" data-act="giveup" data-ctx="' + ctx + '" data-n="' + n + '">Show answer</button>') + "</form>";
     }
     if (a) {
-      h += '<p class="fb">' + (a.ok ? '<b class="good">Correct.</b> ' : '<b class="miss">' + (a.gave ? "Answer: " : "Not quite. Answer: ") + esc(q.type === "mc" ? q.choices[q.answer] : q.answer) + ".</b> ") + esc(q.why) + "</p>";
+      /* Result, then the explanation behind a toggle, and a Reset to answer it again. */
+      h += '<div class="fbrow"><p class="fb">' + (a.ok ? '<b class="good">Correct.</b>' : '<b class="miss">' + (a.gave ? "Answer: " : "Not quite. Answer: ") + esc(q.type === "mc" ? q.choices[q.answer] : q.answer) + ".</b>") + "</p>" +
+        '<button type="button" class="linkbtn" data-act="resetq" data-ctx="' + ctx + '" data-n="' + n + '">Reset</button></div>' +
+        (q.why ? '<details class="why"' + (S.whyOpen ? " open" : "") + '><summary>Show explanation</summary><p>' + esc(q.why) + "</p></details>" : "");
     }
     return h;
   }
@@ -436,6 +439,7 @@
   /* Opening or closing a unit, on the map or in the sidebar, is remembered. */
   document.addEventListener("toggle", function (e) {
     var d = e.target; if (!d || d.tagName !== "DETAILS") return;
+    if (d.classList.contains("why") && e.isTrusted) { S.whyOpen = d.open; saveSoon(); }
     if (d.hasAttribute("data-ui")) { S.unitOpen = S.unitOpen || {}; S.unitOpen[d.getAttribute("data-ui")] = d.open; saveSoon(); }
     if (d.hasAttribute("data-sui")) { S.sideOpen = S.sideOpen || {}; S.sideOpen[d.getAttribute("data-sui")] = d.open; saveSoon(); }
   }, true);
@@ -724,7 +728,7 @@
       (p.answer != null ? '<form class="typed final" data-act="final"><label for="finalIn">' + esc(p.answerLabel || "Final answer") + '</label><input id="finalIn" autocomplete="off" spellcheck="false" value="' + esc((s.finals || {})[p.id] || "") + '"><button class="btn small" type="submit">Check answer</button></form><p class="fb" id="finalFb" aria-live="polite"></p>' : "") +
       '<div class="row" style="margin-top:12px"><button class="btn small primary" type="button" data-act="reveal">Compare with the solution</button>' +
       (p.hints ? '<button class="btn small quiet" type="button" data-act="hint">Hint</button>' : "") +
-      '<button class="btn small quiet" type="button" data-act="flagp" aria-pressed="' + !!s.flags[p.id] + '">' + (s.flags[p.id] ? "Flagged for review" : "Flag for review") + '</button></div><div id="hints">' + hintsHTML(p, s) + '</div><div class="result" id="result" aria-live="polite">' +
+      '<button class="btn small quiet" type="button" data-act="flagp" aria-pressed="' + !!s.flags[p.id] + '">' + (s.flags[p.id] ? "Flagged for review" : "Flag for review") + '</button>' + (s.solved[p.id] || s.hints[p.id] || (s.finals || {})[p.id] || S.code[p.id] ? '<button class="btn small quiet" type="button" data-act="resetp">Start over</button>' : "") + '</div><div id="hints">' + hintsHTML(p, s) + '</div><div class="result" id="result" aria-live="polite">' +
       (s.solved[p.id] ? solvedHTML() : "") + "</div></div></div>";
     view.innerHTML = h;
   }
@@ -733,7 +737,7 @@
   function solHTML(p) { return (p.solution ? '<h4 class="tblh">Worked solution</h4>' + codeHTML(p.solution) : "") + (p.explain ? '<p style="margin-top:10px">' + esc(p.explain) + "</p>" : ""); }
   function solvedHTML() {
     var t = cur.t, s = T(t.id), list = items(t, cur.stage), nxp = list.filter(function (x) { return !s.solved[x.id] && x !== cur.p; })[0], nx = nextTopic(t);
-    return '<p class="banner pass">Marked as solved.</p>' + (cur.stage === "deepen" ? solHTML(cur.p) : "") +
+    return '<p class="banner pass">Marked as solved. <button type="button" class="linkbtn" data-act="resetp">Reset this problem</button></p>' + (cur.stage === "deepen" ? solHTML(cur.p) : "") +
       '<div class="row" style="margin-top:12px">' + (nxp ? '<a class="btn small primary" href="#/t/' + t.id + "/" + cur.stage + "/" + nxp.id + '">Next problem</a>' : "") +
       (cur.stage === "deepen" && has(t, "practice") ? '<a class="btn small" href="#/t/' + t.id + '/practice">Discussion and homework problems</a>' : "") +
       (confOf(t.id) !== 4 ? '<button class="btn small" type="button" data-act="confidentbtn">' + icon(4) + ' I feel confident with this topic</button>' : nx ? '<a class="btn small" href="#/t/' + nx.id + '">Next topic</a>' : "") + "</div>";
@@ -809,6 +813,17 @@
     else if (act === "hideprogexample") { S.noProgExample = true; save(); render(true); }
     else if (act === "hideexample") { S.noReviewExample = true; save(); render(true); }
     else if (act === "flagp" && cur) { var fs = T(cur.t.id); if (fs.flags[cur.p.id]) delete fs.flags[cur.p.id]; else fs.flags[cur.p.id] = true; save(); el.textContent = fs.flags[cur.p.id] ? "Flagged for review" : "Flag for review"; el.setAttribute("aria-pressed", !!fs.flags[cur.p.id]); }
+    else if (act === "resetq" && t) {
+      var rs = T(t.id), rn = +el.getAttribute("data-n");
+      if (el.getAttribute("data-ctx") === "ask") { delete rs.asks[rn]; save(); hush(); renderLearn(t, true); }
+      else { delete rs.check[rn]; save(); var ry = window.scrollY; renderCheck(t); window.scrollTo(0, ry); progress(); }
+      var inp = view.querySelector('form.typed[data-n="' + rn + '"][data-ctx="' + el.getAttribute("data-ctx") + '"] input'); if (inp) inp.focus();
+    }
+    else if (act === "resetp" && cur) {
+      var ps = T(cur.t.id), pid = cur.p.id;
+      if (S.code[pid] && !confirm("Reset this problem? Your work in the box will be cleared too.")) return;
+      delete ps.solved[pid]; delete ps.hints[pid]; if (ps.finals) delete ps.finals[pid]; delete S.code[pid]; save(); progress(); render(true);
+    }
     else if (act === "recheck" && t) { T(t.id).check = {}; save(); render(false); }
     else if (act === "reveal" && cur) {
       document.getElementById("result").innerHTML = revealHTML(cur.p);
