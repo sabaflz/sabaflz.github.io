@@ -37,6 +37,51 @@
   }
   function level() { return S.level || C.defaultLevel; }
 
+  /* ---------- confidence: how sure you feel about a topic, rated from any stage ---------- */
+  var CONF = [{ v: 1, l: "Lost" }, { v: 2, l: "Shaky" }, { v: 3, l: "Getting there" }, { v: 4, l: "Confident" }];
+  /* Our own faces, drawn in the site's colors so they look the same on every device.
+     Each is a 24 × 24 SVG: a round face, two eyes, and a mouth that changes with the level. */
+  var EYES = '<circle cx="9.3" cy="11" r="1.25" fill="currentColor"/><circle cx="14.7" cy="11" r="1.25" fill="currentColor"/>';
+  var FACE = {
+    1: '<path d="M7.2 9.1l2.8-1.5M16.8 9.1l-2.8-1.5" class="ln"/>' + EYES + '<path d="M8.7 17.2q3.3-3.1 6.6 0" class="ln"/>',
+    2: EYES + '<path d="M8.4 15.6q1.9-1.5 3.6 0t3.6 0" class="ln"/>',
+    3: EYES + '<path d="M8.6 14.4q3.4 3 6.8 0" class="ln"/>',
+    4: '<path d="M5.9 9.3h12.2v1.1q0 3-2.9 3-2.6 0-2.8-2.4h-.8q-.2 2.4-2.8 2.4-2.9 0-2.9-3z" fill="currentColor"/><path d="M8.2 15q3.8 3.9 7.6 0" class="ln"/><path d="M19.6 3.2l.5 1.4 1.4.5-1.4.5-.5 1.4-.5-1.4-1.4-.5 1.4-.5z" fill="currentColor" class="spark"/>'
+  };
+  function icon(v) { return '<svg class="face f' + v + '" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9.4" class="disc"/>' + FACE[v] + "</svg>"; }
+  var FLAG = '<svg class="face fflag" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M6.5 21V3.6" class="ln"/><path d="M6.5 4.2h11.2l-2.9 4.1 2.9 4.1H6.5z" class="pen"/></svg>';
+  function confOf(id) { var s = S.topics[id] || {}; return s.conf || (s.confident ? 4 : 0); }
+  function confInfo(v) { return CONF[v - 1] || null; }
+  /* One entry per day in the history; picking the same rating again clears it. */
+  function setConf(t, v, where) {
+    var s = T(t.id), d = new Date(), k = d.getFullYear() + "-" + ("0" + (d.getMonth() + 1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
+    if (confOf(t.id) === v) v = 0;
+    s.conf = v; s.confident = v === 4;
+    s.confLog = s.confLog || [];
+    var last = s.confLog[s.confLog.length - 1];
+    if (last && last.d === k) { if (v) { last.v = v; last.w = where; } else s.confLog.pop(); }
+    else if (v) s.confLog.push({ d: k, v: v, w: where });
+    save();
+  }
+  function confChip(id) { var c = confInfo(confOf(id)); return c ? '<span class="chip conf c' + c.v + '" title="Your confidence">' + icon(c.v) + c.l + "</span>" : ""; }
+  /* The bar shown on the topic page and on every stage: rate yourself, or flag the topic. */
+  function confBar(t, where) {
+    var cv = confOf(t.id), s = T(t.id);
+    return '<div class="confbar" data-where="' + (where || "topic") + '"><span class="cq">How sure do you feel about ' + esc(t.title) + '?</span><span class="cbtns" role="group" aria-label="Your confidence">' +
+      CONF.map(function (c) { return '<button type="button" class="cbtn c' + c.v + '" data-act="conf" data-v="' + c.v + '" aria-pressed="' + (cv === c.v) + '" aria-label="' + c.l + '">' + icon(c.v) + '<small class="ctip" aria-hidden="true">' + c.l + "</small></button>"; }).join("") +
+      '</span><button type="button" class="cbtn flagbtn" data-act="flagt" aria-pressed="' + !!s.flag + '">' + FLAG + "<small>" + (s.flag ? "Flagged for review" : "Flag for review") + "</small></button></div>";
+  }
+  function confHistory(t) {
+    var log = (S.topics[t.id] || {}).confLog || [];
+    if (!log.length) return '<p class="meta chist">Rate yourself any time, from this page or inside a stage. Your ratings build a history here.</p>';
+    return '<p class="meta chist"><b>Your confidence so far:</b> ' + log.slice(-8).map(function (x) { var c = confInfo(x.v), p = x.d.split("-"); return '<span title="' + esc(c.l + (x.w ? ", rated in " + x.w : "")) + '">' + new Date(+p[0], +p[1] - 1, +p[2]).toLocaleDateString(undefined, { month: "short", day: "numeric" }) + " " + icon(c.v) + "</span>"; }).join(' <span class="arrow" aria-hidden="true">\u2192</span> ') + "</p>";
+  }
+  function refreshConf(t) {
+    document.querySelectorAll(".confbar").forEach(function (el) { var w = el.getAttribute("data-where"); el.outerHTML = confBar(t, w); });
+    var h = document.querySelector(".chist"); if (h) h.outerHTML = confHistory(t);
+    progress(); renderSide();
+  }
+
   /* ---------- course helpers ---------- */
   var TOPICS = [];
   C.units.forEach(function (u) { u.topics.forEach(function (t) { t.unit = u.title; TOPICS.push(t); }); });
@@ -222,12 +267,13 @@
       Object.keys(s.asks || {}).forEach(function (k) { if (!s.asks[k].ok) asks++; });
       ["deepen", "practice"].forEach(function (st) { items(t, st).forEach(function (p) { if ((s.hints || {})[p.id] >= 2) hinted.push(p); }); });
       if (s.flag) why.push("you flagged this topic");
+      var cv = confOf(t.id); if (cv && cv <= 2) why.push("you rated it " + confInfo(cv).l);
       if (missed) why.push(missed + " check question" + (missed === 1 ? "" : "s") + " missed");
       if (asks >= 2) why.push(asks + " lesson questions missed");
       if (hinted.length) why.push(hinted.length + " problem" + (hinted.length === 1 ? "" : "s") + " needed two or more hints");
       var flagged = [];
       ["deepen", "practice"].forEach(function (st) { items(t, st).forEach(function (p) { if ((s.flags || {})[p.id]) flagged.push({ p: p, stage: st }); }); });
-      if (why.length || flagged.length) out.push({ t: t, why: why, flagged: flagged, weight: (s.flag ? 3 : 0) + missed * 2 + asks + hinted.length * 2 + flagged.length * 2, link: missed ? "/check" : "" });
+      if (why.length || flagged.length) out.push({ t: t, why: why, flagged: flagged, weight: (s.flag ? 3 : 0) + (cv && cv <= 2 ? (3 - cv) * 2 : 0) + missed * 2 + asks + hinted.length * 2 + flagged.length * 2, link: missed ? "/check" : "" });
     });
     out.sort(function (a, b) { return b.weight - a.weight; });
     return out;
@@ -309,11 +355,68 @@
         (a ? "" : '<button class="btn small primary" type="submit">Check</button><button class="btn small quiet" type="button" data-act="giveup" data-ctx="' + ctx + '" data-n="' + n + '">Show answer</button>') + "</form>";
     }
     if (a) {
-      h += '<p class="fb">' + (a.ok ? '<b class="good">Correct.</b> ' : '<b class="miss">' + (a.gave ? "Answer: " : "Not quite. Answer: ") + esc(q.type === "mc" ? q.choices[q.answer] : q.answer) + ".</b> ") + esc(q.why) + "</p>";
+      /* Result, then the explanation behind a toggle, and a Reset to answer it again. */
+      h += '<div class="fbrow"><p class="fb">' + (a.ok ? '<b class="good">Correct.</b>' : '<b class="miss">' + (a.gave ? "Answer: " : "Not quite. Answer: ") + esc(q.type === "mc" ? q.choices[q.answer] : q.answer) + ".</b>") + "</p>" +
+        '<button type="button" class="linkbtn" data-act="resetq" data-ctx="' + ctx + '" data-n="' + n + '">Reset</button></div>' +
+        (q.why ? '<details class="why"' + (S.whyOpen ? " open" : "") + '><summary>Show explanation</summary><p>' + esc(q.why) + "</p></details>" : "");
     }
     return h;
   }
   function grade(q, picked) { return q.type === "mc" ? picked === q.answer : norm(picked) === norm(q.answer); }
+
+  /* ---------- which unit is open: yours to choose, else the one you are working in ---------- */
+  function unitOfTopic(id) { for (var i = 0; i < C.units.length; i++) if (C.units[i].topics.some(function (t) { return t.id === id; })) return i; return -1; }
+  function currentUnit() {
+    var m = /#\/t\/([^/]+)/.exec(S.last || ""), u = m ? unitOfTopic(m[1]) : -1;
+    if (u >= 0) return u;
+    for (var i = 0; i < C.units.length; i++) if (C.units[i].topics.some(function (t) { return !(S.topics[t.id] || {}).confident; })) return i;
+    return 0;
+  }
+  function unitOpen(ui) { var o = S.unitOpen || {}; return ui in o ? !!o[ui] : ui === currentUnit(); }
+  function confCount(u) { var n = u.topics.filter(function (t) { return (S.topics[t.id] || {}).confident; }).length; return n + " of " + u.topics.length + " confident"; }
+
+  /* ---------- left sidebar: every unit and topic, and the stages of the topic you are on ---------- */
+  var side = document.getElementById("side");
+  function renderSide() {
+    if (!side) return;
+    var r = route(), here = r[0] === "t" ? r[1] : "", stage = r[2] || "", hu = here ? unitOfTopic(here) : -1, so = S.sideOpen || {};
+    var h = '<nav aria-label="Course contents"><ul class="sd-top"><li><a href="#/"' + (!r.length ? ' aria-current="page"' : "") + '>Course map</a></li><li><a href="#/progress"' + (r[0] === "progress" ? ' aria-current="page"' : "") + ">Progress</a></li></ul>";
+    C.units.forEach(function (u, ui) {
+      var open = ui in so ? !!so[ui] : (hu >= 0 ? ui === hu : ui === currentUnit());
+      if (ui === hu && !(ui in so)) open = true;
+      h += '<details class="sd-unit" data-sui="' + ui + '"' + (open ? " open" : "") + '><summary><span class="sd-n">' + (ui + 1) + '</span><span class="sd-t">' + esc(u.title) + '</span><small>' + u.topics.filter(function (t) { return (S.topics[t.id] || {}).confident; }).length + "/" + u.topics.length + "</small></summary><ul>" +
+        u.topics.map(function (t) {
+          var cv = confOf(t.id), on = t.id === here, mark = cv ? icon(cv) : '<span class="sd-dot' + (started(t) ? " started" : "") + '" aria-hidden="true"></span>';
+          var x = '<li><a href="#/t/' + t.id + '"' + (on && !stage ? ' aria-current="page"' : on ? ' aria-current="true"' : "") + ">" + mark + '<span class="sd-tt">' + esc(t.title) + "</span>" + ((S.topics[t.id] || {}).flag ? '<span class="sd-flag" aria-label="flagged">' + FLAG + "</span>" : "") + "</a>";
+          if (on) x += '<ul class="sd-stages">' + STAGES.filter(function (st) { return has(t, st); }).map(function (st) { return '<li><a href="#/t/' + t.id + "/" + st + '"' + (st === stage ? ' aria-current="page"' : "") + ">" + NAMES[st] + (stageDone(t, st) ? ' <span class="sd-ok" aria-label="done">\u2713</span>' : "") + "</a></li>"; }).join("") + "</ul>";
+          return x + "</li>";
+        }).join("") + "</ul></details>";
+    });
+    var keep = side.scrollTop;
+    side.innerHTML = h + "</nav>";
+    side.scrollTop = keep;
+    var a = side.querySelector('a[aria-current="page"], a[aria-current="true"]');
+    if (a && (a.offsetTop < side.scrollTop || a.offsetTop > side.scrollTop + side.clientHeight - 40)) side.scrollTop = a.offsetTop - side.clientHeight / 3;
+  }
+  /* Opening or closing a unit, on the map or in the sidebar, is remembered. */
+  document.addEventListener("toggle", function (e) {
+    var d = e.target; if (!d || d.tagName !== "DETAILS") return;
+    if (d.classList.contains("why") && e.isTrusted) { S.whyOpen = d.open; saveSoon(); }
+    if (d.hasAttribute("data-ui")) { S.unitOpen = S.unitOpen || {}; S.unitOpen[d.getAttribute("data-ui")] = d.open; saveSoon(); }
+    if (d.hasAttribute("data-sui")) { S.sideOpen = S.sideOpen || {}; S.sideOpen[d.getAttribute("data-sui")] = d.open; saveSoon(); }
+  }, true);
+  /* Phones and narrow windows: the sidebar slides in from the left. */
+  function sideOpen(v) { document.body.classList.toggle("side-open", v); var b = document.getElementById("sideBtn"); if (b) b.setAttribute("aria-expanded", v); if (v && side) { var f = side.querySelector("a"); if (f) f.focus(); } }
+  (function () {
+    var b = document.getElementById("sideBtn"), scrim = document.getElementById("sideScrim");
+    if (b) b.addEventListener("click", function () { sideOpen(!document.body.classList.contains("side-open")); });
+    if (scrim) scrim.addEventListener("click", function () { sideOpen(false); });
+    if (side) side.addEventListener("click", function (e) { if (e.target.closest("a")) sideOpen(false); });
+    document.addEventListener("keydown", function (e) { if (e.key === "Escape" && document.body.classList.contains("side-open")) { sideOpen(false); if (b) b.focus(); } });
+    var bar = document.querySelector(".appbar");
+    function barH() { if (bar) document.documentElement.style.setProperty("--barh", bar.offsetHeight + "px"); }
+    barH(); window.addEventListener("resize", barH);
+  })();
 
   /* ---------- course map ---------- */
   var levelOpen = false, dateOpen = false, goalOpen = false;
@@ -334,18 +437,19 @@
 
     h += '<div class="filters" role="group" aria-label="Show units for">' + [""].concat(EXAMS).map(function (x) {
       return '<button type="button" class="fchip' + ((S.filter || "") === x ? " on" : "") + '" data-act="filter" data-x="' + esc(x) + '" aria-pressed="' + ((S.filter || "") === x) + '">' + (x ? esc(filterName(x)) : "Everything") + "</button>";
-    }).join("") + "</div>" + reviewHTML();
+    }).join("") + "</div>" + reviewHTML() +
+      '<div class="unitctl"><button type="button" class="linkbtn" data-act="units" data-x="1">Expand all units</button><button type="button" class="linkbtn" data-act="units" data-x="0">Collapse all</button></div>';
 
     shownUnits().forEach(function (u) { var ui = C.units.indexOf(u);
-      h += '<section class="unit"><h2>' + esc(u.title) + "<small>Unit " + (ui + 1) + (u.exam ? " · for " + esc(u.exam) : "") + " · " + dur(sumMin(u.topics)) + " · " + leftText(sumMine(u.topics)) + (factors().known && sumMine(u.topics) >= 2.5 ? " at your pace" : "") + '</small></h2><ul class="topics">' + u.topics.map(function (t) {
+      h += '<details class="unit" data-ui="' + ui + '"' + (unitOpen(ui) ? " open" : "") + '><summary><h2>' + esc(u.title) + '<span class="uconf">' + confCount(u) + "</span><small>Unit " + (ui + 1) + (u.exam ? " · for " + esc(u.exam) : "") + " · " + dur(sumMin(u.topics)) + " · " + leftText(sumMine(u.topics)) + (factors().known && sumMine(u.topics) >= 2.5 ? " at your pace" : "") + '</small></h2></summary><ul class="topics">' + u.topics.map(function (t) {
         var s = T(t.id), dot = s.confident ? "done" : started(t) ? "started" : "";
         var chips = "";
-        if (s.confident) chips += '<span class="chip ok">Confident</span>';
+        if (confOf(t.id)) chips += confChip(t.id);
         else if (started(t)) chips += '<span class="chip go">In progress</span>';
         if ((t.testOut || []).indexOf(lv) >= 0 && !s.confident) chips += '<span class="chip info">Optional at your level</span>';
         chips += '<span class="chip">' + (has(t, "learn") ? (has(t, "practice") ? "Lesson and practice" : "Lesson ready") : has(t, "practice") ? "Practice only" : "Coming soon") + "</span>";
         return '<li><a class="topic" href="#/t/' + t.id + '"><span class="dot ' + dot + '" aria-hidden="true"></span><span class="txt"><h3>' + esc(t.title) + "</h3><p>" + esc(t.blurb) + '</p><p class="meta">' + (t.lecture ? "Lecture " + t.lecture + " · " : "") + dur(topicMin(t)) + (started(t) ? " · " + leftText(leftMine(t)) : "") + (allSpent(t) >= 1 ? " · " + Math.round(allSpent(t)) + " min spent" : "") + '</p></span><span class="chips">' + (s.flag ? '<span class="chip flag">Flagged</span>' : "") + chips + "</span></a></li>";
-      }).join("") + "</ul></section>";
+      }).join("") + "</ul></details>";
     });
     view.innerHTML = h;
   }
@@ -474,15 +578,46 @@
       h += '<li class="stage' + (done ? " done" : "") + '"><div><h2>' + NAMES[st] + "</h2><p>" + esc(desc[st]) + '</p></div><div class="act">' +
         (ok ? '<a class="btn small' + (st === suggested ? " primary" : "") + '" href="#/t/' + t.id + "/" + st + '">' + label + "</a>" : '<span class="chip">Coming soon</span>') + "</div></li>";
     });
-    h += '</ol><div class="finish"><label class="toggle"><input type="checkbox" data-act="confident"' + (s.confident ? " checked" : "") + "> I feel confident with this topic</label>" + '<label class="toggle"><input type="checkbox" data-act="flagtopic"' + (s.flag ? " checked" : "") + "> Flag for review</label>" +
+    h += "</ol>" + confBar(t, "topic") + confHistory(t) + '<div class="finish">' +
       (nx ? '<a class="btn small" href="#/t/' + nx.id + '">Next topic: ' + esc(nx.title) + "</a>" : "") + "</div>";
     view.innerHTML = h;
   }
 
   /* ---------- lesson player ---------- */
   var canSpeak = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
-  function hush() { if (canSpeak) window.speechSynthesis.cancel(); }
-  function speak(text) { if (!canSpeak || !S.narrate) return; hush(); window.speechSynthesis.speak(new SpeechSynthesisUtterance(text)); }
+  /* Read aloud reads the step one sentence at a time, so you can pause, and go back or
+     forward a sentence. Past the last sentence it moves to the next step and keeps reading;
+     before the first, back to the previous step. */
+  var NAR = { sents: [], i: 0, playing: false, tok: 0, done: false };
+  function sentences(text) { return (String(text).match(/[^.!?]+(?:[.!?]+(?=\s|$)|$)["')\]]*\s*/g) || [String(text)]).map(function (x) { return x.trim(); }).filter(Boolean); }
+  function hush() { NAR.tok++; NAR.playing = false; if (canSpeak) window.speechSynthesis.cancel(); }
+  function narUI() {
+    var box = document.getElementById("narbox"); if (!box) return;
+    box.querySelectorAll(".sent").forEach(function (el, k) { el.classList.toggle("now", S.narrate && k === NAR.i); });
+    var pb = document.getElementById("nplay"); if (pb) { pb.innerHTML = NAR.playing ? '<span aria-hidden="true">\u23F8</span> Pause' : '<span aria-hidden="true">\u25B6</span> ' + (NAR.done ? "Replay" : NAR.i ? "Resume" : "Play"); pb.setAttribute("aria-pressed", NAR.playing); }
+    var c = document.getElementById("ncount"); if (c) c.textContent = "Sentence " + (NAR.i + 1) + " of " + NAR.sents.length;
+  }
+  function speakFrom(i) {
+    if (!canSpeak) return;
+    hush(); NAR.i = Math.max(0, Math.min(i, NAR.sents.length - 1)); NAR.playing = true; NAR.done = false;
+    var tok = NAR.tok, u = new SpeechSynthesisUtterance(NAR.sents[NAR.i]);
+    if (S.rate) u.rate = S.rate;
+    u.onend = function () {
+      if (tok !== NAR.tok) return;
+      if (NAR.i < NAR.sents.length - 1) speakFrom(NAR.i + 1);
+      else { NAR.playing = false; NAR.done = true; narUI(); }
+    };
+    window.speechSynthesis.speak(u); narUI();
+  }
+  function narSetup(text, auto) { hush(); NAR.sents = sentences(text); NAR.i = 0; NAR.done = false; if (auto && S.narrate) speakFrom(0); else narUI(); }
+  function narToggle() { if (NAR.playing) { hush(); narUI(); } else speakFrom(NAR.done ? 0 : NAR.i); }
+  function narStep(d) {
+    var j = NAR.i + d;
+    if (j >= NAR.sents.length) { if (document.querySelector('[data-act="next"]:not([disabled])')) { stepBy(1); } return; }
+    if (j < 0) { var r = route(), t = topicById(r[1]); if (t && T(t.id).step > 0) stepBy(-1); return; }
+    if (NAR.playing) speakFrom(j); else { NAR.i = j; NAR.done = false; narUI(); }
+  }
+  function speak(text) { narSetup(text, true); }
 
   function renderLearn(t, quiet) {
     var l = L[t.id], s = T(t.id), n = l.steps.length;
@@ -490,7 +625,7 @@
     var i = s.step, st = l.steps[i], lv = level(), a = s.asks[i], last = i === n - 1;
     if (last && !s.lessonDone) { s.lessonDone = true; save(); }
     var blocked = st.ask && !a;
-    var h = crumb(t, "learn") + tabs(t, "learn") + timeStrip(t, "learn") + '<div class="player"><div class="bar2"><i style="width:' + Math.round((i + 1) / n * 100) + '%"></i></div><div class="stagegrid">' +
+    var h = crumb(t, "learn") + tabs(t, "learn") + timeStrip(t, "learn") + confBar(t, "the lesson") + '<div class="player"><div class="bar2"><i style="width:' + Math.round((i + 1) / n * 100) + '%"></i></div><div class="stagegrid">' +
       codeHTML(l.snippets[st.code] || "", st.hl) + '<div class="side">';
     if (st.stack) {
       h += "<div><h4>Calls in progress</h4><div class=\"frames\">" + st.stack.map(function (f, k) {
@@ -511,25 +646,28 @@
     if (st.env) h += '<div><h4>Names</h4><div class="names">' + st.env.map(function (p) { return '<div class="frame"><span>' + esc(p[0]) + "</span><small>" + esc(p[1]) + "</small></div>"; }).join("") + "</div></div>";
     if (st.out) h += '<div><h4>Printed</h4><pre class="out">' + esc(st.out.join("\n")) + "</pre></div>";
     if (!st.stack && !st.out && !st.env && !st.frames && !st.tree && !st.tables) h += '<p class="muted" style="font-size:15px">Names, calls and printed output show up here as the code runs.</p>';
-    h += '</div></div><div class="narr"><p class="say">' + esc(st.say) + "</p>";
+    h += '</div></div><div class="narr"><p class="say" id="narbox">' + sentences(st.say).map(function (x) { return '<span class="sent">' + esc(x) + "</span>"; }).join(" ") + "</p>";
     if (st.basics && lv === "new") h += '<p class="note"><b>The basics.</b> ' + esc(st.basics) + "</p>";
     if (st.syntax && (lv === "new" || lv === "programmer")) h += '<p class="note">' + esc(st.syntax).replace(/^Python notes:/, "<b>Python notes.</b>") + "</p>";
     if (st.ask) h += '<div class="ask">' + questionHTML(st.ask, a, "ask", i) + "</div>";
     h += '</div><div class="controls"><span class="count">Step ' + (i + 1) + " of " + n + "</span>" +
-      (canSpeak ? '<label class="toggle"><input type="checkbox" data-act="narrate"' + (S.narrate ? " checked" : "") + "> Read aloud</label>" : "") +
+      (canSpeak ? '<label class="toggle"><input type="checkbox" data-act="narrate"' + (S.narrate ? " checked" : "") + "> Read aloud</label>" +
+        (S.narrate ? '<span class="narctl" role="group" aria-label="Read aloud controls"><button class="btn small quiet" type="button" data-act="nprev" title="Back a sentence"><span aria-hidden="true">\u23EE</span><span class="sr">Back a sentence</span></button>' +
+          '<button class="btn small" type="button" id="nplay" data-act="nplay"></button>' +
+          '<button class="btn small quiet" type="button" data-act="nnext" title="Forward a sentence"><span aria-hidden="true">\u23ED</span><span class="sr">Forward a sentence</span></button><span class="ncount" id="ncount"></span></span>' : "") : "") +
       '<button class="btn small quiet" type="button" data-act="back"' + (i === 0 ? " disabled" : "") + ">Back</button>" +
       (last ? '<a class="btn small primary" href="#/t/' + t.id + '/check">Go to the check questions</a>'
             : '<button class="btn small primary" type="button" data-act="next"' + (blocked ? ' disabled title="Answer the question to continue"' : "") + ">Next</button>") +
       "</div></div>" + sources(t, "Want the original? Lecture " + t.lecture + ":");
     view.innerHTML = h;
-    if (!quiet) speak(st.say);
+    if (!quiet) speak(st.say); else narUI();
   }
 
   /* ---------- check ---------- */
   function renderCheck(t) {
     var qs = items(t, "check"), s = T(t.id), nx = nextTopic(t);
     var answered = Object.keys(s.check).length, right = qs.filter(function (q, i) { return s.check[i] && s.check[i].ok; }).length;
-    var h = crumb(t, "check") + tabs(t, "check") + timeStrip(t, "check") + "<h1>Check</h1><p class=\"lede\" style=\"margin-bottom:24px\">Answer each one, then read the explanation. Nothing here is graded.</p>";
+    var h = crumb(t, "check") + tabs(t, "check") + timeStrip(t, "check") + confBar(t, "the check") + "<h1>Check</h1><p class=\"lede\" style=\"margin-bottom:24px\">Answer each one, then read the explanation. Nothing here is graded.</p>";
     qs.forEach(function (q, i) {
       h += '<div class="qcard"><p class="num">Question ' + (i + 1) + " of " + qs.length + "</p>" + (q.code ? codeHTML(q.code) : "") + questionHTML(q, s.check[i], "check", i) + "</div>";
     });
@@ -556,7 +694,7 @@
     cur = { t: t, stage: stage, p: p };
     var intro = stage === "deepen" ? "Exam-style problems on this topic. Try each one before opening a hint."
       : "Past exam problems. Do as many as you need, then mark the topic confident.";
-    var h = crumb(t, stage) + tabs(t, stage) + timeStrip(t, stage) + "<h1>" + NAMES[stage] + '</h1><p class="lede" style="margin-bottom:24px">' + intro + '</p><div class="work"><ul class="plist" aria-label="Problems">' +
+    var h = crumb(t, stage) + tabs(t, stage) + timeStrip(t, stage) + confBar(t, stage === "deepen" ? "deepen" : "practice") + "<h1>" + NAMES[stage] + '</h1><p class="lede" style="margin-bottom:24px">' + intro + '</p><div class="work"><ul class="plist" aria-label="Problems">' +
       list.map(function (x, i) {
         return '<li><a href="#/t/' + t.id + "/" + stage + "/" + x.id + '"' + (x === p ? ' aria-current="true"' : "") + '><span class="tick' + (s.solved[x.id] ? " yes" : "") + '" aria-hidden="true"></span>' + (i + 1) + ". " + esc(x.title) + (s.solved[x.id] ? '<span class="muted"> (solved)</span>' : "") + "</a></li>";
       }).join("") + '</ul><div class="prob"><h2>' + esc(p.title) + '</h2><p class="src">' + esc(p.source || "") +
@@ -567,7 +705,7 @@
         ? '<button class="btn small primary" type="button" data-act="reveal">Compare with the solution</button>'
         : '<button class="btn small" type="button" data-act="run">' + (p.sql ? "Run the query" : "Run the examples") + '</button><button class="btn small primary" type="button" data-act="submit">Submit</button>') +
       (p.hints ? '<button class="btn small quiet" type="button" data-act="hint">Hint</button>' : "") +
-      '<button class="btn small quiet" type="button" data-act="resetcode">Reset code</button><button class="btn small quiet" type="button" data-act="flagp" aria-pressed="' + !!s.flags[p.id] + '">' + (s.flags[p.id] ? "Flagged for review" : "Flag for review") + '</button></div><div id="hints">' + hintsHTML(p, s) + '</div><div class="result" id="result" aria-live="polite">' +
+      '<button class="btn small quiet" type="button" data-act="resetp">Start over</button><button class="btn small quiet" type="button" data-act="flagp" aria-pressed="' + !!s.flags[p.id] + '">' + (s.flags[p.id] ? "Flagged for review" : "Flag for review") + '</button></div><div id="hints">' + hintsHTML(p, s) + '</div><div class="result" id="result" aria-live="polite">' +
       (s.solved[p.id] ? solvedHTML() : "") + "</div>" +
       (p.norun ? '<p class="muted" style="font-size:14.5px; margin-top:14px">' + esc(p.lang || "This language") + ' does not run in this app, so this problem is self-checked: write your answer, then compare it with the solution.</p>'
                : '<details class="reveal"><summary>Show the solution</summary>' + codeHTML(p.solution) + (p.explain ? '<p style="margin-top:10px">' + esc(p.explain) + "</p>" : "") + "</details>") + "</div></div>";
@@ -576,10 +714,10 @@
   function hintsHTML(p, s) { return (p.hints || []).slice(0, s.hints[p.id] || 0).map(function (x, i) { return '<p class="hint"><b>Hint ' + (i + 1) + ".</b> " + esc(x) + "</p>"; }).join(""); }
   function solvedHTML() {
     var t = cur.t, s = T(t.id), list = items(t, cur.stage), nxp = list.filter(function (x) { return !s.solved[x.id] && x !== cur.p; })[0], nx = nextTopic(t);
-    return '<p class="banner pass">' + (cur.p.norun ? "Marked as solved." : "Correct. All hidden tests passed.") + "</p>" + (cur.p.norun ? codeHTML(cur.p.solution) : "") + (cur.p.explain ? '<p style="margin-top:10px">' + esc(cur.p.explain) + "</p>" : "") +
+    return '<p class="banner pass">' + (cur.p.norun ? "Marked as solved." : "Correct. All hidden tests passed.") + ' <button type="button" class="linkbtn" data-act="resetp">Reset this problem</button></p>' + (cur.p.norun ? codeHTML(cur.p.solution) : "") + (cur.p.explain ? '<p style="margin-top:10px">' + esc(cur.p.explain) + "</p>" : "") +
       '<div class="row" style="margin-top:12px">' + (nxp ? '<a class="btn small primary" href="#/t/' + t.id + "/" + cur.stage + "/" + nxp.id + '">Next problem</a>' : "") +
       (cur.stage === "deepen" && has(t, "practice") ? '<a class="btn small" href="#/t/' + t.id + '/practice">More practice</a>' : "") +
-      (!s.confident ? '<button class="btn small" type="button" data-act="confidentbtn">I feel confident with this topic</button>' : nx ? '<a class="btn small" href="#/t/' + nx.id + '">Next topic</a>' : "") + "</div>";
+      (confOf(t.id) !== 4 ? '<button class="btn small" type="button" data-act="confidentbtn">' + icon(4) + ' I feel confident with this topic</button>' : nx ? '<a class="btn small" href="#/t/' + nx.id + '">Next topic</a>' : "") + "</div>";
   }
   function banner(kind, text) { return '<p class="banner ' + kind + '">' + esc(text) + "</p>"; }
   function pre(text) { return text && String(text).trim() ? "<pre>" + esc(String(text).trim()) + "</pre>" : ""; }
@@ -795,7 +933,7 @@
     else if ((stage === "deepen" || stage === "practice") && has(t, stage)) renderWork(t, stage, r[3]);
     else renderTopic(t);
     if (t) { S.last = "#/" + r.join("/"); save(); }
-    progress();
+    progress(); renderSide();
     document.title = (t ? t.title + " · " : r[0] === "progress" ? "Progress · " : "") + "CS 61A · Saba Feilizadeh";
     if (!keepScroll) { window.scrollTo(0, 0); try { view.focus({ preventScroll: true }); } catch (e) {} }
   }
@@ -832,6 +970,7 @@
     else if (act === "next") stepBy(1);
     else if (act === "back") stepBy(-1);
     else if (act === "levelopen") { levelOpen = true; render(true); }
+    else if (act === "units") { var allOpen = el.getAttribute("data-x") === "1"; S.unitOpen = {}; C.units.forEach(function (u, i) { S.unitOpen[i] = allOpen; }); save(); render(true); }
     else if (act === "filter") { S.filter = el.getAttribute("data-x") || ""; save(); render(true); }
     else if (act === "dateopen") { dateOpen = true; render(true); }
     else if (act === "goalclear") { delete S.dailyGoal; save(); render(true); }
@@ -839,6 +978,12 @@
     else if (act === "hideprogexample") { S.noProgExample = true; save(); render(true); }
     else if (act === "hideexample") { S.noReviewExample = true; save(); render(true); }
     else if (act === "flagp" && cur) { var fs = T(cur.t.id); if (fs.flags[cur.p.id]) delete fs.flags[cur.p.id]; else fs.flags[cur.p.id] = true; save(); el.textContent = fs.flags[cur.p.id] ? "Flagged for review" : "Flag for review"; el.setAttribute("aria-pressed", !!fs.flags[cur.p.id]); }
+    else if (act === "resetq" && t) {
+      var rs = T(t.id), rn = +el.getAttribute("data-n");
+      if (el.getAttribute("data-ctx") === "ask") { delete rs.asks[rn]; save(); hush(); renderLearn(t, true); }
+      else { delete rs.check[rn]; save(); var ry = window.scrollY; renderCheck(t); window.scrollTo(0, ry); progress(); }
+      var inp = view.querySelector('form.typed[data-n="' + rn + '"][data-ctx="' + el.getAttribute("data-ctx") + '"] input'); if (inp) inp.focus();
+    }
     else if (act === "recheck" && t) { T(t.id).check = {}; save(); render(false); }
     else if (act === "reveal" && cur) {
       document.getElementById("result").innerHTML = revealHTML(cur.p);
@@ -848,14 +993,23 @@
     else if (act === "run") execute("run");
     else if (act === "submit") execute("submit");
     else if (act === "hint" && cur) { var s = T(cur.t.id); s.hints[cur.p.id] = Math.min((s.hints[cur.p.id] || 0) + 1, cur.p.hints.length); save(); document.getElementById("hints").innerHTML = hintsHTML(cur.p, s); }
-    else if (act === "resetcode" && cur) { delete S.code[cur.p.id]; save(); document.getElementById("editor").value = cur.p.starter; }
-    else if (act === "confidentbtn" && cur) { T(cur.t.id).confident = true; save(); progress(); document.getElementById("result").innerHTML = solvedHTML(); }
+    else if (act === "resetp" && cur) {
+      var ps = T(cur.t.id), pid = cur.p.id;
+      if (S.code[pid] != null && S.code[pid] !== cur.p.starter && !confirm("Start over? Your code goes back to the starter code.")) return;
+      delete ps.solved[pid]; delete ps.hints[pid]; delete S.code[pid]; save(); progress(); render(true);
+    }
+    else if (act === "confidentbtn" && cur) { setConf(cur.t, 4, cur.stage); refreshConf(cur.t); document.getElementById("result").innerHTML = solvedHTML(); }
+    else if (act === "conf" && t) { setConf(t, +el.getAttribute("data-v"), (el.closest(".confbar") || el).getAttribute("data-where")); refreshConf(t); }
+    else if (act === "flagt" && t) { var fts = T(t.id); fts.flag = !fts.flag; save(); refreshConf(t); }
+    else if (act === "nprev") narStep(-1);
+    else if (act === "nnext") narStep(1);
+    else if (act === "nplay") narToggle();
   });
   view.addEventListener("change", function (e) {
     var act = e.target.getAttribute && e.target.getAttribute("data-act"), t = topicById(route()[1]);
     if (act === "flagtopic" && t) { T(t.id).flag = e.target.checked; save(); }
     if (act === "confident" && t) { T(t.id).confident = e.target.checked; save(); render(true); }
-    if (act === "narrate") { S.narrate = e.target.checked; save(); if (S.narrate && t) speak(L[t.id].steps[T(t.id).step].say); else hush(); }
+    if (act === "narrate") { S.narrate = e.target.checked; save(); if (t && route()[2] === "learn") { renderLearn(t, true); if (S.narrate) speakFrom(0); else hush(); } }
   });
   view.addEventListener("submit", function (e) {
     var f = e.target, act = f.getAttribute("data-act");
@@ -887,6 +1041,11 @@
   document.addEventListener("keydown", function (e) {
     var tag = e.target.tagName;
     if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || e.metaKey || e.ctrlKey || e.altKey) return;
+    if (S.narrate && route()[2] === "learn" && e.target.tagName !== "BUTTON" && e.target.tagName !== "A") {
+      if (e.key === " ") { e.preventDefault(); narToggle(); return; }
+      if (e.key === ",") { narStep(-1); return; }
+      if (e.key === ".") { narStep(1); return; }
+    }
     if (e.key === "ArrowRight") stepBy(1);
     if (e.key === "ArrowLeft") stepBy(-1);
   });

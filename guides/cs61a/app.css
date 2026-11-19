@@ -273,3 +273,130 @@ details.reveal pre.code{border-radius:10px; min-height:0; margin:10px 0 0; font-
 .timestrip b{color:var(--ink); font-weight:600}
 .timestrip #clk{color:var(--ink); font-variant-numeric:tabular-nums}
 .timestrip.paused #clk::after{content:" (paused)"; color:var(--muted)}
+
+@media (max-width:440px){ .appbar .barlink.exit{display:none} .appbar .bar{gap:12px} }
+
+/* ---------- ported from the CS 70 app: confidence, read-aloud controls, folding units, sidebar, reset ---------- */
+/* ---------- confidence bar: rate yourself or flag, from the topic page or any stage ---------- */
+.confbar{display:flex; flex-wrap:wrap; align-items:center; gap:8px 10px; margin:0 0 18px; padding:10px 12px; border:1.5px solid var(--line); border-radius:14px; background:var(--surface)}
+.confbar .cq{font-size:14.5px; color:var(--muted); margin-right:auto}
+.confbar .cbtns{display:flex; flex-wrap:wrap; gap:6px}
+.cbtn{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border:1.5px solid var(--line); border-radius:999px; background:transparent; color:var(--ink); font:500 14px/1 var(--body); cursor:pointer}
+.cbtn span{font-size:17px; line-height:1}
+.cbtn:hover{border-color:var(--saffron)}
+.cbtn[aria-pressed="true"]{border-color:var(--saffron); background:var(--saffron-soft); font-weight:600}
+.cbtn.c1[aria-pressed="true"]{border-color:var(--bad); background:var(--bad-soft)}
+.cbtn.c2[aria-pressed="true"]{border-color:var(--saffron); background:var(--saffron-soft)}
+.cbtn.c3[aria-pressed="true"]{border-color:var(--info); background:var(--info-soft)}
+.cbtn.c4[aria-pressed="true"]{border-color:var(--ok); background:var(--ok-soft)}
+.cbtn.flagbtn[aria-pressed="true"]{border-color:var(--bad); background:var(--bad-soft); color:var(--bad)}
+.topics .chip.conf{border-color:var(--line)}
+.chip.conf.c1{color:var(--bad); background:var(--bad-soft); border-color:transparent}
+.chip.conf.c2{color:var(--saffron-ink); background:var(--saffron-soft); border-color:transparent}
+.chip.conf.c3{color:var(--info); background:var(--info-soft); border-color:transparent}
+.chip.conf.c4{color:var(--ok); background:var(--ok-soft); border-color:transparent}
+.chist{margin:-6px 0 0}
+.chist span{white-space:nowrap}
+.stages + .confbar{margin-top:24px}
+@media (max-width:560px){ .confbar .cq{width:100%} }
+
+/* ---------- read aloud: the sentence being read is highlighted ---------- */
+.narr .say .sent.now{background:var(--saffron-soft); box-shadow:0 0 0 3px var(--saffron-soft); border-radius:4px}
+.narctl{display:inline-flex; align-items:center; gap:6px}
+.narctl .ncount{font:500 12.5px/1 var(--mono); color:var(--muted); margin-left:2px}
+
+/* ---------- our own confidence faces (SVG, colors from tokens.css) ---------- */
+.face{width:20px; height:20px; flex:none; vertical-align:-5px}
+.face .disc{fill:var(--fbg); stroke:currentColor; stroke-width:1.7}
+.face .ln{fill:none; stroke:currentColor; stroke-width:1.7; stroke-linecap:round; stroke-linejoin:round}
+.face .pen{fill:var(--bad-soft); stroke:currentColor; stroke-width:1.7; stroke-linejoin:round}
+.face.f1{color:var(--bad); --fbg:var(--bad-soft)}
+.face.f2{color:var(--saffron-ink); --fbg:var(--saffron-soft)}
+.face.f3{color:var(--info); --fbg:var(--info-soft)}
+.face.f4{color:var(--ok); --fbg:var(--ok-soft)}
+.face.f4 .spark{color:var(--saffron)}
+.face.fflag{color:var(--bad)}
+.cbtn .face{width:22px; height:22px}
+.cbtn:not([aria-pressed="true"]) .face{filter:saturate(.35); opacity:.8}
+.cbtn:hover .face,.cbtn[aria-pressed="true"] .face{filter:none; opacity:1}
+.cbtn[aria-pressed="true"] .face{transform:scale(1.12); transition:transform .15s}
+.chip.conf{display:inline-flex; align-items:center; gap:5px}
+.chip.conf .face{width:16px; height:16px}
+.chist .face{width:17px; height:17px; vertical-align:-4px}
+.chist .arrow{color:var(--muted)}
+.btn .face{width:18px; height:18px; margin-right:2px}
+@media (prefers-reduced-motion:reduce){ .cbtn[aria-pressed="true"] .face{transition:none} }
+
+/* the level names show only as a tooltip, on hover or keyboard focus */
+.cbtns .cbtn{position:relative; padding:6px 8px}
+.cbtn .ctip{position:absolute; bottom:calc(100% + 7px); left:50%; transform:translate(-50%,3px); padding:5px 9px; border-radius:8px; background:var(--ink); color:var(--bg); font:600 12.5px/1 var(--body); white-space:nowrap; opacity:0; pointer-events:none; transition:opacity .12s, transform .12s; z-index:5}
+.cbtn .ctip::after{content:""; position:absolute; top:100%; left:50%; margin-left:-5px; border:5px solid transparent; border-top-color:var(--ink)}
+.cbtn:hover .ctip,.cbtn:focus-visible .ctip{opacity:1; transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){ .cbtn .ctip{transition:none} }
+
+/* ---------- course map: units fold open and closed ---------- */
+details.unit{margin-bottom:10px; border-top:2px solid var(--ink)}
+details.unit > summary{list-style:none; cursor:pointer; padding:16px 0 12px; display:flex; align-items:baseline; gap:12px}
+details.unit > summary::-webkit-details-marker{display:none}
+details.unit > summary::before{content:""; flex:none; width:9px; height:9px; margin:0 4px 0 2px; border-right:2.5px solid currentColor; border-bottom:2.5px solid currentColor; transform:rotate(-45deg) translateY(-2px); transition:transform .15s}
+details.unit[open] > summary::before{transform:rotate(45deg) translateY(-4px)}
+details.unit > summary h2{display:flex; flex-wrap:wrap; align-items:baseline; gap:6px 12px; margin:0; padding:0; flex:1}
+details.unit > summary h2 small{flex-basis:100%; font:500 13px/1.3 var(--mono); color:var(--muted)}
+details.unit .uconf{font:500 13px/1 var(--mono); color:var(--muted)}
+details.unit > summary:hover h2{color:var(--saffron-ink)}
+details.unit > summary:focus-visible{outline:3px solid var(--saffron); outline-offset:4px; border-radius:6px}
+details.unit[open]{margin-bottom:30px}
+.unitctl{display:flex; gap:18px; justify-content:flex-end; margin:24px 0 8px}
+
+/* ---------- left sidebar ---------- */
+.sidebtn{display:inline-grid; place-items:center}
+.sidebtn svg{width:20px; height:20px}
+.navside{font-size:14.5px}
+.navside ul{list-style:none; margin:0; padding:0}
+.navside a{display:flex; align-items:center; gap:8px; padding:6px 10px; border-radius:9px; color:var(--ink); text-decoration:none; line-height:1.3}
+.navside a:hover{background:var(--surface-2)}
+.navside a[aria-current="page"]{background:var(--saffron-soft); font-weight:600}
+.navside a[aria-current="true"]{font-weight:600}
+.navside ul.sd-top{margin-bottom:12px; padding-bottom:12px; border-bottom:1.5px solid var(--line)}
+.sd-unit{margin:2px 0}
+.sd-unit > summary{list-style:none; cursor:pointer; display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:9px; font-weight:600}
+.sd-unit > summary::-webkit-details-marker{display:none}
+.sd-unit > summary:hover{background:var(--surface-2)}
+.sd-unit > summary:focus-visible{outline:3px solid var(--saffron); outline-offset:-1px}
+.sd-n{flex:none; width:22px; height:22px; border-radius:50%; display:inline-grid; place-items:center; font:600 12px/1 var(--mono); border:1.5px solid var(--line)}
+.sd-unit[open] .sd-n{background:var(--ink); color:var(--bg); border-color:var(--ink)}
+.sd-t{flex:1}
+.sd-unit > summary small{font:500 11.5px/1 var(--mono); color:var(--muted)}
+.navside .sd-unit > ul{padding:2px 0 8px 22px}
+.sd-tt{flex:1}
+.navside .face{width:17px; height:17px}
+.sd-dot{flex:none; width:11px; height:11px; margin:0 3px; border-radius:50%; border:2px solid var(--line)}
+.sd-dot.started{border-color:var(--saffron); background:linear-gradient(90deg,var(--saffron) 50%,transparent 50%)}
+.navside .sd-flag .face{width:14px; height:14px}
+.navside ul.sd-stages{padding:0 0 4px 10px; border-left:1.5px solid var(--line); margin:2px 0 4px 18px}
+.sd-stages a{padding:4px 10px; font-size:14px; color:var(--muted)}
+.sd-stages a[aria-current="page"]{color:var(--ink)}
+.sd-ok{color:var(--ok); font-weight:700}
+.side-scrim{display:none}
+
+@media (min-width:1180px){
+  .sidebtn{display:none}
+  .shell{display:grid; grid-template-columns:280px minmax(0,1fr); gap:8px}
+  .navside{position:sticky; top:var(--barh,61px); height:calc(100vh - var(--barh,61px)); overflow-y:auto; padding:22px 12px 48px 16px; border-right:1.5px solid var(--line); overscroll-behavior:contain}
+  .shell > main.wrap{width:100%; max-width:1100px; margin:0}
+}
+@media (max-width:1179.98px){
+  .navside{position:fixed; z-index:45; top:0; left:0; bottom:0; width:min(320px,86vw); overflow-y:auto; padding:20px 12px 48px; background:var(--bg); border-right:1.5px solid var(--line); box-shadow:0 0 40px rgba(10,12,30,.25); transform:translateX(-105%); transition:transform .2s ease; visibility:hidden}
+  body.side-open .navside{transform:none; visibility:visible}
+  body.side-open .side-scrim{display:block; position:fixed; top:0; right:0; bottom:0; left:0; z-index:44; background:rgba(10,12,30,.4)}
+}
+@media (prefers-reduced-motion:reduce){ .navside, details.unit > summary::before{transition:none} }
+@media (min-width:1180px){ .appbar .wrap.bar{max-width:none; padding-left:26px; padding-right:32px} }
+
+/* ---------- answered questions: result, Reset, and the explanation behind a toggle ---------- */
+.fbrow{display:flex; align-items:baseline; gap:14px; flex-wrap:wrap; margin-top:12px}
+.fbrow .fb{margin:0}
+details.why{margin-top:8px; font-size:15.5px}
+details.why > summary{cursor:pointer; color:var(--saffron-ink); font-weight:600; font-size:14.5px; width:max-content}
+details.why > p{margin:8px 0 0; padding:10px 14px; border-left:3px solid var(--saffron); background:var(--surface-2); border-radius:0 8px 8px 0}
+.banner .linkbtn{margin-left:10px; font-size:14px}
