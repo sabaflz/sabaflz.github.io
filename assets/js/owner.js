@@ -79,6 +79,7 @@
     ".ow-row{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}" +
     ".ow-btn{font:600 15px/1 var(--body,system-ui,sans-serif);padding:11px 16px;border-radius:999px;border:1.5px solid var(--ink,#16193A);background:var(--ink,#16193A);color:var(--bg,#fff);cursor:pointer}" +
     ".ow-btn.ghost{background:transparent;color:var(--ink,#16193A);border-color:var(--line,#D3D6DF)}" +
+    ".ow-forgot{margin:14px 0 0;font-size:14px}.ow-forgot a{color:var(--saffron-ink,#7E5600)}" +
     ".ow-err{color:#B4531A;font-size:14px;margin:10px 0 0;min-height:1em}" +
     ".ow-lock{text-align:center;max-width:460px;margin:56px auto;padding:36px 24px;background:var(--surface,#fff);border:1.5px solid var(--line,#D3D6DF);border-radius:18px}" +
     ".ow-lock h2{font:700 24px/1.2 var(--display,system-ui,sans-serif);margin:0 0 8px}" +
@@ -98,7 +99,8 @@
         '<input id="owPw" type="password" autocomplete="current-password" aria-label="Password" required>' +
         '<p class="ow-err" id="owErr" role="alert"></p>' +
         '<div class="ow-row"><button type="button" class="ow-btn ghost" id="owCancel">Cancel</button>' +
-        '<button type="submit" class="ow-btn" id="owGo">Log in</button></div></form>';
+        '<button type="submit" class="ow-btn" id="owGo">Log in</button></div>' +
+        '<p class="ow-forgot"><a href="/planner/#recover">Forgot password?</a></p></form>';
       document.body.appendChild(scrim);
       var pw = scrim.querySelector("#owPw"), err = scrim.querySelector("#owErr"), go = scrim.querySelector("#owGo");
       pw.focus();

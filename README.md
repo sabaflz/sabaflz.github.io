@@ -88,5 +88,7 @@ your password. "Only me" encrypts `state.json` with the same password. If the to
 the login asks for a new one. The password can't be recovered, so keep it in a password manager.
 
 **Backups:** the admin bar has Download (saves your plan as a file on your computer) and Restore.
-**Forgot the password?** On GitHub, delete `planner/data/admin.json` and `planner/data/state.json`,
+**Recovery key:** in the admin bar, choose **Make a recovery key** (it shows in red until you have one). Save the 32-character key in a password manager or on paper; it is shown only once.
+**Forgot the password?** Choose Admin (or the owner login anywhere on the site), then **Forgot password?**, enter the recovery key and a new password. Everything locked with the old password (planner, study plan, the saved GitHub token) is re-locked with the new one, and the same recovery key keeps working. If the GitHub token has expired, the same box asks for a new one.
+**No recovery key?** On GitHub, delete `planner/data/admin.json`, `planner/data/state.json` and `planner/data/study.json`, then click Admin: setup runs again, and you can restore your latest backup files.
 then click Admin: setup runs again, and you can restore your latest backup file.
