@@ -149,6 +149,10 @@
   }
   function sumMine(list) { return list.reduce(function (a, t) { return a + leftMine(t); }, 0); }
   function sumLeft(list) { return list.reduce(function (a, t) { return a + leftMin(t); }, 0); }
+  /* Time left for one stage at your own pace, and short forms for tight spaces. */
+  function stageLeft(t, st) { if (st === "practice" || !has(t, st)) return 0; var s = S.topics[t.id] || {}; if (s.confident) return 0; return leftParts(t)[st] * factors()[st]; }
+  function shortMin(m) { m = Math.round(m); return m < 60 ? m + " min" : Math.floor(m / 60) + " h" + (m % 60 ? " " + (m % 60) + " min" : ""); }
+  function leftChip(m, cls) { return '<span class="tleft' + (cls ? " " + cls : "") + '">' + (m < 1 ? "\u2713 done" : shortMin(Math.max(1, m)) + " left") + "</span>"; }
   function leftText(m) { return m < 2.5 ? "done" : dur(m).replace("about ", "") + " left"; }
   /* ---------- recommended time for today, and whether you are on track ---------- */
   function spentOn(k, withPractice) { var sp = ((S.days || {})[k] || {}).sp || {}; return ((sp.learn || 0) + (sp.check || 0) + (sp.deepen || 0) + (withPractice ? sp.practice || 0 : 0)) / 60; }
@@ -324,7 +328,7 @@
   function tabs(t, cur) {
     return '<ul class="tabs" aria-label="Stages">' + STAGES.map(function (st) {
       var ok = has(t, st);
-      return '<li><a href="#/t/' + t.id + "/" + st + '"' + (st === cur ? ' aria-current="page"' : "") + (ok ? "" : ' class="off" aria-disabled="true" tabindex="-1"') + ">" + NAMES[st] + "</a></li>";
+      return '<li><a href="#/t/' + t.id + "/" + st + '"' + (st === cur ? ' aria-current="page"' : "") + (ok ? "" : ' class="off" aria-disabled="true" tabindex="-1"') + ">" + NAMES[st] + (ok ? '<span class="tabt">' + (st === "practice" ? shortMin(stageMin(t, st)) + " each" : stageLeft(t, st) < 1 ? "\u2713" : shortMin(Math.max(1, stageLeft(t, st)))) + "</span>" : "") + "</a></li>";
     }).join("") + "</ul>";
   }
   function crumb(t, stage) {
@@ -384,11 +388,11 @@
     C.units.forEach(function (u, ui) {
       var open = ui in so ? !!so[ui] : (hu >= 0 ? ui === hu : ui === currentUnit());
       if (ui === hu && !(ui in so)) open = true;
-      h += '<details class="sd-unit" data-sui="' + ui + '"' + (open ? " open" : "") + '><summary><span class="sd-n">' + (ui + 1) + '</span><span class="sd-t">' + esc(u.title) + '</span><small>' + u.topics.filter(function (t) { return (S.topics[t.id] || {}).confident; }).length + "/" + u.topics.length + "</small></summary><ul>" +
+      h += '<details class="sd-unit" data-sui="' + ui + '"' + (open ? " open" : "") + '><summary><span class="sd-n">' + (ui + 1) + '</span><span class="sd-t">' + esc(u.title) + '<small class="sd-ut">' + (sumMine(u.topics) < 1 ? "all done" : shortMin(sumMine(u.topics)) + " left") + "</small></span><small>" + u.topics.filter(function (t) { return (S.topics[t.id] || {}).confident; }).length + "/" + u.topics.length + "</small></summary><ul>" +
         u.topics.map(function (t) {
           var cv = confOf(t.id), on = t.id === here, mark = cv ? icon(cv) : '<span class="sd-dot' + (started(t) ? " started" : "") + '" aria-hidden="true"></span>';
-          var x = '<li><a href="#/t/' + t.id + '"' + (on && !stage ? ' aria-current="page"' : on ? ' aria-current="true"' : "") + ">" + mark + '<span class="sd-tt">' + esc(t.title) + "</span>" + ((S.topics[t.id] || {}).flag ? '<span class="sd-flag" aria-label="flagged">' + FLAG + "</span>" : "") + "</a>";
-          if (on) x += '<ul class="sd-stages">' + STAGES.filter(function (st) { return has(t, st); }).map(function (st) { return '<li><a href="#/t/' + t.id + "/" + st + '"' + (st === stage ? ' aria-current="page"' : "") + ">" + NAMES[st] + (stageDone(t, st) ? ' <span class="sd-ok" aria-label="done">\u2713</span>' : "") + "</a></li>"; }).join("") + "</ul>";
+          var x = '<li><a href="#/t/' + t.id + '"' + (on && !stage ? ' aria-current="page"' : on ? ' aria-current="true"' : "") + ">" + mark + '<span class="sd-tt">' + esc(t.title) + "</span>" + '<span class="sd-min">' + (leftMine(t) < 1 ? "\u2713" : shortMin(leftMine(t))) + "</span>" + ((S.topics[t.id] || {}).flag ? '<span class="sd-flag" aria-label="flagged">' + FLAG + "</span>" : "") + "</a>";
+          if (on) x += '<ul class="sd-stages">' + STAGES.filter(function (st) { return has(t, st); }).map(function (st) { return '<li><a href="#/t/' + t.id + "/" + st + '"' + (st === stage ? ' aria-current="page"' : "") + ">" + NAMES[st] + (stageDone(t, st) ? ' <span class="sd-ok" aria-label="done">\u2713</span>' : st === "practice" ? "" : '<span class="sd-min">' + shortMin(Math.max(1, stageLeft(t, st))) + "</span>") + "</a></li>"; }).join("") + "</ul>";
           return x + "</li>";
         }).join("") + "</ul></details>";
     });
@@ -575,7 +579,7 @@
       if (st === "learn" && ok) label = s.lessonDone ? "Replay" : s.step ? "Continue" : "Start";
       if (st === "check" && ok) label = done ? "Review" : Object.keys(s.check).length ? "Continue" : "Start";
       if ((st === "deepen" || st === "practice") && ok) { var k = solvedCount(t, st); label = k ? "Continue (" + k + " of " + items(t, st).length + " solved)" : "Start"; }
-      h += '<li class="stage' + (done ? " done" : "") + '"><div><h2>' + NAMES[st] + "</h2><p>" + esc(desc[st]) + '</p></div><div class="act">' +
+      h += '<li class="stage' + (done ? " done" : "") + '"><div><h2>' + NAMES[st] + (ok ? (st === "practice" ? '<span class="tleft">' + shortMin(stageMin(t, st)) + " per problem</span>" : leftChip(stageLeft(t, st))) : "") + "</h2><p>" + esc(desc[st]) + '</p></div><div class="act">' +
         (ok ? '<a class="btn small' + (st === suggested ? " primary" : "") + '" href="#/t/' + t.id + "/" + st + '">' + label + "</a>" : '<span class="chip">Coming soon</span>') + "</div></li>";
     });
     h += "</ol>" + confBar(t, "topic") + confHistory(t) + '<div class="finish">' +
@@ -650,7 +654,7 @@
     if (st.basics && lv === "new") h += '<p class="note"><b>The basics.</b> ' + esc(st.basics) + "</p>";
     if (st.syntax && (lv === "new" || lv === "programmer")) h += '<p class="note">' + esc(st.syntax).replace(/^Python notes:/, "<b>Python notes.</b>") + "</p>";
     if (st.ask) h += '<div class="ask">' + questionHTML(st.ask, a, "ask", i) + "</div>";
-    h += '</div><div class="controls"><span class="count">Step ' + (i + 1) + " of " + n + "</span>" +
+    h += '</div><div class="controls"><span class="count">Step ' + (i + 1) + " of " + n + (stageLeft(t, "learn") >= 1 ? " \u00B7 " + shortMin(stageLeft(t, "learn")) + " left" : "") + "</span>" +
       (canSpeak ? '<label class="toggle"><input type="checkbox" data-act="narrate"' + (S.narrate ? " checked" : "") + "> Read aloud</label>" +
         (S.narrate ? '<span class="narctl" role="group" aria-label="Read aloud controls"><button class="btn small quiet" type="button" data-act="nprev" title="Back a sentence"><span aria-hidden="true">\u23EE</span><span class="sr">Back a sentence</span></button>' +
           '<button class="btn small" type="button" id="nplay" data-act="nplay"></button>' +
@@ -696,7 +700,7 @@
       : "Past exam problems. Do as many as you need, then mark the topic confident.";
     var h = crumb(t, stage) + tabs(t, stage) + timeStrip(t, stage) + confBar(t, stage === "deepen" ? "deepen" : "practice") + "<h1>" + NAMES[stage] + '</h1><p class="lede" style="margin-bottom:24px">' + intro + '</p><div class="work"><ul class="plist" aria-label="Problems">' +
       list.map(function (x, i) {
-        return '<li><a href="#/t/' + t.id + "/" + stage + "/" + x.id + '"' + (x === p ? ' aria-current="true"' : "") + '><span class="tick' + (s.solved[x.id] ? " yes" : "") + '" aria-hidden="true"></span>' + (i + 1) + ". " + esc(x.title) + (s.solved[x.id] ? '<span class="muted"> (solved)</span>' : "") + "</a></li>";
+        return '<li><a href="#/t/' + t.id + "/" + stage + "/" + x.id + '"' + (x === p ? ' aria-current="true"' : "") + '><span class="tick' + (s.solved[x.id] ? " yes" : "") + '" aria-hidden="true"></span>' + (i + 1) + ". " + esc(x.title) + (s.solved[x.id] ? "" : '<span class="pmin">' + shortMin(stage === "deepen" ? stageMin(t, "deepen") / list.length * factors().deepen : PACE.perPracticeProblem) + "</span>") + (s.solved[x.id] ? '<span class="muted"> (solved)</span>' : "") + "</a></li>";
       }).join("") + '</ul><div class="prob"><h2>' + esc(p.title) + '</h2><p class="src">' + esc(p.source || "") +
       (p.exam ? ' · <a href="' + esc(p.exam) + '" target="_blank" rel="noopener">exam PDF (opens in a new tab)</a>' : "") + "</p><p>" + esc(p.desc) + "</p>" +
       (p.sql && p.sql.tables ? '<details class="reveal" style="margin:0 0 12px"><summary>Show the tables</summary>' + p.sql.tables.map(function (t) { return '<h4 class="tblh">' + esc(t.name) + "</h4>" + tableHTML(t.cols, t.rows); }).join("") + "</details>" : "") +

@@ -409,3 +409,13 @@ details.why{margin-top:8px; font-size:15.5px}
 details.why > summary{cursor:pointer; color:var(--saffron-ink); font-weight:600; font-size:14.5px; width:max-content}
 details.why > p{margin:8px 0 0; padding:10px 14px; border-left:3px solid var(--saffron); background:var(--surface-2); border-radius:0 8px 8px 0}
 .banner .linkbtn{margin-left:10px; font-size:14px}
+
+/* ---------- time left on every part ---------- */
+.tabs a .tabt{margin-left:7px; font:500 12px/1 var(--mono); opacity:.7}
+.tabs a[aria-current] .tabt{opacity:.85}
+.tleft{margin-left:10px; font:500 12.5px/1 var(--mono); color:var(--muted); letter-spacing:0; vertical-align:2px; white-space:nowrap}
+.stage.done .tleft{color:var(--ok)}
+.plist .pmin{float:right; margin-left:8px; font:500 12px/1.6 var(--mono); color:var(--muted); white-space:nowrap}
+.navside .sd-min{flex:none; margin-left:auto; font:500 11.5px/1 var(--mono); color:var(--muted)}
+.navside .sd-flag + .sd-min, .navside .sd-min{padding-left:6px}
+.navside .sd-t small.sd-ut{display:block; font:500 11.5px/1.3 var(--mono); color:var(--muted); margin-top:2px; font-weight:500}
