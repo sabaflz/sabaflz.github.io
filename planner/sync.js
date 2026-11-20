@@ -12,6 +12,11 @@
     own computer, so a forgotten password never means losing your work.
   - "Only me" encrypts state.json with the same password. Nothing unencrypted is stored,
     and your password is kept only for the current tab.
+  - Recovery key: a long random code made once from the admin bar and kept by you (password
+    manager or paper). planner/data/recovery.json holds your password locked with that code,
+    and the code locked with your password. If you forget the password, "Forgot password?"
+    on the login takes the code and lets you choose a new password; every encrypted file is
+    then re-locked with it. Changing your password keeps the same recovery key.
 */
 (function () {
   "use strict";
@@ -29,6 +34,10 @@
   var API = window.PLANNER_API || "https://api.github.com";
   var STATE_URL = PC.stateUrl || window.PLANNER_STATE_URL || "data/state.json";
   var ADMIN_URL = PC.adminUrl || window.PLANNER_ADMIN_URL || "data/admin.json";
+  var RECOVERY_URL = ADMIN_URL.replace(/admin\.json$/, "recovery.json");
+  var RECOVERY_PATH = "planner/data/recovery.json";
+  /* Every file in the repo that is locked with the admin password, apart from admin.json. */
+  var LOCKED_FILES = ["planner/data/state.json", "planner/data/study.json"];
   function app() { return window[PC.app || "PlannerApp"]; }
   var SS_TOKEN = "sf_planner_tok", SS_PASS = "sf_planner_pw";
   var ITER = 600000;
@@ -36,7 +45,7 @@
   var token = ssGet(SS_TOKEN), password = ssGet(SS_PASS);
   var sha = null, adminSha = null;
   var visibility = null, data = null, keyCache = null;
-  var saveTimer = null, saving = false, pending = false;
+  var saveTimer = null, saving = false, pending = false, hasRecovery = null;
   try { localStorage.removeItem("sf_planner_admin_token"); } catch (e) {}   // old token-in-browser login
 
   // ---------- helpers ----------
@@ -210,6 +219,7 @@
       '<span class="ab-bk">Backup: ' + backupAge() + ' <button type="button" class="ab-out" id="bkBtn">Download</button>' +
         '<label class="ab-out">Restore<input type="file" id="restoreIn" accept="application/json,.json" hidden></label></span>' +
       '<button type="button" class="ab-out" id="pwBtn">Change password</button>' +
+      '<button type="button" class="ab-out' + (hasRecovery === false ? " ab-warn" : "") + '" id="rkBtn">' + (hasRecovery === false ? "Make a recovery key" : "Recovery key") + "</button>" +
       '<button type="button" class="ab-out" id="logoutBtn">Log out</button>';
   }
 
@@ -225,6 +235,7 @@
       ssSet(SS_TOKEN, null); ssSet(SS_PASS, null); location.reload(); return;
     }
     if (e.target.id === "pwBtn") { changePassword(); return; }
+    if (e.target.id === "rkBtn") { openRecoveryKey(); return; }
     if (e.target.id === "bkBtn" && data) { downloadBackup(); return; }
     if (e.target.id === "adminLink" || e.target.id === "lockedLogin") { e.preventDefault(); if (!token) openLogin(); }
   });
@@ -238,6 +249,50 @@
     } catch (err) { alert(err.message); }
     e.target.value = "";
   });
+
+  // ---------- recovery key and re-locking everything with a new password ----------
+  var B32 = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";             // no I, L, O, U: easy to read and type
+  function makeRecoveryKey() {
+    var b = crypto.getRandomValues(new Uint8Array(20)), bits = "", out = "";
+    for (var i = 0; i < b.length; i++) bits += ("0000000" + b[i].toString(2)).slice(-8);
+    for (var j = 0; j < bits.length; j += 5) out += B32[parseInt(bits.slice(j, j + 5), 2)];
+    return out.match(/.{4}/g).join("-");                       // 32 characters, 160 bits
+  }
+  function normKey(k) { return String(k || "").toUpperCase().replace(/[^0-9A-Z]/g, "").replace(/O/g, "0").replace(/[IL]/g, "1").replace(/U/g, "V"); }
+  async function fetchRecoveryFile() {
+    try { var r = await fetch(RECOVERY_URL + "?t=" + Date.now(), { cache: "no-store" }); return r.ok ? await r.json() : null; }
+    catch (e) { return null; }
+  }
+  async function saveRecoveryFile(key, pass) {
+    var k = normKey(key);
+    var file = { v: 1, note: "Admin password locked with your recovery key, and the key locked with your password. Made " + new Date().toISOString().slice(0, 10) + ".",
+      made: new Date().toISOString(), byKey: await encryptWith(pass, k, false), byPassword: await encryptWith(k, pass, false) };
+    var cur = await readRepoFile(RECOVERY_PATH);
+    await writeRepoFile(RECOVERY_PATH, JSON.stringify(file, null, 2) + "\n", cur.sha, "Planner: recovery key");
+  }
+  /* Re-lock every encrypted file with a new password. Each file is tried with the new password
+     first, so running it again after an interruption is safe. admin.json goes last. */
+  async function rekeyAll(oldPw, newPw, progress) {
+    var plans = [];
+    for (var i = 0; i < LOCKED_FILES.length; i++) {
+      var f = await readRepoFile(LOCKED_FILES[i]); if (!f.text) continue;
+      var j = JSON.parse(f.text); if (!j.enc) continue;
+      var plain;
+      try { plain = await decryptWith(j.enc, newPw, false); }
+      catch (e) { try { plain = await decryptWith(j.enc, oldPw, false); } catch (e2) { throw new Error("Couldn't unlock " + LOCKED_FILES[i] + " with your old password."); } }
+      plans.push({ path: LOCKED_FILES[i], file: j, plain: plain, sha: f.sha });
+    }
+    var rec = await readRepoFile(RECOVERY_PATH), recKey = null;
+    if (rec.text) { var rj = JSON.parse(rec.text); try { recKey = await decryptWith(rj.byPassword, newPw, false); } catch (e) { try { recKey = await decryptWith(rj.byPassword, oldPw, false); } catch (e2) {} } }
+    for (var n = 0; n < plans.length; n++) {
+      if (progress) progress("Re-locking " + plans[n].path.split("/").pop() + "…");
+      plans[n].file.enc = await encryptWith(plans[n].plain, newPw, false);
+      await writeRepoFile(plans[n].path, JSON.stringify(plans[n].file) + "\n", plans[n].sha, LABEL + ": re-locked with a new password");
+    }
+    if (recKey) { if (progress) progress("Updating the recovery key…"); await saveRecoveryFile(recKey, newPw); }
+    if (progress) progress("Saving your login…");
+    await saveAdminFile(token, newPw);
+  }
 
   // ---------- modals ----------
   function modal(html) {
@@ -260,8 +315,10 @@
     var m = modal('<h2>Admin login</h2>' +
       '<label>Password<input id="pwIn" type="password" autocomplete="current-password"></label>' +
       (errMsg ? '<p class="merr">' + esc(errMsg) + '</p>' : "") +
-      '<div class="mrow"><button type="button" class="mbtn ghost" id="mCancel">Cancel</button><button type="button" class="mbtn" id="mGo">Log in</button></div>');
+      '<div class="mrow"><button type="button" class="mbtn ghost" id="mCancel">Cancel</button><button type="button" class="mbtn" id="mGo">Log in</button></div>' +
+      '<p class="mnote"><button type="button" class="mlink" id="mForgot">Forgot password?</button></p>');
     m.querySelector("#mCancel").onclick = closeModal;
+    m.querySelector("#mForgot").onclick = function () { openRecover(); };
     onEnter(m, "#pwIn", "#mGo");
     m.querySelector("#mGo").onclick = async function () {
       var pw = m.querySelector("#pwIn").value; if (!pw) return;
@@ -324,9 +381,80 @@
       if (o !== password) return changePassword("Current password is wrong.");
       if (a.length < 12) return changePassword("Use at least 12 characters.");
       if (a !== b) return changePassword("The new passwords don't match.");
-      busy(this, "Re-encrypting…");
-      try { await saveAdminFile(token, a); password = a; ssSet(SS_PASS, a); keyCache = null; await saveNow(); closeModal(); setStatus("Password changed", "good"); }
-      catch (err) { changePassword(err.message); }
+      var btn = this; busy(btn, "Re-encrypting…");
+      try {
+        clearTimeout(saveTimer); await saveNow();               // save anything pending under the old password first
+        await rekeyAll(o, a, function (t) { btn.textContent = t; });
+        ssSet(SS_PASS, a); location.reload();
+      } catch (err) { changePassword(err.message + " Try again: it is safe to repeat."); }
+    };
+  }
+  /* Make (or replace) the recovery key. It is saved only once you confirm you have kept it. */
+  async function openRecoveryKey() {
+    var have = await fetchRecoveryFile(), key = null;
+    var m = modal('<h2>Recovery key</h2>' +
+      '<p>A recovery key lets you choose a new password if you forget yours, without losing anything. Keep it somewhere safe and separate from this site: a password manager, or printed on paper.</p>' +
+      (have ? '<p class="mok">You have a recovery key, made ' + esc(String(have.made || "").slice(0, 10)) + '. Making a new one replaces it, so the old one stops working.</p>' : '<p class="merr">You don\'t have a recovery key yet.</p>') +
+      '<div class="mrow"><button type="button" class="mbtn ghost" id="mCancel">Close</button><button type="button" class="mbtn" id="mMake">' + (have ? "Make a new key" : "Make a recovery key") + "</button></div>");
+    m.querySelector("#mCancel").onclick = closeModal;
+    m.querySelector("#mMake").onclick = function () {
+      key = makeRecoveryKey();
+      var m2 = modal('<h2>Your recovery key</h2><p>Save it now. It is shown only once.</p>' +
+        '<p class="rkey" id="rkey">' + esc(key) + '</p>' +
+        '<div class="mrow"><button type="button" class="mbtn ghost" id="mCopy">Copy</button><button type="button" class="mbtn ghost" id="mFile">Download as a file</button></div>' +
+        '<label class="mcheck"><input type="checkbox" id="mSaved"> I saved it somewhere safe</label>' +
+        '<div class="mrow"><button type="button" class="mbtn ghost" id="mCancel">Cancel</button><button type="button" class="mbtn" id="mDone" disabled>Turn on this key</button></div>');
+      m2.querySelector("#mCancel").onclick = closeModal;
+      m2.querySelector("#mCopy").onclick = function () { try { navigator.clipboard.writeText(key); this.textContent = "Copied"; } catch (e) {} };
+      m2.querySelector("#mFile").onclick = function () {
+        var a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["Recovery key for the planner on sabaflz.github.io\n\n" + key + "\n\nUse it from Planner > Admin > Forgot password?\n"], { type: "text/plain" }));
+        a.download = "planner-recovery-key.txt"; document.body.appendChild(a); a.click(); a.remove();
+      };
+      m2.querySelector("#mSaved").onchange = function () { m2.querySelector("#mDone").disabled = !this.checked; };
+      m2.querySelector("#mDone").onclick = async function () {
+        busy(this, "Saving…");
+        try { await saveRecoveryFile(key, password); closeModal(); hasRecovery = true; renderAdminBar(); setStatus("Recovery key on", "good"); }
+        catch (err) { this.disabled = false; this.textContent = "Turn on this key"; alert("Couldn't save the recovery key: " + err.message); }
+      };
+    };
+  }
+  /* Forgot password: the recovery key unlocks the old password, then everything is re-locked with a new one. */
+  async function openRecover(errMsg, needToken) {
+    var rec = await fetchRecoveryFile();
+    if (!rec) {
+      modal('<h2>Forgot password</h2><p>There is no recovery key on file, so the password can\'t be recovered. You can start over instead: on GitHub, delete planner/data/admin.json, state.json and study.json, then choose Admin here to set up again and restore your backup files.</p>' +
+        '<div class="mrow"><button type="button" class="mbtn" id="mCancel">OK</button></div>').querySelector("#mCancel").onclick = closeModal;
+      return;
+    }
+    var m = modal('<h2>Forgot password</h2><p>Enter your recovery key, then choose a new password. Your planner and study plan are kept.</p>' +
+      '<label>Recovery key<input id="rkIn" autocomplete="off" spellcheck="false" placeholder="XXXX-XXXX-XXXX-…"></label>' +
+      '<label>New password<input id="p1" type="password" autocomplete="new-password"></label>' +
+      '<label>Type it again<input id="p2" type="password" autocomplete="new-password"></label>' +
+      (needToken ? '<label>New GitHub token (yours expired)<input id="tokIn" type="password" autocomplete="off" spellcheck="false" placeholder="github_pat_…"></label>' : "") +
+      (errMsg ? '<p class="merr">' + esc(errMsg) + '</p>' : "") +
+      '<div class="mrow"><button type="button" class="mbtn ghost" id="mCancel">Cancel</button><button type="button" class="mbtn" id="mGo">Reset password</button></div>' + (needToken ? TOKEN_HELP : ""));
+    m.querySelector("#mCancel").onclick = closeModal;
+    onEnter(m, "input", "#mGo");
+    m.querySelector("#mGo").onclick = async function () {
+      var k = m.querySelector("#rkIn").value, a = m.querySelector("#p1").value, b = m.querySelector("#p2").value, btn = this;
+      if (normKey(k).length !== 32) return openRecover("That recovery key isn't complete. It has 32 letters and numbers.", needToken);
+      if (a.length < 12) return openRecover("Use at least 12 characters for the new password.", needToken);
+      if (a !== b) return openRecover("The new passwords don't match.", needToken);
+      busy(btn, "Checking the key…");
+      var oldPw, admin, tok;
+      try { oldPw = await decryptWith(rec.byKey, normKey(k), false); }
+      catch (e) { return openRecover("That recovery key didn't work. Check it was typed fully.", needToken); }
+      try { admin = await fetchAdminFile(); tok = await decryptWith(admin.enc, oldPw, false); }
+      catch (e) { return openRecover("The key worked, but it doesn't match the saved login. Make sure you're using your newest recovery key.", needToken); }
+      var fresh = needToken ? m.querySelector("#tokIn").value.trim() : "";
+      if (fresh) tok = fresh;
+      try { await verifyToken(tok); }
+      catch (e) { return openRecover(e.auth ? (fresh ? "GitHub didn't accept that token. Check it was copied fully." : "Your recovery key worked, but the GitHub token behind your login has expired. Paste a new one below.") : e.message, true); }
+      token = tok;
+      try { await rekeyAll(oldPw, a, function (t) { btn.textContent = t; }); }
+      catch (e) { return openRecover(e.message + " Try again: it is safe to repeat.", needToken); }
+      password = a; ssSet(SS_TOKEN, tok); ssSet(SS_PASS, a); keyCache = null;
+      location.hash = ""; location.reload();
     };
   }
   function askVisibility() {
@@ -346,6 +474,12 @@
     });
   }
 
+  /* Shows "Make a recovery key" in the admin bar until you have one; right after setup it asks once. */
+  async function checkRecovery(offer) {
+    hasRecovery = !!(await fetchRecoveryFile()); renderAdminBar();
+    if (!hasRecovery && offer) openRecoveryKey();
+  }
+
   // ---------- boot ----------
   function loadScript(src) {
     return new Promise(function (res) { var s = document.createElement("script"); s.src = src + "?t=" + Date.now(); s.onload = s.onerror = function () { res(); }; document.head.appendChild(s); });
@@ -362,7 +496,7 @@
         try { data = JSON.parse(await decryptWith(file.enc, password, true)); }
         catch (e) { showLocked("Your password didn't unlock the saved planner."); return; }
       }
-      renderAdminBar(); showPlanner(true);
+      renderAdminBar(); showPlanner(true); checkRecovery();
     } catch (e) {
       if (/401/.test(e.message)) { ssSet(SS_TOKEN, null); token = null; bootPublic(); openLogin("Please log in again."); return; }
       showLocked(e.message);
@@ -377,6 +511,7 @@
     renderAdminBar(); showPlanner(true);
     await saveNow();
     deleteSeed();
+    checkRecovery(true);
   }
   async function bootPublic() {
     try {
@@ -389,4 +524,6 @@
   }
 
   if (token && password) bootAdmin(); else bootPublic();
+  /* planner/#recover opens Forgot password (linked from the site-wide owner login) */
+  if (/#recover$/.test(location.hash) && !(token && password)) openRecover();
 })();

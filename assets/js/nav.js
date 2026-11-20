@@ -192,7 +192,7 @@
 
   /* owner.js handles the login box (#owner) and reading private content */
   if (!window.Owner && !document.querySelector('script[src*="owner.js"]')) {
-    var os = document.createElement("script"); os.src = base + "assets/js/owner.js?v=1"; document.head.appendChild(os);
+    var os = document.createElement("script"); os.src = base + "assets/js/owner.js?v=2"; document.head.appendChild(os);
   }
 
   /* Mount right away when the header is already in the page (scripts sit at the
