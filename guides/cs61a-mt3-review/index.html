@@ -304,8 +304,11 @@ document.addEventListener('keydown', function (e) {
 });
 
 show(0);
+/* Page flags: bring a flagged slide back on screen. */
+window.GuideFlags = { reveal: function (h) { var i = nodes.indexOf(h.closest(".slide")); if (i >= 0) { if (playing) pause(); show(i); } } };
 </script>
 <script src="../../assets/js/tts.js?v=2"></script>
 <script src="../../assets/js/theme.js?v=1"></script>
+<script src="../flags.js?v=1" data-units="h2, h3"></script>
 </body>
 </html>

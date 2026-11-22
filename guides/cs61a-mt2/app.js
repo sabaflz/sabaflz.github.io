@@ -103,6 +103,8 @@
   }
 
   // ---- problem view -----------------------------------------------------
+  /* Page flags (../flags.js): name the open problem, and reopen it from the flag list. */
+  window.GuideFlags = { ctx: function () { return current ? current.id : ""; }, go: function (id) { selectProblem(id); } };
   function selectProblem(id) {
     var p = PROBLEMS.find(function (x) { return x.id === id; });
     if (!p) return;
