@@ -627,37 +627,65 @@
 
   /* ---------- lesson player ---------- */
   var canSpeak = "speechSynthesis" in window && "SpeechSynthesisUtterance" in window;
-  /* Read aloud reads the step one sentence at a time, so you can pause, and go back or
-     forward a sentence. Past the last sentence it moves to the next step and keeps reading;
-     before the first, back to the previous step. */
-  var NAR = { sents: [], i: 0, playing: false, tok: 0, done: false };
+  /* Read aloud player. It reads the step one sentence at a time, so you can pause and pick up
+     where it stopped, go back or forward a sentence, tap any sentence to hear it from there, and
+     change the speed. Forward past the last sentence moves to the next step and keeps reading;
+     back before the first goes to the previous step. "Auto" starts reading each new step by itself. */
+  var NAR = { sents: [], i: 0, playing: false, tok: 0, done: false, ch: 0, base: 0, used: false, carry: false, u: null };
+  var RATES = [1, 1.25, 1.5, 1.75, 2, 0.75];
   function sentences(text) { return (String(text).match(/[^.!?]+(?:[.!?]+(?=\s|$)|$)["')\]]*\s*/g) || [String(text)]).map(function (x) { return x.trim(); }).filter(Boolean); }
-  function hush() { NAR.tok++; NAR.playing = false; if (canSpeak) window.speechSynthesis.cancel(); }
+  function hush() { NAR.tok++; NAR.playing = false; if (canSpeak) { try { window.speechSynthesis.cancel(); } catch (e) {} } }
   function narUI() {
     var box = document.getElementById("narbox"); if (!box) return;
-    box.querySelectorAll(".sent").forEach(function (el, k) { el.classList.toggle("now", S.narrate && k === NAR.i); });
-    var pb = document.getElementById("nplay"); if (pb) { pb.innerHTML = NAR.playing ? '<span aria-hidden="true">\u23F8</span> Pause' : '<span aria-hidden="true">\u25B6</span> ' + (NAR.done ? "Replay" : NAR.i ? "Resume" : "Play"); pb.setAttribute("aria-pressed", NAR.playing); }
-    var c = document.getElementById("ncount"); if (c) c.textContent = "Sentence " + (NAR.i + 1) + " of " + NAR.sents.length;
+    box.querySelectorAll(".sent").forEach(function (el, k) { el.classList.toggle("now", (NAR.used || S.narrate) && k === NAR.i); });
+    var mid = !NAR.done && (NAR.i > 0 || NAR.ch > 0);
+    var pb = document.getElementById("nplay"); if (pb) { pb.innerHTML = NAR.playing ? '<span aria-hidden="true">⏸</span> Pause' : '<span aria-hidden="true">▶</span> ' + (NAR.done ? "Replay" : mid ? "Resume" : "Listen"); pb.setAttribute("aria-pressed", NAR.playing); }
+    var c = document.getElementById("ncount"); if (c) c.textContent = (NAR.i + 1) + " / " + NAR.sents.length;
+    var rb = document.getElementById("nrate"); if (rb) rb.textContent = (S.rate || 1) + "x";
   }
-  function speakFrom(i) {
+  /* Speak sentence i, starting ch characters in. Browsers drop speech that is queued in the same
+     instant as a cancel, so when something was already speaking the new speech starts a moment later. */
+  function speakFrom(i, ch) {
     if (!canSpeak) return;
-    hush(); NAR.i = Math.max(0, Math.min(i, NAR.sents.length - 1)); NAR.playing = true; NAR.done = false;
-    var tok = NAR.tok, u = new SpeechSynthesisUtterance(NAR.sents[NAR.i]);
-    if (S.rate) u.rate = S.rate;
-    u.onend = function () {
+    var syn = window.speechSynthesis, busy = syn.speaking || syn.pending;
+    hush(); NAR.i = Math.max(0, Math.min(i, NAR.sents.length - 1)); NAR.playing = true; NAR.done = false; NAR.used = true;
+    NAR.base = ch && ch < NAR.sents[NAR.i].length - 1 ? ch : 0; NAR.ch = NAR.base;
+    var tok = NAR.tok, text = NAR.sents[NAR.i].slice(NAR.base);
+    var go = function () {
       if (tok !== NAR.tok) return;
-      if (NAR.i < NAR.sents.length - 1) speakFrom(NAR.i + 1);
-      else { NAR.playing = false; NAR.done = true; narUI(); }
+      var u = new SpeechSynthesisUtterance(text); NAR.u = u; // kept so the browser does not discard it mid-sentence
+      u.rate = S.rate || 1;
+      u.onboundary = function (e) { if (tok === NAR.tok && e.name !== "sentence" && e.charIndex != null) NAR.ch = NAR.base + e.charIndex; };
+      u.onend = function () {
+        if (tok !== NAR.tok) return;
+        NAR.ch = 0;
+        if (NAR.i < NAR.sents.length - 1) speakFrom(NAR.i + 1);
+        else { NAR.playing = false; NAR.done = true; narUI(); }
+      };
+      u.onerror = function (e) { if (tok !== NAR.tok || e.error === "interrupted" || e.error === "canceled") return; NAR.playing = false; narUI(); };
+      syn.speak(u); if (syn.paused) syn.resume();
     };
-    window.speechSynthesis.speak(u); narUI();
+    if (busy) setTimeout(go, 90); else go();
+    narUI();
   }
-  function narSetup(text, auto) { hush(); NAR.sents = sentences(text); NAR.i = 0; NAR.done = false; if (auto && S.narrate) speakFrom(0); else narUI(); }
-  function narToggle() { if (NAR.playing) { hush(); narUI(); } else speakFrom(NAR.done ? 0 : NAR.i); }
+  function narSetup(text, auto) {
+    var carry = NAR.carry; NAR.carry = false;
+    hush(); NAR.sents = sentences(text); NAR.i = 0; NAR.ch = 0; NAR.done = false;
+    if (auto && (S.narrate || carry)) speakFrom(0); else narUI();
+  }
+  /* Pause keeps the word it stopped on, so Resume continues from there (from the start of the
+     sentence in browsers that do not report words). */
+  function narToggle() { if (NAR.playing) { var ch = NAR.ch; hush(); NAR.ch = ch; narUI(); } else speakFrom(NAR.done ? 0 : NAR.i, NAR.done ? 0 : NAR.ch); }
   function narStep(d) {
-    var j = NAR.i + d;
-    if (j >= NAR.sents.length) { if (document.querySelector('[data-act="next"]:not([disabled])')) { stepBy(1); } return; }
-    if (j < 0) { var r = route(), t = topicById(r[1]); if (t && T(t.id).step > 0) stepBy(-1); return; }
-    if (NAR.playing) speakFrom(j); else { NAR.i = j; NAR.done = false; narUI(); }
+    var j = NAR.i + d, was = NAR.playing;
+    if (d < 0 && NAR.ch > 14 && !NAR.done) j = NAR.i; // well into a sentence: back means start it again
+    if (j >= NAR.sents.length) { if (document.querySelector('[data-act="next"]:not([disabled])')) { NAR.carry = was; stepBy(1); } return; }
+    if (j < 0) { var r = route(), t = topicById(r[1]); if (t && T(t.id).step > 0) { NAR.carry = was; stepBy(-1); } return; }
+    if (was) speakFrom(j); else { NAR.i = j; NAR.ch = 0; NAR.done = false; NAR.used = true; narUI(); }
+  }
+  function narRate() {
+    S.rate = RATES[(RATES.indexOf(S.rate || 1) + 1) % RATES.length]; save();
+    if (NAR.playing) speakFrom(NAR.i, NAR.ch); else narUI();
   }
   function speak(text) { narSetup(text, true); }
 
@@ -678,10 +706,12 @@
     if (st.tip && lv !== "review") h += '<p class="note"><b>Exam tip.</b> ' + esc(st.tip) + "</p>";
     if (st.ask) h += '<div class="ask">' + questionHTML(st.ask, a, "ask", i) + "</div>";
     h += '</div><div class="controls"><span class="count">Step ' + (i + 1) + " of " + n + (stageLeft(t, "learn") >= 1 ? " \u00B7 " + shortMin(stageLeft(t, "learn")) + " left" : "") + "</span>" +
-      (canSpeak ? '<label class="toggle"><input type="checkbox" data-act="narrate"' + (S.narrate ? " checked" : "") + "> Read aloud</label>" +
-        (S.narrate ? '<span class="narctl" role="group" aria-label="Read aloud controls"><button class="btn small quiet" type="button" data-act="nprev" title="Back a sentence"><span aria-hidden="true">\u23EE</span><span class="sr">Back a sentence</span></button>' +
+      (canSpeak ? '<span class="narctl" role="group" aria-label="Read aloud player"><button class="btn small quiet nbtn" type="button" data-act="nprev" title="Back a sentence"><span aria-hidden="true">⏮</span><span class="sr">Back a sentence</span></button>' +
           '<button class="btn small" type="button" id="nplay" data-act="nplay"></button>' +
-          '<button class="btn small quiet" type="button" data-act="nnext" title="Forward a sentence"><span aria-hidden="true">\u23ED</span><span class="sr">Forward a sentence</span></button><span class="ncount" id="ncount"></span></span>' : "") : "") +
+          '<button class="btn small quiet nbtn" type="button" data-act="nnext" title="Forward a sentence"><span aria-hidden="true">⏭</span><span class="sr">Forward a sentence</span></button>' +
+          '<button class="btn small quiet nbtn" type="button" id="nrate" data-act="nrate" title="Reading speed" aria-label="Reading speed, tap to change"></button>' +
+          '<span class="ncount" id="ncount" title="Sentence in this step"></span>' +
+          '<label class="toggle nauto" title="Start reading each step by itself"><input type="checkbox" data-act="narrate"' + (S.narrate ? " checked" : "") + "> Auto</label></span>" : "") +
       '<button class="btn small quiet" type="button" data-act="back"' + (i === 0 ? " disabled" : "") + ">Back</button>" +
       (last ? '<a class="btn small primary" href="#/t/' + t.id + '/check">Go to the check questions</a>'
             : '<button class="btn small primary" type="button" data-act="next"' + (blocked ? ' disabled title="Answer the question to continue"' : "") + ">Next</button>") +
@@ -802,6 +832,8 @@
     s.step += d; save(); renderLearn(t);
   }
   view.addEventListener("click", function (e) {
+    var sn = canSpeak && e.target.closest && e.target.closest("#narbox .sent");
+    if (sn && !String(window.getSelection && window.getSelection()).trim()) { speakFrom(Array.prototype.indexOf.call(sn.parentNode.querySelectorAll(".sent"), sn)); return; }
     var el = e.target.closest("[data-act]"); if (!el || el.tagName === "FORM") return;
     var act = el.getAttribute("data-act"), r = route(), t = topicById(r[1]);
     if (act === "pick") answer(el.getAttribute("data-ctx"), +el.getAttribute("data-n"), +el.getAttribute("data-i"));
@@ -841,12 +873,13 @@
     else if (act === "nprev") narStep(-1);
     else if (act === "nnext") narStep(1);
     else if (act === "nplay") narToggle();
+    else if (act === "nrate") narRate();
   });
   view.addEventListener("change", function (e) {
     var act = e.target.getAttribute && e.target.getAttribute("data-act"), t = topicById(route()[1]);
     if (act === "flagtopic" && t) { T(t.id).flag = e.target.checked; save(); }
     if (act === "confident" && t) { T(t.id).confident = e.target.checked; save(); render(true); }
-    if (act === "narrate") { S.narrate = e.target.checked; save(); if (t && route()[2] === "learn") { renderLearn(t, true); if (S.narrate) speakFrom(0); else hush(); } }
+    if (act === "narrate") { S.narrate = e.target.checked; save(); if (S.narrate && !NAR.playing && t && route()[2] === "learn") speakFrom(NAR.done ? 0 : NAR.i, NAR.done ? 0 : NAR.ch); }
   });
   view.addEventListener("submit", function (e) {
     var f = e.target, act = f.getAttribute("data-act");
@@ -871,7 +904,7 @@
   document.addEventListener("keydown", function (e) {
     var tag = e.target.tagName;
     if (tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT" || e.metaKey || e.ctrlKey || e.altKey) return;
-    if (S.narrate && route()[2] === "learn" && e.target.tagName !== "BUTTON" && e.target.tagName !== "A") {
+    if ((S.narrate || NAR.used) && route()[2] === "learn" && e.target.tagName !== "BUTTON" && e.target.tagName !== "A") {
       if (e.key === " ") { e.preventDefault(); narToggle(); return; }
       if (e.key === ",") { narStep(-1); return; }
       if (e.key === ".") { narStep(1); return; }
