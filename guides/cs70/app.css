@@ -428,3 +428,25 @@ details.why > p{margin:8px 0 0; padding:10px 14px; border-left:3px solid var(--s
 .narctl .nauto{font-size:13.5px; margin-left:4px}
 .narr .say .sent{cursor:pointer; border-radius:4px}
 .narr .say .sent:hover{background:color-mix(in srgb,var(--saffron) 14%,transparent)}
+
+/* ---------- page flags: an emoji and a note on any step, question or problem ---------- */
+.mark{margin-top:14px}
+.markbtn{display:inline-flex; align-items:center; gap:8px; padding:6px 12px; border:1.5px dashed var(--line); border-radius:999px; background:transparent; color:var(--muted); font:500 14px/1.2 var(--body); cursor:pointer; text-align:left; max-width:100%}
+.markbtn:hover{border-color:var(--bad); color:var(--ink)}
+.markbtn .me{font-size:17px; line-height:1; display:inline-flex}
+.markbtn .me .face{width:16px; height:16px}
+.markbtn .mn{display:block; font-size:13px; color:var(--muted); font-weight:400; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:60ch}
+.mark.on .markbtn{border-style:solid; border-color:var(--bad); background:var(--bad-soft); color:var(--ink); border-radius:14px}
+.markpanel{margin-top:10px; padding:12px; border:1.5px solid var(--line); border-radius:14px; background:var(--bg); display:flex; flex-direction:column; gap:10px}
+.markpanel .markq{font-size:14.5px; color:var(--muted)}
+.markpanel .emos{display:flex; flex-wrap:wrap; gap:6px}
+.emo{display:inline-flex; align-items:center; gap:6px; padding:6px 10px; border:1.5px solid var(--line); border-radius:999px; background:transparent; color:var(--ink); font:500 13.5px/1 var(--body); cursor:pointer}
+.emo span{font-size:18px; line-height:1}
+.emo:hover{border-color:var(--saffron)}
+.emo[aria-pressed="true"]{border-color:var(--bad); background:var(--bad-soft); font-weight:600}
+.marknote{font:400 15px/1.4 var(--body); padding:9px 12px; border:1.5px solid var(--line); border-radius:10px; background:var(--surface); color:var(--ink); width:100%; box-sizing:border-box}
+.marknote:focus{outline:2px solid var(--saffron); outline-offset:1px}
+.markpanel .row{display:flex; gap:8px; flex-wrap:wrap}
+.plist .pmark{margin-left:6px}
+.plist .pmark:empty{display:none}
+.rlist small.rmark i{color:var(--ink)}
