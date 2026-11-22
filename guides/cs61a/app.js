@@ -71,6 +71,70 @@
       CONF.map(function (c) { return '<button type="button" class="cbtn c' + c.v + '" data-act="conf" data-v="' + c.v + '" aria-pressed="' + (cv === c.v) + '" aria-label="' + c.l + '">' + icon(c.v) + '<small class="ctip" aria-hidden="true">' + c.l + "</small></button>"; }).join("") +
       '</span><button type="button" class="cbtn flagbtn" data-act="flagt" aria-pressed="' + !!s.flag + '">' + FLAG + "<small>" + (s.flag ? "Flagged for review" : "Flag for review") + "</small></button></div>";
   }
+  /* ---------- page flags: mark any lesson step, check question or problem with an emoji and a note ---------- */
+  var MARKS = [{ e: "\uD83D\uDEA9", l: "Review" }, { e: "\uD83D\uDE15", l: "Confused" }, { e: "\uD83E\uDD2F", l: "Too hard" }, { e: "\u2753", l: "Ask in office hours" }, { e: "\uD83D\uDC22", l: "Slow" }, { e: "\uD83D\uDD01", l: "Redo" }, { e: "\u2B50", l: "Important" }];
+  var markOpen = null;
+  function markLabel(e) { var m = MARKS.filter(function (x) { return x.e === e; })[0]; return m ? m.l : "Flagged"; }
+  function getMark(tid, key) {
+    var s = S.topics[tid] || {};
+    if (s.marks && s.marks[key]) return s.marks[key];
+    if (key.indexOf("p:") === 0 && s.flags && s.flags[key.slice(2)]) return { e: MARKS[0].e };
+    return null;
+  }
+  function setMark(tid, key, m) {
+    var s = T(tid); s.marks = s.marks || {};
+    if (key.indexOf("p:") === 0) delete s.flags[key.slice(2)];
+    if (m) s.marks[key] = m; else delete s.marks[key];
+    save();
+  }
+  /* key: "learn:<step>", "check:<question>" or "p:<problem id>"; what: "step", "question" or "problem" */
+  function markHTML(tid, key, what) {
+    var m = getMark(tid, key), open = markOpen === tid + "|" + key;
+    var h = '<div class="mark' + (m ? " on" : "") + '" data-t="' + tid + '" data-key="' + esc(key) + '" data-what="' + what + '"><button type="button" class="markbtn" data-act="markopen" aria-expanded="' + open + '">' +
+      (m ? '<span class="me" aria-hidden="true">' + m.e + "</span><span>" + esc(markLabel(m.e)) + (m.n ? '<small class="mn">' + esc(m.n) + "</small>" : "") + "</span>"
+         : '<span class="me" aria-hidden="true">' + FLAG + "</span><span>Flag this " + what + "</span>") + "</button>";
+    if (open) {
+      h += '<div class="markpanel"><span class="markq">What was the problem here?</span><span class="emos" role="group" aria-label="Pick an emoji">' +
+        MARKS.map(function (x) { return '<button type="button" class="emo" data-act="markset" data-e="' + x.e + '" aria-pressed="' + !!(m && m.e === x.e) + '" title="' + x.l + '"><span aria-hidden="true">' + x.e + '</span><small>' + x.l + "</small></button>"; }).join("") +
+        '</span><input class="marknote" data-act="marknote" type="text" maxlength="200" placeholder="Note to yourself (optional)" aria-label="Note" value="' + esc(m && m.n || "") + '"><span class="row">' +
+        '<button type="button" class="btn small" data-act="markclose">Done</button>' + (m ? '<button type="button" class="btn small quiet" data-act="markclear">Remove flag</button>' : "") + "</span></div>";
+    }
+    return h + "</div>";
+  }
+  function redrawMark(box, focusSel) {
+    var d = document.createElement("div"); d.innerHTML = markHTML(box.getAttribute("data-t"), box.getAttribute("data-key"), box.getAttribute("data-what"));
+    var nb = d.firstChild; box.parentNode.replaceChild(nb, box);
+    var f = focusSel && nb.querySelector(focusSel); if (f) f.focus();
+    return nb;
+  }
+  function markClick(act, el) {
+    var box = el.closest(".mark"); if (!box) return false;
+    var tid = box.getAttribute("data-t"), key = box.getAttribute("data-key"), id = tid + "|" + key, m = getMark(tid, key);
+    if (act === "markopen") { markOpen = markOpen === id ? null : id; redrawMark(box, markOpen ? ".emo[aria-pressed=true], .emo" : ".markbtn"); }
+    else if (act === "markset") { var e = el.getAttribute("data-e"); setMark(tid, key, { e: e, n: m && m.n || "", at: Date.now() }); redrawMark(box, '.emo[data-e="' + e + '"]'); }
+    else if (act === "markclear") { setMark(tid, key, null); markOpen = null; redrawMark(box, ".markbtn"); }
+    else if (act === "markclose") { markOpen = null; redrawMark(box, ".markbtn"); }
+    else return false;
+    if (/^p:/.test(key) && cur) { var pl = view.querySelector('.plist a[aria-current] .pmark'), nm = getMark(tid, key); if (pl) pl.textContent = nm ? nm.e : ""; }
+    renderSide();
+    return true;
+  }
+  function markNote(input) {
+    var box = input.closest(".mark"), tid = box.getAttribute("data-t"), key = box.getAttribute("data-key"), m = getMark(tid, key), v = input.value;
+    if (!m && !v.trim()) return;
+    var s = T(tid); s.marks = s.marks || {};
+    if (!m) { setMark(tid, key, { e: MARKS[0].e, n: v, at: Date.now() }); var b = box.querySelector('.emo[data-e="' + MARKS[0].e + '"]'); if (b) b.setAttribute("aria-pressed", "true"); box.classList.add("on"); }
+    else { m.n = v; if (!s.marks[key]) setMark(tid, key, m); else saveSoon(); }
+  }
+  /* All page flags in a topic, in the order the pages come. */
+  function topicMarks(t) {
+    var out = [], tid = t.id;
+    items(t, "learn").forEach(function (x, i) { var m = getMark(tid, "learn:" + i); if (m) out.push({ m: m, where: "Lesson step " + (i + 1), href: "#/t/" + tid + "/learn/" + (i + 1) }); });
+    items(t, "check").forEach(function (x, i) { var m = getMark(tid, "check:" + i); if (m) out.push({ m: m, where: "Check question " + (i + 1), href: "#/t/" + tid + "/check/" + (i + 1) }); });
+    ["deepen", "practice"].forEach(function (st) { items(t, st).forEach(function (p) { var m = getMark(tid, "p:" + p.id); if (m) out.push({ m: m, where: (st === "deepen" ? "Problem: " : "Practice: ") + p.title, href: "#/t/" + tid + "/" + st + "/" + p.id }); }); });
+    return out;
+  }
+
   function confHistory(t) {
     var log = (S.topics[t.id] || {}).confLog || [];
     if (!log.length) return '<p class="meta chist">Rate yourself any time, from this page or inside a stage. Your ratings build a history here.</p>';
@@ -275,8 +339,7 @@
       if (missed) why.push(missed + " check question" + (missed === 1 ? "" : "s") + " missed");
       if (asks >= 2) why.push(asks + " lesson questions missed");
       if (hinted.length) why.push(hinted.length + " problem" + (hinted.length === 1 ? "" : "s") + " needed two or more hints");
-      var flagged = [];
-      ["deepen", "practice"].forEach(function (st) { items(t, st).forEach(function (p) { if ((s.flags || {})[p.id]) flagged.push({ p: p, stage: st }); }); });
+      var flagged = topicMarks(t);
       if (why.length || flagged.length) out.push({ t: t, why: why, flagged: flagged, weight: (s.flag ? 3 : 0) + (cv && cv <= 2 ? (3 - cv) * 2 : 0) + missed * 2 + asks + hinted.length * 2 + flagged.length * 2, link: missed ? "/check" : "" });
     });
     out.sort(function (a, b) { return b.weight - a.weight; });
@@ -285,12 +348,12 @@
   function reviewHTML() {
     var list = reviewItems(), h = '<section class="review"><h2>Review list<small>What you flagged, and where you slipped</small></h2>';
     if (!list.length) {
-      if (S.noReviewExample) return h + '<p class="muted">Nothing here yet. Flag a topic or a problem, or miss a check question, and it shows up here.</p></section>';
+      if (S.noReviewExample) return h + '<p class="muted">Nothing here yet. Flag a topic or any page with an emoji, or miss a check question, and it shows up here.</p></section>';
       return h + '<ul class="rlist"><li class="example"><span><strong>Example: Tree recursion</strong><small>2 check questions missed · 1 problem needed two or more hints</small><small>Flagged problem: Count the paths</small></span><button type="button" class="linkbtn" data-act="hideexample">Remove example</button></li></ul><p class="muted" style="font-size:14px">This is what an entry looks like. Real ones appear when you flag something or miss questions.</p></section>';
     }
     return h + '<ul class="rlist">' + list.map(function (r) {
       return '<li><span><a href="#/t/' + r.t.id + r.link + '"><strong>' + esc(r.t.title) + "</strong></a>" + (r.why.length ? "<small>" + esc(cap(r.why.join(" · "))) + "</small>" : "") +
-        r.flagged.map(function (f) { return '<small>Flagged problem: <a href="#/t/' + r.t.id + "/" + f.stage + "/" + f.p.id + '">' + esc(f.p.title) + "</a></small>"; }).join("") + '</span><span class="meta">' + ((S.topics[r.t.id] || {}).confident ? "marked confident" : leftText(leftMine(r.t))) + "</span></li>";
+        r.flagged.map(function (f) { return '<small class="rmark"><span aria-hidden="true">' + f.m.e + '</span> <a href="' + f.href + '">' + esc(f.where) + "</a> \u00B7 " + esc(markLabel(f.m.e)) + (f.m.n ? ": <i>" + esc(f.m.n) + "</i>" : "") + "</small>"; }).join("") + '</span><span class="meta">' + ((S.topics[r.t.id] || {}).confident ? "marked confident" : leftText(leftMine(r.t))) + "</span></li>";
     }).join("") + "</ul></section>";
   }
   function sumMin(list) { return list.reduce(function (a, t) { return a + topicMin(t); }, 0); }
@@ -391,7 +454,7 @@
       h += '<details class="sd-unit" data-sui="' + ui + '"' + (open ? " open" : "") + '><summary><span class="sd-n">' + (ui + 1) + '</span><span class="sd-t">' + esc(u.title) + '<small class="sd-ut">' + (sumMine(u.topics) < 1 ? "all done" : shortMin(sumMine(u.topics)) + " left") + "</small></span><small>" + u.topics.filter(function (t) { return (S.topics[t.id] || {}).confident; }).length + "/" + u.topics.length + "</small></summary><ul>" +
         u.topics.map(function (t) {
           var cv = confOf(t.id), on = t.id === here, mark = cv ? icon(cv) : '<span class="sd-dot' + (started(t) ? " started" : "") + '" aria-hidden="true"></span>';
-          var x = '<li><a href="#/t/' + t.id + '"' + (on && !stage ? ' aria-current="page"' : on ? ' aria-current="true"' : "") + ">" + mark + '<span class="sd-tt">' + esc(t.title) + "</span>" + '<span class="sd-min">' + (leftMine(t) < 1 ? "\u2713" : shortMin(leftMine(t))) + "</span>" + ((S.topics[t.id] || {}).flag ? '<span class="sd-flag" aria-label="flagged">' + FLAG + "</span>" : "") + "</a>";
+          var x = '<li><a href="#/t/' + t.id + '"' + (on && !stage ? ' aria-current="page"' : on ? ' aria-current="true"' : "") + ">" + mark + '<span class="sd-tt">' + esc(t.title) + "</span>" + '<span class="sd-min">' + (leftMine(t) < 1 ? "\u2713" : shortMin(leftMine(t))) + "</span>" + ((S.topics[t.id] || {}).flag || topicMarks(t).length ? '<span class="sd-flag" aria-label="flagged">' + FLAG + "</span>" : "") + "</a>";
           if (on) x += '<ul class="sd-stages">' + STAGES.filter(function (st) { return has(t, st); }).map(function (st) { return '<li><a href="#/t/' + t.id + "/" + st + '"' + (st === stage ? ' aria-current="page"' : "") + ">" + NAMES[st] + (stageDone(t, st) ? ' <span class="sd-ok" aria-label="done">\u2713</span>' : st === "practice" ? "" : '<span class="sd-min">' + shortMin(Math.max(1, stageLeft(t, st))) + "</span>") + "</a></li>"; }).join("") + "</ul>";
           return x + "</li>";
         }).join("") + "</ul></details>";
@@ -682,6 +745,7 @@
     if (st.basics && lv === "new") h += '<p class="note"><b>The basics.</b> ' + esc(st.basics) + "</p>";
     if (st.syntax && (lv === "new" || lv === "programmer")) h += '<p class="note">' + esc(st.syntax).replace(/^Python notes:/, "<b>Python notes.</b>") + "</p>";
     if (st.ask) h += '<div class="ask">' + questionHTML(st.ask, a, "ask", i) + "</div>";
+    h += markHTML(t.id, "learn:" + i, "step");
     h += '</div><div class="controls"><span class="count">Step ' + (i + 1) + " of " + n + (stageLeft(t, "learn") >= 1 ? " \u00B7 " + shortMin(stageLeft(t, "learn")) + " left" : "") + "</span>" +
       (canSpeak ? '<span class="narctl" role="group" aria-label="Read aloud player"><button class="btn small quiet nbtn" type="button" data-act="nprev" title="Back a sentence"><span aria-hidden="true">⏮</span><span class="sr">Back a sentence</span></button>' +
           '<button class="btn small" type="button" id="nplay" data-act="nplay"></button>' +
@@ -703,7 +767,7 @@
     var answered = Object.keys(s.check).length, right = qs.filter(function (q, i) { return s.check[i] && s.check[i].ok; }).length;
     var h = crumb(t, "check") + tabs(t, "check") + timeStrip(t, "check") + confBar(t, "the check") + "<h1>Check</h1><p class=\"lede\" style=\"margin-bottom:24px\">Answer each one, then read the explanation. Nothing here is graded.</p>";
     qs.forEach(function (q, i) {
-      h += '<div class="qcard"><p class="num">Question ' + (i + 1) + " of " + qs.length + "</p>" + (q.code ? codeHTML(q.code) : "") + questionHTML(q, s.check[i], "check", i) + "</div>";
+      h += '<div class="qcard" id="q' + (i + 1) + '"><p class="num">Question ' + (i + 1) + " of " + qs.length + "</p>" + (q.code ? codeHTML(q.code) : "") + questionHTML(q, s.check[i], "check", i) + markHTML(t.id, "check:" + i, "question") + "</div>";
     });
     h += '<div class="score"><strong>' + (answered < qs.length ? answered + " of " + qs.length + " answered" : right + " of " + qs.length + " correct") + '</strong><div class="row">' +
       (answered ? '<button class="btn small quiet" type="button" data-act="recheck">Try again</button>' : "") +
@@ -730,7 +794,7 @@
       : "Past exam problems. Do as many as you need, then mark the topic confident.";
     var h = crumb(t, stage) + tabs(t, stage) + timeStrip(t, stage) + confBar(t, stage === "deepen" ? "deepen" : "practice") + "<h1>" + NAMES[stage] + '</h1><p class="lede" style="margin-bottom:24px">' + intro + '</p><div class="work"><ul class="plist" aria-label="Problems">' +
       list.map(function (x, i) {
-        return '<li><a href="#/t/' + t.id + "/" + stage + "/" + x.id + '"' + (x === p ? ' aria-current="true"' : "") + '><span class="tick' + (s.solved[x.id] ? " yes" : "") + '" aria-hidden="true"></span>' + (i + 1) + ". " + esc(x.title) + (s.solved[x.id] ? "" : '<span class="pmin">' + shortMin(stage === "deepen" ? stageMin(t, "deepen") / list.length * factors().deepen : PACE.perPracticeProblem) + "</span>") + (s.solved[x.id] ? '<span class="muted"> (solved)</span>' : "") + "</a></li>";
+        return '<li><a href="#/t/' + t.id + "/" + stage + "/" + x.id + '"' + (x === p ? ' aria-current="true"' : "") + '><span class="tick' + (s.solved[x.id] ? " yes" : "") + '" aria-hidden="true"></span>' + (i + 1) + ". " + esc(x.title) + '<span class="pmark" aria-hidden="true">' + ((getMark(t.id, "p:" + x.id) || {}).e || "") + "</span>" + (s.solved[x.id] ? "" : '<span class="pmin">' + shortMin(stage === "deepen" ? stageMin(t, "deepen") / list.length * factors().deepen : PACE.perPracticeProblem) + "</span>") + (s.solved[x.id] ? '<span class="muted"> (solved)</span>' : "") + "</a></li>";
       }).join("") + '</ul><div class="prob"><h2>' + esc(p.title) + '</h2><p class="src">' + esc(p.source || "") +
       (p.exam ? ' · <a href="' + esc(p.exam) + '" target="_blank" rel="noopener">exam PDF (opens in a new tab)</a>' : "") + "</p><p>" + esc(p.desc) + "</p>" +
       (p.sql && p.sql.tables ? '<details class="reveal" style="margin:0 0 12px"><summary>Show the tables</summary>' + p.sql.tables.map(function (t) { return '<h4 class="tblh">' + esc(t.name) + "</h4>" + tableHTML(t.cols, t.rows); }).join("") + "</details>" : "") +
@@ -739,7 +803,7 @@
         ? '<button class="btn small primary" type="button" data-act="reveal">Compare with the solution</button>'
         : '<button class="btn small" type="button" data-act="run">' + (p.sql ? "Run the query" : "Run the examples") + '</button><button class="btn small primary" type="button" data-act="submit">Submit</button>') +
       (p.hints ? '<button class="btn small quiet" type="button" data-act="hint">Hint</button>' : "") +
-      '<button class="btn small quiet" type="button" data-act="resetp">Start over</button><button class="btn small quiet" type="button" data-act="flagp" aria-pressed="' + !!s.flags[p.id] + '">' + (s.flags[p.id] ? "Flagged for review" : "Flag for review") + '</button></div><div id="hints">' + hintsHTML(p, s) + '</div><div class="result" id="result" aria-live="polite">' +
+      '<button class="btn small quiet" type="button" data-act="resetp">Start over</button></div>' + markHTML(t.id, "p:" + p.id, "problem") + '<div id="hints">' + hintsHTML(p, s) + '</div><div class="result" id="result" aria-live="polite">' +
       (s.solved[p.id] ? solvedHTML() : "") + "</div>" +
       (p.norun ? '<p class="muted" style="font-size:14.5px; margin-top:14px">' + esc(p.lang || "This language") + ' does not run in this app, so this problem is self-checked: write your answer, then compare it with the solution.</p>'
                : '<details class="reveal"><summary>Show the solution</summary>' + codeHTML(p.solution) + (p.explain ? '<p style="margin-top:10px">' + esc(p.explain) + "</p>" : "") + "</details>") + "</div></div>";
@@ -959,7 +1023,8 @@
   function render(keepScroll) {
     hush();
     var r = route(), t = r[0] === "t" ? topicById(r[1]) : null, stage = r[2];
-    cur = null;
+    cur = null; markOpen = null;
+    if (t && stage === "learn" && /^\d+$/.test(r[3] || "") && has(t, "learn")) { T(t.id).step = Math.min(Math.max(0, +r[3] - 1), L[t.id].steps.length - 1); save(); try { history.replaceState(null, "", "#/t/" + t.id + "/learn"); } catch (e) {} r = route(); }
     if (r[0] === "progress") renderProgress();
     else if (!t) renderMap();
     else if (stage === "learn" && has(t, "learn")) renderLearn(t);
@@ -970,6 +1035,7 @@
     progress(); renderSide();
     document.title = (t ? t.title + " · " : r[0] === "progress" ? "Progress · " : "") + "CS 61A · Saba Feilizadeh";
     if (!keepScroll) { window.scrollTo(0, 0); try { view.focus({ preventScroll: true }); } catch (e) {} }
+    var qa = t && stage === "check" && /^\d+$/.test(r[3] || "") && document.getElementById("q" + r[3]); if (qa) qa.scrollIntoView({ block: "start" });
   }
   function progress() {
     logProgress(); saveSoon();
@@ -1001,6 +1067,7 @@
     if (sn && !String(window.getSelection && window.getSelection()).trim()) { speakFrom(Array.prototype.indexOf.call(sn.parentNode.querySelectorAll(".sent"), sn)); return; }
     var el = e.target.closest("[data-act]"); if (!el || el.tagName === "FORM") return;
     var act = el.getAttribute("data-act"), r = route(), t = topicById(r[1]);
+    if (markClick(act, el)) return;
     if (act === "pick") answer(el.getAttribute("data-ctx"), +el.getAttribute("data-n"), +el.getAttribute("data-i"));
     else if (act === "giveup") answer(el.getAttribute("data-ctx"), +el.getAttribute("data-n"), null, true);
     else if (act === "next") stepBy(1);
@@ -1013,7 +1080,6 @@
     else if (act === "dateclear") { delete S.examDate; dateOpen = false; save(); render(true); }
     else if (act === "hideprogexample") { S.noProgExample = true; save(); render(true); }
     else if (act === "hideexample") { S.noReviewExample = true; save(); render(true); }
-    else if (act === "flagp" && cur) { var fs = T(cur.t.id); if (fs.flags[cur.p.id]) delete fs.flags[cur.p.id]; else fs.flags[cur.p.id] = true; save(); el.textContent = fs.flags[cur.p.id] ? "Flagged for review" : "Flag for review"; el.setAttribute("aria-pressed", !!fs.flags[cur.p.id]); }
     else if (act === "resetq" && t) {
       var rs = T(t.id), rn = +el.getAttribute("data-n");
       if (el.getAttribute("data-ctx") === "ask") { delete rs.asks[rn]; save(); hush(); renderLearn(t, true); }
@@ -1058,6 +1124,11 @@
   });
   view.addEventListener("input", function (e) {
     if (e.target.id === "editor" && cur) { S.code[cur.p.id] = e.target.value; saveSoon(); }
+    if (e.target.getAttribute("data-act") === "marknote") markNote(e.target);
+  });
+  view.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && e.target.getAttribute && e.target.getAttribute("data-act") === "marknote") { e.preventDefault(); markOpen = null; save(); redrawMark(e.target.closest(".mark"), ".markbtn"); }
+    else if (e.key === "Escape" && e.target.closest && e.target.closest(".markpanel")) { e.stopPropagation(); markOpen = null; save(); redrawMark(e.target.closest(".mark"), ".markbtn"); }
   });
   /* editor: Tab indents, Enter keeps the indent (one more level after a colon) */
   view.addEventListener("keydown", function (e) {
