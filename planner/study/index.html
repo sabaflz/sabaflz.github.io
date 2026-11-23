@@ -208,7 +208,7 @@ footer{padding:36px 0 56px; color:var(--muted); font-size:13.5px; border-top:1.5
 .sd-item input{width:18px; height:18px; margin:2px 0 0; accent-color:var(--ok)}
 .sd-item label{display:flex; flex-direction:column; gap:1px; cursor:pointer}
 .sd-item.fixed{background:var(--surface-2); border-style:dashed}
-.sd-item.fixed label{cursor:default}
+.sd-item.fixed label{cursor:pointer}
 .sd-t{font:500 11.5px var(--mono); color:var(--muted)}
 .sd-c{font:700 11px var(--mono); text-transform:uppercase; letter-spacing:.06em}
 .sd-d{font-weight:500}
@@ -218,6 +218,10 @@ footer{padding:36px 0 56px; color:var(--muted); font-size:13.5px; border-top:1.5
 .sd-dayctl{display:flex; gap:8px; flex-wrap:wrap}
 .t-sm.on{background:var(--ok-soft); border-color:var(--ok); color:var(--ok)}
 .t-sm:disabled{opacity:.4; cursor:default}
+.sd-lightnote{margin:0; font-size:12.5px; color:var(--muted); background:var(--surface-2); border-radius:8px; padding:8px 10px}
+.sd-lightnote.on{background:var(--ok-soft); color:var(--ok); font-weight:600}
+.sd-item.fixed.done{opacity:.55}
+.sd-item.fixed.done .sd-d{text-decoration:line-through}
 .sd-toast{margin:0; min-height:16px; font:500 12px var(--mono); color:var(--ok)}
 
 .sd-bottom{display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr)); gap:16px; margin:16px 0 0}
@@ -286,7 +290,7 @@ button.mlink{background:none; border:0; padding:0}
     <section class="sd-panel sd-card">
       <h2>Progress by course</h2>
       <div id="progress" style="display:flex;flex-direction:column;gap:10px"></div>
-      <p class="sd-fine">Counts study blocks checked off. <span id="calNote"></span></p>
+      <p class="sd-fine">Counts study blocks, classes and events checked off. <span id="calNote"></span></p>
     </section>
     <section class="sd-panel sd-card">
       <h2>How this plan works</h2>
@@ -306,7 +310,7 @@ button.mlink{background:none; border:0; padding:0}
 </main>
 
 <script src="config.js?v=1"></script>
-<script src="study.js?v=1"></script>
+<script src="study.js?v=2"></script>
 <script src="../sync.js?v=19"></script>
 <script src="../../assets/js/nav.js?v=5"></script>
 <script src="../../assets/js/tts.js?v=2"></script>

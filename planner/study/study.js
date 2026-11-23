@@ -153,12 +153,19 @@ window.StudyApp = { start: function (D, OPTS) {
     h += '<div class="sd-items">';
     list.filter(function (b) { return filt.has(b.c); }).forEach(function (b) {
       var skip = lt && !b.fixed && b.pri > 1, cid = "cb-" + b.id.replace(/[^\w-]/g, "_");
+      if (skip) return;
       h += '<div class="sd-item' + (b.fixed ? " fixed" : "") + (done.has(b.id) ? " done" : "") + (skip ? " skip" : "") + '">' +
-        (b.fixed || b.c === "rest" ? "<span></span>" : '<input type="checkbox" id="' + cid + '" data-id="' + esc(b.id) + '"' + (done.has(b.id) ? " checked" : "") + (editable ? "" : " disabled") + ' aria-label="Mark ' + esc(cname(b.c)) + ' block done">') +
+        (b.c === "rest" ? "<span></span>" : '<input type="checkbox" id="' + cid + '" data-id="' + esc(b.id) + '"' + (done.has(b.id) ? " checked" : "") + (editable ? "" : " disabled") + ' aria-label="Mark ' + esc(b.fixed ? b.t : cname(b.c) + " block") + ' done">') +
         '<label for="' + cid + '"><span class="sd-t">' + fmt(b.s) + " to " + fmt(b.e) + (b.pri === 3 ? " · optional" : "") + (skip ? " · skipped on light day" : "") + "</span>" +
         '<span class="sd-c tc-' + col(b.c) + '">' + esc(cname(b.c)) + '</span><span class="sd-d">' + esc(b.t) + "</span>" + (b.n ? '<span class="sd-n">' + esc(b.n) + "</span>" : "") + "</label></div>";
     });
-    h += '</div><div class="sd-dayctl">' + (editable ? '<button type="button" class="t-sm' + (lt ? " on" : "") + '" id="lightBtn">' + (lt ? "Light day on" : "Make it a light day") + "</button>" : "") +
+    var drop = list.filter(function (b) { return !b.fixed && b.pri > 1; });
+    var dropH = Math.round(drop.reduce(function (a, b) { return a + toMin(b.e) - toMin(b.s); }, 0) / 6) / 10;
+    var nb = drop.length + " block" + (drop.length === 1 ? "" : "s") + " (" + dropH + "h)";
+    var msg = lt ? "Light day on: " + nb + " dropped. Deadline, quiz and exam blocks stay."
+      : drop.length ? "A light day drops " + nb + " and keeps deadline, quiz and exam blocks." : "Nothing to drop today: every block is a deadline, quiz or exam block.";
+    h += '</div>' + (editable ? '<p class="sd-lightnote' + (lt ? " on" : "") + '">' + msg + "</p>" : "") +
+      '<div class="sd-dayctl">' + (editable ? '<button type="button" class="t-sm' + (lt ? " on" : "") + '" id="lightBtn"' + (!lt && !drop.length ? " disabled" : "") + ">" + (lt ? "Turn light day off" : "Make it a light day") + "</button>" : "") +
       '<button type="button" class="t-sm" id="copyBtn">Copy day as text</button></div><p class="sd-toast" id="sdToast" aria-live="polite"></p>';
     $("dayPanel").innerHTML = h;
   }
@@ -170,7 +177,11 @@ window.StudyApp = { start: function (D, OPTS) {
       var b = all.filter(function (x) { return x.c === c; }), dn = b.filter(function (x) { return done.has(x.id); }).length;
       var hr = b.reduce(function (a, x) { return a + toMin(x.e) - toMin(x.s); }, 0) / 60, p = b.length ? dn / b.length : 0;
       return '<div class="sd-prog"><span>' + esc(cname(c)) + '</span><div class="sd-bar"><i class="c-' + col(c) + '" style="width:' + p * 100 + '%"></i></div><span class="sd-v">' + dn + "/" + b.length + " · " + Math.round(hr) + "h</span></div>";
-    }).join("");
+    }).join("") + (function () {
+      var fx = Object.keys(S).reduce(function (a, k) { return a.concat(S[k]); }, []).filter(function (b) { return b.fixed && b.c !== "ex"; });
+      var fd = fx.filter(function (b) { return done.has(b.id); }).length;
+      return '<div class="sd-prog"><span>Classes + events</span><div class="sd-bar"><i class="c-grey" style="width:' + (fx.length ? fd / fx.length * 100 : 0) + '%"></i></div><span class="sd-v">' + fd + "/" + fx.length + "</span></div>";
+    })();
     $("tips").innerHTML = (T.tips || []).map(function (t) { return "<li><b>" + esc(t[0]) + "</b> " + esc(t[1]) + "</li>"; }).join("");
     $("checks").innerHTML = (T.checks || []).map(function (t) { return "<li>" + esc(t) + "</li>"; }).join("");
     $("calNote").textContent = T.calendar ? "These blocks are also in my Google Calendar (" + T.calendar + ")." : "";
