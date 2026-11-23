@@ -66,8 +66,9 @@ window.StudyApp = { start: function (D, OPTS) {
     var hrs = all.reduce(function (a, b) { return a + toMin(b.e) - toMin(b.s); }, 0) / 60;
     $("counts").innerHTML = (T.countdowns || []).map(function (c) {
       var n = daysTo(c[0]);
-      return '<div class="sd-count' + (n >= 0 && n <= 7 ? " hot" : "") + '"><b>' + (n < 0 ? "Done" : n) + "</b><span>" + (n < 0 ? esc(c[1]) : "days to " + esc(c[1])) + "</span></div>";
-    }).join("") + '<div class="sd-count"><b>' + Math.round(hrs) + 'h</b><span>planned study</span></div>';
+      var dd = parse(c[0]), when = DOW[dd.getDay()] + " " + MON[dd.getMonth()] + " " + dd.getDate();
+      return '<div class="sd-count' + (n >= 0 && n <= 7 ? " hot" : "") + '"><b>' + (n < 0 ? "Done" : n === 0 ? "Today" : n + (n === 1 ? " day" : " days")) + "</b><span>" + (n <= 0 ? esc(c[1]) : "until " + esc(c[1])) + " · " + when + "</span></div>";
+    }).join("") + '<div class="sd-count"><b>' + Math.round(hrs) + ' hrs</b><span>of study planned</span></div>';
     $("studyLede").textContent = T.lede || "";
     $("studyTerm").textContent = T.name + " · " + MON[START.getMonth()] + " " + START.getDate() + " → " + MON[END.getMonth()] + " " + END.getDate();
   }
