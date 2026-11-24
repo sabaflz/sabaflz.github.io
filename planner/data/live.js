@@ -56,7 +56,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Dwinelle 155",
     "instructor": "Manuel A Sabin",
-    "seats": "1100 seats, 906 enrolled, 78 waitlisted. Reserved: 33",
+    "seats": "1100 seats, 914 enrolled, 87 waitlisted. Reserved: 33",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-61b-001-lec-001"
    },
    "CS 61C": {
@@ -69,7 +69,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "The Gateway Building 1210",
     "instructor": "Lisa Yan",
-    "seats": "320 seats, 274 enrolled, 15 waitlisted. Reserved: 26",
+    "seats": "320 seats, 278 enrolled, 16 waitlisted. Reserved: 26",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-61c-001-lec-001"
    },
    "CS 189": {
@@ -82,7 +82,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Wheeler 150",
     "instructor": "Jonathan Shewchuk",
-    "seats": "684 seats, 615 enrolled, 220 waitlisted. Reserved: 69",
+    "seats": "684 seats, 615 enrolled, 224 waitlisted. Reserved: 69",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-189-001-lec-001"
    },
    "CS 188": {
@@ -95,7 +95,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Lewis 100",
     "instructor": "Peyrin Kao, Pieter Abbeel",
-    "seats": "400 seats, 181 enrolled, 200 waitlisted. Reserved: 79",
+    "seats": "400 seats, 185 enrolled, 200 waitlisted. Reserved: 79",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-188-001-lec-001"
    },
    "CS 170": {
@@ -108,7 +108,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "The Gateway Building 1210",
     "instructor": "Christian H Borgs, shafi goldwasser",
-    "seats": "252 seats, 193 enrolled, 34 waitlisted. Reserved: 40",
+    "seats": "252 seats, 199 enrolled, 36 waitlisted. Reserved: 40",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-170-001-lec-001"
    },
    "CS 160": {
@@ -121,7 +121,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Jacobs Hall 310",
     "instructor": "Amy Pavel, Bjoern Hartmann",
-    "seats": "80 seats, 79 enrolled, 1 waitlisted. Reserved: 1",
+    "seats": "80 seats, 79 enrolled, 2 waitlisted. Reserved: 1",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-160-001-lec-001"
    },
    "CS 184": {
@@ -134,7 +134,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "The Gateway Building 1210",
     "instructor": "Ren Ng",
-    "seats": "120 seats, 72 enrolled. Reserved: 24",
+    "seats": "120 seats, 74 enrolled. Reserved: 24",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-184-001-lec-001"
    },
    "CS 186": {
@@ -147,7 +147,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "The Gateway Building 1210",
     "instructor": "Alvin Cheung",
-    "seats": "300 seats, 206 enrolled, 117 waitlisted. Reserved: 17",
+    "seats": "300 seats, 211 enrolled, 119 waitlisted. Reserved: 17",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-186-001-lec-001"
    },
    "CS 161": {
@@ -160,7 +160,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Undergrad Academic Bldg 100",
     "instructor": "Raluca Ada Popa, Peyrin Kao",
-    "seats": "370 seats, 218 enrolled. Reserved: 98",
+    "seats": "370 seats, 221 enrolled. Reserved: 95",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-161-001-lec-001"
    },
    "CS 162": {
@@ -173,7 +173,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "The Gateway Building 1210",
     "instructor": "Matei Zaharia, Anthony D Joseph",
-    "seats": "300 seats, 286 enrolled, 4 waitlisted. Reserved: 14",
+    "seats": "300 seats, 286 enrolled, 8 waitlisted. Reserved: 14",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-162-001-lec-001"
    },
    "CS 164": {
@@ -186,7 +186,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "The Gateway Building 1220",
     "instructor": "S. E. Chasins",
-    "seats": "77 seats, 64 enrolled, 2 waitlisted. Reserved: 13",
+    "seats": "77 seats, 64 enrolled, 4 waitlisted. Reserved: 13",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-164-001-lec-001"
    },
    "CS 185": {
@@ -199,7 +199,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "The Gateway Building 1210",
     "instructor": "Sergey Levine",
-    "seats": "359 seats, 339 enrolled, 29 waitlisted. Reserved: 20",
+    "seats": "359 seats, 338 enrolled, 35 waitlisted. Reserved: 20",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-185-001-lec-001"
    },
    "CS C176": {
@@ -225,7 +225,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Lewis 9",
     "instructor": "Alistair J Sinclair",
-    "seats": "70 seats, 8 enrolled. Reserved: 10",
+    "seats": "70 seats, 9 enrolled. Reserved: 10",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-172-001-lec-001"
    },
    "CS C177": {
@@ -251,7 +251,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Barker 101",
     "instructor": "Mariam Aly",
-    "seats": "28 seats, 28 enrolled, 50 waitlisted",
+    "seats": "28 seats, 27 enrolled, 49 waitlisted. Reserved: 1",
     "link": "https://classes.berkeley.edu/content/2027-spring-cogsci-c100-001-lec-001"
    },
    "DATA C8": {
@@ -264,7 +264,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Wheeler 150",
     "instructor": "John DeNero, Ramesh Sridharan",
-    "seats": "600 seats, 283 enrolled, 55 waitlisted. Reserved: 318",
+    "seats": "600 seats, 283 enrolled, 57 waitlisted. Reserved: 318",
     "link": "https://classes.berkeley.edu/content/2027-spring-data-c8-001-lec-001"
    },
    "DATA C100": {
@@ -277,7 +277,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Wheeler 150",
     "instructor": "Josh Grossman",
-    "seats": "900 seats, 604 enrolled",
+    "seats": "900 seats, 609 enrolled",
     "link": "https://classes.berkeley.edu/content/2027-spring-data-c100-001-lec-001"
    },
    "DATA C104": {
@@ -290,7 +290,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Wheeler 150",
     "instructor": "Cathryn Carson, Ari S Edmundson",
-    "seats": "576 seats, 506 enrolled, 8 waitlisted. Reserved: 49",
+    "seats": "576 seats, 510 enrolled, 11 waitlisted. Reserved: 49",
     "link": "https://classes.berkeley.edu/content/2027-spring-data-c104-001-lec-001"
    },
    "PUBHLTH 150A": {
@@ -303,7 +303,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Lewis 100",
     "instructor": "Mahasin S Mujahid, Lisa Fischer Barcellos",
-    "seats": "240 seats, 162 enrolled, 17 waitlisted. Reserved: 45",
+    "seats": "240 seats, 164 enrolled, 16 waitlisted. Reserved: 43",
     "link": "https://classes.berkeley.edu/content/2027-spring-pbhlth-150a-001-lec-001"
    },
    "POLSCI 1": {
@@ -316,7 +316,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Undergrad Academic Bldg 100",
     "instructor": "Hunter Rendleman",
-    "seats": "324 seats, 174 enrolled",
+    "seats": "324 seats, 175 enrolled",
     "link": "https://classes.berkeley.edu/content/2027-spring-polsci-1-001-lec-001"
    },
    "HISTORY 7B": {
@@ -329,7 +329,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Dwinelle 155",
     "instructor": "Ronit Stahl",
-    "seats": "440 seats, 297 enrolled, 3 waitlisted",
+    "seats": "440 seats, 303 enrolled, 3 waitlisted",
     "link": "https://classes.berkeley.edu/content/2027-spring-history-7b-001-lec-001"
    },
    "CS 195": {
@@ -342,7 +342,7 @@ window.PLANNER_LIVE = {
     ],
     "location": "Physics Building 4",
     "instructor": "Joshua A Hug",
-    "seats": "120 seats, 109 enrolled. Reserved: 2",
+    "seats": "120 seats, 110 enrolled. Reserved: 2",
     "link": "https://classes.berkeley.edu/content/2027-spring-compsci-195-001-lec-001"
    }
   },
